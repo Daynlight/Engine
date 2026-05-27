@@ -146,7 +146,7 @@ void UW::Resources::initLights(){
   // ====================== //
   // ======= Static ======= //
   // ====================== //
-  UW::Light light = UW::Light({0.0f, 500.0f, 0.0f}, {1.0f, 1.0f, 1.0f});
+  UW::Light light = UW::Light({0.0f, 500.0f, 0.0f}, {1.0f, 1.0f, 1.0f}, 2.0f);
   lights["static"].lights.emplace_back(light);
   lights["static"].compile();
 };

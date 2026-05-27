@@ -22,7 +22,6 @@ public:
 
   void onUpdate(float delta_time) override;
   void onFixedUpdate() override;
-
   void render(CW::Renderer::Renderer* renderer, Camera& culling_camera, Camera& render_camera) override;
 };
 }; // namespace UW
