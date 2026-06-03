@@ -10,6 +10,10 @@ Project for **GRK** under water scene. Build on top of [**CWindow library**](htt
 - [TOC](#toc)
 - [Installation and Usage](#installation-and-usage)
 - [Architecture](#architecture)
+  - [Lights](#lights)
+  - [Materials](#materials)
+  - [Terrain](#terrain)
+  - [Water](#water)
 - [Prerequisites](#prerequisites)
 - [License](#license)
 - [Author](#author)
@@ -45,6 +49,17 @@ Project for **GRK** under water scene. Build on top of [**CWindow library**](htt
 
 
 ## Architecture
+### Lights
+Lights are store on **SSBO GPU side** with parameters like ```position```, ```color```, ```strength```. It's provides easier way to store light parameters with multiple instances and avoids unnsescary uniforms bindings. They are created once in ```Resources``` Singleton class and reuse for each object. This way we save memory.
+
+### Materials
+Materials like Lights are stored on **SSBO GPU side** that allows multiple materials by one mesh. Material contains typical **PBR parameters** like ```albedo```, ```roughness```, ```metallic```, ```emission_color```, ```emission_strength```, ```ambient_occlusion```. We can edit materials via **ImGui** every time we change parameters we recompile **SSBO**.
+
+### Terrain
+
+### Water 
+
+
 
 
 ## Prerequisites
@@ -52,6 +67,12 @@ Project for **GRK** under water scene. Build on top of [**CWindow library**](htt
 - [**Ninja**](https://ninja-build.org/): 1.12.1
 - [**gcc**](https://gcc.gnu.org/): 14.2.0
 - [**CWindow**](https://github.com/Daynlight/CWindow.git): dev
+  - **assimp**
+  - **Dear ImGui**
+  - **Glad**
+  - **GLFW**
+  - **glm**
+  - **stb**
 - [**cmrc**](https://github.com/vector-of-bool/cmrc.git): master
 
 
