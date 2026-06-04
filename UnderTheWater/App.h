@@ -28,11 +28,13 @@ private:
 
   // control variables
   unsigned int material_id = UW::Config::DEFAULT_GUI_MATERIAL;
-  std::string shader_name = UW::Config::DEFAULT_GUI_SHADER;
-  GLenum reg_shader_name = UW::Config::DEFAULT_GUI_REG_SHADER;
-  char buffer[UW::Config::SHADER_EDITOR_BUFFER_SIZE] = {0};
   bool material_is_updated = false;
+
+  std::string shader_name = UW::Config::DEFAULT_GUI_SHADER;
+  GLenum shader_type = UW::Config::DEFAULT_GUI_SHADER_TYPE;
+  char buffer[UW::Config::SHADER_EDITOR_BUFFER_SIZE] = {0};
   bool shader_is_updated = false;
+  
   bool debug_camera_on = UW::Config::DEFAULT_DEBUG_CAMERA_ON;
   float fps = 0.0f;
   float fps_acc = 0.0f;

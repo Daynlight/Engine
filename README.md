@@ -99,8 +99,8 @@ Shaders are ```inline std::string``` we avoid reading them from file for **safet
 
 
 ## TODO
-<details open>
-<summary>🌟 Iteration 1 🌟</summary>
+<details>
+<summary>Iteration 1</summary>
 
 - [x] Normals
 - [x] PBR
@@ -111,13 +111,13 @@ Shaders are ```inline std::string``` we avoid reading them from file for **safet
 - [x] Lazy loading and auto compile for Materials and Lights.
 - [x] Skybox
 - [x] Terrain with height map
-- [ ] Shader Editor GUI
-- [ ] Water surface shader
+- [x] Shader Editor GUI
 </details>
 
-<details>
-<summary>Iteration 2</summary>
+<details open>
+<summary>🌟 Iteration 2 🌟</summary>
 
+- [ ] Water surface shader
 - [ ] Unified Object system
 - [ ] Object Gui
 - [ ] FBO Render to texture

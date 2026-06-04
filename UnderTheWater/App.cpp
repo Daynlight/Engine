@@ -232,6 +232,9 @@ std::function<void(std::function<void()> render_windows)> UW::App::appWorkspace(
 
 
 
+// -------- //
+// Info Gui //
+// -------- //
 inline void UW::App::guiInfo(){
   ImGui::SeparatorText("Info");
   ImGui::Text("FPS: %f", fps);
@@ -273,6 +276,9 @@ return [this](CW::Renderer::iRenderer *window){
 
 
 
+// ------------------ //
+// materials Explorer //
+// ------------------ //
 inline void UW::App::guiMaterialParameters(){
   ImGui::SeparatorText("Materials Parameters");
 
@@ -316,6 +322,9 @@ return [this](CW::Renderer::iRenderer *window){
 
 
 
+// --------------- //
+// Shader Explorer //
+// --------------- //
 void UW::App::guiShaderList(){
   ImGui::SeparatorText("Shader List");
 
@@ -325,7 +334,7 @@ void UW::App::guiShaderList(){
       
       if (ImGui::Button(button_label.c_str())) {
         shader_name = key;
-        reg_shader_name = key_s;
+        shader_type = key_s;
         std::string source = values_s.getSource();
         memcpy(buffer, source.data(), source.size());
       };
@@ -343,6 +352,9 @@ inline std::function<void(CW::Renderer::iRenderer *window)> UW::App::shaderExplo
 
 
 
+// ------------- //
+// Shader Editor //
+// ------------- //
 void UW::App::guiShaderEditor(){
   float width = ImGui::GetContentRegionAvail().x;
   float height = ImGui::GetContentRegionAvail().y - 50.0f;
@@ -350,14 +362,21 @@ void UW::App::guiShaderEditor(){
   ImGui::SeparatorText("Shader Editor");
   
   ImGui::InputTextMultiline("##Shader Content", buffer, UW::Config::SHADER_EDITOR_BUFFER_SIZE, ImVec2(width, height), ImGuiInputTextFlags_WordWrap);
-  if(ImGui::Button("Apply")) shader_is_updated = true;
+
+  auto it = Resources::get().shaders.find(shader_name);
+  if(it == Resources::get().shaders.end()) return;
+  auto& reg = Resources::get().shaders[shader_name].getRegisterShader();
+  
+  auto it2 = reg.find(shader_type);
+  if(it2 == reg.end()) return;
+  if(strcmp(buffer, reg.at(shader_type).getSource().c_str()) == 0) shader_is_updated = true;
 
   if(shader_is_updated){
     shader_is_updated = false;
     
     Resources::get().shaders[shader_name].destroy();
-    Resources::get().shaders[shader_name].removeShaders(reg_shader_name);
-    Resources::get().shaders[shader_name].setShader(buffer, reg_shader_name);
+    Resources::get().shaders[shader_name].removeShaders(shader_type);
+    Resources::get().shaders[shader_name].setShader(buffer, shader_type);
     Resources::get().shaders[shader_name].compile();
   };
 };
