@@ -141,4 +141,5 @@ Shaders are ```inline std::string``` we avoid reading them from file for **safet
 - [ ] Parallel Transport Layer
 - [ ] SDF ray-marching
 - [ ] Shadow Mapping
+- [ ] Script system
 </details>
