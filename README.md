@@ -99,15 +99,36 @@ Shaders are ```inline std::string``` we avoid reading them from file for **safet
 
 
 ## TODO
-- [x] Skybox
-- [x] Terrain
+<details open>
+<summary>🌟 Iteration 1 🌟</summary>
+
 - [x] Normals
 - [x] PBR
 - [x] Readme.md
 - [x] Update Materials to SSBO
+- [x] BRDF Shader
+- [x] Add operator[] to Materials and Lights.
+- [x] Lazy loading and auto compile for Materials and Lights.
+- [x] Skybox
+- [x] Terrain with height map
+- [ ] Shader Editor GUI
+- [ ] Water surface shader
+</details>
+
+<details>
+<summary>Iteration 2</summary>
+
+- [ ] Unified Object system
+- [ ] Object Gui
 - [ ] FBO Render to texture
 - [ ] Under water fog
 - [ ] Quaternion Camera
+</details>
+
+<details>
+<summary>Iteration 2</summary>
+
 - [ ] Parallel Transport Layer
 - [ ] SDF ray-marching
 - [ ] Shadow Mapping
+</details>

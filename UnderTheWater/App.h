@@ -28,7 +28,11 @@ private:
 
   // control variables
   unsigned int material_id = UW::Config::DEFAULT_GUI_MATERIAL;
+  std::string shader_name = UW::Config::DEFAULT_GUI_SHADER;
+  GLenum reg_shader_name = UW::Config::DEFAULT_GUI_REG_SHADER;
+  char buffer[UW::Config::SHADER_EDITOR_BUFFER_SIZE] = {0};
   bool material_is_updated = false;
+  bool shader_is_updated = false;
   bool debug_camera_on = UW::Config::DEFAULT_DEBUG_CAMERA_ON;
   float fps = 0.0f;
   float fps_acc = 0.0f;
@@ -39,6 +43,8 @@ private:
   // gui
   bool infoWindowOn = false;
   bool materialWindowOn = false;
+  bool shaderExplorerWindowOn = false;
+  bool shaderEditorWindowOn = false;
 
   // objects
   std::unordered_map<std::string, std::shared_ptr<Object>> objects;
@@ -69,6 +75,8 @@ private:
   void guiControlsInfo();
   void guiMaterialParameters();
   void guiMaterialList();
+  void guiShaderEditor();
+  void guiShaderList();
 
   void menuBarGui();
 
@@ -76,5 +84,7 @@ private:
 
   std::function<void(CW::Renderer::iRenderer *window)> windowGui();
   std::function<void(CW::Renderer::iRenderer *window)> materialExplorerGui();
+  std::function<void(CW::Renderer::iRenderer *window)> shaderExplorerGui();
+  std::function<void(CW::Renderer::iRenderer *window)> shaderEditorGui();
 };
 };

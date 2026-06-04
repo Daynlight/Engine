@@ -169,6 +169,26 @@ void UW::App::menuBarGui(){
           materialWindowOn = true;
         }
       };
+      if(ImGui::MenuItem("Shader Explorer")){
+        if(materialWindowOn){
+          gui.deleteWindow("Shader Explorer");
+          shaderExplorerWindowOn = false;
+        }
+        else{
+          gui.addWindow("Shader Explorer", shaderExplorerGui());
+          shaderExplorerWindowOn = true;
+        }
+      };
+      if(ImGui::MenuItem("Shader Editor")){
+        if(materialWindowOn){
+          gui.deleteWindow("Shader Editor");
+          shaderEditorWindowOn = false;
+        }
+        else{
+          gui.addWindow("Shader Editor", shaderEditorGui());
+          shaderEditorWindowOn = true;
+        }
+      };
       ImGui::EndMenu();
     }
     ImGui::EndMenuBar();
@@ -256,17 +276,20 @@ return [this](CW::Renderer::iRenderer *window){
 inline void UW::App::guiMaterialParameters(){
   ImGui::SeparatorText("Materials Parameters");
 
-  if(material_id >= Resources::get().materials.materials.size()) return;
+  if(material_id >= Resources::get().materials.size()) return;
 
-  if(ImGui::ColorEdit3("Albedo: ", &Resources::get().materials.materials[material_id].albedo[0])) material_is_updated = true;
-  if(ImGui::SliderFloat("Roughness: ", &Resources::get().materials.materials[material_id].roughness, 0.0f, 1.0f)) material_is_updated = true;
-  if(ImGui::SliderFloat("Metallic: ", &Resources::get().materials.materials[material_id].metallic, 0.0f, 1.0f)) material_is_updated = true;
-  if(ImGui::ColorEdit3("Emission Color: ", &Resources::get().materials.materials[material_id].emission_color[0])) material_is_updated = true;
-  if(ImGui::SliderFloat("Emission Strength: ", &Resources::get().materials.materials[material_id].emission_strength, 0.0f, 1.0f)) material_is_updated = true;
-  if(ImGui::SliderFloat("Ambient Occlusion: ", &Resources::get().materials.materials[material_id].ambient_occlusion, 0.0f, 1.0f)) material_is_updated = true;
+  Material temp_mat = Resources::get().materials.getMaterial(material_id);
+
+  if(ImGui::ColorEdit3("Albedo: ", &temp_mat.albedo[0])) material_is_updated = true;
+  if(ImGui::SliderFloat("Roughness: ", &temp_mat.roughness, 0.0f, 1.0f)) material_is_updated = true;
+  if(ImGui::SliderFloat("Metallic: ", &temp_mat.metallic, 0.0f, 1.0f)) material_is_updated = true;
+  if(ImGui::ColorEdit3("Emission Color: ", &temp_mat.emission_color[0])) material_is_updated = true;
+  if(ImGui::SliderFloat("Emission Strength: ", &temp_mat.emission_strength, 0.0f, 1.0f)) material_is_updated = true;
+  if(ImGui::SliderFloat("Ambient Occlusion: ", &temp_mat.ambient_occlusion, 0.0f, 1.0f)) material_is_updated = true;
 
   if(material_is_updated){
     material_is_updated = false;
+    Resources::get().materials[material_id] = temp_mat;
     Resources::get().materials.compile();
   };
 };
@@ -276,7 +299,7 @@ inline void UW::App::guiMaterialParameters(){
 inline void UW::App::guiMaterialList(){
   ImGui::SeparatorText("Materials List");
 
-  for (unsigned int id = 0; id < Resources::get().materials.materials.size(); id++) {
+  for (unsigned int id = 0; id < Resources::get().materials.size(); id++) {
     std::string button_label = "- " + std::to_string(id);
     if (ImGui::Button(button_label.c_str())) material_id = id;
   };
@@ -289,4 +312,60 @@ return [this](CW::Renderer::iRenderer *window){
   guiMaterialParameters();
   guiMaterialList();
 };
+};
+
+
+
+void UW::App::guiShaderList(){
+  ImGui::SeparatorText("Shader List");
+
+  for (const auto& [ key, values ] : Resources::get().shaders) {
+    for (const auto& [key_s, values_s] : values.getRegisterShader()){
+      std::string button_label = "- " + key + ": " + std::to_string(key_s);
+      
+      if (ImGui::Button(button_label.c_str())) {
+        shader_name = key;
+        reg_shader_name = key_s;
+        std::string source = values_s.getSource();
+        memcpy(buffer, source.data(), source.size());
+      };
+    };
+  };
+};
+
+
+
+inline std::function<void(CW::Renderer::iRenderer *window)> UW::App::shaderExplorerGui(){
+  return [this](CW::Renderer::iRenderer *window){
+    guiShaderList();
+  };
+};
+
+
+
+void UW::App::guiShaderEditor(){
+  float width = ImGui::GetContentRegionAvail().x;
+  float height = ImGui::GetContentRegionAvail().y - 50.0f;
+  
+  ImGui::SeparatorText("Shader Editor");
+  
+  ImGui::InputTextMultiline("##Shader Content", buffer, UW::Config::SHADER_EDITOR_BUFFER_SIZE, ImVec2(width, height), ImGuiInputTextFlags_WordWrap);
+  if(ImGui::Button("Apply")) shader_is_updated = true;
+
+  if(shader_is_updated){
+    shader_is_updated = false;
+    
+    Resources::get().shaders[shader_name].destroy();
+    Resources::get().shaders[shader_name].removeShaders(reg_shader_name);
+    Resources::get().shaders[shader_name].setShader(buffer, reg_shader_name);
+    Resources::get().shaders[shader_name].compile();
+  };
+};
+
+
+
+inline std::function<void(CW::Renderer::iRenderer *window)> UW::App::shaderEditorGui(){
+  return [this](CW::Renderer::iRenderer *window){
+    guiShaderEditor();
+  };
 };
