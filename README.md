@@ -102,32 +102,42 @@ Shaders are ```inline std::string``` we avoid reading them from file for **safet
 <details>
 <summary>Iteration 1</summary>
 
+- [x] Engine setup
 - [x] Normals
-- [x] PBR
 - [x] Readme.md
-- [x] Update Materials to SSBO
-- [x] BRDF Shader
-- [x] Add operator[] to Materials and Lights.
-- [x] Lazy loading and auto compile for Materials and Lights.
+- [x] Materials oo SSBO
+- [x] Lights on SSBO
+- [x] BRDF Shader and PBR
+- [x] Add operator[] to Materials and Lights
+- [x] Lazy loading and auto compile for Materials and Lights SSBO
 - [x] Skybox
 - [x] Terrain with height map
 - [x] Shader Editor GUI
+- [x] cmrc for baking assets
 </details>
 
 <details open>
 <summary>🌟 Iteration 2 🌟</summary>
 
-- [ ] Water surface shader
 - [ ] Unified Object system
 - [ ] Object Gui
-- [ ] FBO Render to texture
-- [ ] Under water fog
-- [ ] Quaternion Camera
+- [ ] Asset manager
+- [ ] Engine like Shaders, Assets, Textures:
+    - [ ] Bake into exe
+    - [ ] When edit save to folder
+    - [ ] Create new once
+    - [ ] Auto load update on folder change
+    - [ ] Explorers
+    - [ ] Editor
 </details>
 
 <details>
 <summary>Iteration 2</summary>
 
+- [ ] Water surface shader
+- [ ] FBO Render to texture
+- [ ] Under water fog
+- [ ] Quaternion Camera
 - [ ] Parallel Transport Layer
 - [ ] SDF ray-marching
 - [ ] Shadow Mapping
