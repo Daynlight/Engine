@@ -20,3 +20,4 @@ cmrc_add_resource_library(assets
 
 add_executable(UnderTheWater ${src})
 target_link_libraries(UnderTheWater CWindow assets)
+target_include_directories(UnderTheWater PUBLIC .)

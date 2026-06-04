@@ -34,6 +34,8 @@ private:
   GLenum shader_type = UW::Config::DEFAULT_GUI_SHADER_TYPE;
   char buffer[UW::Config::SHADER_EDITOR_BUFFER_SIZE] = {0};
   bool shader_is_updated = false;
+
+  unsigned int object_id = UW::Config::DEFAULT_GUI_OBJECT;
   
   bool debug_camera_on = UW::Config::DEFAULT_DEBUG_CAMERA_ON;
   float fps = 0.0f;
@@ -47,6 +49,8 @@ private:
   bool materialWindowOn = false;
   bool shaderExplorerWindowOn = false;
   bool shaderEditorWindowOn = false;
+  bool objectExplorerWindowOn = false;
+  bool objectEditorWindowOn = false;
 
   // objects
   UW::Terrain terrain;
@@ -82,6 +86,8 @@ private:
   void guiMaterialList();
   void guiShaderEditor();
   void guiShaderList();
+  void guiObjectEditor();
+  void guiObjectList();
 
   void menuBarGui();
 
@@ -91,5 +97,7 @@ private:
   std::function<void(CW::Renderer::iRenderer *window)> materialExplorerGui();
   std::function<void(CW::Renderer::iRenderer *window)> shaderExplorerGui();
   std::function<void(CW::Renderer::iRenderer *window)> shaderEditorGui();
+  std::function<void(CW::Renderer::iRenderer *window)> objectExplorerGui();
+  std::function<void(CW::Renderer::iRenderer *window)> objectEditorGui();
 };
 };

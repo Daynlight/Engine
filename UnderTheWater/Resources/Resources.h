@@ -10,6 +10,7 @@
 #include "Shaders/Terrain.h"
 #include "Shaders/SkyBox.h"
 #include "Shaders/Water.h"
+#include "Shaders/Cube.h"
 
 
 

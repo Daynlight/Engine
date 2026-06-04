@@ -43,8 +43,7 @@ void UW::App::onLoad(){
   debug_camera.position = {1157, 2048, 1310};
   debug_camera.direction = {-0.57, -0.76, -0.28};
 
-  objects.emplace_back(GameObject("sky_box", "water", {}, 
-    glm::vec3(0.0f, 2000.0f, 0.0f), glm::vec3(0.0f), glm::vec3(5.25f)));
+  objects.emplace_back(UW::GameObject("testing", "testing", {}, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f), glm::vec3(1.0f)));
 };
 
 
@@ -171,7 +170,7 @@ void UW::App::menuBarGui(){
         }
       };
       if(ImGui::MenuItem("Shader Explorer")){
-        if(materialWindowOn){
+        if(shaderExplorerWindowOn){
           gui.deleteWindow("Shader Explorer");
           shaderExplorerWindowOn = false;
         }
@@ -181,13 +180,33 @@ void UW::App::menuBarGui(){
         }
       };
       if(ImGui::MenuItem("Shader Editor")){
-        if(materialWindowOn){
+        if(shaderEditorWindowOn){
           gui.deleteWindow("Shader Editor");
           shaderEditorWindowOn = false;
         }
         else{
           gui.addWindow("Shader Editor", shaderEditorGui());
           shaderEditorWindowOn = true;
+        }
+      };
+      if(ImGui::MenuItem("Object Explorer")){
+        if(objectExplorerWindowOn){
+          gui.deleteWindow("Object Explorer");
+          objectExplorerWindowOn = false;
+        }
+        else{
+          gui.addWindow("Object Explorer", objectExplorerGui());
+          objectExplorerWindowOn = true;
+        }
+      };
+      if(ImGui::MenuItem("Object Editor")){
+        if(materialWindowOn){
+          gui.deleteWindow("Object Editor");
+          objectEditorWindowOn = false;
+        }
+        else{
+          gui.addWindow("Object Editor", objectEditorGui());
+          objectEditorWindowOn = true;
         }
       };
       ImGui::EndMenu();
@@ -389,3 +408,52 @@ inline std::function<void(CW::Renderer::iRenderer *window)> UW::App::shaderEdito
     guiShaderEditor();
   };
 };
+
+
+
+// --------------- //
+// Object Explorer //
+// --------------- //
+void UW::App::guiObjectList(){
+  ImGui::SeparatorText("Object List");
+
+  for(unsigned int id = 0; id < objects.size(); id++){
+    std::string label = "- " + std::to_string(id);
+    if(ImGui::Button(label.c_str())) object_id = id;
+  };
+
+  if(ImGui::Button("Add new")) objects.emplace_back(UW::GameObject("testing", "testing", {}, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f), glm::vec3(1.0f)));
+};
+
+
+
+std::function<void(CW::Renderer::iRenderer *window)> UW::App::objectExplorerGui(){
+  return [this](CW::Renderer::iRenderer *window){
+    guiObjectList();
+  };
+};
+
+
+
+// ------------- //
+// Object Editor //
+// ------------- //
+void UW::App::guiObjectEditor(){
+  ImGui::SeparatorText("Object Editor");
+  if(object_id >= objects.size()) return;
+
+  UW::GameObject& object = objects[object_id];
+
+  ImGui::InputFloat3("position: ", &object.position[0]);
+  ImGui::InputFloat3("rotate: ", &object.rotation[0]);
+  ImGui::InputFloat3("scale: ", &object.scale[0]);
+
+};
+
+
+
+std::function<void(CW::Renderer::iRenderer *window)> UW::App::objectEditorGui(){
+  return [this](CW::Renderer::iRenderer *window){
+    guiObjectEditor();
+  };
+}

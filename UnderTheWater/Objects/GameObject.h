@@ -1,10 +1,9 @@
 #pragma once
 #include "Renderer.h"
 
-#include "../Camera/Camera.h"
-#include "../Resources/Resources.h"
-#include "../Camera/Camera.h"
-#include "Object.h"
+#include "Camera/Camera.h"
+#include "Resources/Resources.h"
+#include "Objects/Object.h"
 
 #include <string>
 
@@ -14,6 +13,8 @@ namespace UW{
 class GameObject : public Object{
 private:
   CW::Renderer::Uniform uniform;
+
+public:
   std::string mesh = "";
   std::string shader = "";
   std::vector<std::string> textures;

@@ -4,7 +4,6 @@
 #include <string>
 
 
-
 namespace UW::Config{
   inline constexpr float PI = 3.14159265358979f;
   inline constexpr float EPS = 1e-5f;
@@ -15,6 +14,7 @@ namespace UW::Config{
   inline const unsigned int DEFAULT_GUI_MATERIAL = 0;
   inline const std::string DEFAULT_GUI_SHADER = "terrain";
   inline const GLenum DEFAULT_GUI_SHADER_TYPE = 0;
+  inline const unsigned int DEFAULT_GUI_OBJECT = 0;
   inline const unsigned int SHADER_EDITOR_BUFFER_SIZE = 20480;
   inline const std::string WINDOW_TITLE = "Under the Water (Daniel Stodulski)";
   
