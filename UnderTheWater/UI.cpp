@@ -54,7 +54,8 @@ void UW::UI::configControl(){
 
     int value;
     if (sscanf(line, "InfoWindowOn=%d", &value) == 1) s->infoWindowOn = value;
-    if (sscanf(line, "MaterialWindowOn=%d", &value) == 1) s->materialWindowOn= value;
+    if (sscanf(line, "MaterialExplorerOn=%d", &value) == 1) s->materialExplorerOn = value;
+    if (sscanf(line, "MaterialEditorOn=%d", &value) == 1) s->materialEditorOn = value;
     if (sscanf(line, "ShaderExplorerWindowOn=%d", &value) == 1) s->shaderExplorerWindowOn = value;
     if (sscanf(line, "ShaderEditorWindowOn=%d", &value) == 1) s->shaderEditorWindowOn = value;
     if (sscanf(line, "ObjectExplorerWindowOn=%d", &value) == 1) s->objectExplorerWindowOn = value;
@@ -72,7 +73,8 @@ void UW::UI::configControl(){
   handler.WriteAllFn = [](ImGuiContext*, ImGuiSettingsHandler* handler, ImGuiTextBuffer* out_buf){
     out_buf->appendf("[%s][Main]\n", handler->TypeName);
     out_buf->appendf("InfoWindowOn=%d\n", guiSettings.infoWindowOn);
-    out_buf->appendf("MaterialWindowOn=%d\n", guiSettings.materialWindowOn);
+    out_buf->appendf("MaterialExplorerOn=%d\n", guiSettings.materialExplorerOn);
+    out_buf->appendf("MaterialEditorOn=%d\n", guiSettings.materialEditorOn);
     out_buf->appendf("ShaderExplorerWindowOn=%d\n", guiSettings.shaderExplorerWindowOn);
     out_buf->appendf("ShaderEditorWindowOn=%d\n", guiSettings.shaderEditorWindowOn);
     out_buf->appendf("ObjectExplorerWindowOn=%d\n", guiSettings.objectExplorerWindowOn);
@@ -98,11 +100,17 @@ void UW::UI::uiControl(){
   else{
     gui.deleteWindow("Info Gui");  
   };
-  if(guiSettings.materialWindowOn){
+  if(guiSettings.materialExplorerOn){
     gui.addWindow("Material Explorer", materialExplorerGui());
   }
   else{
     gui.deleteWindow("Material Explorer");
+  };
+  if(guiSettings.materialEditorOn){
+    gui.addWindow("Material Editor", materialEditorGui());
+  }
+  else{
+    gui.deleteWindow("Material Editor");
   };
   if(guiSettings.shaderExplorerWindowOn){
     gui.addWindow("Shader Explorer", shaderExplorerGui());
@@ -140,7 +148,11 @@ void UW::UI::menuBarGui(){
         uiControl();
       };
       if(ImGui::MenuItem("Material Explorer")){
-        guiSettings.materialWindowOn = !guiSettings.materialWindowOn;
+        guiSettings.materialExplorerOn = !guiSettings.materialExplorerOn;
+        uiControl();
+      };
+      if(ImGui::MenuItem("Material Editor")){
+        guiSettings.materialEditorOn = !guiSettings.materialEditorOn;
         uiControl();
       };
       if(ImGui::MenuItem("Shader Explorer")){
@@ -249,6 +261,34 @@ return [this](CW::Renderer::iRenderer *window){
 // ------------------ //
 // materials Explorer //
 // ------------------ //
+inline void UW::UI::guiMaterialList(){
+  ImGui::SeparatorText("Materials List");
+
+  for (unsigned int id = 0; id < Resources::get().materials.size(); id++) {
+    std::string button_label = "- " + std::to_string(id);
+    if (ImGui::Button(button_label.c_str())) guiSettings.material_id = id;
+    button_label = "Delete " + std::to_string(id);
+    if (ImGui::Button(button_label.c_str())) Resources::get().materials.erase(id);
+  };
+
+  std::string button_label = "Add " + std::to_string(Resources::get().materials.size());
+  if (ImGui::Button(button_label.c_str())) Resources::get().materials.emplace_back(UW::Material());
+  
+};
+
+
+
+inline std::function<void(CW::Renderer::iRenderer *window)> UW::UI::materialExplorerGui(){
+return [this](CW::Renderer::iRenderer *window){
+  guiMaterialList();
+};
+};
+
+
+
+// --------------- //
+// Material Editor //
+// --------------- //
 inline void UW::UI::guiMaterialParameters(){
   ImGui::SeparatorText("Materials Parameters");
 
@@ -272,30 +312,11 @@ inline void UW::UI::guiMaterialParameters(){
 
 
 
-inline void UW::UI::guiMaterialList(){
-  ImGui::SeparatorText("Materials List");
-
-  for (unsigned int id = 0; id < Resources::get().materials.size(); id++) {
-    std::string button_label = "- " + std::to_string(id);
-    if (ImGui::Button(button_label.c_str())) guiSettings.material_id = id;
-    button_label = "Delete " + std::to_string(id);
-    if (ImGui::Button(button_label.c_str())) Resources::get().materials.erase(id);
-  };
-
-  std::string button_label = "Add " + std::to_string(Resources::get().materials.size());
-  if (ImGui::Button(button_label.c_str())) Resources::get().materials.emplace_back(UW::Material());
-  
-};
-
-
-
-inline std::function<void(CW::Renderer::iRenderer *window)> UW::UI::materialExplorerGui(){
+std::function<void(CW::Renderer::iRenderer *window)> UW::UI::materialEditorGui(){
 return [this](CW::Renderer::iRenderer *window){
   guiMaterialParameters();
-  guiMaterialList();
 };
 };
-
 
 
 // --------------- //

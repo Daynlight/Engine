@@ -12,7 +12,8 @@
 namespace UW{
 struct GuiSettings{
   bool infoWindowOn = false;
-  bool materialWindowOn = false;
+  bool materialExplorerOn = false;
+  bool materialEditorOn = false;
   bool shaderExplorerWindowOn = false;
   bool shaderEditorWindowOn = false;
   bool objectExplorerWindowOn = false;
@@ -73,6 +74,7 @@ private:
 
   std::function<void(CW::Renderer::iRenderer *window)> windowGui();
   std::function<void(CW::Renderer::iRenderer *window)> materialExplorerGui();
+  std::function<void(CW::Renderer::iRenderer *window)> materialEditorGui();
   std::function<void(CW::Renderer::iRenderer *window)> shaderExplorerGui();
   std::function<void(CW::Renderer::iRenderer *window)> shaderEditorGui();
   std::function<void(CW::Renderer::iRenderer *window)> objectExplorerGui();
