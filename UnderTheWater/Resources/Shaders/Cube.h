@@ -78,9 +78,10 @@ vec4 sampleMyTexture(sampler2D tex, vec2 uv) {
 }
 
 uniform sampler2D sky_box;
+uniform int mat_translate[2];
 
 void main(){
-  vec3 color = texture(sky_box, uv).rgb;
+  vec3 color = texture(sky_box, uv).rgb * 0.1f;
 
   for(int i = 0; i < lightCount; i++){
     color += BRDF(
@@ -89,12 +90,12 @@ void main(){
       cameraPosition,
       lights[i].position,
       lights[i].color,
-      material[material_id].albedo,
-      material[material_id].metallic,
-      material[material_id].roughness,
-      material[material_id].emission_color,
-      material[material_id].emission_strength,
-      material[material_id].ambient_occlusion
+      material[mat_translate[material_id]].albedo,
+      material[mat_translate[material_id]].metallic,
+      material[mat_translate[material_id]].roughness,
+      material[mat_translate[material_id]].emission_color,
+      material[mat_translate[material_id]].emission_strength,
+      material[mat_translate[material_id]].ambient_occlusion
     ) * lights[i].strength;
   };
 

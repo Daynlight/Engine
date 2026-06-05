@@ -422,7 +422,7 @@ void UW::UI::guiObjectList(){
     if(ImGui::Button(label.c_str())) objects.erase(objects.begin() + id);
   };
 
-  if(ImGui::Button("Add new")) objects.emplace_back(UW::GameObject("new object", "testing", "testing", {}, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f), glm::vec3(1.0f)));
+  if(ImGui::Button("Add new")) objects.emplace_back(UW::GameObject("new object", "testing", "testing", {}, {}, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f), glm::vec3(1.0f)));
 };
 
 
