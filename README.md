@@ -119,8 +119,8 @@ Shaders are ```inline std::string``` we avoid reading them from file for **safet
 <details open>
 <summary>🌟 Iteration 2 🌟</summary>
 
-- [ ] Unified Object system
-- [ ] Object Gui
+- [x] Unified Object system
+- [x] Object Gui
 - [ ] Asset manager
 - [ ] Compile flag for end product
 - [ ] Resource refactor as controller of files
