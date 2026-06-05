@@ -39,7 +39,8 @@ void UW::App::run(){
 // ========== Core Operations ========== //
 // ===================================== //
 void UW::App::onLoad(){
-  configControl();
+  uiLoad();
+  window.setSize(guiSettings.window_width, guiSettings.window_height);
   
   camera.position = {1055, 797, 1331};
   debug_camera.position = {1157, 2048, 1310};
@@ -91,7 +92,7 @@ void UW::App::update(){
   swapCamera();
 
   camera.event(&window);
-
+  
   for(UW::GameObject& el : objects) el.onUpdate(window.getWindowData()->delta_time);
 };
 
@@ -102,6 +103,9 @@ void UW::App::fixedUpdate(){
 
   if(fixed_update_time_acc >= 1.0f / UW::Config::FIXED_HZ){
     fixed_update_time_acc -= 1.0f / UW::Config::FIXED_HZ;
+
+    guiSettings.window_width = window.getWindowData()->width;
+    guiSettings.window_height = window.getWindowData()->height;
     
     for(UW::GameObject& el : objects) el.onFixedUpdate();
   };
@@ -148,6 +152,16 @@ void UW::App::updateFps(){
 // ========================= //
 // ========== GUI ========== //
 // ========================= //
+void UW::App::uiLoad(){
+  configControl();
+  ImGui::LoadIniSettingsFromDisk(ImGui::GetIO().IniFilename);
+
+  uiControl();
+  guiShaderLoad(guiSettings.shader_name, guiSettings.shader_type);
+};
+
+
+
 void UW::App::configControl(){
   ImGuiSettingsHandler handler;
   handler.TypeName = "GuiSettings";
@@ -167,7 +181,14 @@ void UW::App::configControl(){
     if (sscanf(line, "ShaderEditorWindowOn=%d", &value) == 1) s->shaderEditorWindowOn = value;
     if (sscanf(line, "ObjectExplorerWindowOn=%d", &value) == 1) s->objectExplorerWindowOn = value;
     if (sscanf(line, "ObjectEditorWindowOn=%d", &value) == 1) s->objectEditorWindowOn = value;
-
+    if (sscanf(line, "Material_ID=%d", &value) == 1) s->material_id = value;
+    if (sscanf(line, "Object_ID=%d", &value) == 1) s->object_id = value;
+    if (sscanf(line, "Shader_Type=%d", &value) == 1) s->shader_type = value;
+    if (sscanf(line, "Window_Width=%d", &value) == 1) s->window_width = value;
+    if (sscanf(line, "Window_Height=%d", &value) == 1) s->window_height = value;
+    
+    char value_str[256];
+    if (sscanf(line, "Shader_Name=%256s", &value_str) == 1) s->shader_name = std::string(value_str);
   };
 
   handler.WriteAllFn = [](ImGuiContext*, ImGuiSettingsHandler* handler, ImGuiTextBuffer* out_buf){
@@ -178,12 +199,16 @@ void UW::App::configControl(){
     out_buf->appendf("ShaderEditorWindowOn=%d\n", guiSettings.shaderEditorWindowOn);
     out_buf->appendf("ObjectExplorerWindowOn=%d\n", guiSettings.objectExplorerWindowOn);
     out_buf->appendf("ObjectEditorWindowOn=%d\n", guiSettings.objectEditorWindowOn);
+    out_buf->appendf("Material_ID=%d\n", guiSettings.material_id);
+    out_buf->appendf("Object_ID=%d\n", guiSettings.object_id);
+    out_buf->appendf("Shader_Type=%d\n", guiSettings.shader_type);
+    out_buf->appendf("Window_Width=%d\n", guiSettings.window_width);
+    out_buf->appendf("Window_Height=%d\n", guiSettings.window_height);
+    out_buf->appendf("Shader_Name=%s\n", guiSettings.shader_name.c_str());
     out_buf->append("\n");
   };
 
   ImGui::GetCurrentContext()->SettingsHandlers.push_back(handler);
-  ImGui::LoadIniSettingsFromDisk(ImGui::GetIO().IniFilename);
-  uiControl();
 };
 
 
@@ -233,57 +258,27 @@ void UW::App::menuBarGui(){
   if (ImGui::BeginMenuBar()) {
     if (ImGui::BeginMenu("Window")) {
       if(ImGui::MenuItem("Info")){
-        if(guiSettings.infoWindowOn){
-          guiSettings.infoWindowOn = false;
-        }
-        else{
-          guiSettings.infoWindowOn = true;
-        };
+        guiSettings.infoWindowOn = !guiSettings.infoWindowOn;
         uiControl();
       };
       if(ImGui::MenuItem("Material Explorer")){
-        if(guiSettings.materialWindowOn){
-          guiSettings.materialWindowOn = false;
-        }
-        else{
-          guiSettings.materialWindowOn = true;
-        };
+        guiSettings.materialWindowOn = !guiSettings.materialWindowOn;
         uiControl();
       };
       if(ImGui::MenuItem("Shader Explorer")){
-        if(guiSettings.shaderExplorerWindowOn){
-          guiSettings.shaderExplorerWindowOn = false;
-        }
-        else{
-          guiSettings.shaderExplorerWindowOn = true;
-        };
+        guiSettings.shaderExplorerWindowOn = !guiSettings.shaderExplorerWindowOn;
         uiControl();
       };
       if(ImGui::MenuItem("Shader Editor")){
-        if(guiSettings.shaderEditorWindowOn){
-          guiSettings.shaderEditorWindowOn = false;
-        }
-        else{
-          guiSettings.shaderEditorWindowOn = true;
-        };
+        guiSettings.shaderEditorWindowOn = !guiSettings.shaderEditorWindowOn;
         uiControl();
       };
       if(ImGui::MenuItem("Object Explorer")){
-        if(guiSettings.objectExplorerWindowOn){
-          guiSettings.objectExplorerWindowOn = false;
-        }
-        else{
-          guiSettings.objectExplorerWindowOn = true;
-        };
+        guiSettings.objectExplorerWindowOn = !guiSettings.objectExplorerWindowOn;
         uiControl();
       };
       if(ImGui::MenuItem("Object Editor")){
-        if(guiSettings.objectEditorWindowOn){
-          guiSettings.objectEditorWindowOn = false;
-        }
-        else{
-          guiSettings.objectEditorWindowOn = true;
-        };
+        guiSettings.objectEditorWindowOn = !guiSettings.objectEditorWindowOn;
         uiControl();
       };
       ImGui::EndMenu();
@@ -379,9 +374,9 @@ return [this](CW::Renderer::iRenderer *window){
 inline void UW::App::guiMaterialParameters(){
   ImGui::SeparatorText("Materials Parameters");
 
-  if(material_id >= Resources::get().materials.size()) return;
+  if(guiSettings.material_id >= Resources::get().materials.size()) return;
 
-  Material temp_mat = Resources::get().materials.getMaterial(material_id);
+  Material temp_mat = Resources::get().materials.getMaterial(guiSettings.material_id);
 
   if(ImGui::ColorEdit3("Albedo: ", &temp_mat.albedo[0])) material_is_updated = true;
   if(ImGui::SliderFloat("Roughness: ", &temp_mat.roughness, 0.0f, 1.0f)) material_is_updated = true;
@@ -392,7 +387,7 @@ inline void UW::App::guiMaterialParameters(){
 
   if(material_is_updated){
     material_is_updated = false;
-    Resources::get().materials[material_id] = temp_mat;
+    Resources::get().materials[guiSettings.material_id] = temp_mat;
     Resources::get().materials.compile();
   };
 };
@@ -404,7 +399,7 @@ inline void UW::App::guiMaterialList(){
 
   for (unsigned int id = 0; id < Resources::get().materials.size(); id++) {
     std::string button_label = "- " + std::to_string(id);
-    if (ImGui::Button(button_label.c_str())) material_id = id;
+    if (ImGui::Button(button_label.c_str())) guiSettings.material_id = id;
     button_label = "Delete " + std::to_string(id);
     if (ImGui::Button(button_label.c_str())) Resources::get().materials.erase(id);
   };
@@ -428,6 +423,16 @@ return [this](CW::Renderer::iRenderer *window){
 // --------------- //
 // Shader Explorer //
 // --------------- //
+void UW::App::guiShaderLoad(std::string name, GLenum type){
+  guiSettings.shader_name = name;
+  guiSettings.shader_type = type;
+  memset(buffer, '\0', UW::Config::SHADER_EDITOR_BUFFER_SIZE);
+  std::string source = Resources::get().shaders[name].getRegisterShader().at(type).getSource();
+  memcpy(buffer, source.data(), source.size());
+};
+
+
+
 void UW::App::guiShaderList(){
   ImGui::SeparatorText("Shader List");
 
@@ -435,13 +440,7 @@ void UW::App::guiShaderList(){
     for (const auto& [key_s, values_s] : values.getRegisterShader()){
       std::string button_label = "- " + key + ": " + std::to_string(key_s);
       
-      if (ImGui::Button(button_label.c_str())) {
-        shader_name = key;
-        shader_type = key_s;
-        memset(buffer, '\0', UW::Config::SHADER_EDITOR_BUFFER_SIZE);
-        std::string source = values_s.getSource();
-        memcpy(buffer, source.data(), source.size());
-      };
+      if (ImGui::Button(button_label.c_str())) guiShaderLoad(key, key_s);
     };
   };
 };
@@ -467,21 +466,21 @@ void UW::App::guiShaderEditor(){
   
   ImGui::InputTextMultiline("##Shader Content", buffer, UW::Config::SHADER_EDITOR_BUFFER_SIZE, ImVec2(width, height), ImGuiInputTextFlags_WordWrap);
 
-  auto it = Resources::get().shaders.find(shader_name);
+  auto it = Resources::get().shaders.find(guiSettings.shader_name);
   if(it == Resources::get().shaders.end()) return;
-  auto& reg = Resources::get().shaders[shader_name].getRegisterShader();
+  auto& reg = Resources::get().shaders[guiSettings.shader_name].getRegisterShader();
   
-  auto it2 = reg.find(shader_type);
+  auto it2 = reg.find(guiSettings.shader_type);
   if(it2 == reg.end()) return;
-  if(strcmp(buffer, reg.at(shader_type).getSource().c_str()) == 0) shader_is_updated = true;
+  if(strcmp(buffer, reg.at(guiSettings.shader_type).getSource().c_str()) == 0) shader_is_updated = true;
 
   if(shader_is_updated){
     shader_is_updated = false;
     
-    Resources::get().shaders[shader_name].destroy();
-    Resources::get().shaders[shader_name].removeShaders(shader_type);
-    Resources::get().shaders[shader_name].setShader(buffer, shader_type);
-    Resources::get().shaders[shader_name].compile();
+    Resources::get().shaders[guiSettings.shader_name].destroy();
+    Resources::get().shaders[guiSettings.shader_name].removeShaders(guiSettings.shader_type);
+    Resources::get().shaders[guiSettings.shader_name].setShader(buffer, guiSettings.shader_type);
+    Resources::get().shaders[guiSettings.shader_name].compile();
   };
 };
 
@@ -503,7 +502,7 @@ void UW::App::guiObjectList(){
 
   for(unsigned int id = 0; id < objects.size(); id++){
     std::string label = "- " + std::to_string(id);
-    if(ImGui::Button(label.c_str())) object_id = id;
+    if(ImGui::Button(label.c_str())) guiSettings.object_id = id;
     
     label = "Delete " + std::to_string(id);
     if(ImGui::Button(label.c_str())) objects.erase(objects.begin() + id);
@@ -527,9 +526,9 @@ std::function<void(CW::Renderer::iRenderer *window)> UW::App::objectExplorerGui(
 // ------------- //
 void UW::App::guiObjectEditor(){
   ImGui::SeparatorText("Object Editor");
-  if(object_id >= objects.size()) return;
+  if(guiSettings.object_id >= objects.size()) return;
 
-  UW::GameObject& object = objects[object_id];
+  UW::GameObject& object = objects[guiSettings.object_id];
 
   char mesh_buffer[UW::Config::OBJECT_NAME_BUFFER_SIZE];
   memcpy(mesh_buffer, object.mesh.data(), object.mesh.size());
@@ -571,4 +570,4 @@ std::function<void(CW::Renderer::iRenderer *window)> UW::App::objectEditorGui(){
   return [this](CW::Renderer::iRenderer *window){
     guiObjectEditor();
   };
-}
+};

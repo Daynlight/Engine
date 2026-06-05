@@ -26,7 +26,14 @@ struct GuiSettings{
   bool shaderEditorWindowOn = false;
   bool objectExplorerWindowOn = false;
   bool objectEditorWindowOn = false;
+  unsigned int material_id = UW::Config::DEFAULT_GUI_MATERIAL;
+  unsigned int object_id = UW::Config::DEFAULT_GUI_OBJECT;
+  GLenum shader_type = UW::Config::DEFAULT_GUI_SHADER_TYPE;
+  std::string shader_name = UW::Config::DEFAULT_GUI_SHADER;
+  int window_width = 800;
+  int window_height = 600;
 };
+
 static GuiSettings guiSettings;
 
 
@@ -40,17 +47,11 @@ private:
   UW::Camera camera;
   UW::Camera debug_camera;
 
-  // control variables
-  unsigned int material_id = UW::Config::DEFAULT_GUI_MATERIAL;
+  // control variables  
   bool material_is_updated = false;
-
-  std::string shader_name = UW::Config::DEFAULT_GUI_SHADER;
-  GLenum shader_type = UW::Config::DEFAULT_GUI_SHADER_TYPE;
-  char buffer[UW::Config::SHADER_EDITOR_BUFFER_SIZE] = {0};
   bool shader_is_updated = false;
+  char buffer[UW::Config::SHADER_EDITOR_BUFFER_SIZE] = {0};
 
-  unsigned int object_id = UW::Config::DEFAULT_GUI_OBJECT;
-  
   bool debug_camera_on = UW::Config::DEFAULT_DEBUG_CAMERA_ON;
   float fps = 0.0f;
   float fps_acc = 0.0f;
@@ -86,6 +87,7 @@ private:
 
 private:
   // gui
+  void uiLoad();
   void configControl();
   void uiControl();
 
@@ -93,6 +95,7 @@ private:
   void guiControlsInfo();
   void guiMaterialParameters();
   void guiMaterialList();
+  void guiShaderLoad(std::string name, GLenum type);
   void guiShaderEditor();
   void guiShaderList();
   void guiObjectEditor();
