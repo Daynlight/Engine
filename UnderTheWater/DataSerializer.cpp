@@ -309,7 +309,7 @@ void UW::DataSerializer::save(std::unordered_map<std::string, UW::Lights> &light
   outFile << size << "\n";
 
   for (const auto& el : lights) {
-    UW::Lights lights_data = el.second;
+    const UW::Lights& lights_data = el.second;
     for(int i = 0; i < lights_data.size(); i++){
       UW::Light light = lights_data.get(i);
       UW::LightsRecord record;

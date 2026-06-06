@@ -113,7 +113,7 @@ void UW::App::fixedUpdate(){
     if(save_acc >= UW::Config::SAVE_TIMESTAMP){
       save_acc -= UW::Config::SAVE_TIMESTAMP;
       serializer.save(Resources::get().materials);
-      // serializer.save(Resources::get().lights);
+      serializer.save(Resources::get().lights);
       serializer.save(object_manager.objects);
     }
     else{
