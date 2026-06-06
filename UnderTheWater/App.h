@@ -14,6 +14,7 @@
 #include "Objects/Terrain/Terrain.h"
 #include "Objects/Water/Water.h"
 #include "Objects/Skybox/Skybox.h"
+#include "DataSerializer.h"
 
 
 
@@ -23,6 +24,7 @@ private:
   // app
   CW::Renderer::Renderer window;
   UW::UI ui;
+  UW::DataSerializer serializer;
 
   UW::Camera camera;
   UW::Camera debug_camera;

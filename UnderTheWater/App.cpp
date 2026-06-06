@@ -44,15 +44,15 @@ void UW::App::onLoad(){
   debug_camera.position = {1157, 2048, 1310};
   debug_camera.direction = {-0.57, -0.76, -0.28};
 
-  object_manager.load();
-  Resources::get().load();
+  serializer.load(object_manager.objects);
+  serializer.load(Resources::get().materials);
 };
 
 
 
 void UW::App::onDestroy() {
-  Resources::get().save();
-  object_manager.save();
+  serializer.save(Resources::get().materials);
+  serializer.save(object_manager.objects);
   object_manager.objects.clear();
   Resources::get().destroy();
 };
@@ -95,6 +95,7 @@ void UW::App::update(){
   camera.event(&window);
   
   for(UW::GameObject& el : object_manager.objects) el.onUpdate(window.getWindowData()->delta_time);
+  water.onUpdate(window.getWindowData()->delta_time);
 };
 
 
@@ -109,7 +110,8 @@ void UW::App::fixedUpdate(){
 
     if(save_acc >= UW::Config::SAVE_TIMESTAMP){
       save_acc -= UW::Config::SAVE_TIMESTAMP;
-      object_manager.save();
+      serializer.save(Resources::get().materials);
+      serializer.save(object_manager.objects);
     }
     else{
       save_acc += fixed_update_time_acc;
