@@ -34,8 +34,8 @@ void UW::UI::uiLoad(){
   configControl();
   ImGui::LoadIniSettingsFromDisk(ImGui::GetIO().IniFilename);
 
-  uiControl();
   guiShaderLoad(guiSettings.shader_name, guiSettings.shader_type);
+  uiControl();
 };
 
 
@@ -331,6 +331,7 @@ return [this](CW::Renderer::iRenderer *window){
 };
 
 
+
 // --------------- //
 // Shader Explorer //
 // --------------- //
@@ -419,6 +420,7 @@ void UW::UI::guiShaderEditor(){
 
 inline std::function<void(CW::Renderer::iRenderer *window)> UW::UI::shaderEditorGui(){
   return [this](CW::Renderer::iRenderer *window){
+    guiShaderLoad(guiSettings.shader_name, guiSettings.shader_type);
     guiShaderEditor();
   };
 };
