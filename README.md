@@ -69,7 +69,7 @@ All assets are baked into executable with ```cmrc``` this secures them for **mod
 Resources is singleton class where we initialize all our assets. We use them in other objects like ```terrain```. Resources contains data about ```materials```, ```textures```, ```meshes```, ```shaders```, ```lights```.
 
 ### Shaders
-Shaders are ```inline std::string``` we avoid reading them from file for **safety** and **baking into executable**.
+Shaders are loaded via cmrc or from folder as fallback are **private** and **safety**.
 
 ### Terrain
 
@@ -116,8 +116,8 @@ Shaders are ```inline std::string``` we avoid reading them from file for **safet
 - [x] cmrc for baking assets
 </details>
 
-<details open>
-<summary>🌟 Iteration 2 🌟 (7.06.2026)</summary>
+<details>
+<summary>Iteration 2 (7.06.2026)</summary>
 
 - [x] Unified Object system
 - [x] Base Object UI
@@ -133,12 +133,11 @@ Shaders are ```inline std::string``` we avoid reading them from file for **safet
 - [x] shader reset btn
 - [x] shader save on edit
 - [x] Fix bug on delete material
-- [ ] mesh movement to ```GameData```
-- [ ] Full clean up
 </details>
 
-<details>
-<summary>Iteration 3 (10.06.2026)</summary>
+<details open>
+<summary>🌟 Iteration 3 🌟 (10.06.2026)</summary>
+- [ ] mesh movement to ```GameData```
 - [ ] Last Time Write sync
 - [ ] Mesh UI 
 - [ ] Lights UI
