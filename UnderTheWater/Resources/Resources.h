@@ -12,10 +12,6 @@
 #include "config.h"
 #include "Lights/Lights.h"
 #include "Materials/Materials.h"
-#include "Shaders/Terrain.h"
-#include "Shaders/SkyBox.h"
-#include "Shaders/Water.h"
-#include "Shaders/Cube.h"
 
 
 

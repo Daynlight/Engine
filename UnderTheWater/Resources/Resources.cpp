@@ -169,7 +169,7 @@ CW::Renderer::Texture &UW::Resources::getTexture(const std::string &path_to_asse
     }
   }
 
-  std::cerr << "[ERROR][Resources]: Failed to find texture asset anywhere: " << local_path << std::endl;
+  // std::cerr << "[ERROR][Resources]: Failed to find texture asset anywhere: " << local_path << std::endl;
   return textures["default_fallback"]; 
 };
 
@@ -232,7 +232,7 @@ CW::Renderer::Shader &UW::Resources::getShader(const std::string &path_to_asset)
     return shaders[path_to_asset];
   };
   
-  std::cerr << "[ERROR][Resources]: Failed to find texture asset anywhere: " << local_path << std::endl;
+  // std::cerr << "[ERROR][Resources]: Failed to find texture asset anywhere: " << local_path << std::endl;
   return shaders["default_fallback"];
 };
 
