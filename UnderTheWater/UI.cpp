@@ -268,7 +268,7 @@ inline void UW::UI::guiMaterialList(){
     std::string button_label = "- " + el.first;
     if (ImGui::Button(button_label.c_str())) guiSettings.material_name = el.first;
 
-    button_label = "Delete " + el.first;
+    button_label = "Delete ##" + el.first;
     ImGui::SameLine();
     if (ImGui::Button(button_label.c_str())) Resources::get().materials.erase(el.first);
   };
@@ -367,6 +367,10 @@ std::string UW::UI::getShaderTypeName(GLenum type){
 void UW::UI::guiShaderList(){
   ImGui::SeparatorText("Shader List");
 
+  if(ImGui::Button("reset")){
+    Resources::get().shaders.clear();
+  }
+
   for (const auto& [ key, values ] : Resources::get().shaders) {
     for (const auto& [key_s, values_s] : values.getRegisterShader()){
       std::string button_label = "- " + key + ": " + getShaderTypeName(key_s);
@@ -413,6 +417,7 @@ void UW::UI::guiShaderEditor(){
     Resources::get().getShader(guiSettings.shader_name).removeShaders(guiSettings.shader_type);
     Resources::get().getShader(guiSettings.shader_name).setShader(buffer, guiSettings.shader_type);
     Resources::get().getShader(guiSettings.shader_name).compile();
+    Resources::get().shaderSave(guiSettings.shader_name, guiSettings.shader_type);
   };
 };
 
@@ -434,10 +439,10 @@ void UW::UI::guiObjectList(){
   ImGui::SeparatorText("Object List");
 
   for(unsigned int id = 0; id < object_manager.objects.size(); id++){
-    std::string label = "- " + object_manager.objects[id].name + " (" + std::to_string(id) + ")";
+    std::string label = "- " + object_manager.objects[id].name + "##(" + std::to_string(id) + ")";
     if(ImGui::Button(label.c_str())) guiSettings.object_id = id;
     
-    label = "Delete " + std::to_string(id);
+    label = "Delete##" + std::to_string(id);
     ImGui::SameLine();
     if(ImGui::Button(label.c_str())) object_manager.objects.erase(object_manager.objects.begin() + id);
   };
@@ -508,7 +513,8 @@ void UW::UI::guiObjectEditor(){
     ImGui::InputText(label.c_str(), texture_buffer, UW::Config::OBJECT_NAME_BUFFER_SIZE);
     object.textures[i] = std::string(texture_buffer + '\0');
     
-    label = "Delete texture (" + std::to_string(i) + ")";
+    ImGui::SameLine();
+    label = "Delete texture##(" + std::to_string(i) + ")";
     if(ImGui::Button(label.c_str())) object.textures.erase(object.textures.begin() + i);
   };
 
@@ -526,7 +532,8 @@ void UW::UI::guiObjectEditor(){
     ImGui::InputText(label.c_str(), material_buffer, UW::Config::OBJECT_NAME_BUFFER_SIZE);
     object.materials[i] = std::string(material_buffer + '\0');
     
-    label = "Delete material (" + std::to_string(i) + ")";
+    ImGui::SameLine();
+    label = "Delete material##(" + std::to_string(i) + ")";
     if(ImGui::Button(label.c_str())) object.materials.erase(object.materials.begin() + i);
   };
 

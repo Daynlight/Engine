@@ -150,7 +150,7 @@ uniform sampler2D sky_box;
 uniform int mat_translate[2];
 
 void main(){
-  vec3 color = texture(sky_box, uv).rgb * 0.1f;
+  vec3 color = texture(sky_box, uv).rgb * 0.25f;
 
   for(int i = 0; i < lightCount; i++){
     color += BRDF(
@@ -170,3 +170,4 @@ void main(){
 
   FragColor = vec4(color, 1.0);
 }
+

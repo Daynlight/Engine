@@ -168,7 +168,6 @@ CW::Renderer::Texture &UW::Resources::getTexture(const std::string &path_to_asse
     }
   }
 
-  // std::cerr << "[ERROR][Resources]: Failed to find texture asset anywhere: " << local_path << std::endl;
   return textures["default_fallback"]; 
 };
 
@@ -181,6 +180,17 @@ std::unordered_map<std::string, GLuint> shader_name_map = {
   {"tess_control.glsl", GL_TESS_CONTROL_SHADER},
   {"tess_evaluation.glsl", GL_TESS_EVALUATION_SHADER},
 };
+
+
+
+std::unordered_map<GLuint, std::string> shader_type_map = {
+  {GL_VERTEX_SHADER, "vertex.glsl"},
+  {GL_FRAGMENT_SHADER, "fragment.glsl"},
+  {GL_GEOMETRY_SHADER, "geometry.glsl"},
+  {GL_TESS_CONTROL_SHADER, "tess_control.glsl"},
+  {GL_TESS_EVALUATION_SHADER, "tess_evaluation.glsl"},
+};
+
 
 
 
@@ -202,31 +212,56 @@ CW::Renderer::Shader &UW::Resources::getShader(const std::string &path_to_asset)
       const char* data_ptr = reinterpret_cast<const char*>(file.begin());
       const GLuint type = shader_name.second;
       shader.setShader(std::string(data_ptr), type);
-    } catch (const std::runtime_error& e) {
-      // if (std::filesystem::exists(local_path + "/" + shader_name.first) && !std::filesystem::is_directory(local_path + "/" + shader_name.first)) {
-      //   std::ifstream file(local_path + "/" + shader_name.first, std::ios::binary | std::ios::ate);
-      //   if (file.is_open()) {
-      //     std::streamsize size = file.tellg();
-      //     file.seekg(0, std::ios::beg);
-          
-      //     std::vector<char> buffer(size);
-      //     if (file.read(reinterpret_cast<char*>(buffer.data()), size)) {
-      //       const GLuint type = shader_name.second;
-      //       std::string data_ptr = "";
-      //       for(const char el : buffer){
-      //         data_ptr += el;
-      //       }
-      //       shader.setShader(data_ptr, type);
-      //     }
-      //   }
-      // }
-    }
+      continue;
+    } catch (const std::runtime_error& e) {};
+
+    if (std::filesystem::exists(local_path + "/" + shader_name.first) && !std::filesystem::is_directory(local_path + "/" + shader_name.first)) {
+      std::ifstream file(local_path + "/" + shader_name.first, std::ios::binary | std::ios::ate);
+      if (file.is_open()) {
+        std::streamsize size = file.tellg();
+        file.seekg(0, std::ios::beg);
+        
+        std::vector<char> buffer(size);
+        if (file.read(reinterpret_cast<char*>(buffer.data()), size)) {
+          const GLuint type = shader_name.second;
+          std::string data_ptr = "";
+          for(const char el : buffer) data_ptr += el;
+          shader.setShader(data_ptr, type);
+        };
+      };
+    };
   };
   if(shader.getRegisterShader().size() != 0){
     shaders[path_to_asset] = std::move(shader);
     return shaders[path_to_asset];
   };
   
-  // std::cerr << "[ERROR][Resources]: Failed to find texture asset anywhere: " << local_path << std::endl;
   return shaders["default_fallback"];
 };
+
+
+
+void UW::Resources::shaderSave(const std::string &path_to_asset, GLuint type){
+  std::string local_path = "Assets/" + path_to_asset + "/" + shader_type_map[type];
+  std::string source = getShader(path_to_asset).getRegisterShader().at(type).getSource();
+  
+  try {
+    std::filesystem::path p(local_path);
+    if (p.has_parent_path())
+      std::filesystem::create_directories(p.parent_path());
+  } catch (const std::filesystem::filesystem_error& e) {
+    std::cerr << "Filesystem error while creating directories: " << e.what() << std::endl;
+    return;
+  };
+
+  std::ofstream outFile(local_path);
+  if (!outFile.is_open()) {
+    std::cerr << "Failed to open file for saving: " << local_path << std::endl;
+    return;
+  };
+
+  outFile << source << "\n";
+  
+  outFile.close();
+};
+

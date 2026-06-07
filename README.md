@@ -128,7 +128,10 @@ Shaders are ```inline std::string``` we avoid reading them from file for **safet
 - [x] lights serialization
 - [x] texture load via cmrc backup from disk
 - [x] Resource refactor as controller of files
-- [ ] shader movement to ```GameData```
+- [x] shader movement to ```Assets```
+- [x] shader reset btn
+- [x] shader save on edit
+- [ ] Fix bug on delete material
 - [ ] mesh movement to ```GameData```
 </details>
 
