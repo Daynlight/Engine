@@ -36,7 +36,6 @@ public:
   
   CW::Renderer::Texture& getTexture(const std::string& path_to_asset);
   CW::Renderer::Shader& getShader(const std::string& path_to_asset);
-  void shaderSave(const std::string& path_to_asset, GLuint type);
 
 private:
   Resources();

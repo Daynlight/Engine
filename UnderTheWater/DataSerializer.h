@@ -8,6 +8,7 @@
 
 #include "config.h"
 #include "Objects/Object.h"
+#include "Resources/Resources.h"
 #include "Objects/GameObject.h"
 #include "Resources/Materials/Materials.h"
 
@@ -64,5 +65,8 @@ public:
 
   void save(std::unordered_map<std::string, UW::Lights> &lights);
   void load(std::unordered_map<std::string, UW::Lights> &lights);
+
+
+  void save(const std::string& path_to_asset, GLuint type);
 };
 }; // namespace UW

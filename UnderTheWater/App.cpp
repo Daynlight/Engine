@@ -6,7 +6,7 @@
 // ========== APP ========== //
 // ========================= //
 UW::App::App()
-  :camera(&window), debug_camera(&window), ui(window, fps, debug_camera_on, camera, debug_camera, object_manager){
+  :camera(&window), debug_camera(&window), ui(window, fps, debug_camera_on, camera, debug_camera, object_manager, serializer){
   initWindow();
 
   onLoad();

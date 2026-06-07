@@ -362,3 +362,34 @@ void UW::DataSerializer::load(std::unordered_map<std::string, UW::Lights> &light
     std::cerr << "Exception caught during CMRC GameObject load: " << e.what() << std::endl;
   }
 };
+
+
+
+
+
+
+
+void UW::DataSerializer::save(const std::string &path_to_asset, GLuint type){
+  std::string local_path = "Assets/" + path_to_asset + "/" + UW::Config::SHADER_TYPE_TO_NAME[type];
+  std::string source = Resources::get().getShader(path_to_asset).getRegisterShader().at(type).getSource();
+  
+  try {
+    std::filesystem::path p(local_path);
+    if (p.has_parent_path())
+      std::filesystem::create_directories(p.parent_path());
+  } catch (const std::filesystem::filesystem_error& e) {
+    std::cerr << "Filesystem error while creating directories: " << e.what() << std::endl;
+    return;
+  };
+
+  std::ofstream outFile(local_path);
+  if (!outFile.is_open()) {
+    std::cerr << "Failed to open file for saving: " << local_path << std::endl;
+    return;
+  };
+
+  outFile << source << "\n";
+  
+  outFile.close();
+};
+

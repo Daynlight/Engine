@@ -173,27 +173,6 @@ CW::Renderer::Texture &UW::Resources::getTexture(const std::string &path_to_asse
 
 
 
-std::unordered_map<std::string, GLuint> shader_name_map = {
-  {"vertex.glsl", GL_VERTEX_SHADER},
-  {"fragment.glsl", GL_FRAGMENT_SHADER},
-  {"geometry.glsl", GL_GEOMETRY_SHADER},
-  {"tess_control.glsl", GL_TESS_CONTROL_SHADER},
-  {"tess_evaluation.glsl", GL_TESS_EVALUATION_SHADER},
-};
-
-
-
-std::unordered_map<GLuint, std::string> shader_type_map = {
-  {GL_VERTEX_SHADER, "vertex.glsl"},
-  {GL_FRAGMENT_SHADER, "fragment.glsl"},
-  {GL_GEOMETRY_SHADER, "geometry.glsl"},
-  {GL_TESS_CONTROL_SHADER, "tess_control.glsl"},
-  {GL_TESS_EVALUATION_SHADER, "tess_evaluation.glsl"},
-};
-
-
-
-
 CW::Renderer::Shader &UW::Resources::getShader(const std::string &path_to_asset){
   auto it = shaders.find(path_to_asset);
   
@@ -204,7 +183,7 @@ CW::Renderer::Shader &UW::Resources::getShader(const std::string &path_to_asset)
   std::string local_path = "Assets/" + path_to_asset;
   CW::Renderer::Shader shader;
 
-  for(auto& shader_name : shader_name_map){
+  for(auto& shader_name : UW::Config::SHADER_NAME_TO_TYPE){
     try {
       auto fs = cmrc::assets::get_filesystem();
       auto file = fs.open(local_path + "/" + shader_name.first); 
@@ -238,30 +217,3 @@ CW::Renderer::Shader &UW::Resources::getShader(const std::string &path_to_asset)
   
   return shaders["default_fallback"];
 };
-
-
-
-void UW::Resources::shaderSave(const std::string &path_to_asset, GLuint type){
-  std::string local_path = "Assets/" + path_to_asset + "/" + shader_type_map[type];
-  std::string source = getShader(path_to_asset).getRegisterShader().at(type).getSource();
-  
-  try {
-    std::filesystem::path p(local_path);
-    if (p.has_parent_path())
-      std::filesystem::create_directories(p.parent_path());
-  } catch (const std::filesystem::filesystem_error& e) {
-    std::cerr << "Filesystem error while creating directories: " << e.what() << std::endl;
-    return;
-  };
-
-  std::ofstream outFile(local_path);
-  if (!outFile.is_open()) {
-    std::cerr << "Failed to open file for saving: " << local_path << std::endl;
-    return;
-  };
-
-  outFile << source << "\n";
-  
-  outFile.close();
-};
-

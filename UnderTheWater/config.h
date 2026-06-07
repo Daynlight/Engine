@@ -2,6 +2,7 @@
 #include "Renderer.h"
 
 #include <string>
+#include <unordered_map>
 
 
 namespace UW::Config{
@@ -44,4 +45,20 @@ namespace UW::Config{
   inline const std::string CAMERA_MOVE_BACK = "S";
   inline const std::string CAMERA_MOVE_RIGHT = "D";
   inline const std::string CAMERA_MOVE_LEFT = "A";
+
+  inline std::unordered_map<std::string, GLuint> SHADER_NAME_TO_TYPE = {
+    {"vertex.glsl", GL_VERTEX_SHADER},
+    {"fragment.glsl", GL_FRAGMENT_SHADER},
+    {"geometry.glsl", GL_GEOMETRY_SHADER},
+    {"tess_control.glsl", GL_TESS_CONTROL_SHADER},
+    {"tess_evaluation.glsl", GL_TESS_EVALUATION_SHADER},
+  };
+
+  inline std::unordered_map<GLuint, std::string> SHADER_TYPE_TO_NAME = {
+    {GL_VERTEX_SHADER, "vertex.glsl"},
+    {GL_FRAGMENT_SHADER, "fragment.glsl"},
+    {GL_GEOMETRY_SHADER, "geometry.glsl"},
+    {GL_TESS_CONTROL_SHADER, "tess_control.glsl"},
+    {GL_TESS_EVALUATION_SHADER, "tess_evaluation.glsl"},
+  };
 };

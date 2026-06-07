@@ -132,7 +132,7 @@ Shaders are ```inline std::string``` we avoid reading them from file for **safet
 - [x] shader movement to ```Assets```
 - [x] shader reset btn
 - [x] shader save on edit
-- [ ] Fix bug on delete material
+- [x] Fix bug on delete material
 - [ ] mesh movement to ```GameData```
 - [ ] Full clean up
 </details>

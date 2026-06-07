@@ -118,9 +118,6 @@ public:
 
   void erase(std::string name){
     is_compiled = false;
-    unsigned int id = material_translate[name];
-    materials.erase(materials.begin() + id);
-    material_translate.erase(name);
     material_reg.erase(name);
   };
 
