@@ -342,7 +342,7 @@ void UW::UI::guiShaderLoad(std::string name, GLenum type){
   auto it = Resources::get().shaders.find(name);
   if(it == Resources::get().shaders.end()) return;
 
-  const std::unordered_map<GLenum, CW::Renderer::ShaderData>& reg = Resources::get().shaders[name].getRegisterShader();
+  const std::unordered_map<GLenum, CW::Renderer::ShaderData>& reg = Resources::get().getShader(name).getRegisterShader();
   auto ita = reg.find(type);
   if(ita == reg.end()) return;
 
@@ -399,7 +399,7 @@ void UW::UI::guiShaderEditor(){
   auto it = Resources::get().shaders.find(guiSettings.shader_name);
   if(it == Resources::get().shaders.end()) return;
   
-  auto& reg = Resources::get().shaders[guiSettings.shader_name].getRegisterShader();
+  auto& reg = Resources::get().getShader(guiSettings.shader_name).getRegisterShader();
   auto it2 = reg.find(guiSettings.shader_type);
   if(it2 == reg.end()) return;
 
@@ -408,10 +408,10 @@ void UW::UI::guiShaderEditor(){
   if(shader_is_updated){
     shader_is_updated = false;
     
-    Resources::get().shaders[guiSettings.shader_name].destroy();
-    Resources::get().shaders[guiSettings.shader_name].removeShaders(guiSettings.shader_type);
-    Resources::get().shaders[guiSettings.shader_name].setShader(buffer, guiSettings.shader_type);
-    Resources::get().shaders[guiSettings.shader_name].compile();
+    Resources::get().getShader(guiSettings.shader_name).destroy();
+    Resources::get().getShader(guiSettings.shader_name).removeShaders(guiSettings.shader_type);
+    Resources::get().getShader(guiSettings.shader_name).setShader(buffer, guiSettings.shader_type);
+    Resources::get().getShader(guiSettings.shader_name).compile();
   };
 };
 

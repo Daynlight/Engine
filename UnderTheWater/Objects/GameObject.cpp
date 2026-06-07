@@ -44,7 +44,7 @@ void UW::GameObject::render(CW::Renderer::Renderer *renderer, Camera &culling_ca
       translation.emplace_back(Resources::get().materials.translate_material(el));
     };
 
-    GLint loc = glGetUniformLocation(Resources::get().shaders[shader].getShaderProgram(), "mat_translate");
+    GLint loc = glGetUniformLocation(Resources::get().getShader(shader).getShaderProgram(), "mat_translate");
     glUniform1iv(loc, translation.size(), translation.data());
     
     Resources::get().meshes[this->mesh].render();

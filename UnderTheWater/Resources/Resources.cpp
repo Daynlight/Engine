@@ -14,7 +14,6 @@ UW::Resources& UW::Resources::get(){
 
 UW::Resources::Resources(){
   initMeshes();
-  // initShaders();
 };
 
 
@@ -175,10 +174,6 @@ CW::Renderer::Texture &UW::Resources::getTexture(const std::string &path_to_asse
 
 
 
-
-
-
-
 std::unordered_map<std::string, GLuint> shader_name_map = {
   {"vertex.glsl", GL_VERTEX_SHADER},
   {"fragment.glsl", GL_FRAGMENT_SHADER},
@@ -208,24 +203,24 @@ CW::Renderer::Shader &UW::Resources::getShader(const std::string &path_to_asset)
       const GLuint type = shader_name.second;
       shader.setShader(std::string(data_ptr), type);
     } catch (const std::runtime_error& e) {
-    }
-
-    // if (std::filesystem::exists(local_path) && !std::filesystem::is_directory(local_path)) {
-    //   std::ifstream file(local_path, std::ios::binary | std::ios::ate);
-    //   if (file.is_open()) {
-    //     std::streamsize size = file.tellg();
-    //     file.seekg(0, std::ios::beg);
-        
-    //     std::vector<unsigned char> buffer(size);
-    //     if (file.read(reinterpret_cast<char*>(buffer.data()), size)) {
-    //       CW::Renderer::TextureLoader loader(buffer.data(), size);
+      // if (std::filesystem::exists(local_path + "/" + shader_name.first) && !std::filesystem::is_directory(local_path + "/" + shader_name.first)) {
+      //   std::ifstream file(local_path + "/" + shader_name.first, std::ios::binary | std::ios::ate);
+      //   if (file.is_open()) {
+      //     std::streamsize size = file.tellg();
+      //     file.seekg(0, std::ios::beg);
           
-    //       it = textures.emplace(path_to_asset, CW::Renderer::Texture()).first;
-    //       it->second.compile(loader.data);
-    //       return it->second;
-    //     }
+      //     std::vector<char> buffer(size);
+      //     if (file.read(reinterpret_cast<char*>(buffer.data()), size)) {
+      //       const GLuint type = shader_name.second;
+      //       std::string data_ptr = "";
+      //       for(const char el : buffer){
+      //         data_ptr += el;
+      //       }
+      //       shader.setShader(data_ptr, type);
+      //     }
+      //   }
       // }
-    // }
+    }
   };
   if(shader.getRegisterShader().size() != 0){
     shaders[path_to_asset] = std::move(shader);
@@ -235,42 +230,3 @@ CW::Renderer::Shader &UW::Resources::getShader(const std::string &path_to_asset)
   // std::cerr << "[ERROR][Resources]: Failed to find texture asset anywhere: " << local_path << std::endl;
   return shaders["default_fallback"];
 };
-
-
-
-// void UW::Resources::initShaders(){
-//   // ======================= //
-//   // ======= Terrain ======= //
-//   // ======================= //
-//   shaders["terrain"].setVertexShader(TerrainShader::vertex);
-//   shaders["terrain"].setFragmentShader(TerrainShader::fragment);
-//   shaders["terrain"].setShader(TerrainShader::tessellation, GL_TESS_CONTROL_SHADER);
-//   shaders["terrain"].setShader(TerrainShader::tessellation_evaluation, GL_TESS_EVALUATION_SHADER);
-
-
-
-//   // ===================== //
-//   // ======= Water ======= //
-//   // ===================== //
-//   shaders["water"].setVertexShader(WaterShader::vertex);
-//   shaders["water"].setFragmentShader(WaterShader::fragment);
-//   shaders["water"].setShader(WaterShader::tessellation, GL_TESS_CONTROL_SHADER);
-//   shaders["water"].setShader(WaterShader::tessellation_evaluation, GL_TESS_EVALUATION_SHADER);
-
-
-
-//   // ====================== //
-//   // ======= SkyBox ======= //
-//   // ====================== //
-//   shaders["sky_box"].setVertexShader(SkyBoxShader::vertex);
-//   shaders["sky_box"].setFragmentShader(SkyBoxShader::fragment);
-
-
-
-//   // ============================ //
-//   // ======= Testing Cube ======= //
-//   // ============================ //
-//   shaders["testing"].setVertexShader(TestingCubeShader::vertex);
-//   shaders["testing"].setFragmentShader(TestingCubeShader::fragment);
-// };
-
