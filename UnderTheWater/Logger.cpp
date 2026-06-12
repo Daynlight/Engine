@@ -14,6 +14,7 @@ std::string UW::Log::getText() const {
 
 
 std::string UW::Log::getTypeText() const{
+  #ifndef PRODUCTION
   switch (type){
   case UW::LogType::INFO:
     return "INFO";
@@ -24,6 +25,7 @@ std::string UW::Log::getTypeText() const{
   default:
     return "NO TYPE";
   };
+  #endif
 
   return "NO TYPE";
 };
@@ -31,6 +33,7 @@ std::string UW::Log::getTypeText() const{
 
 
 ImVec4 UW::Log::getLogColor() const{
+  #ifndef PRODUCTION
   switch(type){
   case UW::LogType::INFO:
     return ImVec4(0.0f, 0.0f, 1.0f, 1.0f);
@@ -41,6 +44,7 @@ ImVec4 UW::Log::getLogColor() const{
   default:
     return ImVec4(1.0f, 1.0f, 1.0f, 1.0f); 
   };
+  #endif
 
   return ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
 };
@@ -58,19 +62,25 @@ UW::Logger &UW::Logger::get(){
 
 
 void UW::Logger::info(const std::string module, const std::string text){
+  #ifndef PRODUCTION
   data.emplace_back(UW::LogType::INFO, module, text);
+  #endif
 };
 
 
 
 void UW::Logger::warn(const std::string module, const std::string text){
+  #ifndef PRODUCTION
   data.emplace_back(UW::LogType::WARN, module, text);
+  #endif
 };
 
 
 
 void UW::Logger::erro(const std::string module, const std::string text){
+  #ifndef PRODUCTION
   data.emplace_back(UW::LogType::ERRO, module, text);
+  #endif
 };
 
 

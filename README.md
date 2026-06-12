@@ -147,7 +147,7 @@ Shaders are loaded via cmrc or from folder as fallback are **private** and **saf
   
 - [x] Mesh serialization.
 - [x] Compile flag for end product ```PRODUCTION```
-- [x] Log UI
+- [x] Logger UI
 - [ ] Editor mode load from folder instead of cmrc 
 - [ ] Last Time Write sync
 - [ ] Editor Camera with movement
