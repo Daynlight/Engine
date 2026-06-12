@@ -8,6 +8,7 @@
 #include "imgui_internal.h"
 
 #include "config.h"
+#include "Logger.h"
 #include "ObjectManager.h"
 #include "DataSerializer.h"
 #include "Objects/GameObject.h"
@@ -19,6 +20,7 @@ namespace UW{
 class ShaderEditor{
 private:
   CW::Gui::Gui& gui;
+  bool shader_is_loaded = false;
   bool shader_is_updated = false;
   char buffer[UW::Config::SHADER_EDITOR_BUFFER_SIZE] = {0};
   std::string shader_name = "";
@@ -43,6 +45,7 @@ public:
 
 struct GuiSettings{
   bool infoWindowOn = false;
+  bool logWindowOn = false;
   bool materialExplorerOn = false;
   bool materialEditorOn = false;
   bool shaderExplorerWindowOn = false;
@@ -96,6 +99,7 @@ private:
 
   void guiInfo();
   void guiControlsInfo();
+  void guiLogs();
   void guiMaterialParameters();
   void guiMaterialList();
   void guiShaderList();
@@ -107,6 +111,7 @@ private:
   std::function<void(std::function<void()> render_windows)> appWorkspace();
 
   std::function<void(CW::Renderer::iRenderer *window)> windowGui();
+  std::function<void(CW::Renderer::iRenderer *window)> logGui();
   std::function<void(CW::Renderer::iRenderer *window)> materialExplorerGui();
   std::function<void(CW::Renderer::iRenderer *window)> materialEditorGui();
   std::function<void(CW::Renderer::iRenderer *window)> shaderExplorerGui();

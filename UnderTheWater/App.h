@@ -5,6 +5,7 @@
 #include <functional>
 
 #include "UI.h"
+#include "Logger.h"
 #include "config.h"
 #include "Camera/Camera.h"
 #include "Resources/Resources.h"

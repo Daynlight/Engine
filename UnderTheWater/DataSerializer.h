@@ -10,6 +10,7 @@
 #include <cmrc/cmrc.hpp>
 
 #include "config.h"
+#include "Logger.h"
 #include "DataRecords.h"
 #include "Objects/Object.h"
 #include "Objects/GameObject.h"

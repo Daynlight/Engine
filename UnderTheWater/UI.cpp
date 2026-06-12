@@ -4,6 +4,8 @@
 
 UW::ShaderEditor::ShaderEditor(CW::Gui::Gui& gui, std::string name, GLenum type)
   :gui(gui), shader_name(name), shader_type(type){
+
+  Logger::get().info("ShaderEditor", "Opened { " + shader_name + " : " + UW::Config::SHADER_TYPE_TO_NAME[shader_type] + " }");
   gui.addWindow("Shader Editor " + shader_name + " : " + UW::Config::SHADER_TYPE_TO_NAME[shader_type], shaderEditorGui());
 };
 
@@ -11,11 +13,14 @@ UW::ShaderEditor::ShaderEditor(CW::Gui::Gui& gui, std::string name, GLenum type)
 
 UW::ShaderEditor::~ShaderEditor(){
   gui.deleteWindow("Shader Editor " + shader_name + " : " + UW::Config::SHADER_TYPE_TO_NAME[shader_type]);
+  Logger::get().info("ShaderEditor", "Closed { " + shader_name + " : " + UW::Config::SHADER_TYPE_TO_NAME[shader_type] + " }");
 };
 
 
 
 void UW::ShaderEditor::guiShaderLoad(std::string name, GLenum type){
+  if(shader_is_loaded) return;
+
   shader_name = name;
   shader_type = type;
   memset(buffer, '\0', UW::Config::SHADER_EDITOR_BUFFER_SIZE);
@@ -29,6 +34,10 @@ void UW::ShaderEditor::guiShaderLoad(std::string name, GLenum type){
 
   std::string source = reg.at(type).getSource();
   memcpy(buffer, source.data(), source.size());
+
+
+  Logger::get().info("ShaderEditor", "Loaded { " + shader_name + " : " + UW::Config::SHADER_TYPE_TO_NAME[shader_type] + " }");
+  shader_is_loaded = true;
 };
 
 
@@ -59,6 +68,8 @@ void UW::ShaderEditor::guiShaderEditor(){
     Resources::get().getShader(shader_name).setShader(buffer, shader_type);
     Resources::get().getShader(shader_name).compile();
     DataSerializer::get().saveShaders(shader_name, shader_type);
+
+    Logger::get().info("ShaderEditor", "Saved { " + shader_name + " : " + UW::Config::SHADER_TYPE_TO_NAME[shader_type] + " }");
   };
 };
 
@@ -89,6 +100,8 @@ GLenum UW::ShaderEditor::getType(){
 
 UW::UI::UI(CW::Renderer::Renderer &window,  float &fps, bool &debug_camera_on, UW::Camera &camera, UW::Camera &debug_camera, UW::ObjectManager &object_manager)
   :window(window), gui(&window), fps(fps), debug_camera_on(debug_camera_on), camera(camera), debug_camera(debug_camera), object_manager(object_manager){
+  Logger::get().info("UI", "Initializing UI");
+  
   shader_editors.reserve(20);
   gui.setWorkspace(appWorkspace());
 };
@@ -96,13 +109,17 @@ UW::UI::UI(CW::Renderer::Renderer &window,  float &fps, bool &debug_camera_on, U
 
 
 UW::UI::~UI(){
+  Logger::get().info("UI", "Destroying UI");
   saveShaderEditors();
 };
 
 
 void UW::UI::onLoad(){
+  Logger::get().info("UI", "Loading UI");
+
   uiLoad();
   window.setSize(guiSettings.window_width, guiSettings.window_height);
+  Logger::get().info("UI", "Window Size Setted { "+ std::to_string(guiSettings.window_width) + " x " + std::to_string(guiSettings.window_height) +" }");
 };
 
 
@@ -119,6 +136,8 @@ void UW::UI::render(){
 void UW::UI::uiLoad(){
   configControl();
   ImGui::LoadIniSettingsFromDisk(ImGui::GetIO().IniFilename);
+  Logger::get().info("UI", "Loading UI Data from disck");
+
   loadShaderEditors();
   uiControl();
 };
@@ -139,6 +158,7 @@ void UW::UI::configControl(){
 
     int value;
     if (sscanf(line, "InfoWindowOn=%d", &value) == 1) s->infoWindowOn = value;
+    if (sscanf(line, "LogWindowOn=%d", &value) == 1) s->logWindowOn = value;
     if (sscanf(line, "MaterialExplorerOn=%d", &value) == 1) s->materialExplorerOn = value;
     if (sscanf(line, "MaterialEditorOn=%d", &value) == 1) s->materialEditorOn = value;
     if (sscanf(line, "ShaderExplorerWindowOn=%d", &value) == 1) s->shaderExplorerWindowOn = value;
@@ -164,6 +184,7 @@ void UW::UI::configControl(){
   handler.WriteAllFn = [](ImGuiContext*, ImGuiSettingsHandler* handler, ImGuiTextBuffer* out_buf){
     out_buf->appendf("[%s][Main]\n", handler->TypeName);
     out_buf->appendf("InfoWindowOn=%d\n", guiSettings.infoWindowOn);
+    out_buf->appendf("LogWindowOn=%d\n", guiSettings.logWindowOn);
     out_buf->appendf("MaterialExplorerOn=%d\n", guiSettings.materialExplorerOn);
     out_buf->appendf("MaterialEditorOn=%d\n", guiSettings.materialEditorOn);
     out_buf->appendf("ShaderExplorerWindowOn=%d\n", guiSettings.shaderExplorerWindowOn);
@@ -196,39 +217,59 @@ void UW::UI::configControl(){
 
 void UW::UI::uiControl(){
   if(guiSettings.infoWindowOn){
+    Logger::get().info("UI", "Opening Info Gui");
     gui.addWindow("Info Gui", windowGui());
   }
   else{
+    Logger::get().info("UI", "Closing Info GUI");
     gui.deleteWindow("Info Gui");  
   };
+  if(guiSettings.logWindowOn){
+    Logger::get().info("UI", "Opening Log GUI");
+    gui.addWindow("Log Gui", logGui());
+  }
+  else{
+    Logger::get().info("UI", "Closing Log GUI");
+    gui.deleteWindow("Log Gui");
+  };
   if(guiSettings.materialExplorerOn){
+    Logger::get().info("UI", "Opening Materials Explorer GUI");
     gui.addWindow("Material Explorer", materialExplorerGui());
   }
   else{
+    Logger::get().info("UI", "Closing Materials Explorer GUI");
     gui.deleteWindow("Material Explorer");
   };
   if(guiSettings.materialEditorOn){
+    Logger::get().info("UI", "Opening Materials Editor GUI");
     gui.addWindow("Material Editor", materialEditorGui());
   }
   else{
+    Logger::get().info("UI", "Closing Materials Editor GUI");
     gui.deleteWindow("Material Editor");
   };
   if(guiSettings.shaderExplorerWindowOn){
+    Logger::get().info("UI", "Opening Shader Explorer GUI");
     gui.addWindow("Shader Explorer", shaderExplorerGui());
   }
   else{
+    Logger::get().info("UI", "Closing Shader Explorer GUI");
     gui.deleteWindow("Shader Explorer");
   };
   if(guiSettings.objectExplorerWindowOn){
+    Logger::get().info("UI", "Opening Object Explorer GUI");
     gui.addWindow("Object Explorer", objectExplorerGui());
   }
   else{
+    Logger::get().info("UI", "Closing Object Explorer GUI");
     gui.deleteWindow("Object Explorer");
   };
   if(guiSettings.objectEditorWindowOn){
+    Logger::get().info("UI", "Opening Object Editor GUI");
     gui.addWindow("Object Editor", objectEditorGui());
   }
   else{
+    Logger::get().info("UI", "Closing Object Explorer GUI");
     gui.deleteWindow("Object Editor");
   };
 };
@@ -236,6 +277,8 @@ void UW::UI::uiControl(){
 
 
 void UW::UI::loadShaderEditors(){
+  Logger::get().info("UI", "Loading Shader Editors");
+
   shader_editors.clear();
   
   for(std::pair<std::string, GLenum> el : guiSettings.shader_editors_reg){
@@ -246,6 +289,8 @@ void UW::UI::loadShaderEditors(){
 
 
 void UW::UI::saveShaderEditors(){
+  Logger::get().info("UI", "Saving Shader Editors");
+
   guiSettings.shader_editors_reg.clear();
   for(const auto& el : shader_editors){
     guiSettings.shader_editors_reg.emplace_back(el->getName(), el->getType());
@@ -259,6 +304,10 @@ void UW::UI::menuBarGui(){
     if (ImGui::BeginMenu("Window")) {
       if(ImGui::MenuItem("Info")){
         guiSettings.infoWindowOn = !guiSettings.infoWindowOn;
+        uiControl();
+      };
+      if(ImGui::MenuItem("Logs")){
+        guiSettings.logWindowOn = !guiSettings.logWindowOn;
         uiControl();
       };
       if(ImGui::MenuItem("Material Explorer")){
@@ -346,9 +395,11 @@ inline void UW::UI::guiInfo(){
     mesh_mode_is_updated = true;
     if(guiSettings.mesh_mode_on){
       glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+      Logger::get().info("UI", "Changed Draw Mode To Mesh");
     }
     else{
       glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+      Logger::get().info("UI", "Changed Draw Mode To Normal");
     };
   };
 };
@@ -379,6 +430,39 @@ return [this](CW::Renderer::iRenderer *window){
 
 
 
+// -------- //
+// Logs Gui //
+// -------- //
+void UW::UI::guiLogs() {
+  const auto& logs = Logger::get().getLogs();
+  int totalItems = static_cast<int>(logs.size());
+
+  ImGuiListClipper clipper;
+  clipper.Begin(totalItems);
+
+  while (clipper.Step()) {
+    for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++) {
+      const auto& entry = logs[i];
+      
+      ImGui::PushStyleColor(ImGuiCol_Text, entry.getLogColor());
+      ImGui::TextUnformatted(entry.getText().c_str());
+      ImGui::PopStyleColor();
+    };
+  };
+  
+  if (ImGui::GetScrollY() >= ImGui::GetScrollMaxY())ImGui::SetScrollHereY(1.0f);
+};
+
+
+
+std::function<void(CW::Renderer::iRenderer *window)> UW::UI::logGui(){
+return [this](CW::Renderer::iRenderer *window){
+  guiLogs();
+};
+};
+
+
+
 // ------------------ //
 // Materials Explorer //
 // ------------------ //
@@ -393,13 +477,16 @@ inline void UW::UI::guiMaterialList(){
     ImGui::SameLine();
     if (ImGui::Button(button_label.c_str())) {
       Resources::get().materials.erase(el.first);
+      Logger::get().warn("UI", "Deleted Material { " + el.first + " }");
       break;
     }
   };
 
   std::string button_label = "Add " + std::to_string(Resources::get().materials.size());
-  if (ImGui::Button(button_label.c_str())) Resources::get().materials.emplace_back("new material", UW::Material());
-  
+  if (ImGui::Button(button_label.c_str())) {
+    Resources::get().materials.emplace_back("new material", UW::Material());
+    Logger::get().info("UI", "Added new Material { new material }");
+  };
 };
 
 
@@ -440,6 +527,7 @@ inline void UW::UI::guiMaterialParameters(){
   if(ImGui::SliderFloat("Ambient Occlusion: ", &temp_mat.ambient_occlusion, 0.0f, 1.0f)) material_is_updated = true;
 
   if(material_is_updated){
+    Logger::get().info("UI", "Updating Material { " +  guiSettings.material_name + " }");
     material_is_updated = false;
     Resources::get().materials[guiSettings.material_name] = temp_mat;
     Resources::get().materials.compile();
@@ -462,7 +550,10 @@ return [this](CW::Renderer::iRenderer *window){
 void UW::UI::guiShaderList(){
   ImGui::SeparatorText("Shader List");
 
-  if(ImGui::Button("reset")) Resources::get().shaders.clear();
+  if(ImGui::Button("reset")) {
+    Logger::get().info("UI", "Refreshing Shaders");
+    Resources::get().shaders.clear();
+  };
 
   for (const auto& [ key, values ] : Resources::get().shaders) {
     if(ImGui::CollapsingHeader(key.c_str())){
@@ -514,10 +605,16 @@ void UW::UI::guiObjectList(){
     
     label = "Delete##" + std::to_string(id);
     ImGui::SameLine();
-    if(ImGui::Button(label.c_str())) object_manager.objects.erase(object_manager.objects.begin() + id);
+    if(ImGui::Button(label.c_str())) {
+      object_manager.objects.erase(object_manager.objects.begin() + id);
+      Logger::get().warn("UI", "Deleted Object { " + object_manager.objects[id].name + " }");
+    };
   };
 
-  if(ImGui::Button("Add new")) object_manager.objects.emplace_back(UW::GameObject("new object", "testing", "testing", {}, {}, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f), glm::vec3(1.0f)));
+  if(ImGui::Button("Add new")) {
+    object_manager.objects.emplace_back(UW::GameObject("new object", "testing", "testing", {}, {}, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f), glm::vec3(1.0f)));
+    Logger::get().info("UI", "Added New Object { new object }");
+  };
 };
 
 

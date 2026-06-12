@@ -11,8 +11,9 @@ UW::App::App()
   , debug_camera(&window), ui(window, fps, debug_camera_on, camera, debug_camera, object_manager)
   #endif
   {
+  Logger::get().info("App", "App Initialization");
+  
   initWindow();
-
   onLoad();
 };
 
@@ -42,6 +43,8 @@ void UW::App::run(){
 // ========== Core Operations ========== //
 // ===================================== //
 void UW::App::onLoad(){
+  Logger::get().info("App", "Loading Scene");
+
   #ifndef PRODUCTION
   ui.onLoad();
   #endif
@@ -58,6 +61,8 @@ void UW::App::onLoad(){
 
 
 void UW::App::onDestroy() {
+  Logger::get().info("App", "Destroying Scene");
+
   #ifndef PRODUCTION
   DataSerializer::get().saveAll(object_manager.objects);
   #endif
@@ -126,13 +131,12 @@ void UW::App::fixedUpdate(){
     guiSettings.window_height = window.getWindowData()->height;
 
     #ifndef PRODUCTION
+    save_acc += fixed_update_time_acc;
+
     if(save_acc >= UW::Config::SAVE_TIMESTAMP){
       save_acc -= UW::Config::SAVE_TIMESTAMP;
       DataSerializer::get().saveAll(object_manager.objects);
-    }
-    else{
-      save_acc += fixed_update_time_acc;
-    }
+    };
     #endif
     
     for(UW::GameObject& el : object_manager.objects) el.onFixedUpdate();
@@ -146,6 +150,8 @@ void UW::App::fixedUpdate(){
 // ========== Helpers ========== //
 // ============================= //
 void UW::App::initWindow(){
+  Logger::get().info("App", "Window Initialization");
+
   window.setWindowTitle(UW::Config::WINDOW_TITLE);
   window.setCursorVisibility(UW::Config::DEFAULT_CURSOR_IS_VISIBLE);
   window.setVsync(UW::Config::VSYNC);
@@ -158,6 +164,8 @@ void UW::App::swapCamera(){
   if(window.getInputData()->is_key_down(UW::Config::SWAP_CAMERA_BTN) && camera_swap_cooldown_acc <= 0.0f) {
     debug_camera_on = !debug_camera_on;
     camera_swap_cooldown_acc = UW::Config::CAMERA_SWAP_COOLDOWN;
+
+  Logger::get().info("App", "Camera Swapped to { "+ std::string(debug_camera_on ? "DEBUG CAMERA" : "NORMAL CAMERA") + " }");
   };
 
   if(camera_swap_cooldown_acc >= 0.0f) camera_swap_cooldown_acc -= window.getWindowData()->delta_time;

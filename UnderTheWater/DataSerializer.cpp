@@ -38,13 +38,13 @@ void UW::DataSerializer::saveAllObjects(std::vector<UW::GameObject> &objects) {
     if (p.has_parent_path())
       std::filesystem::create_directories(p.parent_path());
   } catch (const std::filesystem::filesystem_error& e) {
-    std::cerr << "Filesystem error while creating directories: " << e.what() << std::endl;
+    Logger::get().erro("DataSerializer", "Filesystem error while creating directories - " + std::string(e.what()));
     return;
   };
 
   std::ofstream outFile(UW::Config::GAME_DATA_FOLDER + UW::Config::OBJECTS_FILENAME, std::ios::binary);
   if (!outFile.is_open()) {
-    std::cerr << "Failed to open file for saving: " << UW::Config::GAME_DATA_FOLDER + UW::Config::OBJECTS_FILENAME << std::endl;
+    Logger::get().erro("DataSerializer", "Failed to open file for saving - " + UW::Config::GAME_DATA_FOLDER + UW::Config::OBJECTS_FILENAME);
     return;
   };
 
@@ -64,20 +64,25 @@ void UW::DataSerializer::saveAllObjects(std::vector<UW::GameObject> &objects) {
     record.materials = object.materials;
 
     outFile << record;
+
+    Logger::get().info("DataSerializer", "Object saved { " + object.name + " }");
   };
   
   outFile.close();
+
+  Logger::get().info("DataSerializer", "All Objects Had Been Saved");
 };
 
 
 
 void UW::DataSerializer::loadAllObjects(std::vector<UW::GameObject> &objects) {
+  Logger::get().info("DataSerializer", "Loading all objects...");
   try{
     auto fs = cmrc::GameData::get_filesystem();
     std::string resourcePath = UW::Config::GAME_DATA_FOLDER + UW::Config::OBJECTS_FILENAME;
     
     if (!fs.exists(resourcePath)) {
-      std::cerr << "CMRC Error: File not found in resources: " << resourcePath << std::endl;
+      Logger::get().erro("DataSerializer", "CMRC - File not found in resources - " + resourcePath);
       return;
     }
 
@@ -102,31 +107,34 @@ void UW::DataSerializer::loadAllObjects(std::vector<UW::GameObject> &objects) {
         object.materials = std::move(record.materials);
 
         objects.push_back(std::move(object));
+        Logger::get().info("DataSerializer", "Object loaded { " + record.name + " }");
       } else {
-        std::cerr << "Error: File format corrupted at object index " << i << std::endl;
+      Logger::get().erro("DataSerializer", "File format corrupted at object index " + std::to_string(i));
         break;
       };
     };
+    Logger::get().info("DataSerializer", "All objects have been loaded");
   } catch(const std::exception& e){
-    std::cerr << "Exception caught during CMRC GameObject load: " << e.what() << std::endl;
+    Logger::get().erro("DataSerializer", "Exception caught during CMRC GameObject load - " + std::string(e.what()));
   };
 };
 
 
 
 void UW::DataSerializer::saveAllMaterials(UW::Materials &materials) {
+  Logger::get().info("DataSerializer", "Saving all materials...");
   try {
     std::filesystem::path p(UW::Config::GAME_DATA_FOLDER + UW::Config::MATERIALS_FILENAME);
     if (p.has_parent_path())
       std::filesystem::create_directories(p.parent_path());
   } catch (const std::filesystem::filesystem_error& e) {
-    std::cerr << "Filesystem error while creating directories: " << e.what() << std::endl;
+    Logger::get().erro("DataSerializer", "Filesystem error while creating directories - " + std::string(e.what()));
     return;
   };
 
   std::ofstream outFile(UW::Config::GAME_DATA_FOLDER + UW::Config::MATERIALS_FILENAME, std::ios::binary);
   if (!outFile.is_open()) {
-    std::cerr << "Failed to open file for saving: " << UW::Config::GAME_DATA_FOLDER + UW::Config::MATERIALS_FILENAME << std::endl;
+    Logger::get().erro("DataSerializer", "Failed to open file for saving - " + UW::Config::GAME_DATA_FOLDER + UW::Config::MATERIALS_FILENAME);
     return;
   };
 
@@ -146,20 +154,24 @@ void UW::DataSerializer::saveAllMaterials(UW::Materials &materials) {
     record.ambient_occlusion = material.ambient_occlusion;
 
     outFile << record;
+
+    Logger::get().info("DataSerializer", "Material saved { " + el.first + " }");
   };
   
   outFile.close();
+  Logger::get().info("DataSerializer", "All Materials Had Been Saved");
 };
 
 
 
 void UW::DataSerializer::loadAllMaterials(UW::Materials &materials) {
+  Logger::get().info("DataSerializer", "Loading all materials...");
   try{
     auto fs = cmrc::GameData::get_filesystem();
     std::string resourcePath = UW::Config::GAME_DATA_FOLDER + UW::Config::MATERIALS_FILENAME;
     
     if (!fs.exists(resourcePath)) {
-      std::cerr << "CMRC Error: File not found in resources: " << resourcePath << std::endl;
+      Logger::get().erro("DataSerializer", "CMRC - File not found in resources - " + resourcePath);
       return;
     };
 
@@ -184,32 +196,35 @@ void UW::DataSerializer::loadAllMaterials(UW::Materials &materials) {
         material.ambient_occlusion = record.ambient_occlusion;
 
         materials.emplace_back(record.name, std::move(material));
+        Logger::get().info("DataSerializer", "Material loaded { " + record.name + " }");
       } else {
-        std::cerr << "Error: File format corrupted at object index " << i << std::endl;
+        Logger::get().erro("DataSerializer", "File format corrupted at material index " + std::to_string(i));
         break;
       };
     };
+    Logger::get().info("DataSerializer", "All materials have been loaded");
 
   } catch(const std::exception& e){
-    std::cerr << "Exception caught during CMRC GameObject load: " << e.what() << std::endl;
+    Logger::get().erro("DataSerializer", "Exception caught during CMRC GameObject load - " + std::string(e.what()));
   }
 };
 
 
 
 void UW::DataSerializer::saveAllLights(std::unordered_map<std::string, UW::Lights> &lights) {
+  Logger::get().info("DataSerializer", "Saving all lights...");
   try {
     std::filesystem::path p(UW::Config::GAME_DATA_FOLDER + UW::Config::LIGHTS_FILENAME);
     if (p.has_parent_path())
       std::filesystem::create_directories(p.parent_path());
   } catch (const std::filesystem::filesystem_error& e) {
-    std::cerr << "Filesystem error while creating directories: " << e.what() << std::endl;
+    Logger::get().erro("DataSerializer", "Filesystem error while creating directories - " + std::string(e.what()));
     return;
   };
 
   std::ofstream outFile(UW::Config::GAME_DATA_FOLDER + UW::Config::LIGHTS_FILENAME, std::ios::binary);
   if (!outFile.is_open()) {
-    std::cerr << "Failed to open file for saving: " << UW::Config::GAME_DATA_FOLDER + UW::Config::LIGHTS_FILENAME << std::endl;
+    Logger::get().erro("DataSerializer", "Failed to open file for saving - " + UW::Config::GAME_DATA_FOLDER + UW::Config::LIGHTS_FILENAME);
     return;
   };
 
@@ -234,17 +249,19 @@ void UW::DataSerializer::saveAllLights(std::unordered_map<std::string, UW::Light
   };
   
   outFile.close();
+  Logger::get().info("DataSerializer", "All lights have been saved");
 };
 
 
 
 void UW::DataSerializer::loadAllLights(std::unordered_map<std::string, UW::Lights> &lights) {
+  Logger::get().info("DataSerializer", "Loading all lights...");
   try{
     auto fs = cmrc::GameData::get_filesystem();
     std::string resourcePath = UW::Config::GAME_DATA_FOLDER + UW::Config::LIGHTS_FILENAME;
     
     if (!fs.exists(resourcePath)) {
-      std::cerr << "CMRC Error: File not found in resources: " << resourcePath << std::endl;
+      Logger::get().erro("DataSerializer", "CMRC - File not found in resources - " + resourcePath);
       return;
     };
 
@@ -262,18 +279,20 @@ void UW::DataSerializer::loadAllLights(std::unordered_map<std::string, UW::Light
         lights[record.name].emplace_back(light);
         lights[record.name].compile();
       } else {
-        std::cerr << "Error: File format corrupted at object index " << i << std::endl;
+        Logger::get().erro("DataSerializer", "File format corrupted at object index " + std::to_string(i));
         break;
       };
     };
+    Logger::get().info("DataSerializer", "All lights have been loaded");
   } catch(const std::exception& e){
-    std::cerr << "Exception caught during CMRC GameObject load: " << e.what() << std::endl;
+    Logger::get().erro("DataSerializer", "Exception caught during CMRC GameObject load - " + std::string(e.what()));
   }
 };
 
 
 
 void UW::DataSerializer::saveMesh(const std::string &name, const CW::Renderer::Mesh &mesh){
+  Logger::get().info("DataSerializer", "Saving mesh: " + name);
   std::string folder_path = UW::Config::GAME_DATA_FOLDER + UW::Config::ASSETS_FOLDER + UW::Config::MESHES_FOLDER;
   std::string file_path   = folder_path + name + UW::Config::MESH_EXTENSION;
 
@@ -308,11 +327,13 @@ void UW::DataSerializer::saveMesh(const std::string &name, const CW::Renderer::M
   };
 
   outFile << record;
+  Logger::get().info("DataSerializer", "Mesh saved: " + name);
 };
 
 
 
 void UW::DataSerializer::loadMesh(const std::string& path_to_mesh, std::unordered_map<std::string, CW::Renderer::Mesh> &meshes){
+  Logger::get().info("DataSerializer", "Loading mesh: " + path_to_mesh);
   try{
     auto fs = cmrc::GameData::get_filesystem();
     auto embedded_file = fs.open(path_to_mesh);
@@ -347,23 +368,27 @@ void UW::DataSerializer::loadMesh(const std::string& path_to_mesh, std::unordere
     };
 
     meshes[record.name] = std::move(engine_mesh);
+    Logger::get().info("DataSerializer", "Mesh loaded: " + record.name);
   }
   catch (const std::exception& e) {
-    std::cerr << "[MeshLoad] CMRC EXCEPTION: " << e.what() << "\n";
+    Logger::get().erro("DataSerializer", "[MeshLoad] CMRC EXCEPTION: " + std::string(e.what()));
   };
 };
 
 
 
 void UW::DataSerializer::saveAllMeshes(std::unordered_map<std::string, CW::Renderer::Mesh> &meshes){
+  Logger::get().info("DataSerializer", "Saving all meshes...");
   for (const auto& [mesh_name, mesh_instance] : meshes){
     saveMesh(mesh_name, mesh_instance);
   };
+  Logger::get().info("DataSerializer", "All meshes have been saved");
 };
 
 
 
 void UW::DataSerializer::loadAllMeshes(std::unordered_map<std::string, CW::Renderer::Mesh> &meshes){
+  Logger::get().info("DataSerializer", "Loading all meshes...");
   try {
     auto fs = cmrc::GameData::get_filesystem();
     std::string meshes_root = UW::Config::GAME_DATA_FOLDER + UW::Config::ASSETS_FOLDER + UW::Config::MESHES_FOLDER;
@@ -376,15 +401,17 @@ void UW::DataSerializer::loadAllMeshes(std::unordered_map<std::string, CW::Rende
     for (const auto& file_path : mesh_files){
       loadMesh(file_path, meshes);
     };
+    Logger::get().info("DataSerializer", "All meshes have been loaded");
   }
   catch (const std::exception& e) {
-    std::cerr << "[MeshLoad] CMRC EXCEPTION: " << e.what() << "\n";
+    Logger::get().erro("DataSerializer", "[MeshLoad] CMRC EXCEPTION: " + std::string(e.what()));
   };
 };
 
 
 
 void UW::DataSerializer::saveShaders(const std::string &shader_name, GLuint type){
+  Logger::get().info("DataSerializer", "Saving shader: " + shader_name + " type=" + std::to_string(type));
   std::string local_path = UW::Config::GAME_DATA_FOLDER + UW::Config::ASSETS_FOLDER + UW::Config::SHADERS_FOLDER + shader_name + "/" + UW::Config::SHADER_TYPE_TO_NAME[type];
   std::string source = Resources::get().getShader(shader_name).getRegisterShader().at(type).getSource();
   
@@ -393,24 +420,26 @@ void UW::DataSerializer::saveShaders(const std::string &shader_name, GLuint type
     if (p.has_parent_path())
       std::filesystem::create_directories(p.parent_path());
   } catch (const std::filesystem::filesystem_error& e) {
-    std::cerr << "Filesystem error while creating directories: " << e.what() << std::endl;
+    Logger::get().erro("DataSerializer", "Filesystem error while creating directories - " + std::string(e.what()));
     return;
   };
 
   std::ofstream outFile(local_path);
   if (!outFile.is_open()) {
-    std::cerr << "Failed to open file for saving: " << local_path << std::endl;
+    Logger::get().erro("DataSerializer", "Failed to open file for saving - " + local_path);
     return;
   };
 
   outFile << source << "\n";
   
   outFile.close();
+  Logger::get().info("DataSerializer", "Shader saved: " + shader_name);
 };
 
 
 
 void UW::DataSerializer::loadShader(const std::string& shader_name){
+  Logger::get().info("DataSerializer", "Loading shader: " + shader_name);
   std::string local_path = UW::Config::GAME_DATA_FOLDER + UW::Config::ASSETS_FOLDER + UW::Config::SHADERS_FOLDER + shader_name;
   CW::Renderer::Shader shader;
 
@@ -424,7 +453,7 @@ void UW::DataSerializer::loadShader(const std::string& shader_name){
       shader.setShader(std::string(data_ptr), type);
       continue;
     } catch (const std::runtime_error& e) {
-      std::cerr << "[LoadShader] CMRC Exception: " << e.what() << "\n";
+      Logger::get().warn("DataSerializer", "[LoadShader] CMRC Exception: " + std::string(e.what()));
     };
 
     // if (std::filesystem::exists(local_path + "/" + shader_name.first) && !std::filesystem::is_directory(local_path + "/" + shader_name.first)) {
@@ -446,6 +475,9 @@ void UW::DataSerializer::loadShader(const std::string& shader_name){
 
   if(shader.getRegisterShader().size() != 0){
     Resources::get().shaders[shader_name] = std::move(shader);
+    Logger::get().info("DataSerializer", "Shader loaded: " + shader_name);
+  } else {
+    Logger::get().info("DataSerializer", "No shader source found for: " + shader_name);
   };
 };
 
@@ -455,17 +487,21 @@ void UW::DataSerializer::loadShader(const std::string& shader_name){
 
 
 void UW::DataSerializer::saveAll(std::vector<UW::GameObject> &objects){
+  Logger::get().info("DataSerializer", "Saving all game data...");
   saveAllObjects(objects);
   saveAllMaterials(Resources::get().materials);
   saveAllLights(Resources::get().lights);
   saveAllMeshes(Resources::get().meshes);
+  Logger::get().info("DataSerializer", "All game data has been saved");
 };
 
 
 
 void UW::DataSerializer::loadAll(std::vector<UW::GameObject> &objects){
+  Logger::get().info("DataSerializer", "Loading all game data...");
   loadAllMeshes(Resources::get().meshes);
   loadAllLights(Resources::get().lights);
   loadAllMaterials(Resources::get().materials);
   loadAllObjects(objects);
+  Logger::get().info("DataSerializer", "All game data has been loaded");
 };
