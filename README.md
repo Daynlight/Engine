@@ -9,6 +9,7 @@ Project for **GRK** under water scene. Build on top of [**CWindow library**](htt
 - [About](#about)
 - [TOC](#toc)
 - [Installation and Usage](#installation-and-usage)
+- [Compiling End Product](#compiling-end-product)
 - [Architecture](#architecture)
   - [Build System](#build-system)
   - [Lights](#lights)
@@ -50,6 +51,12 @@ Project for **GRK** under water scene. Build on top of [**CWindow library**](htt
          ```bash
          ./UnderTheWater/UnderTheWater
          ```
+
+
+
+## Compiling End Product
+Use cmake command with PRODUCTION FLAG
+
 
 
 ## Architecture
@@ -139,14 +146,17 @@ Shaders are loaded via cmrc or from folder as fallback are **private** and **saf
 <summary>🌟 Iteration 3 🌟 (10.06.2026)</summary>
   
 - [x] Mesh serialization.
-- [x] Compile flag for end product ```END_GAME```
+- [x] Compile flag for end product ```PRODUCTION```
 - [ ] Last Time Write sync
+- [ ] Editor Camera with movement
+- [ ] Fix CMRC bad alloc
+- [ ] Fix cube data
 - [ ] Mesh UI 
 - [ ] Lights UI
 - [ ] Asset loader UI
 - [ ] Texture UI
 - [ ] Engine like Shaders, Assets, Textures:
-    - [x] Bake into exe
+    - [ ] Bake into exe
     - [ ] When edit save to folder
     - [ ] Create new once
     - [ ] Auto load update on folder change

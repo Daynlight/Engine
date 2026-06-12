@@ -13,4 +13,4 @@ cmrc_add_resource_library(GameData ${GameDataSet})
 
 add_subdirectory(UnderTheWater)
 
-target_compile_definitions(UnderTheWater PRIVATE END_GAME)
+# target_compile_definitions(UnderTheWater PRIVATE PRODUCTION)
