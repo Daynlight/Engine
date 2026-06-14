@@ -5,6 +5,7 @@
 #include <unordered_map>
 
 
+
 namespace UW::Config{
   inline constexpr float PI = 3.14159265358979f;
   inline constexpr float EPS = 1e-5f;
@@ -14,9 +15,9 @@ namespace UW::Config{
   inline constexpr unsigned int VSYNC = 0;
   inline const std::string DEFAULT_GUI_MATERIAL = "Terrain";
   inline const unsigned int DEFAULT_GUI_OBJECT = 0;
-  inline const unsigned int SHADER_EDITOR_BUFFER_SIZE = 20480;
-  inline const unsigned int OBJECT_NAME_BUFFER_SIZE = 1024;
-  inline const float SAVE_TIMESTAMP = 350000;   // 5 min
+  inline const unsigned int SHADER_EDITOR_BUFFER_SIZE = 20480;                  // 20KiB
+  inline const unsigned int OBJECT_NAME_BUFFER_SIZE = 1024;                     // 1KiB
+  inline const float SAVE_TIMESTAMP = 350000;                                   // 5 min
   inline const std::string GAME_DATA_FOLDER = "GameData/";
   inline const std::string ASSETS_FOLDER = "Assets/";
   inline const std::string SHADERS_FOLDER = "Shaders/";

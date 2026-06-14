@@ -4,11 +4,11 @@
 #include <string.h>
 #include <cmath>
 
-#include "../../Resources/Resources.h"
-#include "../../Camera/Camera.h"
-#include "../../utils.h"
-#include "../../config.h"
-#include "../Object.h"
+#include "Resources/Resources.h"
+#include "Camera/Camera.h"
+#include "Utils/utils.h"
+#include "config.h"
+#include "Objects/Object.h"
 
 
 

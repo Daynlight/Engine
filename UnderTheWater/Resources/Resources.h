@@ -8,11 +8,11 @@
 #include <filesystem>
 #include <iostream>
 
-#include "../utils.h"
+#include "Utils/utils.h"
 #include "config.h"
 #include "Lights/Lights.h"
 #include "Materials/Materials.h"
-#include "../DataSerializer.h"
+#include "DataSerializer/DataSerializer.h"
 
 
 

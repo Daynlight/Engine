@@ -4,18 +4,21 @@
 #include <vector>
 #include <functional>
 
-#include "UI.h"
-#include "Logger.h"
+#ifndef PRODUCTION
+#include "UI/UI.h"
+#include "Utils/Logger.h"
+#endif
+
 #include "config.h"
 #include "Camera/Camera.h"
 #include "Resources/Resources.h"
-#include "ObjectManager.h"
+#include "Objects/ObjectManager.h"
 #include "Objects/Object.h"
 #include "Objects/GameObject.h"
 #include "Objects/Terrain/Terrain.h"
 #include "Objects/Water/Water.h"
 #include "Objects/Skybox/Skybox.h"
-#include "DataSerializer.h"
+#include "DataSerializer/DataSerializer.h"
 
 
 

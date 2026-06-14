@@ -4,10 +4,10 @@
 
 #include "Renderer.h"
 
-#include "../../Resources/Resources.h"
-#include "../../Camera/Camera.h"
-#include "../Object.h"
-#include "../../utils.h"
+#include "Resources/Resources.h"
+#include "Camera/Camera.h"
+#include "Objects/Object.h"
+#include "Utils/utils.h"
 
 
 
