@@ -4,24 +4,7 @@
 CMRC_DECLARE(GameData);
 
 
-
-void UW::MeshSerialization::scanCmrcDirectory(
-  const cmrc::embedded_filesystem& fs,
-  const std::string& current_path,
-  const std::string& pattern_str,
-  std::vector<std::string>& out_mesh_files) {
-  std::regex pattern(pattern_str);
-
-  for (const auto& entry : fs.iterate_directory(current_path)) {
-    std::string entry_path = current_path + (current_path.back() == '/' ? "" : "/") + entry.filename();
-    
-    if (entry.is_directory()) scanCmrcDirectory(fs, entry_path, pattern_str, out_mesh_files);
-    else if (entry.is_file() && std::regex_search(entry.filename(), pattern)) out_mesh_files.emplace_back(entry_path);
-  };
-};
-
-
-
+#ifndef PRODUCTION
 void UW::MeshSerialization::save(const std::string& name, const CW::Renderer::Mesh& mesh) {
   Logger::get().info("MeshSerialization", "Saving mesh: " + name);
   std::string folder_path = UW::Config::GAME_DATA_FOLDER + UW::Config::ASSETS_FOLDER + UW::Config::MESHES_FOLDER;
@@ -58,6 +41,7 @@ void UW::MeshSerialization::save(const std::string& name, const CW::Renderer::Me
   outFile << record;
   Logger::get().info("MeshSerialization", "Mesh saved: " + name);
 };
+#endif
 
 
 
@@ -102,6 +86,7 @@ void UW::MeshSerialization::load(const std::string& path_to_mesh, std::unordered
 
 
 
+#ifndef PRODUCTION
 void UW::MeshSerialization::saveAll(std::unordered_map<std::string, CW::Renderer::Mesh>& meshes) {
   Logger::get().info("MeshSerialization", "Saving all meshes...");
   for (const auto& [mesh_name, mesh_instance] : meshes) {
@@ -109,6 +94,7 @@ void UW::MeshSerialization::saveAll(std::unordered_map<std::string, CW::Renderer
   };
   Logger::get().info("MeshSerialization", "All meshes have been saved");
 };
+#endif
 
 
 
@@ -121,7 +107,7 @@ void UW::MeshSerialization::loadAll(std::unordered_map<std::string, CW::Renderer
     if (!fs.exists(meshes_root)) return;
 
     std::vector<std::string> mesh_files;
-    scanCmrcDirectory(fs, meshes_root, "\\.msh$", mesh_files);
+    UW::Utils::scanCmrcDirectory(fs, meshes_root, "\\.msh$", mesh_files);
 
     for (const auto& file_path : mesh_files) {
       load(file_path, meshes);
@@ -134,6 +120,7 @@ void UW::MeshSerialization::loadAll(std::unordered_map<std::string, CW::Renderer
 
 
 
+#ifndef PRODUCTION
 std::ostream& UW::operator<<(std::ostream& os, const UW::MeshRecord& record){
   size_t name_size = record.name.size();
   os.write(reinterpret_cast<const char*>(&name_size), sizeof(name_size));
@@ -160,6 +147,7 @@ std::ostream& UW::operator<<(std::ostream& os, const UW::MeshRecord& record){
 
   return os;
 };
+#endif
 
 
 

@@ -5,9 +5,11 @@ CMRC_DECLARE(GameData);
 
 
 
+#ifndef PRODUCTION
 void UW::MaterialsSerialization::save(const UW::Material& material) {
   // Single material save implementation
 };
+#endif
 
 
 
@@ -17,6 +19,7 @@ void UW::MaterialsSerialization::load(UW::Material& material) {
 
 
 
+#ifndef PRODUCTION
 void UW::MaterialsSerialization::saveAll(UW::Materials& materials) {
   Logger::get().info("MaterialsSerialization", "Saving all materials...");
   try {
@@ -56,6 +59,7 @@ void UW::MaterialsSerialization::saveAll(UW::Materials& materials) {
   outFile.close();
   Logger::get().info("MaterialsSerialization", "All Materials Had Been Saved");
 };
+#endif
 
 
 
@@ -105,6 +109,7 @@ void UW::MaterialsSerialization::loadAll(UW::Materials& materials) {
 
 
 
+#ifndef PRODUCTION
 std::ostream& UW::operator<<(std::ostream& os, const UW::MaterialsRecord& record) {
   size_t name_sz = record.name.size();
   os.write(reinterpret_cast<const char*>(&name_sz), sizeof(size_t));
@@ -119,6 +124,7 @@ std::ostream& UW::operator<<(std::ostream& os, const UW::MaterialsRecord& record
 
   return os;
 };
+#endif
 
 
 

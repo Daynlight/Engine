@@ -14,26 +14,11 @@ UW::DataSerializer &UW::DataSerializer::get(){
 
 
 
-void UW::DataSerializer::scanCmrcDirectory(
-  const cmrc::embedded_filesystem& fs,
-  const std::string& current_path,
-  const std::string& pattern_str,
-  std::vector<std::string>& out_mesh_files){
-  std::regex pattern(pattern_str);
-
-  for (const auto& entry : fs.iterate_directory(current_path)) {
-    std::string entry_path = current_path + (current_path.back() == '/' ? "" : "/") + entry.filename();
-    
-    if (entry.is_directory()) scanCmrcDirectory(fs, entry_path, pattern_str, out_mesh_files);
-    else if (entry.is_file() && std::regex_search(entry.filename(), pattern)) out_mesh_files.emplace_back(entry_path);
-  };
-};
-
-
-
+#ifndef PRODUCTION
 void UW::DataSerializer::saveAllObjects(std::vector<UW::GameObject> &objects) {
   objects_serializer.saveAll(objects);
 };
+#endif
 
 
 
@@ -43,9 +28,11 @@ void UW::DataSerializer::loadAllObjects(std::vector<UW::GameObject> &objects) {
 
 
 
+#ifndef PRODUCTION
 void UW::DataSerializer::saveAllMaterials(UW::Materials &materials) {
   materials_serializer.saveAll(materials);
 };
+#endif
 
 
 
@@ -55,9 +42,11 @@ void UW::DataSerializer::loadAllMaterials(UW::Materials &materials) {
 
 
 
+#ifndef PRODUCTION
 void UW::DataSerializer::saveAllLights(std::unordered_map<std::string, UW::Lights> &lights) {
   lights_serializer.saveAll(lights);
 };
+#endif
 
 
 
@@ -67,9 +56,11 @@ void UW::DataSerializer::loadAllLights(std::unordered_map<std::string, UW::Light
 
 
 
+#ifndef PRODUCTION
 void UW::DataSerializer::saveMesh(const std::string &name, const CW::Renderer::Mesh &mesh) {
   mesh_serializer.save(name, mesh);
 };
+#endif
 
 
 
@@ -79,9 +70,11 @@ void UW::DataSerializer::loadMesh(const std::string& path_to_mesh, std::unordere
 
 
 
+#ifndef PRODUCTION
 void UW::DataSerializer::saveAllMeshes(std::unordered_map<std::string, CW::Renderer::Mesh> &meshes) {
   mesh_serializer.saveAll(meshes);
 };
+#endif
 
 
 
@@ -91,9 +84,11 @@ void UW::DataSerializer::loadAllMeshes(std::unordered_map<std::string, CW::Rende
 
 
 
+#ifndef PRODUCTION
 void UW::DataSerializer::saveShaders(const std::string &shader_name, GLuint type){
   shader_serializer.save(shader_name, type);
 };
+#endif
 
 
 
@@ -103,6 +98,7 @@ void UW::DataSerializer::loadShader(const std::string& shader_name){
 
 
 
+#ifndef PRODUCTION
 void UW::DataSerializer::saveAll(std::vector<UW::GameObject> &objects) {
   Logger::get().info("DataSerializer", "Saving all game data...");
   objects_serializer.saveAll(objects);
@@ -111,6 +107,7 @@ void UW::DataSerializer::saveAll(std::vector<UW::GameObject> &objects) {
   mesh_serializer.saveAll(Resources::get().meshes);
   Logger::get().info("DataSerializer", "All game data has been saved");
 };
+#endif
 
 
 

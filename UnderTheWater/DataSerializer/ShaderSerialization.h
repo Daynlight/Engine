@@ -19,8 +19,10 @@ class ShaderSerialization {
 public:
   ShaderSerialization() = default;
   ~ShaderSerialization() = default;
-
+  
+#ifndef PRODUCTION
   void save(const std::string& shader_name, GLuint type);
+#endif
   void load(const std::string& shader_name);
 };
 }; // namespace UW

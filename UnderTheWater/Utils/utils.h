@@ -2,6 +2,9 @@
 #include <filesystem>
 #include <string>
 
+#include <cmrc/cmrc.hpp>
+#include <regex>
+
 #if defined(_WIN32)
   #define WIN32_LEAN_AND_MEAN
   #include <windows.h>
@@ -90,6 +93,23 @@ inline void uploadBufferByType(
       break;
     default:
       throw std::runtime_error("Unsupported GL type in mesh data");
+  };
+};
+
+
+
+  inline void scanCmrcDirectory(
+    const cmrc::embedded_filesystem& fs,
+    const std::string& current_path,
+    const std::string& pattern_str,
+    std::vector<std::string>& out_mesh_files){
+    std::regex pattern(pattern_str);
+
+    for (const auto& entry : fs.iterate_directory(current_path)) {
+      std::string entry_path = current_path + (current_path.back() == '/' ? "" : "/") + entry.filename();
+    
+    if (entry.is_directory()) scanCmrcDirectory(fs, entry_path, pattern_str, out_mesh_files);
+    else if (entry.is_file() && std::regex_search(entry.filename(), pattern)) out_mesh_files.emplace_back(entry_path);
   };
 };
 };

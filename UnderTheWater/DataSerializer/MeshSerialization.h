@@ -43,20 +43,20 @@ public:
   MeshSerialization() = default;
   ~MeshSerialization() = default;
 
+#ifndef PRODUCTION
   void save(const std::string& name, const CW::Renderer::Mesh& mesh);
+#endif
   void load(const std::string& path_to_mesh, std::unordered_map<std::string, CW::Renderer::Mesh>& meshes);
 
+#ifndef PRODUCTION
   void saveAll(std::unordered_map<std::string, CW::Renderer::Mesh>& meshes);
+#endif
   void loadAll(std::unordered_map<std::string, CW::Renderer::Mesh>& meshes);
 
 private:
-  void scanCmrcDirectory(
-    const cmrc::embedded_filesystem& fs,
-    const std::string& current_path,
-    const std::string& pattern_str,
-    std::vector<std::string>& out_mesh_files);
-
+#ifndef PRODUCTION
   friend std::ostream& operator<<(std::ostream& os, const MeshRecord& record);
+#endif
   friend std::istream& operator>>(std::istream& is, MeshRecord& record);
 };
 

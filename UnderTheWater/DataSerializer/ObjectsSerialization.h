@@ -41,14 +41,20 @@ public:
   ObjectsSerialization() = default;
   ~ObjectsSerialization() = default;
 
+#ifndef PRODUCTION
   void save(const UW::GameObject& object);
+#endif
   void load(UW::GameObject& object);
 
+#ifndef PRODUCTION
   void saveAll(std::vector<UW::GameObject>& objects);
+#endif
   void loadAll(std::vector<UW::GameObject>& objects);
 
 private:
+#ifndef PRODUCTION
   friend std::ostream& operator<<(std::ostream& os, const GameObjectRecord& record);
+#endif
   friend std::istream& operator>>(std::istream& is, GameObjectRecord& record);
 };
 }; // namespace UW

@@ -34,14 +34,20 @@ public:
   MaterialsSerialization() = default;
   ~MaterialsSerialization() = default;
 
+#ifndef PRODUCTION
   void save(const UW::Material& material);
+#endif
   void load(UW::Material& material);
 
+#ifndef PRODUCTION
   void saveAll(UW::Materials& materials);
+#endif
   void loadAll(UW::Materials& materials);
 
 private:
+#ifndef PRODUCTION
   friend std::ostream& operator<<(std::ostream& os, const MaterialsRecord& record);
+#endif
   friend std::istream& operator>>(std::istream& is, MaterialsRecord& record);
 };
 }; // namespace UW

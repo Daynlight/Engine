@@ -31,14 +31,20 @@ public:
   LightsSerialization() = default;
   ~LightsSerialization() = default;
 
+#ifndef PRODUCTION
   void save(const std::string& name, const UW::Light& light);
+#endif
   void load(const std::string& name, UW::Light& light);
 
+#ifndef PRODUCTION
   void saveAll(std::unordered_map<std::string, UW::Lights>& lights);
+#endif
   void loadAll(std::unordered_map<std::string, UW::Lights>& lights);
 
 private:
+#ifndef PRODUCTION
   friend std::ostream& operator<<(std::ostream& os, const LightsRecord& record);
+#endif
   friend std::istream& operator>>(std::istream& is, LightsRecord& record);
 };
 }; // namespace UW

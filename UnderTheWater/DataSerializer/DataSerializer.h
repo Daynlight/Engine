@@ -49,31 +49,42 @@ public:
   DataSerializer(DataSerializer&&) = delete;
   DataSerializer& operator=(DataSerializer&&) = delete;
 
-private:
-  void scanCmrcDirectory(const cmrc::embedded_filesystem& fs, const std::string& current_path, const std::string& pattern_str, std::vector<std::string>& out_mesh_files);
-
 public:
+#ifndef PRODUCTION
   void saveAllObjects(std::vector<UW::GameObject> &objects);
+#endif
   void loadAllObjects(std::vector<UW::GameObject> &objects);
 
+#ifndef PRODUCTION
   void saveAllMaterials(UW::Materials &materials);
+#endif
   void loadAllMaterials(UW::Materials &materials);
 
+#ifndef PRODUCTION
   void saveAllLights(std::unordered_map<std::string, UW::Lights> &lights);
+#endif
   void loadAllLights(std::unordered_map<std::string, UW::Lights> &lights);
 
+#ifndef PRODUCTION
   void saveMesh(const std::string& name, const CW::Renderer::Mesh& mesh);
+#endif
   void loadMesh(const std::string& path_to_mesh, std::unordered_map<std::string, CW::Renderer::Mesh> &meshes);
 
+#ifndef PRODUCTION
   void saveAllMeshes(std::unordered_map<std::string, CW::Renderer::Mesh>& meshes);
+#endif
   void loadAllMeshes(std::unordered_map<std::string, CW::Renderer::Mesh>& meshes);
 
+#ifndef PRODUCTION
   void saveShaders(const std::string& shader_name, GLuint type);
+#endif
   void loadShader(const std::string& shader_name);
 
   // void loadTextures(std::unordered_map<std::string, CW::Renderer::Texture>& textures);
 
+#ifndef PRODUCTION
   void saveAll(std::vector<UW::GameObject> &objects);
+#endif
 
   void loadAll(std::vector<UW::GameObject> &objects);
 };

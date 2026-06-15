@@ -5,6 +5,7 @@ CMRC_DECLARE(GameData);
 
 
 
+#ifndef PRODUCTION
 void UW::ObjectsSerialization::save(const UW::GameObject& object) {
   Logger::get().info("ObjectsSerialization", "Saving object: " + object.name);
   
@@ -38,6 +39,7 @@ void UW::ObjectsSerialization::save(const UW::GameObject& object) {
 
   Logger::get().info("ObjectsSerialization", "Object saved { " + object.name + " }");
 };
+#endif
 
 
 
@@ -47,6 +49,7 @@ void UW::ObjectsSerialization::load(UW::GameObject& object) {
 
 
 
+#ifndef PRODUCTION
 void UW::ObjectsSerialization::saveAll(std::vector<UW::GameObject>& objects) {
   Logger::get().info("ObjectsSerialization", "Saving all objects...");
   try {
@@ -85,6 +88,7 @@ void UW::ObjectsSerialization::saveAll(std::vector<UW::GameObject>& objects) {
   outFile.close();
   Logger::get().info("ObjectsSerialization", "All Objects Had Been Saved");
 };
+#endif
 
 
 
@@ -133,6 +137,7 @@ void UW::ObjectsSerialization::loadAll(std::vector<UW::GameObject>& objects) {
 
 
 
+#ifndef PRODUCTION
 std::ostream& UW::operator<<(std::ostream& os, const UW::GameObjectRecord& record) {
   size_t name_sz = record.name.size();
   os.write(reinterpret_cast<const char*>(&name_sz), sizeof(name_sz));
@@ -168,6 +173,7 @@ std::ostream& UW::operator<<(std::ostream& os, const UW::GameObjectRecord& recor
 
   return os;
 };
+#endif
 
 
 

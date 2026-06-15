@@ -5,9 +5,11 @@ CMRC_DECLARE(GameData);
 
 
 
+#ifndef PRODUCTION
 void UW::LightsSerialization::save(const std::string& name, const UW::Light& light) {
   // Single light save implementation
 };
+#endif
 
 
 
@@ -17,6 +19,7 @@ void UW::LightsSerialization::load(const std::string& name, UW::Light& light) {
 
 
 
+#ifndef PRODUCTION
 void UW::LightsSerialization::saveAll(std::unordered_map<std::string, UW::Lights>& lights) {
   Logger::get().info("LightsSerialization", "Saving all lights...");
   try {
@@ -57,6 +60,7 @@ void UW::LightsSerialization::saveAll(std::unordered_map<std::string, UW::Lights
   outFile.close();
   Logger::get().info("LightsSerialization", "All lights have been saved");
 };
+#endif
 
 
 
@@ -101,6 +105,7 @@ void UW::LightsSerialization::loadAll(std::unordered_map<std::string, UW::Lights
 
 
 
+#ifndef PRODUCTION
 std::ostream& UW::operator<<(std::ostream& os, const UW::LightsRecord& record) {
   size_t name_sz = record.name.size();
   os.write(reinterpret_cast<const char*>(&name_sz), sizeof(size_t));
@@ -112,6 +117,7 @@ std::ostream& UW::operator<<(std::ostream& os, const UW::LightsRecord& record) {
 
   return os;
 };
+#endif
 
 
 

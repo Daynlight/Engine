@@ -1,5 +1,7 @@
 #include "UI_AssetLoader.h"
 
+#ifndef PRODUCTION
+
 
 
 UW::UI_AssetLoader::UI_AssetLoader(CW::Gui::Gui& gui, UW::ObjectManager& object_manager)
@@ -273,3 +275,7 @@ return [this](CW::Renderer::iRenderer *window) {
   guiAssetLoader();
 };
 };
+
+
+
+#endif

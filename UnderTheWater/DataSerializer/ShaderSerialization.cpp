@@ -7,6 +7,7 @@ CMRC_DECLARE(GameData);
 
 
 
+#ifndef PRODUCTION
 void UW::ShaderSerialization::save(const std::string &shader_name, GLuint type){
   Logger::get().info("ShaderSerialization", "Saving shader: " + shader_name + " type=" + std::to_string(type));
   std::string local_path = UW::Config::GAME_DATA_FOLDER + UW::Config::ASSETS_FOLDER + UW::Config::SHADERS_FOLDER + shader_name + "/" + UW::Config::SHADER_TYPE_TO_NAME[type];
@@ -32,6 +33,7 @@ void UW::ShaderSerialization::save(const std::string &shader_name, GLuint type){
   outFile.close();
   Logger::get().info("ShaderSerialization", "Shader saved: " + shader_name);
 };
+#endif
 
 
 
