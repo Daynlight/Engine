@@ -12,6 +12,7 @@
 #include "config.h"
 #include "Lights/Lights.h"
 #include "Materials/Materials.h"
+#include "Resources/Meshes/Meshes.h"
 
 
 
@@ -20,7 +21,7 @@ class Resources{
 public:
   std::unordered_map<std::string, CW::Renderer::Texture> textures;
   std::unordered_map<std::string, CW::Renderer::Shader> shaders;
-  std::unordered_map<std::string, CW::Renderer::Mesh> meshes;
+  UW::Meshes meshes;
   UW::Lights lights;
   UW::Materials materials;
 

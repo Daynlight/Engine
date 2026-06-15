@@ -68,12 +68,12 @@ public:
 #ifndef PRODUCTION
   void saveMesh(const std::string& name, const CW::Renderer::Mesh& mesh);
 #endif
-  void loadMesh(const std::string& path_to_mesh, std::unordered_map<std::string, CW::Renderer::Mesh> &meshes);
+  void loadMesh(const std::string& path_to_mesh, UW::Meshes &meshes);
 
 #ifndef PRODUCTION
-  void saveAllMeshes(std::unordered_map<std::string, CW::Renderer::Mesh>& meshes);
+  void saveAllMeshes(UW::Meshes& meshes);
 #endif
-  void loadAllMeshes(std::unordered_map<std::string, CW::Renderer::Mesh>& meshes);
+  void loadAllMeshes(UW::Meshes& meshes);
 
 #ifndef PRODUCTION
   void saveShaders(const std::string& shader_name, GLuint type);

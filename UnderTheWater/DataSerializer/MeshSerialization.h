@@ -12,6 +12,7 @@
 #include <cmrc/cmrc.hpp>
 
 #include "Utils/Logger.h"
+#include "Resources/Resources.h"
 #include "config.h"
 #include "Utils/utils.h"
 
@@ -46,12 +47,12 @@ public:
 #ifndef PRODUCTION
   void save(const std::string& name, const CW::Renderer::Mesh& mesh);
 #endif
-  void load(const std::string& path_to_mesh, std::unordered_map<std::string, CW::Renderer::Mesh>& meshes);
+  void load(const std::string& path_to_mesh, UW::Meshes& meshes);
 
 #ifndef PRODUCTION
-  void saveAll(std::unordered_map<std::string, CW::Renderer::Mesh>& meshes);
+  void saveAll(UW::Meshes& meshes);
 #endif
-  void loadAll(std::unordered_map<std::string, CW::Renderer::Mesh>& meshes);
+  void loadAll(UW::Meshes& meshes);
 
 private:
 #ifndef PRODUCTION

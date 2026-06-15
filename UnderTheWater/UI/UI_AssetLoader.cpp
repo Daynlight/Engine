@@ -265,7 +265,7 @@ void UW::UI_AssetLoader::finalizeMesh(aiMesh* aMesh, const std::string& final_me
   temp_mesh.setData<int>(mat_ids, 1, 3);
   temp_mesh.addIndices(indices);
 
-  Resources::get().meshes[final_mesh_name] = std::move(temp_mesh);
+  Resources::get().meshes.emplace_back(final_mesh_name, std::move(temp_mesh));
 };
 
 

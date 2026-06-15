@@ -64,21 +64,21 @@ void UW::DataSerializer::saveMesh(const std::string &name, const CW::Renderer::M
 
 
 
-void UW::DataSerializer::loadMesh(const std::string& path_to_mesh, std::unordered_map<std::string, CW::Renderer::Mesh> &meshes) {
+void UW::DataSerializer::loadMesh(const std::string& path_to_mesh, UW::Meshes &meshes) {
   mesh_serializer.load(path_to_mesh, meshes);
 };
 
 
 
 #ifndef PRODUCTION
-void UW::DataSerializer::saveAllMeshes(std::unordered_map<std::string, CW::Renderer::Mesh> &meshes) {
+void UW::DataSerializer::saveAllMeshes(UW::Meshes &meshes) {
   mesh_serializer.saveAll(meshes);
 };
 #endif
 
 
 
-void UW::DataSerializer::loadAllMeshes(std::unordered_map<std::string, CW::Renderer::Mesh> &meshes) {
+void UW::DataSerializer::loadAllMeshes(UW::Meshes &meshes) {
   mesh_serializer.loadAll(meshes);
 };
 

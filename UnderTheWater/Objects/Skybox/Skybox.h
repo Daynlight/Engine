@@ -15,6 +15,8 @@ namespace UW {
 class Skybox : public Object {
 private:
   CW::Renderer::Uniform uniform;
+  unsigned int mesh_id = 0;
+  unsigned int mesh_version = -1;
 
 public:
   Skybox();

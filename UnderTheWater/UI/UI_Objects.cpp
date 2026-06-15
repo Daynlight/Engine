@@ -83,8 +83,7 @@ void UW::UI_Objects::guiObjectEditor(){
   memcpy(mesh_buffer, object.mesh.data(), object.mesh.size());
   mesh_buffer[object.mesh.size()] = '\0';
   ImGui::InputText("mesh", mesh_buffer, UW::Config::OBJECT_NAME_BUFFER_SIZE);
-  auto itm = Resources::get().meshes.find(mesh_buffer);
-  if(itm == Resources::get().meshes.end()) return;
+  if(!Resources::get().meshes.exists(mesh_buffer)) return;
   object.mesh = std::string(mesh_buffer + '\0');
 
   char shader_buffer[UW::Config::OBJECT_NAME_BUFFER_SIZE];

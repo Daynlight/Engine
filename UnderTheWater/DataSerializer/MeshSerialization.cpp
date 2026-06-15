@@ -45,7 +45,7 @@ void UW::MeshSerialization::save(const std::string& name, const CW::Renderer::Me
 
 
 
-void UW::MeshSerialization::load(const std::string& path_to_mesh, std::unordered_map<std::string, CW::Renderer::Mesh>& meshes) {
+void UW::MeshSerialization::load(const std::string& path_to_mesh, UW::Meshes& meshes) {
   Logger::get().info("MeshSerialization", "Loading mesh: " + path_to_mesh);
   try {
     auto fs = cmrc::GameData::get_filesystem();
@@ -56,8 +56,6 @@ void UW::MeshSerialization::load(const std::string& path_to_mesh, std::unordered
     UW::MeshRecord record;
     if (!(inFile >> record)) return;
 
-    meshes.erase(record.name);
-    
     CW::Renderer::Mesh engine_mesh;
     engine_mesh.addIndices(record.indices);
 
@@ -74,10 +72,13 @@ void UW::MeshSerialization::load(const std::string& path_to_mesh, std::unordered
         engine_mesh.addVertices(vertices, e.dimension, e.key);
       } else {
         UW::Utils::uploadBufferByType(engine_mesh, e.type, e.data, e.dimension, e.key);
-      }
-    }
+      };
+    };
 
-    meshes[record.name] = std::move(engine_mesh);
+    meshes.emplace_back(record.name, std::move(engine_mesh));
+    unsigned int mesh_id = meshes.get_id(record.name);
+    meshes[mesh_id].compile();
+    
     Logger::get().info("MeshSerialization", "Mesh loaded: " + record.name);
   } catch (const std::exception& e) {
     Logger::get().erro("MeshSerialization", "CMRC EXCEPTION: " + std::string(e.what()));
@@ -87,18 +88,24 @@ void UW::MeshSerialization::load(const std::string& path_to_mesh, std::unordered
 
 
 #ifndef PRODUCTION
-void UW::MeshSerialization::saveAll(std::unordered_map<std::string, CW::Renderer::Mesh>& meshes) {
+void UW::MeshSerialization::saveAll(UW::Meshes& meshes) {
   Logger::get().info("MeshSerialization", "Saving all meshes...");
-  for (const auto& [mesh_name, mesh_instance] : meshes) {
-    save(mesh_name, mesh_instance);
-  };
+  
+  std::vector<std::pair<std::string, unsigned int>> meshes_to_save;
+  
+  for (const auto& pair : meshes.getMeshIDs())
+    meshes_to_save.push_back(pair);
+
+  for (const auto& [mesh_name, mesh_id] : meshes_to_save)
+    save(mesh_name, meshes[mesh_id]);
+  
   Logger::get().info("MeshSerialization", "All meshes have been saved");
-};
+}
 #endif
 
 
 
-void UW::MeshSerialization::loadAll(std::unordered_map<std::string, CW::Renderer::Mesh>& meshes) {
+void UW::MeshSerialization::loadAll(UW::Meshes& meshes) {
   Logger::get().info("MeshSerialization", "Loading all meshes...");
   try {
     auto fs = cmrc::GameData::get_filesystem();
