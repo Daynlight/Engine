@@ -142,20 +142,20 @@ Shaders are loaded via cmrc or from folder as fallback are **private** and **saf
 - [x] Fix bug on delete material
 </details>
 
-<details open>
-<summary>🌟 Iteration 3 🌟 (14.06.2026)</summary>
+<details>
+<summary>🌟 Iteration 3 (15.06.2026)</summary>
   
 - [x] Mesh serialization.
 - [x] Compile flag for end product ```PRODUCTION```
 - [x] Logger UI
 - [x] Asset loader UI
 - [x] Lights UI
-- [ ] Full clean up
-- [ ] Full optimization
+- [x] Full clean up
+- [x] Full optimization
 </details>
 
-<details>
-<summary>Iteration 4 (21.06.2026)</summary>
+<details open>
+<summary> 🌟 Iteration 4 🌟 (21.06.2026)</summary>
 
 - [ ] Water surface shader
 - [ ] FBO Render to texture
