@@ -76,8 +76,8 @@ void UW::MeshSerialization::load(const std::string& path_to_mesh, UW::Meshes& me
     };
 
     meshes.emplace_back(record.name, std::move(engine_mesh));
-    unsigned int mesh_id = meshes.get_id(record.name);
-    meshes[mesh_id].compile();
+    // unsigned int mesh_id = meshes.get_id(record.name);
+    // meshes[mesh_id].compile();
     
     Logger::get().info("MeshSerialization", "Mesh loaded: " + record.name);
   } catch (const std::exception& e) {

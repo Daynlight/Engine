@@ -31,6 +31,7 @@ void UW::Resources::destroy(){
   textures.clear();
   shaders.clear();
   materials.destroy();
+  lights.destroy();
   lights.clear();
 };
 
