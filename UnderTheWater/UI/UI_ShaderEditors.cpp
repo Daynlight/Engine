@@ -26,8 +26,7 @@ void UW::UI_ShaderEditor::guiShaderLoad(std::string name, GLenum type){
   shader_type = type;
   memset(buffer, '\0', UW::Config::SHADER_EDITOR_BUFFER_SIZE);
   
-  auto it = Resources::get().shaders.find(name);
-  if(it == Resources::get().shaders.end()) return;
+  if(!Resources::get().shaders.exists(name)) return;
 
   const std::unordered_map<GLenum, CW::Renderer::ShaderData>& reg = Resources::get().getShader(name).getRegisterShader();
   auto ita = reg.find(type);
@@ -52,8 +51,7 @@ void UW::UI_ShaderEditor::guiShaderEditor(){
   
   ImGui::InputTextMultiline("##Shader Content", buffer, UW::Config::SHADER_EDITOR_BUFFER_SIZE, ImVec2(width, height), ImGuiInputTextFlags_WordWrap);
 
-  auto it = Resources::get().shaders.find(shader_name);
-  if(it == Resources::get().shaders.end()) return;
+  if(Resources::get().shaders.exists(shader_name)) return;
   
   auto& reg = Resources::get().getShader(shader_name).getRegisterShader();
   auto it2 = reg.find(shader_type);

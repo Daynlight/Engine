@@ -13,6 +13,7 @@
 #include "Lights/Lights.h"
 #include "Materials/Materials.h"
 #include "Resources/Meshes/Meshes.h"
+#include "Resources/Shaders/Shaders.h"
 
 
 
@@ -20,7 +21,7 @@ namespace UW{
 class Resources{
 public:
   std::unordered_map<std::string, CW::Renderer::Texture> textures;
-  std::unordered_map<std::string, CW::Renderer::Shader> shaders;
+  UW::Shaders shaders;
   UW::Meshes meshes;
   UW::Lights lights;
   UW::Materials materials;

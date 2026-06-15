@@ -21,6 +21,8 @@ private:
   float elapsed_time = 0.0f;
   unsigned int mesh_id = -1;
   unsigned int mesh_version = -1;
+  unsigned int shader_id = -1;
+  unsigned int shader_version = -1;
 
 public:
   Water();

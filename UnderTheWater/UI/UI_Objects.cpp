@@ -90,8 +90,7 @@ void UW::UI_Objects::guiObjectEditor(){
   memcpy(shader_buffer, object.shader.data(), object.shader.size());
   shader_buffer[object.shader.size()] = '\0';
   ImGui::InputText("shader", shader_buffer, UW::Config::OBJECT_NAME_BUFFER_SIZE);
-  auto its = Resources::get().shaders.find(shader_buffer);
-  if(its == Resources::get().shaders.end()) return;
+  if(!Resources::get().shaders.exists(shader_buffer)) return;
   object.shader = std::string(shader_buffer + '\0');
 
 

@@ -5,6 +5,7 @@
 UW::Water::Water(){
   generateChunks();
   mesh_id = Resources::get().meshes.get_id("terrain_chunk");
+  mesh_id = Resources::get().shaders.get_id("Water");
 };
 
 
@@ -32,6 +33,15 @@ void UW::Water::render(CW::Renderer::Renderer* renderer, Camera& culling_camera,
     mesh_version = Resources::get().meshes.getLatestsVersion();
     mesh_id = Resources::get().meshes.get_id("terrain_chunk");
   };
+
+  if(!Resources::get().shaders.exists("Water")){
+    Resources::get().getShader("Water");
+  }
+
+  if(Resources::get().shaders.validateVersion(shader_version)){
+    shader_version = Resources::get().meshes.getLatestsVersion();
+    shader_id = Resources::get().meshes.get_id("Water");
+  };
   
   uniform["projection"]->set(render_camera.transformation(renderer));
   uniform["view"]->set(glm::mat4(1.0f));
@@ -46,7 +56,7 @@ void UW::Water::render(CW::Renderer::Renderer* renderer, Camera& culling_camera,
   uniform["material_id"]->set<int>(Resources::get().materials.translate_material("water"));
 
 
-  Resources::get().getShader("Water").getUniforms().emplace_back(&uniform);
+  Resources::get().shaders[shader_id].getUniforms().emplace_back(&uniform);
 
   glPatchParameteri(GL_PATCH_VERTICES, 4);
   glEnable(GL_BLEND);
@@ -60,13 +70,13 @@ void UW::Water::render(CW::Renderer::Renderer* renderer, Camera& culling_camera,
     if(isVisible(culling_camera.transformation(renderer), model, Resources::get().meshes[mesh_id])){
       uniform["model"]->set<glm::mat4>(model);
       
-      Resources::get().getShader("Water").bind();
+      Resources::get().shaders[shader_id].bind();
       Resources::get().meshes[mesh_id].render(GL_PATCHES);
     };
   };
 
-  Resources::get().getShader("Water").unbind();
-  Resources::get().getShader("Water").getUniforms().clear();
+  Resources::get().shaders[shader_id].unbind();
+  Resources::get().shaders[shader_id].getUniforms().clear();
 
   glDepthMask(GL_TRUE);
   glDisable(GL_BLEND);

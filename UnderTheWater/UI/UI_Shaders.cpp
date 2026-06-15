@@ -61,7 +61,8 @@ void UW::UI_Shaders::guiShaderList(){
     Resources::get().shaders.clear();
   };
 
-  for (const auto& [ key, values ] : Resources::get().shaders) {
+  for (const auto& [ key, id ] : Resources::get().shaders.getShadersIDs()) {
+    CW::Renderer::Shader& values = Resources::get().shaders[id];
     if(ImGui::CollapsingHeader(key.c_str())){
       for (const auto& [key_s, values_s] : values.getRegisterShader()){
         std::string button_label = UW::Config::SHADER_TYPE_TO_NAME[key_s] +  "##-" + key;

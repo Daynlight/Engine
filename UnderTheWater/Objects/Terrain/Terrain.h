@@ -20,6 +20,8 @@ private:
   glm::vec2 map_size = glm::vec2(0.0f);
   unsigned int mesh_id = -1;
   unsigned int mesh_version = -1;
+  unsigned int shader_id = -1;
+  unsigned int shader_version = -1;
 
 public:
   Terrain();

@@ -11,7 +11,14 @@ CMRC_DECLARE(GameData);
 void UW::ShaderSerialization::save(const std::string &shader_name, GLuint type){
   Logger::get().info("ShaderSerialization", "Saving shader: " + shader_name + " type=" + std::to_string(type));
   std::string local_path = UW::Config::GAME_DATA_FOLDER + UW::Config::ASSETS_FOLDER + UW::Config::SHADERS_FOLDER + shader_name + "/" + UW::Config::SHADER_TYPE_TO_NAME[type];
-  std::string source = Resources::get().getShader(shader_name).getRegisterShader().at(type).getSource();
+  
+  auto& reg = Resources::get().getShader(shader_name).getRegisterShader();
+  if (reg.find(type) == reg.end()) {
+    Logger::get().warn("ShaderSerialization", "Shader type source not found in register for: " + shader_name);
+    return;
+  }
+  
+  std::string source = reg.at(type).getSource();
   
   try {
     std::filesystem::path p(local_path);
@@ -37,27 +44,27 @@ void UW::ShaderSerialization::save(const std::string &shader_name, GLuint type){
 
 
 
-void UW::ShaderSerialization::load(const std::string& shader_name){
+void UW::ShaderSerialization::load(const std::string& shader_name) {
   Logger::get().info("ShaderSerialization", "Loading shader: " + shader_name);
   std::string local_path = UW::Config::GAME_DATA_FOLDER + UW::Config::ASSETS_FOLDER + UW::Config::SHADERS_FOLDER + shader_name;
   CW::Renderer::Shader shader;
 
-  for(auto& shader_name : UW::Config::SHADER_NAME_TO_TYPE){
+  for (const auto& config_pair : UW::Config::SHADER_NAME_TO_TYPE) {
     try {
       auto fs = cmrc::GameData::get_filesystem();
-      auto file = fs.open(local_path + "/" + shader_name.first); 
+      auto file = fs.open(local_path + "/" + config_pair.first); 
       
-      const char* data_ptr = reinterpret_cast<const char*>(file.begin());
-      const GLuint type = shader_name.second;
-      shader.setShader(std::string(data_ptr), type);
-      continue;
+      std::string shader_source(file.begin(), file.end());
+      const GLuint type = config_pair.second;
+      
+      shader.setShader(shader_source, type);
     } catch (const std::runtime_error& e) {
       Logger::get().warn("ShaderSerialization", "[LoadShader] CMRC Exception: " + std::string(e.what()));
     };
   };
 
-  if(shader.getRegisterShader().size() != 0){
-    Resources::get().shaders[shader_name] = std::move(shader);
+  if (shader.getRegisterShader().size() != 0) {
+    Resources::get().shaders.emplace_back(shader_name, std::move(shader));
     Logger::get().info("ShaderSerialization", "Shader loaded: " + shader_name);
   } else {
     Logger::get().info("ShaderSerialization", "No shader source found for: " + shader_name);

@@ -18,6 +18,7 @@ set(src
   "Camera/Camera.cpp"
   "Resources/Resources.cpp"
   "Resources/Meshes/Meshes.cpp"
+  "Resources/Shaders/Shaders.cpp"
   "Resources/Lights/Lights.cpp"
   "Resources/Materials/Materials.cpp"
   "Objects/Terrain/Terrain.cpp"

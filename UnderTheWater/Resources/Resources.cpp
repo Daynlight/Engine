@@ -83,21 +83,17 @@ CW::Renderer::Texture &UW::Resources::getTexture(const std::string &path_to_asse
 
 
 CW::Renderer::Shader &UW::Resources::getShader(const std::string &path_to_asset){
-  auto it = shaders.find(path_to_asset);
-  
-  if (it != shaders.end()) {
-    return it->second;
-  }
+  if (shaders.exists(path_to_asset)) {
+    return shaders[shaders.get_id(path_to_asset)];
+  };
 
   DataSerializer::get().loadShader(path_to_asset);
   
-  auto ita = shaders.find(path_to_asset);
-  
-  if (ita != shaders.end()) {
-    return ita->second;
+  if (shaders.exists(path_to_asset)) {
+    return shaders[shaders.get_id(path_to_asset)];
   };
   
-  return shaders[UW::Config::DEFAULT_SHADER];
+  return shaders[shaders.get_id(UW::Config::DEFAULT_SHADER)];
 };
 
 
