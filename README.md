@@ -143,7 +143,7 @@ Shaders are loaded via cmrc or from folder as fallback are **private** and **saf
 </details>
 
 <details>
-<summary>🌟 Iteration 3 (15.06.2026)</summary>
+<summary>Iteration 3 (15.06.2026)</summary>
   
 - [x] Mesh serialization.
 - [x] Compile flag for end product ```PRODUCTION```

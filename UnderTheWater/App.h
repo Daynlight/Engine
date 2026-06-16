@@ -27,6 +27,8 @@ class App{
 private:
   // app
   CW::Renderer::Renderer window;
+  CW::Renderer::Framebuffer fbo;
+  
   #ifndef PRODUCTION
   UW::UI ui;
   #endif

@@ -8,7 +8,7 @@
 UW::App::App()
   :camera(&window)
   #ifndef PRODUCTION
-  , debug_camera(&window), ui(window, fps, debug_camera_on, camera, debug_camera, object_manager)
+  , debug_camera(&window), ui(window, fps, debug_camera_on, camera, debug_camera, object_manager), fbo(800, 600)
   #endif
   {
   Logger::get().info("App", "App Initialization");
@@ -45,6 +45,10 @@ void UW::App::run(){
 void UW::App::onLoad(){
   Logger::get().info("App", "Loading Scene");
 
+  int w, h;
+  glfwGetFramebufferSize(window.getWindow(), &w, &h);
+  fbo.rescale(w, h);
+
   #ifndef PRODUCTION
   ui.onLoad();
   #endif
@@ -74,6 +78,8 @@ void UW::App::onDestroy() {
 
 
 void UW::App::render(){
+  fbo.bind();
+
   window.beginFrame();  
 
   Resources::get().lights.bind(0);
@@ -98,7 +104,14 @@ void UW::App::render(){
   
   Resources::get().materials.unbind();
   Resources::get().lights.unbind();
+  fbo.unbind();
   
+  int width, height;
+  glfwGetFramebufferSize(window.getWindow(), &width, &height);
+  glViewport(0, 0, width, height);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  fbo.blitToScreen(width, height);
+
   #ifndef PRODUCTION
   ui.render();
   #endif
