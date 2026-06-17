@@ -9,6 +9,7 @@ Project for **GRK** under water scene. Build on top of [**CWindow library**](htt
 - [About](#about)
 - [TOC](#toc)
 - [Installation and Usage](#installation-and-usage)
+- [Build in prod](#build-in-prod)
 - [Compiling End Product](#compiling-end-product)
 - [Architecture](#architecture)
   - [Build System](#build-system)
@@ -51,6 +52,17 @@ Project for **GRK** under water scene. Build on top of [**CWindow library**](htt
          ```bash
          ./UnderTheWater/UnderTheWater
          ```
+
+
+## Build in prod
+```bash
+mkdir -p build-prod
+cd build-prod
+cmake -B . -DPRODUCTION=ON ..
+cmake --build .
+cd ..
+./build-prod/bin/UnderTheWater
+```
 
 
 
