@@ -76,34 +76,42 @@ void UW::App::onDestroy() {
 
 
 void UW::App::render(){
+  compileShadows();
+
   fbo.bind();
 
   window.beginFrame();
 
+  glm::mat4 light_space_matrix = light_camera.transformation(&window);
+
+  CW::Renderer::Uniform shadows_uniform_off;
+  shadows_uniform_off["u_ShadowEnabled"]->set<int>(0);
+  shadows_uniform_off["u_ShadowDepthTexture"]->set<int>(16);
+  shadows_uniform_off["u_LightSpaceMatrix"]->set<glm::mat4>(light_space_matrix);
+
   glActiveTexture(GL_TEXTURE16);
   glBindTexture(GL_TEXTURE_2D, shadows_fbo.getDepthTexture());
-  CW::Renderer::Uniform shadows_uniform;
-  shadows_uniform["u_ShadowEnabled"]->set<int>(1);
-  shadows_uniform["u_ShadowDepthTexture"]->set<int>(16);
-  glm::mat4 light_space_matrix = light_camera.transformation(&window);
-  shadows_uniform["u_LightSpaceMatrix"]->set<glm::mat4>(light_space_matrix);
+  CW::Renderer::Uniform shadows_uniform_on;
+  shadows_uniform_on["u_ShadowEnabled"]->set<int>(1);
+  shadows_uniform_on["u_ShadowDepthTexture"]->set<int>(16);
+  shadows_uniform_on["u_LightSpaceMatrix"]->set<glm::mat4>(light_space_matrix);
 
   Resources::get().lights.bind(0);
   Resources::get().materials.bind(1);
 
   #ifndef PRODUCTION
   if(debug_camera_on){ 
-    terrain.render(&window, camera, debug_camera, shadows_uniform);
-    skybox.render(&window, camera, debug_camera); 
-    water.render(&window, camera, debug_camera);
-    for(UW::GameObject& object : object_manager.objects) object.render(&window, camera, debug_camera);
+    terrain.render(&window, camera, debug_camera, shadows_uniform_on);
+    skybox.render(&window, camera, debug_camera, shadows_uniform_off); 
+    water.render(&window, camera, debug_camera, shadows_uniform_off);
+    for(UW::GameObject& object : object_manager.objects) object.render(&window, camera, debug_camera, shadows_uniform_on);
   }
   else {
   #endif
-    terrain.render(&window, camera, camera, shadows_uniform);
-    skybox.render(&window, camera, camera);
-    water.render(&window, camera, camera);
-    for(UW::GameObject& object : object_manager.objects) object.render(&window, camera, camera);
+    terrain.render(&window, camera, camera, shadows_uniform_on);
+    skybox.render(&window, camera, camera, shadows_uniform_off);
+    water.render(&window, camera, camera, shadows_uniform_off);
+    for(UW::GameObject& object : object_manager.objects) object.render(&window, camera, camera, shadows_uniform_on);
   #ifndef PRODUCTION
   };
   #endif
@@ -142,8 +150,6 @@ void UW::App::update(){
   updateFps();
   swapCamera();
 #endif
-  
-  if(Resources::get().lights[0].position != shadow_last_position) compileShadows();
 
   camera.event(&window);
   
@@ -245,7 +251,7 @@ void UW::App::postProcessing(){
 
 
 void UW::App::compileShadows(){
-    shadows_fbo.bind();
+  shadows_fbo.bind();
   light_camera.setOrthographic(true);
   light_camera.fov = 110.0f;
   light_camera.position = Resources::get().lights[0].position;
@@ -263,14 +269,12 @@ void UW::App::compileShadows(){
   Resources::get().materials.bind(1);
 
   terrain.render(&window, light_camera, light_camera, shadows_uniform1);
-  for(UW::GameObject& object : object_manager.objects) object.render(&window, light_camera, light_camera);
+  for(UW::GameObject& object : object_manager.objects) object.render(&window, light_camera, light_camera, shadows_uniform1);
   
   Resources::get().materials.unbind();
   Resources::get().lights.unbind();
 
   shadows_fbo.unbind();
-
-  shadow_last_position = Resources::get().lights[0].position;
 };
 
 

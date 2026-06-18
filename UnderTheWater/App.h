@@ -51,7 +51,6 @@ private:
   #endif
 
   float fixed_update_time_acc = 0.0f;
-  glm::vec3 shadow_last_position = glm::vec3(0.0f);
 
   // objects
   UW::Terrain terrain;

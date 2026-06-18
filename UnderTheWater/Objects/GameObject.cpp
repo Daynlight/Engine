@@ -14,7 +14,7 @@ UW::GameObject::~GameObject(){
 
 
 
-void UW::GameObject::render(CW::Renderer::Renderer *renderer, Camera &culling_camera, Camera &render_camera){
+void UW::GameObject::render(CW::Renderer::Renderer *renderer, Camera &culling_camera, Camera &render_camera, CW::Renderer::Uniform& shadows_uniform){
   if(Resources::get().meshes.validateVersion(mesh_version)){
     mesh_version = Resources::get().meshes.getLatestsVersion();
     mesh_id = Resources::get().meshes.get_id(this->mesh);
@@ -43,6 +43,7 @@ void UW::GameObject::render(CW::Renderer::Renderer *renderer, Camera &culling_ca
     };
     
     Resources::get().getShader(this->shader).getUniforms().emplace_back(&uniform);
+    Resources::get().getShader(this->shader).getUniforms().emplace_back(&shadows_uniform);
     
     Resources::get().getShader(this->shader).bind();
     

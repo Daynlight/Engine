@@ -79,16 +79,17 @@ float CalculateShadow(vec4 fragPosLightSpace, vec3 normal, vec3 lightDir) {
   float currentDepth = projCoords.z;
 
   float shadow = 0.0f;
-  vec2 texelSize = 1 / textureSize(u_ShadowDepthTexture, 0);
+  vec2 texelSize = 1 / textureSize(u_ShadowDepthTexture, 0) + 0.001;
 
-  for(int x = -1; x <= 1; ++x) {
-    for(int y = -1; y <= 1; ++y) {
-      float pcfDepth = texture(u_ShadowDepthTexture, projCoords.xy + vec2(x, y)).r;
+  int samples = 3;
+  for(int x = -(samples - 1)/2; x <= (samples - 1)/2; ++x) {
+    for(int y = -(samples - 1)/2; y <= (samples - 1)/2; ++y) {
+      float pcfDepth = texture(u_ShadowDepthTexture, projCoords.xy + vec2(x, y) * texelSize).r;
       shadow += (currentDepth > pcfDepth) ? 1.0 : 0.0;
     }
   }
 
-  return shadow / 9.0f;
+  return shadow / (samples * samples);
 }
 
 vec3 BRDF(
@@ -145,6 +146,10 @@ void main(){
 
   FragColor = vec4(finalColor, 1.0);
 }
+
+
+
+
 
 
 
