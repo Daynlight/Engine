@@ -80,6 +80,7 @@ private:
   void initWindow();
   void postProcessing();
   void compileShadows();
+  void renderSFD(CW::Renderer::Framebuffer& fbo, UW::Camera& camera, bool shadows_on = true);
   
 #ifndef PRODUCTION
   void swapCamera();

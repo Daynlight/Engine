@@ -19,29 +19,12 @@ struct SDFObject{
 
 class SDF{
 private:
-  CW::Renderer::GPUStore buffer;
-  bool is_compiled = false;
-  std::vector<SDFObject> data;
+  std::string shader_name;
 
 public:
-  SDF();
+  SDF(const std::string& shader_name);
   ~SDF();
 
-  void render(CW::Renderer::Framebuffer& fbo, UW::Camera& camera, CW::Renderer::Renderer& window);
-
-  void compile();
-  void destroy();
-  void bind(GLuint socket);
-  void unbind();
-
-  SDFObject& operator[](unsigned int index);
-  SDFObject get(unsigned int index) const;
-
-  void clear();
-  void erase(unsigned int index);
-  unsigned int size() const;
-
-  void emplace_back(SDFObject sdf);
-  void emplace_back(std::initializer_list<SDFObject> sdfs);
+  void render(CW::Renderer::Framebuffer& fbo, UW::Camera& camera, CW::Renderer::Renderer& window, CW::Renderer::Uniform* uniform = nullptr);
 };
 };

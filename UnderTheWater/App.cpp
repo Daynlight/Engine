@@ -10,6 +10,7 @@ UW::App::App()
   #ifndef PRODUCTION
   , debug_camera(&window), ui(window, fps, post_processing_on, debug_camera_on, camera, debug_camera, object_manager)
   #endif
+  , sdf_register("SDF")
   {
   Logger::get().info("App", "App Initialization");
   
@@ -135,8 +136,14 @@ void UW::App::render(){
   glBindTexture(GL_TEXTURE_2D, 0);
   fbo.unbind();
 
-  sdf_register.render(fbo, camera, window);
-  
+  // SDF
+  #ifndef PRODUCTION
+  if(debug_camera_on)
+    renderSFD(fbo, debug_camera);
+  else
+#endif
+  renderSFD(fbo, camera);
+
   int width, height;
   glfwGetFramebufferSize(window.getWindow(), &width, &height);
   glViewport(0, 0, width, height);
@@ -230,7 +237,7 @@ void UW::App::postProcessing(){
   post_uniform["u_water_height"]->set<float>(UW::Config::WATER_HEIGHT);
   post_uniform["u_Near"]->set<float>(UW::Config::CAMERA_NEAR_PLANE);
   post_uniform["u_Far"]->set<float>(UW::Config::CAMERA_ORTHO_FAR_PLANE);
-  post_uniform["u_FogDensity"]->set<float>(0.03f);
+  post_uniform["u_FogDensity"]->set<float>(0.015f);
   glm::vec3 fog_color = {0.0f, 0.4f, 0.55f};
   post_uniform["u_FogColor"]->set<glm::vec3>(fog_color);
 
@@ -264,6 +271,32 @@ void UW::App::postProcessing(){
 
 
 
+void UW::App::renderSFD(CW::Renderer::Framebuffer& fbo, UW::Camera& camera, bool shadows_on){
+  CW::Renderer::Uniform sdf_uniform;
+  glm::mat4 light_space_matrix = light_camera.transformation(&window);
+  sdf_uniform["u_ShadowDepthTexture"]->set<int>(16);
+  sdf_uniform["u_LightSpaceMatrix"]->set<glm::mat4>(light_space_matrix);
+  
+  if(shadows_on){
+    sdf_uniform["u_ShadowEnabled"]->set<int>(1);
+    glActiveTexture(GL_TEXTURE16);
+    glBindTexture(GL_TEXTURE_2D, shadows_fbo.getDepthTexture());
+  }
+  else sdf_uniform["u_ShadowEnabled"]->set<int>(0);
+
+
+  sdf_uniform["material_id"]->set<int>(Resources::get().materials.translate_material("SDF"));
+  sdf_register.render(fbo, camera, window, &sdf_uniform);
+
+
+  if(shadows_on){
+    glActiveTexture(GL_TEXTURE16);
+    glBindTexture(GL_TEXTURE_2D, shadows_fbo.getDepthTexture());
+  };
+};
+
+
+
 void UW::App::compileShadows(){
   shadows_fbo.bind();
   light_camera.setOrthographic(true);
@@ -289,6 +322,8 @@ void UW::App::compileShadows(){
   Resources::get().lights.unbind();
 
   shadows_fbo.unbind();
+  
+  // renderSFD(shadows_fbo, light_camera, false);
 };
 
 
