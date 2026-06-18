@@ -172,7 +172,7 @@ Shaders are loaded via cmrc or from folder as fallback are **private** and **saf
 - [x] FBO Render to texture
 - [x] Under water fog
 - [x] Quaternion Camera, without gimbal lock.
-- [ ] Shadow Mapping
+- [x] Shadow Mapping
 - [ ] Parallel Transport Layer
 - [ ] SDF ray-marching
 </details>

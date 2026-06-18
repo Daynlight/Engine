@@ -6,7 +6,7 @@
 // ========== APP ========== //
 // ========================= //
 UW::App::App()
-  :camera(&window), light_camera(&window), fbo(1920, 1080), shadows_fbo(800, 600)
+  :camera(&window), light_camera(&window), fbo(1920, 1080), shadows_fbo(1920 * 5, 1080 * 5)
   #ifndef PRODUCTION
   , debug_camera(&window), ui(window, fps, post_processing_on, debug_camera_on, camera, debug_camera, object_manager)
   #endif
