@@ -49,11 +49,11 @@ void UW::App::onLoad(){
   ui.onLoad();
   #endif
   
-  camera.position = {779.276f, 101.339f, 1218.920f};
-  camera.direction = {-0.873f, -0.198f, -0.447f};
+  camera.position = {174.780f, 26.939f, -80.027f};
+  camera.direction = {-0.847f, -0.466f, -0.256f};
   #ifndef PRODUCTION
-  debug_camera.position = {1468.995, 2074.450, 1875.771};
-  debug_camera.direction = {-0.327, -0.919, -0.220};
+  debug_camera.position = {453.198f, 250.233f, -26.842f};
+  debug_camera.direction = {-0.668f, -0.734f, -0.122f};
   #endif
 
   DataSerializer::get().loadAll(object_manager.objects);
@@ -77,6 +77,18 @@ void UW::App::onDestroy() {
 
 void UW::App::render(){
   compileShadows();
+
+  // int w, h;
+  // glfwGetFramebufferSize(window.getWindow(), &w, &h);
+  // shadows_fbo.blitToScreen(w, h);
+
+  // #ifndef PRODUCTION
+  // ui.render();
+  // #endif
+
+  // window.windowEvents();
+  // window.swapBuffer();
+  // return;
 
   fbo.bind();
 
@@ -214,9 +226,9 @@ void UW::App::postProcessing(){
   post_uniform["u_SceneDepthTexture"]->set<int>(1);
 
   post_uniform["u_water_height"]->set<float>(UW::Config::WATER_HEIGHT);
-  post_uniform["u_Near"]->set<float>(0.1f);
-  post_uniform["u_Far"]->set<float>(4000.0f);
-  post_uniform["u_FogDensity"]->set<float>(0.003f);
+  post_uniform["u_Near"]->set<float>(UW::Config::CAMERA_NEAR_PLANE);
+  post_uniform["u_Far"]->set<float>(UW::Config::CAMERA_ORTHO_FAR_PLANE);
+  post_uniform["u_FogDensity"]->set<float>(0.03f);
   glm::vec3 fog_color = {0.0f, 0.4f, 0.55f};
   post_uniform["u_FogColor"]->set<glm::vec3>(fog_color);
 

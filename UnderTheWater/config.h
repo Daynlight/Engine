@@ -36,11 +36,11 @@ namespace UW::Config{
   inline constexpr bool DEFAULT_DEBUG_CAMERA_ON = true;
   inline constexpr bool DEFAULT_POST_PROCESSING_ON = true;
 
-  inline constexpr float MAX_HEIGHT = 1024.0f;
-  inline constexpr float WATER_HEIGHT = 1000.0f;
-  inline constexpr float CHUNK_SIZE = 512.0f;
-  inline constexpr unsigned int CHUNK_RADIUS = 5;                         // 11 x 11
-  inline constexpr glm::vec2 TESS_BOUND = glm::vec2(8.0f, 512.0f);
+  inline constexpr float MAX_HEIGHT = 125.0f;
+  inline constexpr float WATER_HEIGHT = 70.0f;
+  inline constexpr float CHUNK_SIZE = 256.0f;
+  inline constexpr unsigned int CHUNK_RADIUS = 1;                         // 3 x 3
+  inline constexpr glm::vec2 TESS_BOUND = glm::vec2(8.0f, 256.0f);
   inline constexpr float TESS_DISTANCE_COFF = 0.0000003f;
   
   inline const std::string SWAP_CAMERA_BTN = "P";
@@ -55,9 +55,9 @@ namespace UW::Config{
   inline const std::string CAMERA_ROLL_RIGHT = "E";
 
   inline constexpr float CAMERA_SWAP_COOLDOWN = 0.5f;
-  inline constexpr float CAMERA_DEFAULT_VELOCITY = 200.0f;
+  inline constexpr float CAMERA_DEFAULT_VELOCITY = 50.0f;
   inline constexpr float CAMERA_SENSITIVITY = 0.1f;
-  inline constexpr float CAMERA_ACCELERATION_RATE = 40.0f;
+  inline constexpr float CAMERA_ACCELERATION_RATE = 15.0f;
   inline constexpr float CAMERA_MIN_VELOCITY = 1.1f;
   inline constexpr float CAMERA_TILT_ACCELERATION = 8.0f;
   inline constexpr float CAMERA_MAX_TILT = 30.0f;
@@ -65,9 +65,9 @@ namespace UW::Config{
   inline constexpr float CAMERA_ROLL_INTERPOLATION_SPEED = 10.0f;
   inline constexpr float CAMERA_FOV = 80.0f;
   inline constexpr float CAMERA_NEAR_PLANE = 0.1f;
-  inline constexpr float CAMERA_FAR_PLANE = 4000.0f;
-  inline constexpr float CAMERA_ORTHO_FAR_PLANE = 40000000.0f;
-  inline constexpr float CAMERA_ORTHO_SIZE = 10000.0f;
+  inline constexpr float CAMERA_FAR_PLANE = 1200.0f;
+  inline constexpr float CAMERA_ORTHO_FAR_PLANE = 1200.0f;
+  inline constexpr float CAMERA_ORTHO_SIZE = 1000.0f;
 
   inline std::unordered_map<std::string, GLuint> SHADER_NAME_TO_TYPE = {
     {"vertex.glsl", GL_VERTEX_SHADER},

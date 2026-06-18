@@ -109,31 +109,33 @@ vec3 Diffuse(vec3 Fresnel, vec3 albedo, float metallic){
 
 float CalculateShadow(vec4 fragPosLightSpace, vec3 normal, vec3 lightDir) {
   vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
-  
+    
   projCoords = projCoords * 0.5 + 0.5;
 
   if(projCoords.z > 1.0 || projCoords.x < 0.0 || projCoords.x > 1.0 || projCoords.y < 0.0 || projCoords.y > 1.0) {
     return 0.0;
   }
 
-  float closestDepth = texture(u_ShadowDepthTexture, projCoords.xy).r;
-
   float currentDepth = projCoords.z;
+    
+  float bias = max(0.005 * (1.0 - dot(normal, lightDir)), 0.001);
 
-  float shadow = 0.0f;
-  vec2 texelSize = 1 / textureSize(u_ShadowDepthTexture, 0) + 0.001;
+  float shadow = 0.0;
+  vec2 texelSize = 1.0 / textureSize(u_ShadowDepthTexture, 0);
 
-  int samples = 3;
-  for(int x = -(samples - 1)/2; x <= (samples - 1)/2; ++x) {
-    for(int y = -(samples - 1)/2; y <= (samples - 1)/2; ++y) {
+  int radius = 1; 
+  float samples = 0.0;
+
+  for(int x = -radius; x <= radius; ++x) {
+    for(int y = -radius; y <= radius; ++y) {
       float pcfDepth = texture(u_ShadowDepthTexture, projCoords.xy + vec2(x, y) * texelSize).r;
-      shadow += (currentDepth > pcfDepth) ? 1.0 : 0.0;
+      shadow += (currentDepth - bias > pcfDepth) ? 1.0 : 0.0;
+      samples += 1.0;
     }
   }
 
-  return shadow / (samples*samples);
+  return shadow / samples;
 }
-
 
 
 vec3 BRDF(
@@ -215,6 +217,10 @@ void main(){
 
   FragColor = vec4(finalColor, 1.0);
 }
+
+
+
+
 
 
 
