@@ -134,6 +134,8 @@ void UW::App::render(){
   glActiveTexture(GL_TEXTURE16);
   glBindTexture(GL_TEXTURE_2D, 0);
   fbo.unbind();
+
+  sdf_register.render(fbo, camera, window);
   
   int width, height;
   glfwGetFramebufferSize(window.getWindow(), &width, &height);

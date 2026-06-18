@@ -19,6 +19,7 @@
 #include "Objects/Water/Water.h"
 #include "Objects/Skybox/Skybox.h"
 #include "DataSerializer/DataSerializer.h"
+#include "SDF.h"
 
 
 
@@ -57,6 +58,7 @@ private:
   UW::Water water;
   UW::Skybox skybox;
   UW::ObjectManager object_manager;
+  UW::SDF sdf_register;
 
 
 public:
