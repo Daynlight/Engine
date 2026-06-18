@@ -19,7 +19,7 @@
 #include "Objects/Water/Water.h"
 #include "Objects/Skybox/Skybox.h"
 #include "DataSerializer/DataSerializer.h"
-#include "SDF.h"
+#include "Meduse.h"
 
 
 
@@ -58,7 +58,7 @@ private:
   UW::Water water;
   UW::Skybox skybox;
   UW::ObjectManager object_manager;
-  UW::SDF sdf_register;
+  std::vector<UW::Meduse> meduses;
 
 
 public:

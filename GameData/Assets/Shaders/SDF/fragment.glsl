@@ -198,9 +198,10 @@ void main() {
 
 
   float insideThickness = 0.0;
-  float inside_t = t + 0.1;
+  float inside_t = t + 0.003; 
+  float max_thickness_dist = t + 20.0; 
   
-  for(int i = 0; i < 30; i++) {
+  for(int i = 0; i < 40; i++) {
     vec3 insideP = ro + rd * inside_t;
     float d = map(insideP);
     
@@ -208,14 +209,16 @@ void main() {
       insideThickness += abs(d);
       inside_t += max(abs(d), 0.1);
     } else {
+      inside_t += max(d, 0.1); 
+    }
+    
+    if(inside_t > max_thickness_dist || inside_t > max_t) {
       break;
     }
-    if(inside_t > max_t) break;
   }
 
-  float densityCoefficient = 0.15;
+  float densityCoefficient = 0.19;
   float alpha = 1.0 - exp(-insideThickness * densityCoefficient);
-
 
 
   vec3 hitPosWorld = (model * vec4(hitPosLocal, 1.0)).xyz;
@@ -245,4 +248,5 @@ void main() {
   }
   FragColor = vec4(totalLighting, alpha);
 }
+
 

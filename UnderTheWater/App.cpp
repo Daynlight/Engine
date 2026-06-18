@@ -10,7 +10,6 @@ UW::App::App()
   #ifndef PRODUCTION
   , debug_camera(&window), ui(window, fps, post_processing_on, debug_camera_on, camera, debug_camera, object_manager)
   #endif
-  , sdf_register("SDF")
   {
   Logger::get().info("App", "App Initialization");
   
@@ -58,6 +57,12 @@ void UW::App::onLoad(){
   #endif
 
   DataSerializer::get().loadAll(object_manager.objects);
+
+  for(int i = 0; i < 10; i++){
+    meduses.emplace_back();
+    meduses[i].genRandom(i, glm::vec3(-20, -20, -20), glm::vec3(20, 20, 20), glm::vec3(174.780f, 26.939f, -80.027f));
+  }
+    
   compileShadows();
 };
 
@@ -184,27 +189,7 @@ void UW::App::render(){
 
 
 void UW::App::renderSFD(CW::Renderer::Framebuffer& fbo, UW::Camera& camera){
-  CW::Renderer::Uniform sdf_uniform;
-  glm::mat4 light_space_matrix = light_camera.transformation(&window);
-  sdf_uniform["u_ShadowDepthTexture"]->set<int>(16);
-  sdf_uniform["u_LightSpaceMatrix"]->set<glm::mat4>(light_space_matrix);
-
-  glm::vec3 position = {153.0f, 28.0f, -116.0f};
-  glm::vec3 rotation = {0.2f, 0.707f, 0.0f};
-  glm::vec3 scale = {0.5f, 0.5f, 0.5f};
-
-  glm::vec3 pivotOffset = glm::vec3(0.0f, 0.0f, 0.0f);
-  glm::mat4 translationMat = glm::translate(glm::mat4(1.0f), position);
-  glm::mat4 rotationMat = glm::eulerAngleXYZ(rotation.x, rotation.y, rotation.z);
-  glm::mat4 scaleMat = glm::scale(glm::mat4(1.0f), scale);
-  glm::mat4 preRotate = glm::translate(glm::mat4(1.0f), -pivotOffset);
-  glm::mat4 postRotate = glm::translate(glm::mat4(1.0f), pivotOffset);
-  glm::mat4 model = translationMat * postRotate * rotationMat * preRotate * scaleMat;
-
-  sdf_uniform["model"]->set<glm::mat4>(model);
-
-  sdf_uniform["material_id"]->set<int>(Resources::get().materials.translate_material("SDF"));
-  sdf_register.render(fbo, camera, window, &sdf_uniform);
+  for(UW::Meduse& meduse : meduses) meduse.render(fbo, camera, window);
 };
 
 

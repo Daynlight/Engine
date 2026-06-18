@@ -10,6 +10,7 @@ namespace UW::Config{
   inline constexpr float PI = 3.14159265358979f;
   inline constexpr float EPS = 1e-5f;
   
+  inline constexpr unsigned int SEED = 123123;
   inline constexpr float FIXED_HZ = 60.0f;
   inline constexpr unsigned int FPS_SAMPLES = 200;
   inline constexpr unsigned int VSYNC = 0;
