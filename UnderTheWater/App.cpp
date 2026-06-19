@@ -92,20 +92,21 @@ void UW::App::update(){
 
 void UW::App::fixedUpdate(){
   fixed_update_time_acc += window.getWindowData()->delta_time;
+  
+  float fixed_time_step = 1.0f / UW::Config::FIXED_HZ;
 
-  if(fixed_update_time_acc >= 1.0f / UW::Config::FIXED_HZ){
+  while(fixed_update_time_acc >= fixed_time_step){
     
 #ifndef PRODUCTION
     guiSettings.window_width = window.getWindowData()->width;
     guiSettings.window_height = window.getWindowData()->height;
 #endif
     
-    scene.onFixedUpdate(window, fixed_update_time_acc);
+    scene.onFixedUpdate(window, fixed_time_step);
 
-    fixed_update_time_acc -= 1.0f / UW::Config::FIXED_HZ;
+    fixed_update_time_acc -= fixed_time_step;
   };
 };
-
 
 
 // ============================= //

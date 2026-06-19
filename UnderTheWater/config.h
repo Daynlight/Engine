@@ -42,7 +42,7 @@ namespace UW::Config{
   inline constexpr float CHUNK_SIZE = 256.0f;
   inline constexpr unsigned int CHUNK_RADIUS = 1;                         // 3 x 3
   inline constexpr glm::vec2 TESS_BOUND = glm::vec2(8.0f, 256.0f);
-  inline constexpr float TESS_DISTANCE_COFF = 0.0000003f;
+  inline constexpr float TESS_DISTANCE_COFF = 0.000005f;
   
   inline const std::string SWAP_CAMERA_BTN = "P";
   inline const std::string CAMERA_SWAP_MODE_BTN = "ESC";

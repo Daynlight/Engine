@@ -29,13 +29,16 @@ void UW::Scene::onLoad(){
     meduses.emplace_back();
     meduses[i].genRandom(i, 
       glm::vec3(-50, -10, -50), glm::vec3(50, 10, 50), glm::vec3(174.780f, 40.939f, -80.027f),
-      glm::vec3(-0.2, -0.2, -0.2), glm::vec3(0.2, 0.2, 0.2),
+      glm::vec3(-glm::radians(10.0f), -glm::radians(10.0f), -glm::radians(10.0f)), glm::vec3(glm::radians(10.0f), glm::radians(10.0f), glm::radians(10.0f)),
       0.4f, 0.7f);
   }
 
   meduses[0].setPath({glm::vec3(117.610, 51.472, -39.445), 
-                      glm::vec3(89.665, 25.785, -152.533), 
+                      glm::vec3(89.665, 25.785, -152.533),
+                      glm::vec3(253.161, 54.430, -68.562), 
                       glm::vec3(282.921, 21.784, 0.884)});
+  meduses[0].setRot(glm::vec3(0.0f, 0.0f, 0.0f));
+  meduses[0].setSpeed(20.0f);
     
   compileShadows();
 };
@@ -53,16 +56,16 @@ void UW::Scene::onUpdate(CW::Renderer::Renderer& window){
 
 void UW::Scene::onFixedUpdate(CW::Renderer::Renderer &window, float fixed_delta_time){
 #ifndef PRODUCTION
-    save_acc += fixed_delta_time;
+  save_acc += fixed_delta_time;
 
-    if(save_acc >= UW::Config::SAVE_TIMESTAMP){
-      save_acc -= UW::Config::SAVE_TIMESTAMP;
-      DataSerializer::get().saveAll(object_manager.objects);
-    };
+  if(save_acc >= UW::Config::SAVE_TIMESTAMP){
+    save_acc -= UW::Config::SAVE_TIMESTAMP;
+    DataSerializer::get().saveAll(object_manager.objects);
+  };
 #endif
 
   for(UW::GameObject& el : object_manager.objects) el.onFixedUpdate();
-  // for(UW::Meduse& meduse : meduses) meduse.fixedUpdate(fixed_update_time_acc);  
+  for(UW::Meduse& meduse : meduses) meduse.fixedUpdate(fixed_delta_time);  
 };
 
 
@@ -203,7 +206,7 @@ void UW::Scene::postProcessing(){
   post_uniform["u_water_height"]->set<float>(UW::Config::WATER_HEIGHT);
   post_uniform["u_Near"]->set<float>(UW::Config::CAMERA_NEAR_PLANE);
   post_uniform["u_Far"]->set<float>(UW::Config::CAMERA_ORTHO_FAR_PLANE);
-  post_uniform["u_FogDensity"]->set<float>(0.015f);
+  post_uniform["u_FogDensity"]->set<float>(0.017f);
   glm::vec3 fog_color = {0.0f, 0.4f, 0.55f};
   post_uniform["u_FogColor"]->set<glm::vec3>(fog_color);
 

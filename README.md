@@ -166,19 +166,29 @@ Shaders are loaded via cmrc or from folder as fallback are **private** and **saf
 - [x] Full optimization
 </details>
 
-<details open>
-<summary> 🌟 Iteration 4 🌟 (21.06.2026)</summary>
+<details>
+<summary>Iteration 4(19.06.2026)</summary>
 
 - [x] FBO Render to texture
 - [x] Under water fog
 - [x] Quaternion Camera, without gimbal lock.
 - [x] Shadow Mapping
-- [ ] Parallel Transport Layer
-- [ ] SDF ray-marching
+- [x] SDF ray-marching
+- [x] Parallel Transport Layer
+</details>
+
+</details open>
+<summary> 🌟 Iteration 5 🌟 (25.06.2026) </summary>
+
+- [ ] Clean up
+- [ ] Optimization
+- [ ] Docs
+- [ ] Assets
+- [ ] Releases
 </details>
 
 <details>
-<summary>Iteration 5</summary>
+<summary>Iteration 6</summary>
 
 - [ ] Engine like Shaders, Assets, Textures:
     - [ ] Bake into exe
@@ -198,4 +208,5 @@ Shaders are loaded via cmrc or from folder as fallback are **private** and **saf
 - [ ] Script system
 - [ ] Move terrain, water, skybox to object_register vector.
 - [ ] Window Data Serialization.
+- [ ] Fix black lights for new Scene class.
 </details>

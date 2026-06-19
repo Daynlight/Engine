@@ -16,13 +16,16 @@ class Meduse{
 private:
   CW::Renderer::Uniform sdf_uniform;
   std::deque<glm::vec3> path;
+
   glm::vec3 position = {153.0f, 28.0f, -116.0f};
-  glm::vec3 rotation = {0.2f, 0.707f, 0.0f};
   glm::vec3 scale = {0.5f, 0.5f, 0.5f};
+  
   glm::vec3 last_tangent = glm::vec3(0.0f);
   glm::quat orientation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+
   UW::SDF sdf;
   float t = 0.0f;
+  float speed = 10.0f;
 
 public:
   Meduse(): sdf("SDF"){};
@@ -31,10 +34,14 @@ public:
   void render(CW::Renderer::Framebuffer& fbo, UW::Camera& camera, CW::Renderer::Renderer& window){
     glm::vec3 pivotOffset = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::mat4 translationMat = glm::translate(glm::mat4(1.0f), position);
-    glm::mat4 rotationMat = glm::eulerAngleXYZ(rotation.x, rotation.y, rotation.z);
+    glm::mat4 rotationMat = glm::mat4_cast(orientation);
+
+    // glm::mat4 tiltAdjust = glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+
     glm::mat4 scaleMat = glm::scale(glm::mat4(1.0f), scale);
     glm::mat4 preRotate = glm::translate(glm::mat4(1.0f), -pivotOffset);
     glm::mat4 postRotate = glm::translate(glm::mat4(1.0f), pivotOffset);
+
     glm::mat4 model = translationMat * postRotate * rotationMat * preRotate * scaleMat;
 
     sdf_uniform["model"]->set<glm::mat4>(model);
@@ -48,11 +55,15 @@ public:
   };
 
   void setRot(glm::vec3 rotation){
-    this->rotation = rotation;
+    this->orientation = glm::quat(rotation);
   };
 
   void setScale(glm::vec3 scale){
     this->scale = scale;
+  };
+
+  void setSpeed(float speed){
+    this->speed = speed;
   };
 
   void genRandom(int i, 
@@ -92,6 +103,28 @@ public:
 
   void setPath(std::deque<glm::vec3> path){
     this->path = path;
+
+    if (path.size() >= 3) {
+      glm::vec3 p0 = path[0];
+      glm::vec3 p1 = path[1];
+      glm::vec3 p2 = path[2];
+
+      glm::vec3 initial_tangent = (-3.0f * p0) - (-4.0f * p1) + (-1.0f * p2);
+      
+      if (glm::length(initial_tangent) > 0.001f) {
+        initial_tangent = glm::normalize(initial_tangent);
+        
+        glm::vec3 world_up = glm::vec3(0.0f, 1.0f, 0.0f);
+
+        if (glm::abs(glm::dot(initial_tangent, world_up)) > 0.999f) {
+          world_up = glm::vec3(0.0f, 0.0f, 1.0f); 
+        }
+
+        orientation = glm::quatLookAt(initial_tangent, world_up);
+        
+        last_tangent = initial_tangent;
+      }
+    }
   };
 
 
@@ -109,8 +142,7 @@ public:
 
     float tangent_len = glm::length(raw_tangent);
     if (tangent_len < 0.001f) tangent_len = 0.001f;
-
-    float speed = 0.2f; 
+ 
     float dt_pct = (speed * delta_time) / tangent_len;
     bool segment_swapped = false;
 
@@ -160,11 +192,10 @@ public:
         glm::quat delta_rot = glm::angleAxis(angle, glm::normalize(axis));
         
         orientation = delta_rot * orientation;
-        orientation = glm::normalize(orientation); 
+        orientation = glm::normalize(orientation);
       }
 
       last_tangent = current_tangent;
-      rotation = glm::eulerAngles(orientation);
     };
   };
 };
