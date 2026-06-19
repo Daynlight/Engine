@@ -65,6 +65,10 @@ void UW::App::onLoad(){
       glm::vec3(-0.2, -0.2, -0.2), glm::vec3(0.2, 0.2, 0.2),
       0.4f, 0.7f);
   }
+
+  meduses[0].setPath({glm::vec3(117.610, 51.472, -39.445), 
+                      glm::vec3(89.665, 25.785, -152.533), 
+                      glm::vec3(282.921, 21.784, 0.884)});
     
   compileShadows();
 };
@@ -283,6 +287,8 @@ void UW::App::fixedUpdate(){
 #endif
     
     for(UW::GameObject& el : object_manager.objects) el.onFixedUpdate();
+    // for(UW::Meduse& meduse : meduses) meduse.fixedUpdate(fixed_update_time_acc);
+    
     fixed_update_time_acc -= 1.0f / UW::Config::FIXED_HZ;
   };
 };
