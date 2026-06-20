@@ -1,6 +1,6 @@
 // Help me I'am Under The Water
 // Copyright 2025 Daynlight
-// Licensed under the Apache License, Version 2.0.
+// Licensed under the GNU General, Version 3.0.
 // See LICENSE file for details.
 
 
