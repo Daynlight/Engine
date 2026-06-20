@@ -72,6 +72,8 @@ namespace UW::Config{
   inline const std::string MATERIALS_FILENAME = "Materials.pbr";
   inline const std::string OBJECTS_FILENAME = "Objects.obj";
   inline const std::string LIGHTS_FILENAME = "Lights.lit";
+  inline const std::string SCRIPTS_SRC_FOLDER = "Scripts/";
+  inline const std::string SCRIPTS_DLL_FOLDER = "Scripts_DLL/";
   
   // controls
   inline const std::string SWAP_CAMERA_BTN = "P";

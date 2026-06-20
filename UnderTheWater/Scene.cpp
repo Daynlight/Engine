@@ -87,6 +87,10 @@ void UW::Scene::onLoad(){
   meduses[0].setSpeed(20.0f);
     
   compileShadows();
+
+  auto [it, inserted] = Resources::get().game_object_scripts.game_object_scripts.emplace("Test", "Test");
+  Resources::get().game_object_scripts.observe();
+  it->second.init();
 };
 
 
@@ -99,6 +103,8 @@ void UW::Scene::onUpdate(float delta_time){
   terrain.onUpdate(delta_time);
   skybox.onUpdate(delta_time);
   water.onUpdate(delta_time);
+
+  Resources::get().game_object_scripts.game_object_scripts.at("Test").update();
 };
 
 
@@ -118,6 +124,8 @@ void UW::Scene::onFixedUpdate(float fixed_delta_time){
   terrain.onFixedUpdate(fixed_delta_time);
   skybox.onFixedUpdate(fixed_delta_time);
   water.onFixedUpdate(fixed_delta_time);
+
+  Resources::get().game_object_scripts.observe();
 };
 
 

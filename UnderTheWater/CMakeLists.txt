@@ -36,6 +36,7 @@ set(src
   "Objects/Meduse/Meduse.cpp"
   "Objects/GameObject.cpp"
   "Objects/ObjectManager.cpp"
+  "ScriptController/ScriptController.cpp"
   "DataSerializer/DataSerializer.cpp"
   "DataSerializer/MeshSerialization.cpp"
   "DataSerializer/ObjectsSerialization.cpp"

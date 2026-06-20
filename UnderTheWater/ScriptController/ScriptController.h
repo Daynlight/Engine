@@ -4,10 +4,8 @@
 // See LICENSE file for details.
 
 
-#pragma once
 
-#include "Globals.h"
-#include "Resources/ScriptInterface.h"
+#pragma once
 
 #include <string>
 #include <filesystem>
@@ -17,32 +15,45 @@
 #include <fcntl.h>
 #include <sys/wait.h>
 
+#include "../Scripts/GameObjectScriptInterface.h"
+#include "Utils/Logger.h"
+#include "config.h"
 
-namespace Graphite{
-class ScriptLoader{
-private:
-  std::string path = "";
-  bool cant_find_file_print = 1;
+
+
+namespace UW{
+class GameObjectScriptRecord{
   std::filesystem::file_time_type lastWriteTime{};
-  
+  std::string path = "";
+  std::string so_file = "";
+  std::string cpp_file = "";
+  bool cant_find_file_print = 1;
   void* script_handler = nullptr; 
-  ScriptInterface* script = nullptr;
+  GameObjectScriptInterface* script = nullptr;
 
 public:
-  ScriptLoader(const std::string& path);
-  ~ScriptLoader();
-  
+  GameObjectScriptRecord(const std::string& path);
+  ~GameObjectScriptRecord();
+
   bool checkLastWrite();
   void updateScript();
-
+  
   int compile();
   int loadModule();
   void removeModule();
-
+  
   void init();
   void update();
-  void draw();
   void destroy();
 
+};
+
+
+
+class GameObjectScriptLoader{
+public:
+  std::unordered_map<std::string, GameObjectScriptRecord> game_object_scripts;
+
+  void observe();
 };
 };

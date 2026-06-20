@@ -4,37 +4,32 @@
 // See LICENSE file for details.
 
 
+
 #include "ScriptController.h"
 
 
-Graphite::ScriptLoader::ScriptLoader(const std::string &path)
-  : path(path) {};
+
+UW::GameObjectScriptRecord::GameObjectScriptRecord(const std::string &path)
+  : path(path), 
+    cpp_file(UW::Config::SCRIPTS_SRC_FOLDER + path + ".cpp"),
+    so_file(UW::Config::SCRIPTS_DLL_FOLDER + path + ".so") {
+};
 
 
 
-
-
-
-  
-
-Graphite::ScriptLoader::~ScriptLoader(){
+UW::GameObjectScriptRecord::~GameObjectScriptRecord(){
   removeModule();
 };
 
 
 
-
-
-
-  
-
-bool Graphite::ScriptLoader::checkLastWrite() {
-  bool file_exist = std::filesystem::exists(path + ScriptName);
+bool UW::GameObjectScriptRecord::checkLastWrite() {
+  bool file_exist = std::filesystem::exists(cpp_file);
 
   bool changed = 0;
 
   if(cant_find_file_print && !file_exist){
-    printf("No file named: %s\n", (path + ScriptName).c_str());
+    UW::Logger::get().erro("Script Controller", "No file named: " + cpp_file);
     cant_find_file_print = 0;
   };
   
@@ -45,9 +40,9 @@ bool Graphite::ScriptLoader::checkLastWrite() {
   std::filesystem::file_time_type currentWriteTime{};
 
   try{
-    currentWriteTime = std::filesystem::last_write_time(path + ScriptName);
+    currentWriteTime = std::filesystem::last_write_time(cpp_file);
   } catch(const std::filesystem::filesystem_error& e){
-    printf("Filesystem error: %s\n", e.what());
+    UW::Logger::get().erro("Script Controller", "Filesystem error - " + std::string(e.what()));
     return false;
   };
 
@@ -61,13 +56,9 @@ bool Graphite::ScriptLoader::checkLastWrite() {
 
 
 
-
-
-
-  
-
-void Graphite::ScriptLoader::updateScript() {
+void UW::GameObjectScriptRecord::updateScript() {
   removeModule();
+
   if(!compile())
     if(!loadModule())
       init();
@@ -75,15 +66,7 @@ void Graphite::ScriptLoader::updateScript() {
 
 
 
-
-
-
-  
-
-int Graphite::ScriptLoader::compile() {
-  std::string so_file = path + ScriptOutName;
-  std::string cpp_file = path + ScriptName;
-
+int UW::GameObjectScriptRecord::compile() {
   const char* command = "g++";
   const char* argv[] = {
     "g++",
@@ -98,67 +81,48 @@ int Graphite::ScriptLoader::compile() {
 
   pid_t pid = fork();
   if(pid == 0){
-    if(!verbose_mode) {
-      int devnull = open("/dev/null", O_WRONLY);
-      if(devnull != -1) {
-        dup2(devnull, STDOUT_FILENO);
-        dup2(devnull, STDERR_FILENO);
-        close(devnull);
-      };
-    };
-
     execvp(command, const_cast<char* const*>(argv)); 
-    printf("Failed to exec g++\n");
+    Logger::get().erro("Script Controller", "Failed to exec g++");
     return -1;
   }
   else if(pid > 0){
     int status = 0; 
     waitpid(pid, &status, 0);
 
-    if (WIFEXITED(status) && WEXITSTATUS(status) == 0) { 
-      if(verbose_mode)
-        printf("Compilation successful: %s\n", (path + "Graphite.so").c_str()); 
-
-      return 0; 
-    } 
+    if (WIFEXITED(status) && WEXITSTATUS(status) == 0) return 0; 
     else { 
-      printf("Compilation failed!\n"); 
+      UW::Logger::get().erro("Script Controller", "Compilation failed!");
       return -1; 
     };
   };
 
-  printf("Failed to fork()\n");
+  UW::Logger::get().erro("Script Controller", "Failed to fork()");
   return -1;
 };
 
 
 
-
-
-
-  
-
-int Graphite::ScriptLoader::loadModule() {
+int UW::GameObjectScriptRecord::loadModule() {
   removeModule();
 
-  bool file_exist = std::filesystem::exists(path + ScriptOutName);
+  bool file_exist = std::filesystem::exists(so_file);
   if(!file_exist) return -1;
 
-  script_handler = dlopen((path + "Graphite.so").c_str(), RTLD_NOW);
+  script_handler = dlopen((so_file).c_str(), RTLD_NOW);
 
   if (!script_handler) {
-    printf("Failed to load script: %s\n", dlerror());
+    Logger::get().erro("Script Controller", "Failed to load script - " + std::string(dlerror()));
     return -1;
   };
 
   dlerror();
 
-  typedef ScriptInterface* (*GetScriptFunc)();
+  typedef GameObjectScriptInterface* (*GetScriptFunc)();
   GetScriptFunc getScript = (GetScriptFunc)dlsym(script_handler, "GetScript");
   const char* dlsym_error = dlerror();
   
   if (dlsym_error || !getScript) {
-    printf("Cannot load symbol 'GetScript': %s\n", dlsym_error);
+    Logger::get().erro("Script Controller", "Cannot load symbol 'GetScript' - " + std::string(dlsym_error));
     removeModule();
     return -1;
   };
@@ -170,17 +134,13 @@ int Graphite::ScriptLoader::loadModule() {
     return -1;
   }
 
+  Logger::get().info("Script Controller", "Script Loaded");
   return 0;
 };
 
 
 
-
-
-
-  
-
-void Graphite::ScriptLoader::removeModule(){
+void UW::GameObjectScriptRecord::removeModule(){
   if (!script_handler) {
     script = nullptr;
     return;
@@ -190,12 +150,12 @@ void Graphite::ScriptLoader::removeModule(){
     destroy();
 
     dlerror();
-    using DeleteScriptFunc = void (*)(ScriptInterface*);
+    using DeleteScriptFunc = void (*)(GameObjectScriptInterface*);
     DeleteScriptFunc deleteScript = (DeleteScriptFunc)dlsym(script_handler, "DeleteScript");
     const char* dlsym_error = dlerror();
 
     if (dlsym_error || !deleteScript) {
-      printf("Warning: DeleteScript not found or invalid: %s\n", dlsym_error ? dlsym_error : "null");
+    Logger::get().warn("Script Controller", "DeleteScript not found or invalid - " + std::string(dlsym_error ? dlsym_error : "null"));
       script = nullptr;
     }
     else{
@@ -212,36 +172,82 @@ void Graphite::ScriptLoader::removeModule(){
 
 
 
-
-
-
-  
-
-void Graphite::ScriptLoader::init() {
+void UW::GameObjectScriptRecord::init() {
   if(script){
 
-    if(sandbox_mode){
-      pid_t pid = fork();
-      if(pid == 0){
-        script->Init();
+#ifndef PRODUCTION
+    pid_t pid = fork();
+    if(pid == 0){
+      script->OnLoad();
 
-        _exit(0);
-      }
-      else if(pid > 0){
-        int status = 0; 
-        waitpid(pid, &status, 0);
+      _exit(0);
+    }
+    else if(pid > 0){
+      int status = 0; 
+      waitpid(pid, &status, 0);
 
-        if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) { 
-          if(verbose_mode){
-            printf("%d\n", status);
-            printf("Init failed!\n");
-          }
-          return; 
-        };
+      if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) { 
+        UW::Logger::get().erro("Script Controller", std::to_string(status) + " - Init failed!");
+        return; 
       };
     };
+#endif
 
-    script->Init();
+    script->OnLoad();
+  };
+};
+
+
+
+void UW::GameObjectScriptRecord::update() {
+  if(script){
+
+#ifndef PRODUCTION
+    pid_t pid = fork();
+    if(pid == 0){
+      script->OnUpdate();
+
+      _exit(0);
+    }
+    else if(pid > 0){
+      int status = 0; 
+      waitpid(pid, &status, 0);
+
+      if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) { 
+        UW::Logger::get().erro("Script Controller", std::to_string(status) + " - Update failed!");
+        return; 
+      };
+    };
+#endif
+
+    script->OnUpdate();
+  };
+};
+
+
+
+void UW::GameObjectScriptRecord::destroy() {
+  if(script){
+
+#ifndef PRODUCTION
+    pid_t pid = fork();
+    if(pid == 0){
+      script->OnDestroy();
+
+      _exit(0);
+    }
+    else if(pid > 0){
+      int status = 0; 
+      waitpid(pid, &status, 0);
+
+      if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) { 
+        UW::Logger::get().erro("Script Controller", std::to_string(status) + " - Destroy failed!");
+        return; 
+      };
+    };
+#endif
+
+    script->OnDestroy();
   };
 };
 
@@ -250,100 +256,8 @@ void Graphite::ScriptLoader::init() {
 
 
 
-  
-
-void Graphite::ScriptLoader::update() {
-  if(script){
-
-    if(sandbox_mode){
-      pid_t pid = fork();
-      if(pid == 0){
-        script->Update();
-        _exit(0);
-      }
-      else if(pid > 0){
-        int status = 0; 
-        waitpid(pid, &status, 0);
-
-        if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) { 
-          if(verbose_mode){
-            printf("%d\n", status);
-            printf("Update failed!\n");
-          }
-          return; 
-        };
-      };
-    };
-
-    script->Update();
-  };
+void UW::GameObjectScriptLoader::observe(){
+  for(auto& script : game_object_scripts)
+    if(script.second.checkLastWrite())
+      script.second.updateScript();
 };
-
-
-
-
-
-
-  
-
-void Graphite::ScriptLoader::draw(){
-  if(script){
-    
-    if(sandbox_mode){
-      pid_t pid = fork();
-      if(pid == 0){
-        script->Draw();
-        _exit(0);
-      }
-      else if(pid > 0){
-        int status = 0; 
-        waitpid(pid, &status, 0);
-
-        if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) { 
-          if(verbose_mode){
-            printf("%d\n", status);
-            printf("Draw failed!\n");
-          }
-          return; 
-        };
-      };
-    };
-
-    script->Draw();
-  };
-};
-
-
-
-
-
-
-  
-
-void Graphite::ScriptLoader::destroy() {
-  if(script){
-
-    if(sandbox_mode){
-      pid_t pid = fork();
-      if(pid == 0){
-        script->Destroy();
-        _exit(0);
-      }
-      else if(pid > 0){
-        int status = 0; 
-        waitpid(pid, &status, 0);
-
-        if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) { 
-          if(verbose_mode){
-            printf("%d\n", status);
-            printf("Destroy failed!\n");
-          }
-          return; 
-        };
-      };
-    };
-
-    script->Destroy();
-  };
-};
-
