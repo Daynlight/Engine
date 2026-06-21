@@ -1,3 +1,10 @@
+// Help me I'am Under The Water
+// Copyright 2026 Daynlight
+// Licensed under the GNU General, Version 3.0.
+// See LICENSE file for details.
+
+
+
 #include "DataSerializer.h"
 
 #include <cmrc/cmrc.hpp>
@@ -118,9 +125,7 @@ void UW::DataSerializer::loadAllTextures() {
 
   std::string root_path = UW::Config::GAME_DATA_FOLDER + UW::Config::ASSETS_FOLDER + UW::Config::TEXTURES_FOLDER;
 
-  if (!root_path.empty() && root_path.back() == '/') {
-    root_path.pop_back();
-  }
+  if (!root_path.empty() && root_path.back() == '/') root_path.pop_back();
 
   try {
     auto fs = cmrc::GameData::get_filesystem();
@@ -139,11 +144,11 @@ void UW::DataSerializer::loadAllTextures() {
         it->second.compile(loader.data);
         
         Logger::get().info("DataSerializer", "Loaded texture from CMRC: " + file_name);
-      }
-    }
+      };
+    };
   } catch (const std::exception& e) {
     Logger::get().warn("DataSerializer", "[CMRC] Could not scan textures folder: " + std::string(e.what()));
-  }
+  };
 
   try {
     std::string local_disk_path = root_path + "/"; 
@@ -154,9 +159,7 @@ void UW::DataSerializer::loadAllTextures() {
         if (entry.is_regular_file()) {
           std::string file_name = entry.path().filename().string();
 
-          if (Resources::get().textures.find(file_name) != Resources::get().textures.end()) {
-             continue; 
-          }
+          if (Resources::get().textures.find(file_name) != Resources::get().textures.end()) continue; 
 
           std::ifstream file(entry.path(), std::ios::binary | std::ios::ate);
           if (file.is_open()) {
@@ -171,14 +174,14 @@ void UW::DataSerializer::loadAllTextures() {
               it->second.compile(loader.data);
               
               Logger::get().info("DataSerializer", "Loaded texture from Disk: " + file_name);
-            }
-          }
-        }
-      }
+            };
+          };
+        };
+      };
     }
   } catch (const std::filesystem::filesystem_error& e) {
     Logger::get().warn("DataSerializer", "[Filesystem] Could not scan local textures folder: " + std::string(e.what()));
-  }
+  };
   
   Logger::get().info("DataSerializer", "Finished loading all textures.");
 };

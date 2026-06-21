@@ -1,3 +1,10 @@
+// Help me I'am Under The Water
+// Copyright 2026 Daynlight
+// Licensed under the GNU General, Version 3.0.
+// See LICENSE file for details.
+
+
+
 #include "ObjectsSerialization.h"
 
 #include <cmrc/cmrc.hpp>
@@ -45,7 +52,7 @@ void UW::ObjectsSerialization::save(const UW::GameObject& object) {
 
 
 void UW::ObjectsSerialization::load(UW::GameObject& object) {
-  // Single object load would need file path parameter
+
 };
 
 
