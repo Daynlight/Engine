@@ -30,7 +30,7 @@ Project for **GRK** under water scene. Build on top of [**CWindow library**](htt
 
 ## Controls
 * **SWAP_CAMERA_BTN**: P (Editor)
-* **CAMERA_SWAP_MODE_BTN**: ESC (Editor, Product)
+* **CAMERA_SWAP_MODE_BTN**: ESC (Editor)
 * **CAMERA_ACCELERATE**: O (Editor, Product)
 * **CAMERA_DECELERATE**: I (Editor, Product)
 * **CAMERA_MOVE_FORWARD**: W (Editor, Product)
