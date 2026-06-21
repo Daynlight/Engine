@@ -26,9 +26,7 @@ public:
   
   void OnLoad(){
     initial_position = game_object_data->position;
-
-    game_object_data->position = glm::vec3(0.0f, 70.0f, 0.0f);    
-
+    game_object_data->position = glm::vec3(0.0f, 100.0f, 0.0f);
     // printf("OnLoad\n");
   };
   
@@ -38,7 +36,7 @@ public:
   
   void OnFixedUpdate(float fixed_delta_time){
     time += fixed_delta_time;
-    game_object_data->position += glm::vec3(0.0f, cos(time * 5), 0.0f);
+    game_object_data->position += glm::vec3(sin(time), cos(time), 0.0f);
     // printf("OnFixedUpdate\n");
   };
   
