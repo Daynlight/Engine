@@ -20,6 +20,7 @@
 #include "DataSerializer/MaterialsSerialization.h"
 #include "DataSerializer/LightsSerialization.h"
 #include "DataSerializer/ShaderSerialization.h"
+#include "DataSerializer/ScriptSerialization.h"
 
 
 
@@ -40,6 +41,7 @@ private:
   MaterialsSerialization materials_serializer;
   LightsSerialization lights_serializer;
   ShaderSerialization shader_serializer;
+  ScriptSerialization script_serializer;
 
 public:
   static DataSerializer& get();
@@ -79,6 +81,11 @@ public:
   void saveShaders(const std::string& shader_name, GLuint type);
 #endif
   void loadShader(const std::string& shader_name);
+
+#ifndef PRODUCTION
+  void saveScript(const std::string& script_name, const std::string& source);
+#endif
+  std::string loadScript(const std::string& script_name);
 
   void loadAllTextures();
 

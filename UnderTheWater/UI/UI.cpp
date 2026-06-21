@@ -11,7 +11,8 @@ UW::UI::UI(CW::Renderer::Renderer &window, float &fps, UW::Scene& scene)
   objects_ui(gui, window, scene),
   lights_ui(gui),
   shader_ui(gui),
-  asset_loader_ui(gui, scene){
+  asset_loader_ui(gui, scene),
+  scripts_ui(gui){
   Logger::get().info("UI", "Initializing UI");
   
   gui.setWorkspace(appWorkspace());
@@ -21,6 +22,7 @@ UW::UI::UI(CW::Renderer::Renderer &window, float &fps, UW::Scene& scene)
 UW::UI::~UI(){
   Logger::get().info("UI", "Destroying UI");
   shader_ui.saveShaderEditors();
+  scripts_ui.saveScriptEditors();
 };
 
 
@@ -47,6 +49,8 @@ void UW::UI::uiLoad(){
   Logger::get().info("UI", "Loading UI Data from disck");
 
   shader_ui.loadShaderEditors();
+  scripts_ui.loadScriptEditors();
+
   uiControl();
 };
 
@@ -70,6 +74,7 @@ void UW::UI::configControl(){
     if (sscanf(line, "LightsExplorerOn=%d", &value) == 1) s->lightsExplorerOn = value;
     if (sscanf(line, "MaterialEditorOn=%d", &value) == 1) s->materialEditorOn = value;
     if (sscanf(line, "ShaderExplorerWindowOn=%d", &value) == 1) s->shaderExplorerWindowOn = value;
+    if (sscanf(line, "ScriptsExplorerWindowOn=%d", &value) == 1) s->scriptsExplorerWindowOn= value;
     if (sscanf(line, "ShaderEditorWindowOn=%d", &value) == 1) s->shaderEditorWindowOn = value;
     if (sscanf(line, "ObjectExplorerWindowOn=%d", &value) == 1) s->objectExplorerWindowOn = value;
     if (sscanf(line, "ObjectEditorWindowOn=%d", &value) == 1) s->objectEditorWindowOn = value;
@@ -87,6 +92,10 @@ void UW::UI::configControl(){
     if (sscanf(line, "ShaderEditor=%255[^,],%u", name, &type) == 2){
       s->shader_editors_reg.emplace_back(name, type);
     };
+
+    if (sscanf(line, "ScriptEditor=%255[^,]", name) == 1){
+      s->scripts_editors_reg.emplace_back(name);
+    };
   };
 
   handler.WriteAllFn = [](ImGuiContext*, ImGuiSettingsHandler* handler, ImGuiTextBuffer* out_buf){
@@ -97,6 +106,7 @@ void UW::UI::configControl(){
     out_buf->appendf("LightsExplorerOn=%d\n", guiSettings.lightsExplorerOn);
     out_buf->appendf("MaterialEditorOn=%d\n", guiSettings.materialEditorOn);
     out_buf->appendf("ShaderExplorerWindowOn=%d\n", guiSettings.shaderExplorerWindowOn);
+    out_buf->appendf("ScriptsExplorerWindowOn=%d\n", guiSettings.scriptsExplorerWindowOn);
     out_buf->appendf("ShaderEditorWindowOn=%d\n", guiSettings.shaderEditorWindowOn);
     out_buf->appendf("ObjectExplorerWindowOn=%d\n", guiSettings.objectExplorerWindowOn);
     out_buf->appendf("ObjectEditorWindowOn=%d\n", guiSettings.objectEditorWindowOn);
@@ -116,6 +126,15 @@ void UW::UI::configControl(){
       );
     };
 
+    out_buf->appendf("ScriptEditorCount=%zu\n", guiSettings.scripts_editors_reg.size());
+
+    for (size_t i = 0; i < guiSettings.scripts_editors_reg.size(); ++i){
+      out_buf->appendf(
+        "ScriptEditor=%s\n",
+        guiSettings.scripts_editors_reg[i].c_str()
+      );
+    };
+
     out_buf->append("\n");
   };
 
@@ -132,6 +151,7 @@ void UW::UI::uiControl(){
   lights_ui.uiControl();
   shader_ui.uiControl();
   asset_loader_ui.uiControl();
+  scripts_ui.uiControl();
 };
 
 
@@ -161,6 +181,10 @@ void UW::UI::menuBarGui(){
       };
       if(ImGui::MenuItem("Shader Explorer")){
         guiSettings.shaderExplorerWindowOn = !guiSettings.shaderExplorerWindowOn;
+        uiControl();
+      };
+      if(ImGui::MenuItem("Script Explorer")){
+        guiSettings.scriptsExplorerWindowOn = !guiSettings.scriptsExplorerWindowOn;
         uiControl();
       };
       if(ImGui::MenuItem("Object Explorer")){

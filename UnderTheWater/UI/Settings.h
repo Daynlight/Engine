@@ -16,6 +16,7 @@ struct GuiSettings{
   bool materialExplorerOn = false;
   bool materialEditorOn = false;
   bool shaderExplorerWindowOn = false;
+  bool scriptsExplorerWindowOn = false;
   bool shaderEditorWindowOn = false;
   bool objectExplorerWindowOn = false;
   bool objectEditorWindowOn = false;
@@ -25,6 +26,7 @@ struct GuiSettings{
   std::string material_name = UW::Config::DEFAULT_GUI_MATERIAL;
   unsigned int object_id = UW::Config::DEFAULT_GUI_OBJECT;
   std::vector<std::pair<std::string, GLenum>> shader_editors_reg;
+  std::vector<std::string> scripts_editors_reg;
   int window_width = 800;
   int window_height = 600;
 };

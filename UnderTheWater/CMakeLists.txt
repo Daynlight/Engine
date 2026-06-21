@@ -19,10 +19,12 @@ set(src
   "UI/UI_Logs.cpp"
   "UI/UI_Materials.cpp"
   "UI/UI_Shaders.cpp"
+  "UI/UI_Scripts.cpp"
   "UI/UI_Objects.cpp"
   "UI/UI_Lights.cpp"
   "UI/UI_AssetLoader.cpp"
   "UI/UI_ShaderEditors.cpp"
+  "UI/UI_ScriptEditor.cpp"
   "UI/UI_Info.cpp"
   "Utils/Logger.cpp"
   "Camera/Camera.cpp"
@@ -43,6 +45,7 @@ set(src
   "DataSerializer/MaterialsSerialization.cpp"
   "DataSerializer/LightsSerialization.cpp"
   "DataSerializer/ShaderSerialization.cpp"
+  "DataSerializer/ScriptSerialization.cpp"
 )
 
 

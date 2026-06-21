@@ -98,6 +98,21 @@ void UW::DataSerializer::loadShader(const std::string& shader_name){
 
 
 
+#ifndef PRODUCTION
+void UW::DataSerializer::saveScript(const std::string &script_name, const std::string& source){
+  script_serializer.save(script_name, source);
+};
+#endif
+
+
+
+std::string UW::DataSerializer::loadScript(const std::string& script_name){
+  return script_serializer.load(script_name);
+};
+
+
+
+
 void UW::DataSerializer::loadAllTextures() {
   Logger::get().info("DataSerializer", "Scanning and loading all textures...");
 

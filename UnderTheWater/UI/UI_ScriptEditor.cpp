@@ -1,0 +1,83 @@
+#include "UI_ScriptEditor.h"
+#ifndef PRODUCTION
+
+
+
+UW::UI_ScriptEditor::UI_ScriptEditor(CW::Gui::Gui& gui, const std::string& name)
+  :gui(gui), script_name(name){
+
+  Logger::get().info("UI_ScriptEditor", "Opened { " + script_name + " }");
+  
+  save_cooldown_duration = std::chrono::milliseconds(static_cast<long long>(UW::Config::SCRIPT_SAVE_COOLDOWN * 1000.0f));
+  last_save_time = std::chrono::steady_clock::now();
+  
+  gui.addWindow("Script Editor " + script_name, ScriptEditorGui());
+};
+
+
+
+UW::UI_ScriptEditor::~UI_ScriptEditor(){
+  gui.deleteWindow("Script Editor " + script_name);
+  Logger::get().info("UI_ScriptEditor", "Closed { " + script_name  + " }");
+};
+
+
+
+void UW::UI_ScriptEditor::guiScriptLoad(const std::string& name){
+  if(script_is_loaded) return;
+
+  script_name = name;
+  memset(buffer, '\0', UW::Config::SCRIPT_EDITOR_BUFFER_SIZE);
+  
+  std::string source = DataSerializer::get().loadScript(name);
+  memcpy(buffer, source.data(), source.size());
+
+
+  Logger::get().info("UI_ScriptEditor", "Loaded { " + script_name + " }");
+  script_is_loaded = true;
+};
+
+
+
+void UW::UI_ScriptEditor::guiScriptEditor(){
+  float width = ImGui::GetContentRegionAvail().x;
+  float height = ImGui::GetContentRegionAvail().y - 50.0f;
+  
+  ImGui::SeparatorText("Script Editor");
+  ImGui::Text("Script: %s", script_name.c_str());
+  
+  ImGui::InputTextMultiline("##Script Content", buffer, UW::Config::SCRIPT_EDITOR_BUFFER_SIZE, ImVec2(width, height), ImGuiInputTextFlags_WordWrap);
+  if(ImGui::Button(("Save##SaveScript:" + script_name).c_str()))  script_is_updated = true;
+
+  if(script_is_updated){
+    auto now = std::chrono::steady_clock::now();
+    
+    if (now - last_save_time >= save_cooldown_duration) {
+      
+      DataSerializer::get().saveScript(script_name, buffer);
+      Logger::get().info("UI_ScriptEditor", "Saved { " + script_name + " }");
+      
+      last_save_time = now;
+      script_is_updated = false; 
+    }
+  };
+};
+
+
+
+inline std::function<void(CW::Renderer::iRenderer *window)> UW::UI_ScriptEditor::ScriptEditorGui(){
+  return [this](CW::Renderer::iRenderer *window){
+    guiScriptLoad(script_name);
+    guiScriptEditor();
+  };
+};
+
+
+
+std::string UW::UI_ScriptEditor::getName(){
+  return script_name;
+};
+
+
+
+#endif

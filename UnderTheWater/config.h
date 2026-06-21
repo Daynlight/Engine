@@ -19,7 +19,7 @@ namespace UW::Config{
   inline constexpr float EPS = 1e-5f;
   inline constexpr float FIXED_HZ = 60.0f;
   inline constexpr unsigned int VSYNC = 0;
-  inline const float SAVE_TIMESTAMP = 350000;                                   // 5 min
+  inline const float SAVE_TIMESTAMP = 350000;         
   inline const std::string WINDOW_TITLE = "Under the Water (Daniel Stodulski)";
   
   // generation
@@ -38,7 +38,9 @@ namespace UW::Config{
   inline const std::string DEFAULT_GUI_MATERIAL = "Terrain";
   inline const unsigned int DEFAULT_GUI_OBJECT = 0;
   inline const unsigned int SHADER_EDITOR_BUFFER_SIZE = 20480;                  // 20KiB
+  inline const unsigned int SCRIPT_EDITOR_BUFFER_SIZE = 20480;                  // 20KiB
   inline const unsigned int OBJECT_NAME_BUFFER_SIZE = 1024;                     // 1KiB
+  inline const float SCRIPT_SAVE_COOLDOWN = 0.1f;
   inline const std::string DEFAULT_SHADER = "Default";
   inline const std::string DEFAULT_MESH = "Default";
   inline const std::string DEFAULT_TEXTURE = "Default";
@@ -68,6 +70,7 @@ namespace UW::Config{
   inline const std::string SHADERS_FOLDER = "Shaders/";
   inline const std::string TEXTURES_FOLDER = "Textures/";
   inline const std::string MESHES_FOLDER = "Meshes/";
+  inline const std::string SCRIPTS_FOLDER = "Scripts/";
   inline const std::string MESH_EXTENSION = ".msh";
   inline const std::string MATERIALS_FILENAME = "Materials.pbr";
   inline const std::string OBJECTS_FILENAME = "Objects.obj";
