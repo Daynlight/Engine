@@ -40,6 +40,8 @@ private:
   bool debug_camera_on = UW::Config::DEFAULT_DEBUG_CAMERA_ON;
   bool post_processing_on = UW::Config::DEFAULT_POST_PROCESSING_ON;
   bool shadows_on = UW::Config::DEFAULT_SHADOWS_ON;
+  bool water_on = false;
+  bool terrain_on = true;
   
   float save_acc = 0.0f;
 #endif

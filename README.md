@@ -269,6 +269,7 @@ Shaders are loaded via cmrc or from folder as fallback are **private** and **saf
 - [ ] Asset loader on load terrain break
 - [ ] Asset loader multiple meshes corrupts
 - [ ] Asset loader materials didn't import or missing materials
+- [ ] Fix Pufferfish Asset
 - [ ] Asset Loader UI Check
 </details>
 

@@ -105,9 +105,9 @@ void UW::Scene::onUpdate(float delta_time){
 
   for(UW::GameObject& el : object_manager.objects) el.onUpdate(delta_time);
   for(UW::Meduse& meduse : meduses) meduse.onUpdate(delta_time);
-  terrain.onUpdate(delta_time);
+  if(terrain_on) terrain.onUpdate(delta_time);
   skybox.onUpdate(delta_time);
-  water.onUpdate(delta_time);
+  if(water_on) water.onUpdate(delta_time);
 };
 
 
@@ -125,9 +125,9 @@ void UW::Scene::onFixedUpdate(float fixed_delta_time){
 
   for(UW::GameObject& el : object_manager.objects) el.onFixedUpdate(fixed_delta_time);
   for(UW::Meduse& meduse : meduses) meduse.onFixedUpdate(fixed_delta_time);
-  terrain.onFixedUpdate(fixed_delta_time);
+  if(terrain_on) terrain.onFixedUpdate(fixed_delta_time);
   skybox.onFixedUpdate(fixed_delta_time);
-  water.onFixedUpdate(fixed_delta_time);
+  if(water_on) water.onFixedUpdate(fixed_delta_time);
 };
 
 
@@ -238,9 +238,9 @@ void UW::Scene::renderFrame(UW::Camera& camera){
   glActiveTexture(GL_TEXTURE16);
   glBindTexture(GL_TEXTURE_2D, shadows_fbo.getDepthTexture());
 
-  terrain.render(&window, this->camera, camera, shadows_uniform_on);
+  if(terrain_on) terrain.render(&window, this->camera, camera, shadows_uniform_on);
   skybox.render(&window, this->camera, camera, shadows_uniform_off); 
-  water.render(&window, this->camera, camera, shadows_uniform_off);
+  if(water_on) water.render(&window, this->camera, camera, shadows_uniform_off);
   for(UW::GameObject& object : object_manager.objects) object.render(&window, this->camera, camera, shadows_uniform_on);
 
   
