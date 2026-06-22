@@ -12,7 +12,7 @@
 UW::GameObjectScriptRecord::GameObjectScriptRecord(const std::string &path)
   : path(path), 
     cpp_file(UW::Config::SCRIPTS_SRC_FOLDER + path + ".cpp"),
-#ifdef _WIN32
+#if defined(_WIN32) || defined(_WIN64)
     so_file(UW::Config::SCRIPTS_DLL_FOLDER + path + ".dll")
 #else
     so_file(UW::Config::SCRIPTS_DLL_FOLDER + path + ".so")
@@ -89,7 +89,9 @@ void UW::GameObjectScriptRecord::syncPointer(GameObjectData* data) {
 
 
 void UW::GameObjectScriptRecord::observe(GameObjectData *data){
+#ifndef PRODUCTION
   if(checkLastWrite()) updateScript(data);
+#endif
 };
 
 
@@ -101,6 +103,7 @@ void UW::GameObjectScriptRecord::onLoad(GameObjectData* data) {
 
 #ifndef PRODUCTION
 #ifdef SANDBOX_SCRIPTS
+#if defined(_WIN32) || defined(_WIN64)
     pid_t pid = fork();
     if(pid == 0){
       script->OnLoad();
@@ -118,6 +121,7 @@ void UW::GameObjectScriptRecord::onLoad(GameObjectData* data) {
     };
 #endif
 #endif
+#endif
 
     script->OnLoad();
   };
@@ -130,6 +134,7 @@ void UW::GameObjectScriptRecord::onUpdate(float delta_time) {
 
 #ifndef PRODUCTION
 #ifdef SANDBOX_SCRIPTS
+#if defined(_WIN32) || defined(_WIN64)
     pid_t pid = fork();
     if(pid == 0){
       script->OnUpdate(delta_time);
@@ -147,6 +152,7 @@ void UW::GameObjectScriptRecord::onUpdate(float delta_time) {
     };
 #endif
 #endif
+#endif
 
     script->OnUpdate(delta_time);
   };
@@ -159,6 +165,7 @@ void UW::GameObjectScriptRecord::onFixedUpdate(float fixed_delta_time) {
 
 #ifndef PRODUCTION
 #ifdef SANDBOX_SCRIPTS
+#if defined(_WIN32) || defined(_WIN64)
     pid_t pid = fork();
     if(pid == 0){
       script->OnFixedUpdate(fixed_delta_time);
@@ -176,6 +183,7 @@ void UW::GameObjectScriptRecord::onFixedUpdate(float fixed_delta_time) {
     };
 #endif
 #endif
+#endif
 
     script->OnFixedUpdate(fixed_delta_time);
   };
@@ -188,6 +196,7 @@ void UW::GameObjectScriptRecord::onRender() {
 
 #ifndef PRODUCTION
 #ifdef SANDBOX_SCRIPTS
+#if defined(_WIN32) || defined(_WIN64)
     pid_t pid = fork();
     if(pid == 0){
       script->OnRender();
@@ -205,6 +214,7 @@ void UW::GameObjectScriptRecord::onRender() {
     };
 #endif
 #endif
+#endif
 
     script->OnRender();
   };
@@ -217,6 +227,7 @@ void UW::GameObjectScriptRecord::onDestroy() {
 
 #ifndef PRODUCTION
 #ifdef SANDBOX_SCRIPTS
+#if defined(_WIN32) || defined(_WIN64)
     pid_t pid = fork();
     if(pid == 0){
       script->OnDestroy();
@@ -232,6 +243,7 @@ void UW::GameObjectScriptRecord::onDestroy() {
         return; 
       };
     };
+#endif
 #endif
 #endif
 
@@ -252,10 +264,23 @@ int UW::GameObjectScriptRecord::loadModule() {
 
   removeModule();
 
+#ifdef PRODUCTION
+  script = UW::ScriptRegistry::get().createScript(path);
+  
+  if (!script) {
+    UW::Logger::get().erro("Script Controller", "Script not found in registry: " + path);
+    return -1;
+  };
+  
+  UW::Logger::get().info("Script Controller", "Module Loaded statically");
+  return 0;
+
+#else
+
   bool file_exist = std::filesystem::exists(so_file);
   if(!file_exist) return -1;
 
-#ifdef _WIN32
+#if defined(_WIN32) || defined(_WIN64)
   script_handler = LoadLibraryA(so_file.c_str());
   if (!script_handler) {
     Logger::get().erro("Script Controller", "Failed to load DLL - Error Code: " + std::to_string(GetLastError()));
@@ -299,6 +324,8 @@ int UW::GameObjectScriptRecord::loadModule() {
     return -1;
   };
 
+#endif
+
   Logger::get().info("Script Controller", "Module Loaded");
   return 0;
 };
@@ -307,6 +334,15 @@ int UW::GameObjectScriptRecord::loadModule() {
 
 void UW::GameObjectScriptRecord::removeModule(){
   UW::Logger::get().info("Script Controller", "Module destroying");
+
+#ifdef PRODUCTION
+  if (script) {
+    onDestroy();
+    delete script;
+    script = nullptr;
+  };
+
+#else
 
   if (!script_handler) {
     script = nullptr;
@@ -318,7 +354,7 @@ void UW::GameObjectScriptRecord::removeModule(){
   if(script){
     onDestroy();
 
-#ifdef _WIN32
+#if defined(_WIN32) || defined(_WIN64)
     using DeleteScriptFunc = void (*)(GameObjectScriptInterface*);
     DeleteScriptFunc deleteScript = (DeleteScriptFunc)GetProcAddress((HMODULE)script_handler, "DeleteScript");
 
@@ -347,7 +383,7 @@ void UW::GameObjectScriptRecord::removeModule(){
   };
 
   
-#ifdef _WIN32
+#if defined(_WIN32) || defined(_WIN64)
   if (script_handler) FreeLibrary((HMODULE)script_handler);
 #else
   if(script_handler) dlclose(script_handler);
@@ -355,6 +391,7 @@ void UW::GameObjectScriptRecord::removeModule(){
   script_handler = nullptr;
   script = nullptr;
 
+#endif
 
   UW::Logger::get().info("Script Controller", "Module destroyed");
 };
@@ -362,6 +399,7 @@ void UW::GameObjectScriptRecord::removeModule(){
 
 
 bool UW::GameObjectScriptRecord::checkLastWrite(){
+#ifndef PRODUCTION
   bool file_exist = std::filesystem::exists(cpp_file);
 
   bool changed = 0;
@@ -390,13 +428,18 @@ bool UW::GameObjectScriptRecord::checkLastWrite(){
   };
 
   return changed;
+
+#endif
+
+  return 0;
 };
 
 
 
 void UW::GameObjectScriptRecord::updateScript(GameObjectData* data) {
+#ifndef PRODUCTION
   UW::Logger::get().info("Script Controller", "Script is Updating...");
-  
+
   removeModule();
 
   if(!compile()) {
@@ -413,17 +456,19 @@ void UW::GameObjectScriptRecord::updateScript(GameObjectData* data) {
   };
 
   UW::Logger::get().info("Script Controller", "Script Updated");
+#endif
 };
 
 
 
 int UW::GameObjectScriptRecord::compile() {
+#ifndef PRODUCTION
   std::filesystem::path p(so_file);
   std::filesystem::path dir = p.parent_path();
 
   if (!dir.empty() && !std::filesystem::exists(dir)) std::filesystem::create_directories(dir);
 
-#ifdef _WIN32
+#if defined(_WIN32) || defined(_WIN64)
   std::string cmd = "g++ -shared -o \"" + so_file + "\" \"" + cpp_file + "\"";
   
   UW::Logger::get().info("Script Controller", "Compiling on Windows: " + cmd);
@@ -471,4 +516,6 @@ int UW::GameObjectScriptRecord::compile() {
   UW::Logger::get().erro("Script Controller", "Failed to fork()");
   return -1;
 #endif
+#endif
+  return 0;
 };

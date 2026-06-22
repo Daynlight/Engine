@@ -5,7 +5,8 @@
 
 
 
-#define SCRIPTNAME Script_Test
+#define SCRIPT_NAME Script_Test
+#define SCRIPT_FILE_NAME "Test"
 #define BUILDING_SCRIPT_DLL
 
 #include "../UnderTheWater/ScriptShared/GameObjectScriptInterface.h"
@@ -16,7 +17,7 @@
 
 
 namespace UW{
-class SCRIPTNAME : public GameObjectScriptInterface {
+class SCRIPT_NAME : public GameObjectScriptInterface {
 private:
   GameObjectData initial_game_data = GameObjectData();
 
@@ -35,7 +36,7 @@ private:
   unsigned int meshes_version = -1;
 
 public:
-  ~SCRIPTNAME() = default;
+  ~SCRIPT_NAME() = default;
   
   void OnLoad(){
     logger->info("Test Script", "Loaded");
@@ -139,14 +140,23 @@ public:
 
 
 
+#ifndef PRODUCTION
+
 extern "C" UW::GameObjectScriptInterface* SCRIPT_API GetScript() {
-  UW::SCRIPTNAME* script = new UW::SCRIPTNAME();
+  UW::SCRIPT_NAME* script = new UW::SCRIPT_NAME();
   return (UW::GameObjectScriptInterface*)script;
 };
 
 
 
 extern "C" void SCRIPT_API DeleteScript(UW::GameObjectScriptInterface* script) {
-  UW::SCRIPTNAME* temp_script = (UW::SCRIPTNAME*)script;
+  UW::SCRIPT_NAME* temp_script = (UW::SCRIPT_NAME*)script;
   delete temp_script;
 };
+
+#else
+
+REGISTER_SCRIPT(SCRIPT_FILE_NAME, SCRIPT_NAME)
+
+#endif
+
