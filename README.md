@@ -66,7 +66,7 @@ Project for **GRK** under water scene. Build on top of my library [**CWindow**](
 * **CAMERA_MOVE_RIGHT**: D (Editor, Product)
 * **CAMERA_MOVE_LEFT**: A (Editor, Product)
 * **CAMERA_ROLL_LEFT**: Q (Editor, Product)
-* **CAMERA_ROLL_RIGHT**: E (Editor, Product)
+* **CAMERA_ROLL_RIGHT**: E (Editor, Product)  
 Can be edited in [config.h](UnderTheWater/config.h) 
 
 
