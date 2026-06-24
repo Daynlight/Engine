@@ -3,34 +3,62 @@
 # Help Me I'm Under The Water
 
 [![wakatime](https://wakatime.com/badge/user/233b40bd-5512-4e3e-9573-916f7b4127c3/project/408b7767-840b-45a2-b96f-d4c1d6a11ab1.svg)](https://wakatime.com/badge/user/233b40bd-5512-4e3e-9573-916f7b4127c3/project/408b7767-840b-45a2-b96f-d4c1d6a11ab1)
+
 </div>
 
 
 
-## Screenshots
+## Demos
+
+<table cellspacing="15" cellpadding="0" style="width: 100%; border: none;">
+  <tr>
+    <td width="50%">
+      <video autoplay loop muted width="100%" style="margin-bottom: 5px;">
+        <source src="./docs/Prod.mp4" type="video/mp4">
+      </video>
+    </td>
+    <td width="50%">
+      <video autoplay loop muted width="100%" style="margin-bottom: 5px;">
+        <source src="./docs/Editor.mp4" type="video/mp4">
+      </video>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <video autoplay loop muted width="100%">
+        <source src="./docs/Movement.mp4" type="video/mp4">
+      </video>
+    </td>
+    <td width="50%">
+      <video autoplay loop muted width="100%">
+        <source src="./docs/SDF.mp4" type="video/mp4">
+      </video>
+    </td>
+  </tr>
+</table>
 
 
 
 ## About
-Project for **GRK** under water scene. Build on top of [**CWindow library**](https://github.com/Daynlight/CWindow.git). Uses **ImGui** build in **CWindow** for parameters adjustment and visualization.
+Project for **GRK** under water scene. Build on top of my library [**CWindow**](https://github.com/Daynlight/CWindow.git). Uses **ImGui** build in **CWindow** for parameters adjustment and visualization. Focused on full compilation to **single executable** and **Game Engine like editing**. With handcrafted assets.
 
 
 
 ## Methods
-* normal mapping 
-* PBR 
-* quaternion camera
-* shadow mapping
-* Parallel Transport Frames 
-* underwater skybox
-* **A09** Ray-marched SDF object
-* **B07** Heightmap-based seabed mesh
+- [x] normal mapping 
+- [x] PBR 
+- [x] quaternion camera
+- [x] shadow mapping
+- [ ] Parallel Transport Frames 
+- [x] underwater skybox
+- [x] **A09** Ray-marched SDF object
+- [x] **B07** Heightmap-based seabed mesh
 
 
 
 ## Controls
 * **SWAP_CAMERA_BTN**: P (Editor)
-* **CAMERA_SWAP_MODE_BTN**: ESC (Editor)
+* **CAMERA_FOCUS_MODE_BTN**: ESC (Editor)
 * **CAMERA_ACCELERATE**: O (Editor, Product)
 * **CAMERA_DECELERATE**: I (Editor, Product)
 * **CAMERA_MOVE_FORWARD**: W (Editor, Product)
@@ -39,6 +67,7 @@ Project for **GRK** under water scene. Build on top of [**CWindow library**](htt
 * **CAMERA_MOVE_LEFT**: A (Editor, Product)
 * **CAMERA_ROLL_LEFT**: Q (Editor, Product)
 * **CAMERA_ROLL_RIGHT**: E (Editor, Product)
+Can be edited in [config.h](UnderTheWater/config.h) 
 
 
 
@@ -60,7 +89,7 @@ Project for **GRK** under water scene. Build on top of [**CWindow library**](htt
 
 
 ## TOC
-- [Screenshots](#screenshots)
+- [Demos](#demos)
 - [About](#about)
 - [Methods](#methods)
 - [Controls](#controls)
