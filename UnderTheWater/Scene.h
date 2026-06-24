@@ -62,7 +62,6 @@ private:
   UW::Terrain terrain;
   UW::Water water;
   UW::Skybox skybox;
-  UW::ObjectManager object_manager;
   std::vector<UW::Meduse> meduses;
 
 public:

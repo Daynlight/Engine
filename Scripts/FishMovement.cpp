@@ -34,6 +34,8 @@ private:
   float speed = 10.0f;
   float t = 0.0f;
 
+  std::vector<std::string> child_objects;
+
 
 public:
   ~SCRIPT_NAME() = default;
@@ -43,6 +45,15 @@ public:
   void OnLoad(){
     logger->info("Test Script", "Loaded");
     initial_game_data = *game_object_data;
+
+
+
+    std::string child_name = game_object_data->name + "_child_1";
+    child_objects.emplace_back(child_name);
+    object_manager->emplace_back(child_name);
+    GameObjectData* child_data = object_manager->getGameObjectData(child_name);
+    child_data->mesh = "Pufferfish";
+    child_data->position = {163, 26, -21};
 
 
     
@@ -109,6 +120,9 @@ public:
 
   void OnDestroy(){
     *game_object_data = initial_game_data;
+    for(const auto& child : child_objects)
+      object_manager->erase(child);
+
     logger->info("Test Script", "Destroyed");
   };
 

@@ -21,6 +21,7 @@
 
 #include "ScriptShared/GameObjectScriptInterface.h"
 #include "Utils/Logger.h"
+#include "Objects/ObjectManager.h"
 #include "config.h"
 
 
@@ -42,6 +43,8 @@ class GameObjectScriptRecord{
 #endif
 
   void* script_handler = nullptr;
+
+public:
   GameObjectScriptInterface* script = nullptr;
 
 public:

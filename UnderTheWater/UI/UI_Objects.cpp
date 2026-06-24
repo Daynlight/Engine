@@ -46,27 +46,27 @@ void UW::UI_Objects::uiControl(){
 void UW::UI_Objects::guiObjectList(){
   ImGui::SeparatorText("Object List");
 
-  for(unsigned int id = 0; id < scene.object_manager.objects.size(); id++){
-    std::string label = "- " + scene.object_manager.objects[id].game_object_data.name + "##(" + std::to_string(id) + ")";
+  for(unsigned int id = 0; id < UW::ObjectManager::get().objects.size(); id++){
+    std::string label = "- " + UW::ObjectManager::get().objects[id].game_object_data.name + "##(" + std::to_string(id) + ")";
     if(ImGui::Button(label.c_str())) guiSettings.object_id = id;
     
     label = "Delete##" + std::to_string(id);
     ImGui::SameLine();
     if(ImGui::Button(label.c_str())) {
-      scene.object_manager.objects.erase(scene.object_manager.objects.begin() + id);
-      Logger::get().warn("UI", "Deleted Object { " + scene.object_manager.objects[id].game_object_data.name + " }");
+      UW::ObjectManager::get().objects.erase(UW::ObjectManager::get().objects.begin() + id);
+      Logger::get().warn("UI", "Deleted Object { " + UW::ObjectManager::get().objects[id].game_object_data.name + " }");
     };
 
     label = "Duplicate##" + std::to_string(id);
     ImGui::SameLine();
     if(ImGui::Button(label.c_str())) {
-      scene.object_manager.objects.emplace_back(GameObject(scene.object_manager.objects[id].game_object_data.name + "_copy", scene.object_manager.objects[id]));
-      Logger::get().warn("UI", "Duplicated Object { " + scene.object_manager.objects[id].game_object_data.name + " }");
+      UW::ObjectManager::get().objects.emplace_back(GameObject(UW::ObjectManager::get().objects[id].game_object_data.name + "_copy", UW::ObjectManager::get().objects[id]));
+      Logger::get().warn("UI", "Duplicated Object { " + UW::ObjectManager::get().objects[id].game_object_data.name + " }");
     };
   };
 
   if(ImGui::Button("Add new")) {
-    scene.object_manager.objects.emplace_back(UW::GameObject("new object", "testing", "testing", {}, {}, {}, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f), glm::vec3(1.0f)));
+    UW::ObjectManager::get().objects.emplace_back(UW::GameObject("new object", "testing", "testing", {}, {}, {}, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f), glm::vec3(1.0f)));
     Logger::get().info("UI", "Added New Object { new object }");
   };
 };
@@ -83,9 +83,9 @@ return [this](CW::Renderer::iRenderer *window){
 
 void UW::UI_Objects::guiObjectEditor(){
   ImGui::SeparatorText("Object Editor");
-  if(guiSettings.object_id >= scene.object_manager.objects.size()) return;
+  if(guiSettings.object_id >= UW::ObjectManager::get().objects.size()) return;
   
-  UW::GameObject& object = scene.object_manager.objects[guiSettings.object_id];
+  UW::GameObject& object = UW::ObjectManager::get().objects[guiSettings.object_id];
 
   char name_buffer[UW::Config::OBJECT_NAME_BUFFER_SIZE];
   memcpy(name_buffer, object.game_object_data.name.data(), object.game_object_data.name.size());

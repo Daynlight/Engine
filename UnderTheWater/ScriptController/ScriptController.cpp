@@ -104,6 +104,7 @@ void UW::GameObjectScriptRecord::onLoad(GameObjectData* data) {
   if(script){
     script->game_object_data = data;
     script->logger = static_cast<ILogger*>(&UW::Logger::get());
+    script->object_manager = static_cast<IObjectManager*>(&UW::ObjectManager::get());
 
 #ifndef PRODUCTION
 #ifdef SANDBOX_SCRIPTS

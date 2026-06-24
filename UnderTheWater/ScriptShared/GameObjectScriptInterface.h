@@ -9,6 +9,7 @@
 #include "ILogger.h"
 #include "ScriptRegister.h"
 #include "GameObjectData.h"
+#include "IObjectManger.h"
 
 
 
@@ -29,6 +30,7 @@ class GameObjectScriptInterface {
 public:
   GameObjectData* game_object_data = nullptr;
   ILogger* logger = nullptr;
+  IObjectManager* object_manager = nullptr;
 
   virtual ~GameObjectScriptInterface() = default;
   
