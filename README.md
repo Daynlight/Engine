@@ -97,7 +97,6 @@ Can be edited in [config.h](UnderTheWater/config.h)
 * **Logs**
 * **Materials Explorer**
 * **Materials Editor**
-* **Lights Explorer**
 * **Lights Editor**
 * **Objects Explorer**
 * **Objects Editor**
@@ -188,9 +187,25 @@ Main on scene object that contains ```GameObjectData``` and list of ```scripts``
 **![ Some times we have to remove script in UI to full restart them ]!**
 
 #### [UI](UnderTheWater/UI/)
-
+UI provides easy editor interface to building scene adding and managing [```objects```, ```materials```, ```lights```, ...]. In Production Mode it is turn off.
+* **Info**: Basic info about [```fps```, ```selected camera```, ...]. Buttons turn turn on/off [```Mesh Mode```, ```Terrain```, ```Post-Processing```, ...].  
+* **Logs**: Allows monitoring operations and changes.
+* **Materials Explorer**: Selecting, Removing, Adding Materials.
+* **Materials Editor**: Editing PBR parameters for current chosen Material.
+* **Lights Editor**: Adding, Removing Lights. Editing ```Color```, ```Position```, ```Strength```.
+* **Objects Explorer**: Allows adding, removing, duplicating objects. And selecting for editing in editor.
+* **Objects Editor**: Allows setting object [```position```, ```scale```, ```size```, ```textures```, ```materials```, ```scripts```, ```parameters```].
+* **Asset Loader**: Allows adding and selecting materials, meshes from files. Uses **Assimp** and saves as custom binary format.
+* **Shader Explorer**: Allows refreshing and opening shader editors.
+* **Shader Editor**: Multiline text editor for shader with auto reloading.
+* **Script Explorer**: Allows opening script editors.  
+* **Script Editor**: Multiline text editor for scripts after 5 seconds auto saved to file then auto-reloaded by objects. **![ Preferred to use external editor ]!**
 
 #### [Script Controller](UnderTheWater/ScriptController/) and [ScriptShared](UnderTheWater/ScriptShared/)
+
+#### EDITOR MODE
+
+#### PRODUCTION MODE
 
 
 
