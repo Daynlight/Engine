@@ -180,10 +180,15 @@ One point where we stores all ```GameObjects```. Inherit from Interface [IObject
 Is used for logging [```info```, ```warn```, ```erro```]. Logs are saved in ```editor.log``` up to 10000 lines. Can be changed in [```config```](UnderTheWater/config.h). Mainly for debugging detecting errors and work monitoring. Can be used to report bugs. Is inherit by [ILogger](UnderTheWater/ScriptShared/ILogger.h) interface to bridge between script and main app.
 
 #### [App](UnderTheWater/App.h) and [Scene](UnderTheWater/Scene.h)
+App is main entry where we initialize scene and ui for editor. Scene is full rendering pipeline with creation of ```main framebuffer```, ```shadows framebuffer``` and applying ```post-processing```. In future we plan adding ```Scene Controller``` and swapping between scenes.
 
 #### [GameObject](UnderTheWater/Objects/GameObject.h)
+Main on scene object that contains ```GameObjectData``` and list of ```scripts```. [GameObjectData](UnderTheWater/ScriptShared/GameObjectData.h) contains [```position```, ```rotation```, ```scale```, ```name```, ```mesh```, ```shader```, ```vector of textures```, ```vector of materials```, ```map of parameters```]. We use separated struct [GameObjectData](UnderTheWater/ScriptShared/GameObjectData.h) for bridging between scripts and main app that allows scripts to work on objects. Parameters are variants of predefined types that are easy to edit in editor mode and accessible in script.  
+**![ For now when scripts are bind we can't edit object in editor for editing parameters we turn off temporary scripts ]!**  
+**![ Some times we have to remove script in UI to full restart them ]!**
 
 #### [UI](UnderTheWater/UI/)
+
 
 #### [Script Controller](UnderTheWater/ScriptController/) and [ScriptShared](UnderTheWater/ScriptShared/)
 
