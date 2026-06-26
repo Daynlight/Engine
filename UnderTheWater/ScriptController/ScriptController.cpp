@@ -471,6 +471,13 @@ void UW::GameObjectScriptRecord::updateScript(GameObjectData* data) {
 
 int UW::GameObjectScriptRecord::compile() {
 #ifndef PRODUCTION
+  
+  auto it = Resources::get().scripts_last_time_write.find(path);
+  if(it != Resources::get().scripts_last_time_write.end() && lastWriteTime == Resources::get().scripts_last_time_write[path]) {
+    Logger::get().info("Script Controller", "Compilation Skiped");
+    return 0;
+  };
+  
   std::filesystem::path p(so_file);
   std::filesystem::path dir = p.parent_path();
 
@@ -484,6 +491,7 @@ int UW::GameObjectScriptRecord::compile() {
   
   if (status == 0) {
     UW::Logger::get().info("Script Controller", "successful compilation");
+    Resources::get().scripts_last_time_write[path] = lastWriteTime;
     return 0;
   } else {
     UW::Logger::get().erro("Script Controller", "Compilation failed with status: " + std::to_string(status));
@@ -513,6 +521,7 @@ int UW::GameObjectScriptRecord::compile() {
     int status = 0; 
     waitpid(pid, &status, 0);
     UW::Logger::get().info("Script Controller", "successful compilation");
+    Resources::get().scripts_last_time_write[path] = lastWriteTime;
 
     if (WIFEXITED(status) && WEXITSTATUS(status) == 0) return 0; 
     else { 

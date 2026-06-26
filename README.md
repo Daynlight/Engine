@@ -1,6 +1,6 @@
 <div align=center>
 
-# Help Me I'm Under The Water
+# Engine
 
 [![wakatime](https://wakatime.com/badge/user/233b40bd-5512-4e3e-9573-916f7b4127c3/project/408b7767-840b-45a2-b96f-d4c1d6a11ab1.svg)](https://wakatime.com/badge/user/233b40bd-5512-4e3e-9573-916f7b4127c3/project/408b7767-840b-45a2-b96f-d4c1d6a11ab1)
 
@@ -376,6 +376,27 @@ Production is designed to create one executable with no additional files require
 - [x] Asset Loader UI Check
 </details>
 
+<details open>
+<summary> 🌟 Iteration 6 🌟 </summary>
+
+- [x] Single compilation of scripts.
+- [ ] Scripts param auto reload.
+- [ ] Scripts runtime copy.
+- [ ] Script runtime simulation and edit.
+- [ ] Script on off btn.
+- [ ] Script async compile.
+- [ ] Game data backup.
+- [ ] Editor mode load from folder instead of cmrc. 
+- [ ] Last Time Write sync.
+- [ ] Window Data Serialization move in different file then ```imgui.ini```.
+- [ ] Move terrain, water, skybox to object_register vector.
+- [ ] Tree like objects_manager.
+- [ ] Multiple Scenes.
+- [ ] Optimization for Compile version (avoid maps).
+- [ ] Production optimization.
+- [ ] Clean up.
+</details>
+
 <details>
 <summary> Planed in Future </summary>
 
@@ -383,18 +404,5 @@ Production is designed to create one executable with no additional files require
 - [ ] Texture UI.
 - [ ] Mesh UI.
 - [ ] Rule of 5.
-- [ ] Optimization for Compile version (avoid maps).
 - [ ] Editor Debug with movement.
-- [ ] Editor mode load from folder instead of cmrc. 
-- [ ] Last Time Write sync.
-- [ ] Move terrain, water, skybox to object_register vector.
-- [ ] Window Data Serialization move in different file then ```imgui.ini```.
-- [ ] Scripts multiple compilation issue.
-- [ ] Script async compile.
-- [ ] Game data backup.
-- [ ] Production optimization.
-- [ ] Scripts param auto reload.
-- [ ] Scripts runtime copy.
-- [ ] Script runtime simulation and edit.
-- [ ] Script on off btn.
 </details>

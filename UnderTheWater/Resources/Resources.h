@@ -27,6 +27,7 @@
 namespace UW{
 class Resources{
 public:
+  std::unordered_map<std::string, std::filesystem::file_time_type> scripts_last_time_write;
   std::unordered_map<std::string, CW::Renderer::Texture> textures;
   std::unordered_map<std::string, CW::Renderer::Shader> shaders;
   UW::Meshes meshes;

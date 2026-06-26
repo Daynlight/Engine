@@ -74,3 +74,4 @@ build/
 *.ini
 
 temp*
+Scripts_DLL/
