@@ -24,9 +24,10 @@ execute_process(
 add_subdirectory(vendor/cmrc)
 add_subdirectory(vendor/CWindow)
 
+if(PRODUCTION)
 file(GLOB_RECURSE GameDataSet CONFIGURE_DEPENDS "GameData/**")
 cmrc_add_resource_library(GameData ${GameDataSet})
-
+endif()
 
 
 add_subdirectory(UnderTheWater)

@@ -7,8 +7,10 @@
 
 #include "MaterialsSerialization.h"
 
+#ifdef PRODUCTION
 #include <cmrc/cmrc.hpp>
 CMRC_DECLARE(GameData);
+#endif
 
 
 
@@ -73,8 +75,17 @@ void UW::MaterialsSerialization::saveAll(UW::Materials& materials) {
 void UW::MaterialsSerialization::loadAll(UW::Materials& materials) {
   Logger::get().info("MaterialsSerialization", "Loading all materials...");
   try {
-    auto fs = cmrc::GameData::get_filesystem();
     std::string resourcePath = UW::Config::GAME_DATA_FOLDER + UW::Config::MATERIALS_FILENAME;
+
+#ifndef PRODUCTION
+    std::ifstream inFile(resourcePath, std::ios::binary);
+    
+    if (!inFile.is_open()) {
+      Logger::get().erro("MaterialsSerialization", "Failed to open file for loading - " + resourcePath);
+      return;
+    }
+#else
+    auto fs = cmrc::GameData::get_filesystem();
     
     if (!fs.exists(resourcePath)) {
       Logger::get().erro("MaterialsSerialization", "CMRC - File not found - " + resourcePath);
@@ -84,6 +95,7 @@ void UW::MaterialsSerialization::loadAll(UW::Materials& materials) {
     auto embeddedFile = fs.open(resourcePath);
     std::string dataStr(embeddedFile.begin(), embeddedFile.end());
     std::stringstream inFile(dataStr);
+#endif
 
     materials.clear();
 

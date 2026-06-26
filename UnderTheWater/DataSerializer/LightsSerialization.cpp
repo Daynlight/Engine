@@ -7,8 +7,10 @@
 
 #include "LightsSerialization.h"
 
+#ifdef PRODUCTION
 #include <cmrc/cmrc.hpp>
 CMRC_DECLARE(GameData);
+#endif
 
 
 
@@ -69,8 +71,17 @@ void UW::LightsSerialization::saveAll(UW::Lights& lights) {
 void UW::LightsSerialization::loadAll(UW::Lights& lights) {
   Logger::get().info("LightsSerialization", "Loading all lights...");
   try {
-    auto fs = cmrc::GameData::get_filesystem();
     std::string resourcePath = UW::Config::GAME_DATA_FOLDER + UW::Config::LIGHTS_FILENAME;
+
+#ifndef PRODUCTION
+    std::ifstream inFile(resourcePath, std::ios::binary);
+    
+    if (!inFile.is_open()) {
+      Logger::get().erro("LightsSerialization", "Failed to open file for loading - " + resourcePath);
+      return;
+    }
+#else
+    auto fs = cmrc::GameData::get_filesystem();
     
     if (!fs.exists(resourcePath)) {
       Logger::get().erro("LightsSerialization", "CMRC - File not found - " + resourcePath);
@@ -80,6 +91,7 @@ void UW::LightsSerialization::loadAll(UW::Lights& lights) {
     auto embeddedFile = fs.open(resourcePath);
     std::string dataStr(embeddedFile.begin(), embeddedFile.end());
     std::stringstream inFile(dataStr);
+#endif
 
     unsigned int lightCount = 0;
     inFile.read(reinterpret_cast<char*>(&lightCount), sizeof(lightCount));

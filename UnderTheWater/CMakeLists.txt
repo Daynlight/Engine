@@ -60,5 +60,14 @@ if(PRODUCTION)
   target_sources(UnderTheWater PRIVATE ${PROD_SCRIPTS})
 endif()
 
-target_link_libraries(UnderTheWater CWindow GameData)
+target_link_libraries(UnderTheWater CWindow)
+
+
+
+if(PRODUCTION)
+target_link_libraries(UnderTheWater GameData)
+endif()
+
+
+
 target_include_directories(UnderTheWater PUBLIC .)

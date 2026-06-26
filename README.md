@@ -3,7 +3,7 @@
 # Engine
 
 [![wakatime](https://wakatime.com/badge/user/233b40bd-5512-4e3e-9573-916f7b4127c3/project/408b7767-840b-45a2-b96f-d4c1d6a11ab1.svg)](https://wakatime.com/badge/user/233b40bd-5512-4e3e-9573-916f7b4127c3/project/408b7767-840b-45a2-b96f-d4c1d6a11ab1)
-
+[![wakatime](https://wakatime.com/badge/user/233b40bd-5512-4e3e-9573-916f7b4127c3/project/a19ca283-9784-46bc-bd0d-0100fef62a01.svg)](https://wakatime.com/badge/user/233b40bd-5512-4e3e-9573-916f7b4127c3/project/a19ca283-9784-46bc-bd0d-0100fef62a01)
 </div>
 
 
@@ -32,7 +32,7 @@
 
 
 ## About
-Project for **GRK** under water scene. Build on top of my library [**CWindow**](https://github.com/Daynlight/CWindow.git). Uses **ImGui** build in **CWindow** for parameters adjustment and visualization. Focused on full compilation to **single executable** and **Game Engine like editing**. With handcrafted assets.
+Game Engine with editor and production. Build on top of my library [**CWindow**](https://github.com/Daynlight/CWindow.git). Uses **ImGui** build in **CWindow** for parameters adjustment and visualization. Focused on full compilation to **single executable** and **Game Engine like editing**. With handcrafted assets.
 
 
 
@@ -40,8 +40,6 @@ Project for **GRK** under water scene. Build on top of my library [**CWindow**](
 - [Demos](#demos)
 - [About](#about)
 - [TOC](#toc)
-- [Methods](#methods)
-- [Controls](#controls)
 - [UI](#ui)
 - [Installation and Usage](#installation-and-usage)
 - [Compiling End Product](#compiling-end-product)
@@ -69,33 +67,6 @@ Project for **GRK** under water scene. Build on top of my library [**CWindow**](
 - [License](#license)
 - [Author](#author)
 - [TODO](#todo)
-
-
-
-## Methods
-- [x] normal mapping 
-- [x] PBR 
-- [x] quaternion camera
-- [x] shadow mapping
-- [ ] Parallel Transport Frames 
-- [x] underwater skybox
-- [x] **A09** Ray-marched SDF object
-- [x] **B07** Heightmap-based seabed mesh
-
-
-
-## Controls
-* **SWAP_CAMERA_BTN**: P (Editor)
-* **CAMERA_FOCUS_MODE_BTN**: ESC (Editor)
-* **CAMERA_ACCELERATE**: O (Editor, Product)
-* **CAMERA_DECELERATE**: I (Editor, Product)
-* **CAMERA_MOVE_FORWARD**: W (Editor, Product)
-* **CAMERA_MOVE_BACK**: S (Editor, Product)
-* **CAMERA_MOVE_RIGHT**: D (Editor, Product)
-* **CAMERA_MOVE_LEFT**: A (Editor, Product)
-* **CAMERA_ROLL_LEFT**: Q (Editor, Product)
-* **CAMERA_ROLL_RIGHT**: E (Editor, Product)  
-Can be edited in [config.h](UnderTheWater/config.h) 
 
 
 
@@ -164,7 +135,7 @@ cd ..
 We use **cmake** for ease of build with **git submodules** for git packages.
 
 ### [DataSerializer](UnderTheWater/DataSerializer/) {SINGLETON}
-Focuses only on reading and saving. For loading data uses ```cmrc``` that **bakes** assets into executable. Data are stored in ```binary``` format for faster access and avoiding parsing. Everything that is baked via ```cmrc``` is save in [GameData](GameData/) folder. 
+Focuses only on reading and saving. For loading data uses ```cmrc``` that **bakes** assets into executable. Data are stored in ```binary``` format for faster access and avoiding parsing. Everything that is baked via ```cmrc``` is save in [GameData](GameData/) folder. In editor we skips ```cmrc``` and use normal ```fstreams``` for faster editing.
 
 * **Meshes**: Faster to read then **Assimp**. Saved as multiple files each for one  mesh in [Assets/Meshes](GameData/Assets//Meshes/) folder each with ```.msh``` extension. On load we search for file in this directory with ```.msh``` extension. Loaded to [```Resources```](UnderTheWater/Resources/) saved in ```UW::Meshes``` that controls versioning and allows avoiding ```unordered_map``` for editor.
 * **Shaders**: Accessible via ```Resources```. Saved as multiple files in [Assets/Shaders](GameData/Assets/Shaders/) folders **each folder is one compiled shader** with ```.glsl``` extension. List of allowed script types is in [config.h](UnderTheWater/config.h).
@@ -209,11 +180,10 @@ UI provides easy editor interface to building scene adding and managing [```obje
 * **Script Editor**: Multiline text editor for scripts after 5 seconds auto saved to file then hoy-reloaded by [ScriptController](UnderTheWater/ScriptController/) by objects. **![ Preferred to use external editor ]!**
 
 ### [Script Controller](UnderTheWater/ScriptController/) and [ScriptShared](UnderTheWater/ScriptShared/)
-Scripts in **editor mode** are ```hot-reloaded``` by ```last-time-write``` that allows ease of editing. Each object have it own script bind. Scripts are accessible by name and stored in [Scripts](Scripts/) folder. Temporary editor dlls are created by ```fork``` + ```execvp``` (Linux) and ```system``` (Windows) and stored in [Scripts_DLL](Scripts_DLL) folder. This scripts are controlled by [Script Controller](UnderTheWater/ScriptController/). [ScriptShared](UnderTheWater/ScriptShared/) provides interfaces structures that works as bridge between main App and Script. Uses mainly header files with relative include paths for easier script search and avoiding including whole engine. Script structure is provided by interface [GameObjectScriptInterface](UnderTheWater/ScriptShared/GameObjectScriptInterface.h). For physics use ```FixedUpdate```. In **Production mode** we are compiling scripts with unique class name and register them to [ScriptRegister](UnderTheWater/ScriptShared/ScriptRegister.h) then we creates each instance by ```Factory```. We access scripts by file name that is provided in Script.  
-**![ Every object compiles it own dll. That is redundant will be optimized in future ]!**  
+Scripts in **editor mode** are ```hot-reloaded``` by ```last-time-write``` that allows ease of editing. Each object have it own script bind. Scripts are accessible by name and stored in [Scripts](Scripts/) folder. Temporary editor dlls are created by ```fork``` + ```execvp``` (Linux) and ```system``` (Windows) and stored in [Scripts_DLL](Scripts_DLL) folder. This scripts are controlled by [Script Controller](UnderTheWater/ScriptController/). [ScriptShared](UnderTheWater/ScriptShared/) provides interfaces structures that works as bridge between main App and Script. Uses mainly header files with relative include paths for easier script search and avoiding including whole engine. Script structure is provided by interface [GameObjectScriptInterface](UnderTheWater/ScriptShared/GameObjectScriptInterface.h). For physics use ```FixedUpdate```. In **Production mode** we are compiling scripts with unique class name and register them to [ScriptRegister](UnderTheWater/ScriptShared/ScriptRegister.h) then we creates each instance by ```Factory```. We access scripts by file name that is provided in Script.
 **![ Sometimes in editor ui we have to full remove script by delete and re-add it ]!**  
 **![ Accessing to object-manager is not stable after hot-reload it doesn't updates child objects ]!**  
-**![ Scripts blocks every edition in ui we have to turn them off to change object properties ]!**
+**![ Scripts blocks every edition in ui we have to turn them off to change object properties ]!**  
 **![ Compilation of scripts freezes app because for now we don't use threads ]!**  
 **![ No separation in Editor mode to play simulation and editing changes are overwrite by scripts ]!**
 
@@ -380,13 +350,14 @@ Production is designed to create one executable with no additional files require
 <summary> 🌟 Iteration 6 🌟 </summary>
 
 - [x] Single compilation of scripts.
+- [x] Editor mode load from folder instead of cmrc. 
 - [ ] Scripts param auto reload.
 - [ ] Scripts runtime copy.
 - [ ] Script runtime simulation and edit.
 - [ ] Script on off btn.
 - [ ] Script async compile.
 - [ ] Game data backup.
-- [ ] Editor mode load from folder instead of cmrc. 
+- [ ] Add Texture Serializer.
 - [ ] Last Time Write sync.
 - [ ] Window Data Serialization move in different file then ```imgui.ini```.
 - [ ] Move terrain, water, skybox to object_register vector.

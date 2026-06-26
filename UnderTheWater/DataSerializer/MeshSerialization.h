@@ -16,7 +16,10 @@
 #include <sstream>
 #include <filesystem>
 #include <cstring>
+
+#ifdef PRODUCTION
 #include <cmrc/cmrc.hpp>
+#endif
 
 #include "Utils/Logger.h"
 #include "Resources/Resources.h"

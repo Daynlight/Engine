@@ -13,7 +13,9 @@
 #include <filesystem>
 #include <unordered_map>
 
+#ifdef PRODUCTION
 #include <cmrc/cmrc.hpp>
+#endif
 
 #include "Renderer.h"
 #include "config.h"

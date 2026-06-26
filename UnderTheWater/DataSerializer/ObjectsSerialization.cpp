@@ -7,8 +7,10 @@
 
 #include "ObjectsSerialization.h"
 
+#ifdef PRODUCTION
 #include <cmrc/cmrc.hpp>
 CMRC_DECLARE(GameData);
+#endif
 
 
 
@@ -106,8 +108,17 @@ void UW::ObjectsSerialization::saveAll(std::vector<UW::GameObject>& objects) {
 void UW::ObjectsSerialization::loadAll(std::vector<UW::GameObject>& objects) {
   Logger::get().info("ObjectsSerialization", "Loading all objects...");
   try {
-    auto fs = cmrc::GameData::get_filesystem();
     std::string resourcePath = UW::Config::GAME_DATA_FOLDER + UW::Config::OBJECTS_FILENAME;
+
+#ifndef PRODUCTION
+    std::ifstream inFile(resourcePath, std::ios::binary);
+    
+    if (!inFile.is_open()) {
+      Logger::get().erro("ObjectsSerialization", "Failed to open file for loading - " + resourcePath);
+      return;
+    };
+#else
+    auto fs = cmrc::GameData::get_filesystem();
     
     if (!fs.exists(resourcePath)) {
       Logger::get().erro("ObjectsSerialization", "CMRC - File not found - " + resourcePath);
@@ -117,7 +128,8 @@ void UW::ObjectsSerialization::loadAll(std::vector<UW::GameObject>& objects) {
     auto embeddedFile = fs.open(resourcePath);
     std::string dataStr(embeddedFile.begin(), embeddedFile.end());
     std::stringstream inFile(dataStr);
-    
+#endif
+
     objects.clear();
 
     size_t objectCount = 0;

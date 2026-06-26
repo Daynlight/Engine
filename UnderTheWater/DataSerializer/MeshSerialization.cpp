@@ -7,8 +7,10 @@
 
 #include "MeshSerialization.h"
 
+#ifdef PRODUCTION
 #include <cmrc/cmrc.hpp>
 CMRC_DECLARE(GameData);
+#endif
 
 
 
@@ -56,10 +58,19 @@ void UW::MeshSerialization::save(const std::string& name, const CW::Renderer::Me
 void UW::MeshSerialization::load(const std::string& path_to_mesh, UW::Meshes& meshes) {
   Logger::get().info("MeshSerialization", "Loading mesh: " + path_to_mesh);
   try {
+#ifndef PRODUCTION
+    std::ifstream inFile(path_to_mesh, std::ios::binary);
+    
+    if (!inFile.is_open()) {
+      Logger::get().erro("MeshSerialization", "Failed to open file for loading - " + path_to_mesh);
+      return;
+    }
+#else
     auto fs = cmrc::GameData::get_filesystem();
     auto embedded_file = fs.open(path_to_mesh);
     std::string data_str(embedded_file.begin(), embedded_file.end());
     std::stringstream inFile(data_str);
+#endif
 
     UW::MeshRecord record;
     if (!(inFile >> record)) return;
@@ -114,13 +125,28 @@ void UW::MeshSerialization::saveAll(UW::Meshes& meshes) {
 void UW::MeshSerialization::loadAll(UW::Meshes& meshes) {
   Logger::get().info("MeshSerialization", "Loading all meshes...");
   try {
-    auto fs = cmrc::GameData::get_filesystem();
     std::string meshes_root = UW::Config::GAME_DATA_FOLDER + UW::Config::ASSETS_FOLDER + UW::Config::MESHES_FOLDER;
-
-    if (!fs.exists(meshes_root)) return;
-
     std::vector<std::string> mesh_files;
+
+#ifndef PRODUCTION
+    if (std::filesystem::exists(meshes_root) && std::filesystem::is_directory(meshes_root)) {
+      for (const auto& entry : std::filesystem::recursive_directory_iterator(meshes_root)) {
+        if (entry.is_regular_file() && entry.path().extension() == UW::Config::MESH_EXTENSION) {
+          mesh_files.push_back(entry.path().string());
+        }
+      }
+    } else {
+      Logger::get().erro("MeshSerialization", "Filesystem - Directory not found: " + meshes_root);
+      return;
+    }
+#else
+    auto fs = cmrc::GameData::get_filesystem();
+    if (!fs.exists(meshes_root)) {
+      Logger::get().erro("MeshSerialization", "CMRC - Directory not found: " + meshes_root);
+      return;
+    }
     UW::Utils::scanCmrcDirectory(fs, meshes_root, "\\.msh$", mesh_files);
+#endif
 
     for (const auto& file_path : mesh_files) load(file_path, meshes);
 

@@ -15,7 +15,9 @@
 #include <regex>
 #include <memory>
 
+#ifdef PRODUCTION
 #include <cmrc/cmrc.hpp>
+#endif
 
 #include "config.h"
 #include "Utils/Logger.h"

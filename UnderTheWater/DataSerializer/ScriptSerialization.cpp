@@ -37,7 +37,6 @@ void UW::ScriptSerialization::save(const std::string& script_name, const std::st
     Logger::get().erro("ScriptSerialization", "Filesystem error: " + std::string(e.what()));
   };
 };
-#endif
 
 
 
@@ -60,3 +59,4 @@ std::string UW::ScriptSerialization::load(const std::string& script_name) {
   inFile.close();
   return source;
 };
+#endif

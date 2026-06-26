@@ -17,7 +17,10 @@
   #include <limits.h>
 #endif
 
+#ifdef PRODUCTION
 #include <cmrc/cmrc.hpp>
+#endif
+
 #include <regex>
 
 
@@ -92,6 +95,7 @@ inline void uploadBufferByType(CW::Renderer::Mesh& engine_mesh, GLenum type, con
 
 
 
+#ifdef PRODUCTION
 inline void scanCmrcDirectory(const cmrc::embedded_filesystem& fs, const std::string& current_path, const std::string& pattern_str, std::vector<std::string>& out_mesh_files){
   std::regex pattern(pattern_str);
 
@@ -102,4 +106,6 @@ inline void scanCmrcDirectory(const cmrc::embedded_filesystem& fs, const std::st
     else if (entry.is_file() && std::regex_search(entry.filename(), pattern)) out_mesh_files.emplace_back(entry_path);
   };
 };
+#endif
+
 };

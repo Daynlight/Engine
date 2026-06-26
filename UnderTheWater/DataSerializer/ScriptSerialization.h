@@ -13,7 +13,9 @@
 #include <filesystem>
 #include <unordered_map>
 
+#ifdef PRODUCTION
 #include <cmrc/cmrc.hpp>
+#endif
 
 #include "Renderer.h"
 #include "config.h"
@@ -29,7 +31,8 @@ public:
   
 #ifndef PRODUCTION
   void save(const std::string& script_name, const std::string& source);
-#endif
   std::string load(const std::string& shader_name);
+#endif
+
 };
 }; // namespace UW
