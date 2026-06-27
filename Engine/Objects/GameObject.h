@@ -38,6 +38,7 @@ public:
   unsigned int mesh_version = -1;
 
   UW::GameObjectData game_object_data;
+  UW::GameObjectData copy_game_object_data;
 
 public:
   GameObject(const std::string& name, const std::string& mesh, const std::string& shader, const std::vector<std::string>& materials = {}, const std::vector<std::string>& textures = {}, const std::vector<UW::GameObjectScriptRecord>& scripts = {}, glm::vec3 position = glm::vec3(0.0f), glm::vec3 rotation = glm::vec3(0.0f), glm::vec3 scale = glm::vec3(1.0f));

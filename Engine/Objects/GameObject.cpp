@@ -31,6 +31,8 @@ UW::GameObject::GameObject(const std::string& name, const std::string& mesh, con
   game_object_data.position = position;
   game_object_data.rotation = rotation;
   game_object_data.scale = scale;
+  copy_game_object_data = game_object_data;
+
   onLoad();
 };
 
@@ -41,8 +43,13 @@ UW::GameObject::GameObject(const std::string& name, const GameObject& other){
   
   for(const auto& script : other.scripts) scripts.emplace_back(script.getPath());
   game_object_data = other.game_object_data;
+  copy_game_object_data = other.game_object_data;
   game_object_data.name = name;
-  mesh_id = Resources::get().meshes.get_id(other.game_object_data.mesh);
+  
+  copy_game_object_data = game_object_data;
+  mesh_id = Resources::get().meshes.get_id(other.copy_game_object_data.mesh);
+
+  PatchScriptPointers(this->scripts, &this->copy_game_object_data);
   
   onLoad();
 };
@@ -60,7 +67,8 @@ UW::GameObject::GameObject(const GameObject& other)
     mesh_last(other.mesh_last), mesh_id(other.mesh_id), mesh_version(other.mesh_version),
     game_object_data(other.game_object_data)
 {
-  PatchScriptPointers(this->scripts, &this->game_object_data);
+  copy_game_object_data = game_object_data;
+  PatchScriptPointers(this->scripts, &this->copy_game_object_data);
 }
 
 
@@ -75,8 +83,9 @@ UW::GameObject& UW::GameObject::operator=(const GameObject& other) {
   mesh_id = other.mesh_id;
   mesh_version = other.mesh_version;
   game_object_data = other.game_object_data;
+  copy_game_object_data = game_object_data;
 
-  PatchScriptPointers(this->scripts, &this->game_object_data);
+  PatchScriptPointers(this->scripts, &this->copy_game_object_data);
   return *this;
 }
 
@@ -85,9 +94,10 @@ UW::GameObject& UW::GameObject::operator=(const GameObject& other) {
 UW::GameObject::GameObject(GameObject&& other) noexcept
   : Object(std::move(other)), uniform(std::move(other.uniform)), scripts(std::move(other.scripts)),
     mesh_last(std::move(other.mesh_last)), mesh_id(other.mesh_id), mesh_version(other.mesh_version),
-    game_object_data(std::move(other.game_object_data)) 
+    game_object_data(std::move(other.game_object_data))
 {
-  PatchScriptPointers(this->scripts, &this->game_object_data);
+  copy_game_object_data = game_object_data;
+  PatchScriptPointers(this->scripts, &this->copy_game_object_data);
 };
 
 
@@ -102,8 +112,9 @@ UW::GameObject& UW::GameObject::operator=(GameObject&& other) noexcept {
   mesh_id = other.mesh_id;
   mesh_version = other.mesh_version;
   game_object_data = std::move(other.game_object_data);
+  copy_game_object_data = game_object_data;
 
-  PatchScriptPointers(this->scripts, &this->game_object_data);
+  PatchScriptPointers(this->scripts, &this->copy_game_object_data);
   return *this;
 };
 
@@ -118,7 +129,8 @@ void UW::GameObject::stopScript(unsigned int index){
 
 void UW::GameObject::startScript(unsigned int index){
   scripts[index].loadModule();
-  scripts[index].onLoad(&game_object_data);
+  copy_game_object_data = game_object_data;
+  scripts[index].onLoad(&copy_game_object_data);
 };
 
 
@@ -140,7 +152,7 @@ void UW::GameObject::startScripts(){
 void UW::GameObject::onLoad(){
   for(auto& script : scripts) {
     script.loadModule();
-    script.onLoad(&game_object_data);
+    script.onLoad(&copy_game_object_data);
   };
 };
 
@@ -159,7 +171,7 @@ void UW::GameObject::onUpdate(float delta_time){
   if(Resources::get().simulation_mode){
     for(auto& script : scripts) {
       if(!script.script_on) continue;
-      script.syncPointer(&game_object_data);
+      script.syncPointer(&copy_game_object_data);
       script.onUpdate(delta_time);
     };
   };
@@ -171,8 +183,8 @@ void UW::GameObject::onFixedUpdate(float fixed_delta_time){
   if(Resources::get().simulation_mode){
     for(auto& script : scripts) {
       if(!script.script_on) continue;
-      script.syncPointer(&game_object_data);
-      script.observe(&game_object_data);
+      script.syncPointer(&copy_game_object_data);
+      script.observe(&copy_game_object_data);
       script.onFixedUpdate(fixed_delta_time);
     };
   };
@@ -181,10 +193,10 @@ void UW::GameObject::onFixedUpdate(float fixed_delta_time){
 
 
 void UW::GameObject::render(CW::Renderer::Renderer *renderer, Camera &culling_camera, Camera &render_camera, CW::Renderer::Uniform& shadows_uniform){
-  if(Resources::get().meshes.validateVersion(mesh_version) || mesh_last != game_object_data.mesh){
+  if(Resources::get().meshes.validateVersion(mesh_version) || mesh_last != copy_game_object_data.mesh){
     mesh_version = Resources::get().meshes.getLatestsVersion();
-    mesh_id = Resources::get().meshes.get_id(this->game_object_data.mesh);
-    mesh_last = game_object_data.mesh;
+    mesh_id = Resources::get().meshes.get_id(this->copy_game_object_data.mesh);
+    mesh_last = copy_game_object_data.mesh;
   };
 
   if(Resources::get().meshes.size() <= mesh_id) return;
@@ -196,9 +208,9 @@ void UW::GameObject::render(CW::Renderer::Renderer *renderer, Camera &culling_ca
   uniform["lightCount"]->set<int>(Resources::get().lights.size());
 
   glm::vec3 pivotOffset = glm::vec3(0.0f, 0.0f, 0.0f);
-  glm::mat4 translationMat = glm::translate(glm::mat4(1.0f), game_object_data.position);
-  glm::mat4 rotationMat = glm::eulerAngleXYZ(game_object_data.rotation.x, game_object_data.rotation.y, game_object_data.rotation.z);
-  glm::mat4 scaleMat = glm::scale(glm::mat4(1.0f), this->game_object_data.scale);
+  glm::mat4 translationMat = glm::translate(glm::mat4(1.0f), copy_game_object_data.position);
+  glm::mat4 rotationMat = glm::eulerAngleXYZ(copy_game_object_data.rotation.x, copy_game_object_data.rotation.y, copy_game_object_data.rotation.z);
+  glm::mat4 scaleMat = glm::scale(glm::mat4(1.0f), this->copy_game_object_data.scale);
   glm::mat4 preRotate = glm::translate(glm::mat4(1.0f), -pivotOffset);
   glm::mat4 postRotate = glm::translate(glm::mat4(1.0f), pivotOffset);
   glm::mat4 model = translationMat * postRotate * rotationMat * preRotate * scaleMat;
@@ -213,32 +225,32 @@ void UW::GameObject::render(CW::Renderer::Renderer *renderer, Camera &culling_ca
   if(isVisible(culling_camera.transformation(renderer), model, Resources::get().meshes[mesh_id])){
     uniform["model"]->set<glm::mat4>(model);
 
-    for(unsigned int i = 0; i < game_object_data.textures.size(); i++){
-      Resources::get().getTexture(this->game_object_data.textures[i]).bind(i);
+    for(unsigned int i = 0; i < copy_game_object_data.textures.size(); i++){
+      Resources::get().getTexture(this->copy_game_object_data.textures[i]).bind(i);
       uniform["texture" + std::to_string(i)]->set<int>(i);
     };
     
-    Resources::get().getShader(this->game_object_data.shader).getUniforms().emplace_back(&uniform);
-    Resources::get().getShader(this->game_object_data.shader).getUniforms().emplace_back(&shadows_uniform);
+    Resources::get().getShader(this->copy_game_object_data.shader).getUniforms().emplace_back(&uniform);
+    Resources::get().getShader(this->copy_game_object_data.shader).getUniforms().emplace_back(&shadows_uniform);
     
-    Resources::get().getShader(this->game_object_data.shader).bind();
+    Resources::get().getShader(this->copy_game_object_data.shader).bind();
     
     std::vector<int> translation;
-    for(std::string el : game_object_data.materials){
+    for(std::string el : copy_game_object_data.materials){
       translation.emplace_back(Resources::get().materials.translate_material(el));
     };
 
-    GLint loc = glGetUniformLocation(Resources::get().getShader(game_object_data.shader).getShaderProgram(), "mat_translate");
+    GLint loc = glGetUniformLocation(Resources::get().getShader(copy_game_object_data.shader).getShaderProgram(), "mat_translate");
     glUniform1iv(loc, translation.size(), translation.data());
     
     Resources::get().meshes[mesh_id].render();
     
-    Resources::get().getShader(this->game_object_data.shader).unbind();
+    Resources::get().getShader(this->copy_game_object_data.shader).unbind();
 
-    for(unsigned int i = 0; i < game_object_data.textures.size(); i++) 
-      Resources::get().getTexture(this->game_object_data.textures[i]).unbind();
+    for(unsigned int i = 0; i < copy_game_object_data.textures.size(); i++) 
+      Resources::get().getTexture(this->copy_game_object_data.textures[i]).unbind();
 
-    Resources::get().getShader(this->game_object_data.shader).getUniforms().clear();
+    Resources::get().getShader(this->copy_game_object_data.shader).getUniforms().clear();
   };
 };
 

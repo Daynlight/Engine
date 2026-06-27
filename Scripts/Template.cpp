@@ -19,14 +19,12 @@
 namespace UW{
 class SCRIPT_NAME : public GameObjectScriptInterface {
 private:
-  GameObjectData initial_game_data = GameObjectData();
 
 public:
   ~SCRIPT_NAME() = default;
   
   void OnLoad(){
     logger->info("Test Script", "Loaded");
-    initial_game_data = *game_object_data;
   };
   
   void OnUpdate(float delta_time){
@@ -39,7 +37,6 @@ public:
   };
   
   void OnDestroy(){
-    *game_object_data = initial_game_data;
     logger->info("Test Script", "Destroyed");
   };
 };

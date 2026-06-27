@@ -19,8 +19,6 @@
 namespace UW{
 class SCRIPT_NAME : public GameObjectScriptInterface {
 private:
-  GameObjectData initial_game_data = GameObjectData();
-
   std::deque<glm::vec3> path;
   
   glm::vec3 last_tangent = glm::vec3(0.0f);
@@ -44,7 +42,6 @@ public:
 
   void OnLoad(){
     logger->info("Test Script", "Loaded");
-    initial_game_data = *game_object_data;
 
 
 
@@ -119,7 +116,6 @@ public:
 
 
   void OnDestroy(){
-    *game_object_data = initial_game_data;
     for(const auto& child : child_objects)
       object_manager->erase(child);
 

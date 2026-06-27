@@ -350,7 +350,7 @@ Production is designed to create one executable with no additional files require
 - [x] Scripts param auto reload.
 - [x] Script on off btn.
 - [x] Script runtime simulation and edit.
-- [ ] Scripts runtime copy.
+- [x] Scripts runtime copy.
 - [ ] Script async compile.
 - [ ] Shaders uniform parameters ui.
 - [ ] Game data backup.
