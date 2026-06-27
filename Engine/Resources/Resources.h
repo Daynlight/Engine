@@ -33,6 +33,7 @@ public:
   UW::Meshes meshes;
   UW::Lights lights;
   UW::Materials materials;
+  bool simulation_mode = true;
 
 public:
   static Resources& get();

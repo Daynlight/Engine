@@ -65,6 +65,8 @@ void UW::UI::uiLoad(){
   ImGui::LoadIniSettingsFromDisk(ImGui::GetIO().IniFilename);
   Logger::get().info("UI", "Loading UI Data from disck");
 
+  Resources::get().simulation_mode = guiSettings.simulation_mode;
+
   shader_ui.loadShaderEditors();
   scripts_ui.loadScriptEditors();
 
@@ -100,6 +102,7 @@ void UW::UI::configControl(){
     if (sscanf(line, "Mesh_Mode_On=%d", &value) == 1) s->mesh_mode_on = value;
     if (sscanf(line, "Window_Width=%d", &value) == 1) s->window_width = value;
     if (sscanf(line, "Window_Height=%d", &value) == 1) s->window_height = value;
+    if (sscanf(line, "Simulation_Mode=%d", &value) == 1) s->simulation_mode = value;
     
     char value_str[256];
     if (sscanf(line, "Material_ID=%255s", &value_str) == 1) s->material_name = std::string(value_str);
@@ -134,6 +137,7 @@ void UW::UI::configControl(){
     out_buf->appendf("Window_Width=%d\n", guiSettings.window_width);
     out_buf->appendf("Window_Height=%d\n", guiSettings.window_height);
     out_buf->appendf("Material_ID=%s\n", guiSettings.material_name.c_str());
+    out_buf->appendf("Simulation_Mode=%d\n", guiSettings.simulation_mode);
     
     out_buf->appendf("ShaderEditorCount=%zu\n", guiSettings.shader_editors_reg.size());
 
@@ -224,6 +228,13 @@ void UW::UI::menuBarGui(){
       };
       ImGui::EndMenu();
     };
+    
+    bool new_simulation_mode = Resources::get().simulation_mode;
+    if(ImGui::Checkbox("Simulation", &new_simulation_mode)){
+      Resources::get().simulation_mode = new_simulation_mode;
+      guiSettings.simulation_mode = new_simulation_mode;
+    };
+
     ImGui::EndMenuBar();
   };
 };

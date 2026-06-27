@@ -37,6 +37,7 @@ struct GuiSettings{
   std::vector<std::string> scripts_editors_reg;
   int window_width = 800;
   int window_height = 600;
+  bool simulation_mode = false;
 };
 
 inline GuiSettings guiSettings;

@@ -105,8 +105,6 @@ void UW::GameObjectScriptRecord::observe(GameObjectData *data){
 
 
 void UW::GameObjectScriptRecord::onLoad(GameObjectData* data) {
-  if(!script_on) return;
-
   if(script){
     script->game_object_data = data;
     script->logger = static_cast<ILogger*>(&UW::Logger::get());
@@ -240,8 +238,6 @@ void UW::GameObjectScriptRecord::onRender() {
 
 
 void UW::GameObjectScriptRecord::onDestroy() {
-  if(!script_on) return;
-
   if(script){
 
 #ifndef PRODUCTION
