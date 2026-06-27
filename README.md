@@ -374,4 +374,5 @@ Production is designed to create one executable with no additional files require
 - [ ] Mesh UI.
 - [ ] Rule of 5.
 - [ ] Editor Debug with movement.
+- [ ] Events with Ctrl + Z/ Ctrl + Y
 </details>
