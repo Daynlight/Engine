@@ -10,6 +10,10 @@
 #include <string>
 #include <filesystem>
 
+#ifndef COMPILER_PATH
+  #define COMPILER_PATH "g++"
+#endif
+
 #ifdef _WIN32
 #include <windows.h>
 #else

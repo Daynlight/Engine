@@ -7,7 +7,7 @@
 
 cmake_minimum_required(VERSION 3.15)
 
-project(UnderTheWater LANGUAGES CXX C)
+project(Engine LANGUAGES CXX C)
 
 
 
@@ -50,24 +50,24 @@ set(src
 
 
 
-add_executable(UnderTheWater ${src})
+add_executable(Engine ${src})
 
 
 
 if(PRODUCTION)
-  target_compile_definitions(UnderTheWater PRIVATE PRODUCTION)
+  target_compile_definitions(Engine PRIVATE PRODUCTION)
   file(GLOB_RECURSE PROD_SCRIPTS CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/../Scripts/*.cpp")
-  target_sources(UnderTheWater PRIVATE ${PROD_SCRIPTS})
+  target_sources(Engine PRIVATE ${PROD_SCRIPTS})
 endif()
 
-target_link_libraries(UnderTheWater CWindow)
+target_link_libraries(Engine CWindow)
 
 
 
 if(PRODUCTION)
-target_link_libraries(UnderTheWater GameData)
+  target_link_libraries(Engine GameData)
 endif()
 
 
 
-target_include_directories(UnderTheWater PUBLIC .)
+target_include_directories(Engine PUBLIC .)

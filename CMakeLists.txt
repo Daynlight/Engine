@@ -25,19 +25,24 @@ add_subdirectory(vendor/cmrc)
 add_subdirectory(vendor/CWindow)
 
 if(PRODUCTION)
-file(GLOB_RECURSE GameDataSet CONFIGURE_DEPENDS "GameData/**")
-cmrc_add_resource_library(GameData ${GameDataSet})
+  file(GLOB_RECURSE GameDataSet CONFIGURE_DEPENDS "GameData/**")
+  cmrc_add_resource_library(GameData ${GameDataSet})
 endif()
 
-
-add_subdirectory(UnderTheWater)
+add_subdirectory(Engine)
 
 
 
 if(PRODUCTION)
-  target_compile_definitions(UnderTheWater PRIVATE PRODUCTION)
+  target_compile_definitions(Engine PRIVATE PRODUCTION)
 endif()
 
+
+target_compile_definitions(Engine PRIVATE COMPILER_PATH="${CMAKE_CXX_COMPILER}")
+message(STATUS "ScriptController uses CMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}")
+message(STATUS "ScriptController uses COMPILER_PATH definition=${CMAKE_CXX_COMPILER}")
+
+
 # if(SANDBOX_SCRIPTS)
-#   target_compile_definitions(UnderTheWater PRIVATE SANDBOX_SCRIPTS)
+#   target_compile_definitions(Engine PRIVATE SANDBOX_SCRIPTS)
 # endif()

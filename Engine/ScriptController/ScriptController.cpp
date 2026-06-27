@@ -483,8 +483,12 @@ int UW::GameObjectScriptRecord::compile() {
 
   if (!dir.empty() && !std::filesystem::exists(dir)) std::filesystem::create_directories(dir);
 
+    std::filesystem::path compiler(COMPILER_PATH);
+    std::filesystem::path so(so_file);
+    std::filesystem::path cpp(cpp_file);
+
 #if defined(_WIN32) || defined(_WIN64)
-  std::string cmd = "g++ -shared -o \"" + so_file + "\" \"" + cpp_file + "\"";
+  std::string cmd = "\"" + compiler.string() + "\" -shared -o \"" + so.string() + "\" \"" + cpp.string() + "\"";
   
   UW::Logger::get().info("Script Controller", "Compiling on Windows: " + cmd);
   int status = system(cmd.c_str());
@@ -499,14 +503,14 @@ int UW::GameObjectScriptRecord::compile() {
   }
 
 #else
-  const char* command = "g++";
+  const char* command = compiler.c_str();
   const char* argv[] = {
-    "g++",
+    compiler.c_str(),
     "-rdynamic",
     "-shared", 
     "-fPIC",
-    "-o", so_file.c_str(), 
-    cpp_file.c_str(), 
+    "-o", so.c_str(), 
+    cpp.c_str(), 
     nullptr
   };
 
