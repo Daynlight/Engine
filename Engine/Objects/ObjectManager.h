@@ -9,6 +9,7 @@
 #include "Renderer.h"
 
 #include <vector>
+#include <algorithm>
 
 #include "config.h"
 #include "DataSerializer/DataSerializer.h"
@@ -44,6 +45,8 @@ public:
   void emplace_back(const std::string& name);
   void erase(const std::string& name);
   GameObjectData* getGameObjectData(const std::string& name);
+  void addScript(const std::string& object_name, const std::string& path);
+  void removeScript(const std::string& object_name, const std::string& path);
 
   
 };

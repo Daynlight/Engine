@@ -41,17 +41,8 @@ public:
 
 
   void OnLoad(){
-    logger->info("Test Script", "Loaded");
 
-
-
-    // std::string child_name = game_object_data->name + "_child_1";
-    // child_objects.emplace_back(child_name);
-    // object_manager->emplace_back(child_name);
-    // GameObjectData* child_data = object_manager->getGameObjectData(child_name);
-    // child_data->mesh = "Pufferfish";
-    // child_data->position = {163, 26, -21};
-
+    logger->info(SCRIPT_FILE_NAME, "Loaded");
 
     path.clear();
     auto itr = game_object_data->parameters.find("rotation_adjustment");
@@ -61,7 +52,6 @@ public:
         logger->info(SCRIPT_FILE_NAME, "Adjust rotation = [" + std::to_string(rotation_adjustment.x) + ", " + std::to_string(rotation_adjustment.y) + ", " + std::to_string(rotation_adjustment.z) + "]");
       };
     };
-
 
 
     int interpolate_points_size = 0;

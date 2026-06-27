@@ -47,6 +47,8 @@ void UW::UI_Objects::guiObjectList(){
   ImGui::SeparatorText("Object List");
 
   for(unsigned int id = 0; id < UW::ObjectManager::get().objects.size(); id++){
+    if(UW::ObjectManager::get().objects[id].copy_game_object_data.hidden) continue;
+
     std::string label = "- " + UW::ObjectManager::get().objects[id].game_object_data.name + "##(" + std::to_string(id) + ")";
     if(ImGui::Button(label.c_str())) guiSettings.object_id = id;
     

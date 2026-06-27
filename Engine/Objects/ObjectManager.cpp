@@ -41,7 +41,37 @@ void UW::ObjectManager::erase(const std::string &name) {
 UW::GameObjectData *UW::ObjectManager::getGameObjectData(const std::string &name){
   for(auto& object : objects)
     if(object.game_object_data.name == name)
-      return &object.game_object_data;
+      return &object.copy_game_object_data;
 
   return nullptr;
+};
+
+
+
+void UW::ObjectManager::addScript(const std::string &object_name, const std::string &path){
+  for (auto& obj : objects) {
+    if (obj.game_object_data.name == object_name) {
+      obj.scripts.emplace_back(path);
+      return;
+    };
+  };
+  Logger::get().erro("ObjectManager", "Could not find object: " + object_name);
+};
+
+
+
+void UW::ObjectManager::removeScript(const std::string &object_name, const std::string &path) {
+  for (auto& obj : objects) {
+    if (obj.game_object_data.name == object_name) {
+      obj.scripts.erase(
+        std::remove_if(obj.scripts.begin(), obj.scripts.end(), 
+          [&](const GameObjectScriptRecord& record) {
+            return record.getPath() == path;
+          }), 
+        obj.scripts.end()
+      );
+      return;
+    };
+  };
+  Logger::get().erro("ObjectManager", "Could not find object: " + object_name);
 };

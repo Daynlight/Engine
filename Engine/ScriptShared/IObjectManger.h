@@ -18,5 +18,7 @@ public:
   virtual void emplace_back(const std::string& name) = 0;
   virtual void erase(const std::string& name) = 0;
   virtual GameObjectData* getGameObjectData(const std::string& name) = 0;
+  virtual void addScript(const std::string& object_name, const std::string& path) = 0;
+  virtual void removeScript(const std::string& object_name, const std::string& path) = 0;
 };
 };

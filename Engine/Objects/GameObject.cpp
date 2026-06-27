@@ -193,6 +193,8 @@ void UW::GameObject::onFixedUpdate(float fixed_delta_time){
 
 
 void UW::GameObject::render(CW::Renderer::Renderer *renderer, Camera &culling_camera, Camera &render_camera, CW::Renderer::Uniform& shadows_uniform){
+  if(copy_game_object_data.mesh == "empty") return;
+  
   if(Resources::get().meshes.validateVersion(mesh_version) || mesh_last != copy_game_object_data.mesh){
     mesh_version = Resources::get().meshes.getLatestsVersion();
     mesh_id = Resources::get().meshes.get_id(this->copy_game_object_data.mesh);
