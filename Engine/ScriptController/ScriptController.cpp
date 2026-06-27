@@ -488,7 +488,7 @@ int UW::GameObjectScriptRecord::compile() {
     std::filesystem::path cpp(cpp_file);
 
 #if defined(_WIN32) || defined(_WIN64)
-  std::string cmd = "\"" + compiler.string() + "\" -shared -o \"" + so.string() + "\" \"" + cpp.string() + "\"";
+  std::string cmd = "\"" + compiler.string() + " -shared -o \"" + so.string() + "\" \"" + cpp.string() + "\"";
   
   UW::Logger::get().info("Script Controller", "Compiling on Windows: " + cmd);
   int status = system(cmd.c_str());

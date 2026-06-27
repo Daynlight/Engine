@@ -9,7 +9,7 @@
 #define SCRIPT_FILE_NAME "FishMovement"
 #define BUILDING_SCRIPT_DLL
 
-#include "../UnderTheWater/ScriptShared/GameObjectScriptInterface.h"
+#include "../Engine/ScriptShared/GameObjectScriptInterface.h"
 #include <cstdio>
 #include <math.h>
 #include <deque>
