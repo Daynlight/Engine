@@ -109,6 +109,34 @@ UW::GameObject& UW::GameObject::operator=(GameObject&& other) noexcept {
 
 
 
+void UW::GameObject::stopScript(unsigned int index){
+  scripts[index].onDestroy();
+  scripts[index].removeModule();
+};
+
+
+
+void UW::GameObject::startScript(unsigned int index){
+  scripts[index].loadModule();
+  scripts[index].onLoad(&game_object_data);
+};
+
+
+
+void UW::GameObject::stopScripts(){
+  for(int i = 0; i < scripts.size(); i++)
+    stopScript(i);
+};
+
+
+
+void UW::GameObject::startScripts(){
+  for(int i = 0; i < scripts.size(); i++)
+    startScript(i);
+};
+
+
+
 void UW::GameObject::onLoad(){
   for(auto& script : scripts) {
     script.loadModule();

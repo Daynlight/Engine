@@ -47,6 +47,11 @@ public:
   GameObject& operator=(const GameObject& other);
   GameObject(GameObject&& other) noexcept;
   GameObject& operator=(GameObject&& other) noexcept;
+  
+  void stopScript(unsigned int index);
+  void startScript(unsigned int index);
+  void stopScripts();
+  void startScripts();
 
   void onLoad() override;
   void onDestroy() override;

@@ -90,40 +90,75 @@ void UW::UI_Objects::guiObjectEditor(){
   char name_buffer[UW::Config::OBJECT_NAME_BUFFER_SIZE];
   memcpy(name_buffer, object.game_object_data.name.data(), object.game_object_data.name.size());
   name_buffer[object.game_object_data.name.size()] = '\0';
-  ImGui::InputText("name", name_buffer, UW::Config::OBJECT_NAME_BUFFER_SIZE);
-  object.game_object_data.name = std::string(name_buffer + '\0');
+  if(ImGui::InputText("name", name_buffer, UW::Config::OBJECT_NAME_BUFFER_SIZE)){
+    object.stopScripts();
+    object.game_object_data.name = std::string(name_buffer + '\0');
+    object.startScripts();
+  };
   
   char mesh_buffer[UW::Config::OBJECT_NAME_BUFFER_SIZE];
   memcpy(mesh_buffer, object.game_object_data.mesh.data(), object.game_object_data.mesh.size());
   mesh_buffer[object.game_object_data.mesh.size()] = '\0';
-  ImGui::InputText("mesh", mesh_buffer, UW::Config::OBJECT_NAME_BUFFER_SIZE);
-  if(!Resources::get().meshes.exists(mesh_buffer)) return;
-  object.game_object_data.mesh = std::string(mesh_buffer + '\0');
+  if(ImGui::InputText("mesh", mesh_buffer, UW::Config::OBJECT_NAME_BUFFER_SIZE)){
+    if(!Resources::get().meshes.exists(mesh_buffer)) return;
+    object.stopScripts();
+    object.game_object_data.mesh = std::string(mesh_buffer + '\0');
+    object.startScripts();
+  };
 
   char shader_buffer[UW::Config::OBJECT_NAME_BUFFER_SIZE];
   memcpy(shader_buffer, object.game_object_data.shader.data(), object.game_object_data.shader.size());
   shader_buffer[object.game_object_data.shader.size()] = '\0';
-  ImGui::InputText("shader", shader_buffer, UW::Config::OBJECT_NAME_BUFFER_SIZE);
-  auto its = Resources::get().shaders.find(shader_buffer);
-  if(its == Resources::get().shaders.end()) return;
-  object.game_object_data.shader = std::string(shader_buffer + '\0');
+  if(ImGui::InputText("shader", shader_buffer, UW::Config::OBJECT_NAME_BUFFER_SIZE)){
+    auto its = Resources::get().shaders.find(shader_buffer);
+    if(its == Resources::get().shaders.end()) return;
+    object.stopScripts();
+    object.game_object_data.shader = std::string(shader_buffer + '\0');
+    object.startScripts();
+  };
 
 
-  ImGui::InputFloat3("position: ", &object.game_object_data.position[0]);
+  glm::vec3 new_position = object.game_object_data.position;
+  if(ImGui::InputFloat3("position: ", &new_position[0])) {
+    object.stopScripts();
+    object.game_object_data.position = new_position;
+    object.startScripts();
+  };
+
   glm::vec3 position_offset = glm::vec3(0.0f);
-  ImGui::SliderFloat3("position slider: ", &position_offset[0], -100.0f, 100.0f);
-  object.game_object_data.position += position_offset * window.getWindowData()->delta_time;
+  if(ImGui::SliderFloat3("position slider: ", &position_offset[0], -10.0f, 10.0f)){
+    object.stopScripts();
+    object.game_object_data.position += position_offset * window.getWindowData()->delta_time;
+    object.startScripts();
+  };
 
-  ImGui::InputFloat3("rotate: ", &object.game_object_data.rotation[0]);
+  glm::vec3 new_rotation = object.game_object_data.rotation;
+  if(ImGui::InputFloat3("rotate: ", &new_rotation[0])){
+    object.stopScripts();
+    object.game_object_data.rotation = new_rotation;
+    object.startScripts();
+  };
+
   glm::vec3 rotate_offset = glm::vec3(0.0f);
-  ImGui::SliderFloat3("rotate slider: ", &rotate_offset[0], -1.0f, 1.0f);
-  object.game_object_data.rotation += rotate_offset * window.getWindowData()->delta_time;
+  if(ImGui::SliderFloat3("rotate slider: ", &rotate_offset[0], -1.0f, 1.0f)){
+    object.stopScripts();
+    object.game_object_data.rotation += rotate_offset * window.getWindowData()->delta_time;
+    object.startScripts();
+  };
 
-  ImGui::InputFloat3("scale: ", &object.game_object_data.scale[0]);
+  glm::vec3 new_scale = object.game_object_data.scale;
+  if(ImGui::InputFloat3("scale: ", &new_scale[0])){
+    object.stopScripts();
+    object.game_object_data.scale = new_scale;
+    object.startScripts();
+  };
+
   glm::vec3 scale_offset = glm::vec3(0.0f);
-  ImGui::SliderFloat3("scale slider: ", &scale_offset[0], -100.0f, 100.0f);
-  object.game_object_data.scale += scale_offset * window.getWindowData()->delta_time;
-
+  if(ImGui::SliderFloat3("scale slider: ", &scale_offset[0], -100.0f, 100.0f)){
+    object.stopScripts();
+    object.game_object_data.scale += scale_offset * window.getWindowData()->delta_time;
+    object.startScripts();
+  };
 
   ImGui::SeparatorText("Textures: ");
   for(int i = 0; i < object.game_object_data.textures.size(); i++){
@@ -131,16 +166,27 @@ void UW::UI_Objects::guiObjectEditor(){
     char texture_buffer[UW::Config::OBJECT_NAME_BUFFER_SIZE];
     memcpy(texture_buffer, object.game_object_data.textures[i].data(), object.game_object_data.textures[i].size());
     texture_buffer[object.game_object_data.textures[i].size()] = '\0';
-    ImGui::InputText(label.c_str(), texture_buffer, UW::Config::OBJECT_NAME_BUFFER_SIZE);
-    object.game_object_data.textures[i] = std::string(texture_buffer + '\0');
+    if(ImGui::InputText(label.c_str(), texture_buffer, UW::Config::OBJECT_NAME_BUFFER_SIZE)){
+      object.stopScripts();
+      object.game_object_data.textures[i] = std::string(texture_buffer + '\0');
+      object.startScripts();
+    };
     
     ImGui::SameLine();
     label = "Delete texture##(" + std::to_string(i) + ")";
-    if(ImGui::Button(label.c_str())) object.game_object_data.textures.erase(object.game_object_data.textures.begin() + i);
+    if(ImGui::Button(label.c_str())) {
+      object.stopScripts();
+      object.game_object_data.textures.erase(object.game_object_data.textures.begin() + i);
+      object.startScripts();
+    };
   };
 
   std::string label = "Add Texture (" + std::to_string(object.game_object_data.textures.size()) + ")";
-  if(ImGui::Button(label.c_str())) object.game_object_data.textures.emplace_back("");
+  if(ImGui::Button(label.c_str())) {
+    object.stopScripts();
+    object.game_object_data.textures.emplace_back("");
+    object.startScripts();
+  };
 
 
   ImGui::SeparatorText("Materials: ");
@@ -150,17 +196,28 @@ void UW::UI_Objects::guiObjectEditor(){
     char material_buffer[UW::Config::OBJECT_NAME_BUFFER_SIZE];
     memcpy(material_buffer, object.game_object_data.materials[i].data(), object.game_object_data.materials[i].size());
     material_buffer[object.game_object_data.materials[i].size()] = '\0';
-    ImGui::InputText(label.c_str(), material_buffer, UW::Config::OBJECT_NAME_BUFFER_SIZE);
-    if(!Resources::get().materials.find(material_buffer)) return;
-    object.game_object_data.materials[i] = std::string(material_buffer + '\0');
+    if(ImGui::InputText(label.c_str(), material_buffer, UW::Config::OBJECT_NAME_BUFFER_SIZE)){
+      object.stopScripts();
+      if(!Resources::get().materials.find(material_buffer)) return;
+      object.game_object_data.materials[i] = std::string(material_buffer + '\0');
+      object.startScripts();
+    };
     
     ImGui::SameLine();
     label = "Delete material##(" + std::to_string(i) + ")";
-    if(ImGui::Button(label.c_str())) object.game_object_data.materials.erase(object.game_object_data.materials.begin() + i);
+    if(ImGui::Button(label.c_str())) {
+      object.stopScripts();
+      object.game_object_data.materials.erase(object.game_object_data.materials.begin() + i);
+      object.startScripts();
+    }
   };
 
   label = "Add material (" + std::to_string(object.game_object_data.materials.size()) + ")";
-  if(ImGui::Button(label.c_str())) object.game_object_data.materials.emplace_back("new material");
+  if(ImGui::Button(label.c_str())) {
+    object.stopScripts();
+    object.game_object_data.materials.emplace_back("new material");
+    object.startScripts();
+  };
 
 
   ImGui::SeparatorText("Scripts: ");
@@ -170,17 +227,26 @@ void UW::UI_Objects::guiObjectEditor(){
     char script_buffer[UW::Config::OBJECT_NAME_BUFFER_SIZE];
     memcpy(script_buffer, object.scripts[i].getPath().data(), object.scripts[i].getPath().size());
     script_buffer[object.scripts[i].getPath().size()] = '\0';
-    if(ImGui::InputText(label.c_str(), script_buffer, UW::Config::OBJECT_NAME_BUFFER_SIZE))
+    if(ImGui::InputText(label.c_str(), script_buffer, UW::Config::OBJECT_NAME_BUFFER_SIZE)){
+      object.stopScripts();
       object.scripts[i] = UW::GameObjectScriptRecord(std::string(script_buffer + '\0'));
+      object.startScripts();
+    }
     
     ImGui::SameLine();
     label = "Delete scripts##(" + std::to_string(i) + ")";
-    if(ImGui::Button(label.c_str())) object.scripts.erase(object.scripts.begin() + i);
+    if(ImGui::Button(label.c_str())) {
+      object.stopScripts();
+      object.scripts.erase(object.scripts.begin() + i);
+      object.startScripts();
+    };
   };
 
   label = "Add script (" + std::to_string(object.scripts.size()) + ")";
   if(ImGui::Button(label.c_str())) {
+    object.stopScripts();
     object.scripts.emplace_back(GameObjectScriptRecord("new script"));
+    object.startScripts();
   };
 
 
@@ -213,6 +279,7 @@ void UW::UI_Objects::guiObjectEditor(){
     int current_type_idx = static_cast<int>(param_value.index());
     ImGui::SetNextItemWidth(70.0f);
     if (ImGui::Combo("##ParamType", &current_type_idx, UW::gameObjectParameterTypeName, IM_ARRAYSIZE(UW::gameObjectParameterTypeName))) {
+      object.stopScripts();
       switch (current_type_idx) {
         case 0: param_value = 0; break;
         case 1: param_value = 0.0f; break;
@@ -221,35 +288,63 @@ void UW::UI_Objects::guiObjectEditor(){
         case 4: param_value = glm::vec3(0.0f); break;
         case 5: param_value = std::string(""); break;
       }
+      object.startScripts();
     }
 
     ImGui::SameLine();
 
-    std::visit([](auto&& arg) {
+    std::visit([&object](auto&& arg) {
       using T = std::decay_t<decltype(arg)>;
       ImGui::SetNextItemWidth(150.0f);
       
       if constexpr (std::is_same_v<T, int>) {
-        ImGui::InputInt("##val", &arg);
+        int new_arg = arg;
+        if(ImGui::InputInt("##val", &new_arg)){
+          object.stopScripts();
+          arg = new_arg;
+          object.startScripts();
+        }
       }
       else if constexpr (std::is_same_v<T, float>) {
-        ImGui::DragFloat("##val", &arg, 0.05f);
+        float new_arg = arg;
+        if(ImGui::DragFloat("##val", &new_arg, 0.05f)){
+          object.stopScripts();
+          arg = new_arg;
+          object.startScripts();
+        }
       }
       else if constexpr (std::is_same_v<T, bool>) {
-        ImGui::Checkbox("##val", &arg);
+        bool new_arg = arg;
+        if(ImGui::Checkbox("##val", &new_arg)){
+          object.stopScripts();
+          arg = new_arg;
+          object.startScripts();
+        }
       }
       else if constexpr (std::is_same_v<T, glm::vec2>) {
-        ImGui::DragFloat2("##val", &arg.x, 0.05f);
+        glm::vec2 new_arg = arg;
+        if(ImGui::DragFloat2("##val", &new_arg.x, 0.05f)){
+          object.stopScripts();
+          arg = new_arg;
+          object.startScripts();
+        }
       }
       else if constexpr (std::is_same_v<T, glm::vec3>) {
-        ImGui::DragFloat3("##val", &arg.x, 0.05f);
+        glm::vec3 new_arg = arg;
+        if(ImGui::DragFloat3("##val", &new_arg.x, 0.05f)){
+          object.stopScripts();
+          arg = new_arg;
+          object.startScripts();
+        }
       }
       else if constexpr (std::is_same_v<T, std::string>) {
         char str_buffer[256];
         strncpy(str_buffer, arg.c_str(), sizeof(str_buffer) - 1);
         str_buffer[sizeof(str_buffer) - 1] = '\0';
         if (ImGui::InputText("##val", str_buffer, sizeof(str_buffer))) {
+          object.stopScripts();
           arg = std::string(str_buffer);
+          object.startScripts();
         }
       }
     }, param_value);
@@ -263,17 +358,21 @@ void UW::UI_Objects::guiObjectEditor(){
     ImGui::PopID();
 
     if (delete_triggered) {
+      object.stopScripts();
       it = params.erase(it);
+      object.startScripts();
     } 
     else if (rename_triggered && std::string(name_buffer) != current_name && !std::string(name_buffer).empty()) {
       std::string new_key = name_buffer;
       
+      object.stopScripts();
       if (params.find(new_key) == params.end()) {
         params[new_key] = std::move(param_value);
         it = params.erase(it);
       } else {
         ++it;
       }
+      object.startScripts();
     } 
     else {
       ++it;
@@ -284,6 +383,7 @@ void UW::UI_Objects::guiObjectEditor(){
 
   std::string add_label = "Add Parameter (" + std::to_string(params.size()) + ")";
   if (ImGui::Button(add_label.c_str())) {
+    object.stopScripts();
     std::string unique_new_name = "NewParameter_" + std::to_string(params.size());
     
     int safety_counter = 0;
@@ -292,6 +392,7 @@ void UW::UI_Objects::guiObjectEditor(){
     }
     
     params[unique_new_name] = 0;
+    object.startScripts();
   }
 };
 

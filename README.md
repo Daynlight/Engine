@@ -159,9 +159,7 @@ Is used for logging [```info```, ```warn```, ```erro```]. Logs are saved in ```e
 App is main entry where we initialize scene and ui for editor. Scene is full rendering pipeline with creation of ```main framebuffer```, ```shadows framebuffer``` and applying ```post-processing```. In future we plan adding ```Scene Controller``` and swapping between scenes.
 
 ### [GameObject](UnderTheWater/Objects/GameObject.h)
-Main on scene object that contains ```GameObjectData``` and list of ```scripts```. [GameObjectData](UnderTheWater/ScriptShared/GameObjectData.h) contains [```position```, ```rotation```, ```scale```, ```name```, ```mesh```, ```shader```, ```vector of textures```, ```vector of materials```, ```map of parameters```]. We use separated struct [GameObjectData](UnderTheWater/ScriptShared/GameObjectData.h) for bridging between scripts and main app that allows scripts to work on objects. Parameters are variants of predefined types that are easy to edit in editor mode and accessible in script.  
-**![ For now when scripts are bind we can't edit object in editor for editing parameters we turn off temporary scripts ]!**  
-**![ Some times we have to remove script in UI to full restart them ]!**
+Main on scene object that contains ```GameObjectData``` and list of ```scripts```. [GameObjectData](UnderTheWater/ScriptShared/GameObjectData.h) contains [```position```, ```rotation```, ```scale```, ```name```, ```mesh```, ```shader```, ```vector of textures```, ```vector of materials```, ```map of parameters```]. We use separated struct [GameObjectData](UnderTheWater/ScriptShared/GameObjectData.h) for bridging between scripts and main app that allows scripts to work on objects. Parameters are variants of predefined types that are easy to edit in editor mode and accessible in script.
 
 ### [UI](UnderTheWater/UI/)
 UI provides easy editor interface to building scene adding and managing [```objects```, ```materials```, ```lights```, ...]. In Production Mode it is turn off.
@@ -180,10 +178,8 @@ UI provides easy editor interface to building scene adding and managing [```obje
 * **Script Editor**: Multiline text editor for scripts after 5 seconds auto saved to file then hoy-reloaded by [ScriptController](UnderTheWater/ScriptController/) by objects. **![ Preferred to use external editor ]!**
 
 ### [Script Controller](UnderTheWater/ScriptController/) and [ScriptShared](UnderTheWater/ScriptShared/)
-Scripts in **editor mode** are ```hot-reloaded``` by ```last-time-write``` that allows ease of editing. Each object have it own script bind. Scripts are accessible by name and stored in [Scripts](Scripts/) folder. Temporary editor dlls are created by ```fork``` + ```execvp``` (Linux) and ```system``` (Windows) and stored in [Scripts_DLL](Scripts_DLL) folder. This scripts are controlled by [Script Controller](UnderTheWater/ScriptController/). [ScriptShared](UnderTheWater/ScriptShared/) provides interfaces structures that works as bridge between main App and Script. Uses mainly header files with relative include paths for easier script search and avoiding including whole engine. Script structure is provided by interface [GameObjectScriptInterface](UnderTheWater/ScriptShared/GameObjectScriptInterface.h). For physics use ```FixedUpdate```. In **Production mode** we are compiling scripts with unique class name and register them to [ScriptRegister](UnderTheWater/ScriptShared/ScriptRegister.h) then we creates each instance by ```Factory```. We access scripts by file name that is provided in Script.
-**![ Sometimes in editor ui we have to full remove script by delete and re-add it ]!**  
+Scripts in **editor mode** are ```hot-reloaded``` by ```last-time-write``` that allows ease of editing. Each object have it own script bind. Scripts are accessible by name and stored in [Scripts](Scripts/) folder. Temporary editor dlls are created by ```fork``` + ```execvp``` (Linux) and ```system``` (Windows) and stored in [Scripts_DLL](Scripts_DLL) folder. This scripts are controlled by [Script Controller](UnderTheWater/ScriptController/). [ScriptShared](UnderTheWater/ScriptShared/) provides interfaces structures that works as bridge between main App and Script. Uses mainly header files with relative include paths for easier script search and avoiding including whole engine. Script structure is provided by interface [GameObjectScriptInterface](UnderTheWater/ScriptShared/GameObjectScriptInterface.h). For physics use ```FixedUpdate```. In **Production mode** we are compiling scripts with unique class name and register them to [ScriptRegister](UnderTheWater/ScriptShared/ScriptRegister.h) then we creates each instance by ```Factory```. We access scripts by file name that is provided in Script.  
 **![ Accessing to object-manager is not stable after hot-reload it doesn't updates child objects ]!**  
-**![ Scripts blocks every edition in ui we have to turn them off to change object properties ]!**  
 **![ Compilation of scripts freezes app because for now we don't use threads ]!**  
 **![ No separation in Editor mode to play simulation and editing changes are overwrite by scripts ]!**
 
@@ -351,7 +347,7 @@ Production is designed to create one executable with no additional files require
 
 - [x] Single compilation of scripts.
 - [x] Editor mode load from folder instead of cmrc. 
-- [ ] Scripts param auto reload.
+- [x] Scripts param auto reload.
 - [ ] Scripts runtime copy.
 - [ ] Script runtime simulation and edit.
 - [ ] Script on off btn.

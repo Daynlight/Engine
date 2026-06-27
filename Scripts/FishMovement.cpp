@@ -56,7 +56,7 @@ public:
     // child_data->position = {163, 26, -21};
 
 
-    
+    path.clear();
     auto itr = game_object_data->parameters.find("rotation_adjustment");
     if (itr != game_object_data->parameters.end()) {
       if (auto* new_rotation = std::get_if<glm::vec3>(&itr->second)) {
