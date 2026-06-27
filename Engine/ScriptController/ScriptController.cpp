@@ -94,6 +94,12 @@ void UW::GameObjectScriptRecord::syncPointer(GameObjectData* data) {
 
 void UW::GameObjectScriptRecord::observe(GameObjectData *data){
 #ifndef PRODUCTION
+  if(compiling) {
+    checkLastWrite();
+    updateScript(data);
+    return;
+  };
+
   if(checkLastWrite()) updateScript(data);
 #else
   if(!module_initialized) 
@@ -460,13 +466,19 @@ void UW::GameObjectScriptRecord::updateScript(GameObjectData* data) {
 
   removeModule();
 
-  if(!compile()) {
+  int compile_state = compile();
+  if(compile_state == 0) {
     if(!loadModule()) 
       onLoad(data);
     else{
       UW::Logger::get().info("Script Controller", "loadModule failed");
       return;
     };
+
+    compiling = 0;
+  }
+  else if(compile_state == 1 || compile_state == 2){
+    compiling = 1;
   }
   else{
     UW::Logger::get().info("Script Controller", "compilation failed");
@@ -481,21 +493,70 @@ void UW::GameObjectScriptRecord::updateScript(GameObjectData* data) {
 
 int UW::GameObjectScriptRecord::compile() {
 #ifndef PRODUCTION
-  
-  auto it = Resources::get().scripts_last_time_write.find(path);
-  if(it != Resources::get().scripts_last_time_write.end() && lastWriteTime == Resources::get().scripts_last_time_write[path]) {
-    Logger::get().info("Script Controller", "Compilation Skiped");
-    return 0;
+  auto& resources = Resources::get();
+
+  {
+    std::lock_guard<std::mutex> lock(resources.compiler_mutex);
+    for (const auto& finished_path : resources.completed_compilation_paths) {
+      resources.script_active_compilers.erase(finished_path);
+    };
+    resources.completed_compilation_paths.clear();
   };
-  
+
+  auto it_write = resources.scripts_last_time_write.find(path);
+  auto it_thread = resources.script_active_compilers.find(path);
+
+  bool is_up_to_date = (it_write != resources.scripts_last_time_write.end() && lastWriteTime == it_write->second);
+  bool is_compiling  = (it_thread != resources.script_active_compilers.end());
+
+  if (is_up_to_date) {
+    if (is_compiling) {
+      Logger::get().info("Script Controller", "Compilation Exist Check: Still working in background...");
+      return 1;
+    } else {
+      Logger::get().info("Script Controller", "Compilation Exist Check: Up to date, skipping.");
+      return 0;
+    };
+  } 
+  else {
+    if (is_compiling) {
+      Logger::get().info("Script Controller", "Compilation Reload: New changes saved while compiling! Waiting for current pass...");
+      return 1;
+    } 
+    else {
+      Logger::get().info("Script Controller", "Compilation Start: Kicking off new compilation thread.");
+
+      resources.script_active_compilers[path] = std::jthread([this]() {
+
+        int status = compile_thread();
+
+        auto& res = Resources::get();
+        if (status == 0) {
+          std::lock_guard<std::mutex> lock(res.compiler_mutex);
+          res.scripts_last_time_write[this->path] = this->lastWriteTime;
+        };
+
+        res.mark_as_completed(this->path);
+      });
+
+      return 2;
+    };
+  };
+#endif
+  return 0;
+};
+
+
+
+int UW::GameObjectScriptRecord::compile_thread(){
   std::filesystem::path p(so_file);
   std::filesystem::path dir = p.parent_path();
 
   if (!dir.empty() && !std::filesystem::exists(dir)) std::filesystem::create_directories(dir);
 
-    std::filesystem::path compiler(COMPILER_PATH);
-    std::filesystem::path so(so_file);
-    std::filesystem::path cpp(cpp_file);
+  std::filesystem::path compiler(COMPILER_PATH);
+  std::filesystem::path so(so_file);
+  std::filesystem::path cpp(cpp_file);
 
 #if defined(_WIN32) || defined(_WIN64)
   std::string cmd = "\"" + compiler.string() + " -shared -o \"" + so.string() + "\" \"" + cpp.string() + "\"";
@@ -505,10 +566,9 @@ int UW::GameObjectScriptRecord::compile() {
   
   if (status == 0) {
     UW::Logger::get().info("Script Controller", "successful compilation");
-    Resources::get().scripts_last_time_write[path] = lastWriteTime;
     return 0;
   } else {
-    UW::Logger::get().erro("Script Controller", "Compilation failed with status: " + std::to_string(status));
+    UW::Logger::get().error("Script Controller", "Compilation failed with status: " + std::to_string(status));
     return -1;
   }
 
@@ -524,20 +584,21 @@ int UW::GameObjectScriptRecord::compile() {
     nullptr
   };
 
-
   pid_t pid = fork();
   if(pid == 0){
     execvp(command, const_cast<char* const*>(argv)); 
     Logger::get().erro("Script Controller", "Failed to exec g++");
-    return -1;
+    exit(-1);
   }
   else if(pid > 0){
     int status = 0; 
+    
     waitpid(pid, &status, 0);
-    UW::Logger::get().info("Script Controller", "successful compilation");
-    Resources::get().scripts_last_time_write[path] = lastWriteTime;
-
-    if (WIFEXITED(status) && WEXITSTATUS(status) == 0) return 0; 
+    
+    if (WIFEXITED(status) && WEXITSTATUS(status) == 0) {
+      UW::Logger::get().info("Script Controller", "successful compilation");
+      return 0; 
+    } 
     else { 
       UW::Logger::get().erro("Script Controller", "Compilation failed!");
       return -1; 
@@ -547,6 +608,4 @@ int UW::GameObjectScriptRecord::compile() {
   UW::Logger::get().erro("Script Controller", "Failed to fork()");
   return -1;
 #endif
-#endif
-  return 0;
 };

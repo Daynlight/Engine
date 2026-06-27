@@ -41,6 +41,7 @@ class GameObjectScriptRecord{
   std::string so_file = "";
   std::string cpp_file = "";
   bool log_observe_lock = 1;
+  bool compiling = 0;
 
 #ifdef PRODUCTION
   bool module_initialized = false;
@@ -80,6 +81,7 @@ private:
   void updateScript(GameObjectData* data);
 
   int compile();
+  int compile_thread();
 
 };
 };

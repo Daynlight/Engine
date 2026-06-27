@@ -351,15 +351,15 @@ Production is designed to create one executable with no additional files require
 - [x] Script on off btn.
 - [x] Script runtime simulation and edit.
 - [x] Scripts runtime copy.
-- [ ] Script async compile.
-- [ ] Shaders uniform parameters ui.
+- [x] Script async compile.
+- [ ] Tree like objects_manager.
 - [ ] Game data backup.
+- [ ] Move terrain, water, skybox to object_register vector.
+- [ ] Viewport ui.
+- [ ] Shaders uniform parameters ui.
 - [ ] Add Texture Serializer.
 - [ ] Last Time Write sync.
-- [ ] Viewport ui.
 - [ ] Window Data Serialization move in different file then ```imgui.ini```.
-- [ ] Move terrain, water, skybox to object_register vector.
-- [ ] Tree like objects_manager.
 - [ ] Multiple Scenes.
 - [ ] Optimization for Compile version (avoid maps).
 - [ ] Production optimization.

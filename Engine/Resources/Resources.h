@@ -14,6 +14,7 @@
 #include <fstream>
 #include <filesystem>
 #include <iostream>
+#include <thread>
 
 #include "Utils/utils.h"
 #include "config.h"
@@ -28,6 +29,15 @@ namespace UW{
 class Resources{
 public:
   std::unordered_map<std::string, std::filesystem::file_time_type> scripts_last_time_write;
+  std::unordered_map<std::string, std::jthread> script_active_compilers;
+  std::mutex compiler_mutex;
+  std::vector<std::string> completed_compilation_paths;
+
+  void mark_as_completed(const std::string& path) {
+    std::lock_guard<std::mutex> lock(compiler_mutex);
+    completed_compilation_paths.push_back(path);
+  };
+
   std::unordered_map<std::string, CW::Renderer::Texture> textures;
   std::unordered_map<std::string, CW::Renderer::Shader> shaders;
   UW::Meshes meshes;
