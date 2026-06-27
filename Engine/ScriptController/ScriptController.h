@@ -50,6 +50,7 @@ class GameObjectScriptRecord{
 
 public:
   GameObjectScriptInterface* script = nullptr;
+  bool script_on = true;
 
 public:
   GameObjectScriptRecord(const std::string& path);

@@ -43,7 +43,7 @@ void UW::ObjectsSerialization::save(const UW::GameObject& object) {
   record.textures = object.game_object_data.textures;
   record.materials = object.game_object_data.materials;
   record.parameters = object.game_object_data.parameters;
-  for(auto script : object.scripts) record.scripts.emplace_back(script.getPath());
+  for(auto script : object.scripts) record.scripts.emplace_back(std::pair<std::string, bool>(script.getPath(), script.script_on));
 
   outFile << record;
   outFile.close();
@@ -92,7 +92,7 @@ void UW::ObjectsSerialization::saveAll(std::vector<UW::GameObject>& objects) {
     record.textures = object.game_object_data.textures;
     record.materials = object.game_object_data.materials;
     record.parameters = object.game_object_data.parameters;
-    for(auto script : object.scripts) record.scripts.emplace_back(script.getPath());
+    for(auto script : object.scripts) record.scripts.emplace_back(std::pair<std::string, bool>(script.getPath(), script.script_on));
 
     outFile << record;
     Logger::get().info("ObjectsSerialization", "Object saved { " + object.game_object_data.name + " }");
@@ -145,7 +145,10 @@ void UW::ObjectsSerialization::loadAll(std::vector<UW::GameObject>& objects) {
         object.game_object_data.textures = std::move(record.textures);
         object.game_object_data.materials = std::move(record.materials);
         object.game_object_data.parameters = std::move(record.parameters);
-        for(auto& script : record.scripts) object.scripts.emplace_back(script);
+        for(auto& script : record.scripts) {
+          object.scripts.emplace_back(script.first);
+          object.scripts[object.scripts.size() - 1].script_on = script.second;
+        };
 
         objects.push_back(std::move(object));
         Logger::get().info("ObjectsSerialization", "Object loaded { " + record.name + " }");
@@ -199,9 +202,12 @@ std::ostream& UW::operator<<(std::ostream& os, const UW::GameObjectRecord& recor
   size_t scr_count = record.scripts.size();
   os.write(reinterpret_cast<const char*>(&scr_count), sizeof(scr_count));
   for (const auto& scr : record.scripts) {
-    size_t scr_sz = scr.size();
+    size_t scr_sz = scr.first.size();
     os.write(reinterpret_cast<const char*>(&scr_sz), sizeof(scr_sz));
-    if (scr_sz > 0) os.write(scr.data(), scr_sz);
+
+    if (scr_sz > 0) os.write(scr.first.data(), scr_sz);
+    
+    os.write(reinterpret_cast<const char*>(&scr.second), sizeof(scr.second));
   };
 
 
@@ -303,8 +309,10 @@ std::istream& UW::operator>>(std::istream& is, UW::GameObjectRecord& record) {
   for (auto& scr : record.scripts) {
     size_t scr_sz = 0;
     is.read(reinterpret_cast<char*>(&scr_sz), sizeof(scr_sz));
-    scr.resize(scr_sz);
-    if (scr_sz > 0) is.read(&scr[0], scr_sz);
+    scr.first.resize(scr_sz);
+    if (scr_sz > 0) is.read(&scr.first[0], scr_sz);
+
+    is.read(reinterpret_cast<char*>(&scr.second), sizeof(scr.second));
   };
 
 

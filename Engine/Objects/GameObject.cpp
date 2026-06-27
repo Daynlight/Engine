@@ -139,6 +139,7 @@ void UW::GameObject::startScripts(){
 
 void UW::GameObject::onLoad(){
   for(auto& script : scripts) {
+    if(!script.script_on) continue;
     script.loadModule();
     script.onLoad(&game_object_data);
   };
@@ -157,6 +158,7 @@ void UW::GameObject::onDestroy(){
 
 void UW::GameObject::onUpdate(float delta_time){
   for(auto& script : scripts) {
+    if(!script.script_on) continue;
     script.syncPointer(&game_object_data);
     script.onUpdate(delta_time);
   };
@@ -166,6 +168,7 @@ void UW::GameObject::onUpdate(float delta_time){
 
 void UW::GameObject::onFixedUpdate(float fixed_delta_time){
   for(auto& script : scripts) {
+    if(!script.script_on) continue;
     script.syncPointer(&game_object_data);
     script.observe(&game_object_data);
     script.onFixedUpdate(fixed_delta_time);
@@ -197,7 +200,10 @@ void UW::GameObject::render(CW::Renderer::Renderer *renderer, Camera &culling_ca
   glm::mat4 postRotate = glm::translate(glm::mat4(1.0f), pivotOffset);
   glm::mat4 model = translationMat * postRotate * rotationMat * preRotate * scaleMat;
 
-  for(auto& script : scripts) script.onRender();
+  for(auto& script : scripts) {
+    if(!script.script_on) continue;
+    script.onRender();
+  };
 
   if(isVisible(culling_camera.transformation(renderer), model, Resources::get().meshes[mesh_id])){
     uniform["model"]->set<glm::mat4>(model);

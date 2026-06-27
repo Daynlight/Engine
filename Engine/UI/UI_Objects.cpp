@@ -222,6 +222,14 @@ void UW::UI_Objects::guiObjectEditor(){
 
   ImGui::SeparatorText("Scripts: ");
   for(int i = 0; i < object.scripts.size(); i++){
+    bool new_script_on = object.scripts[i].script_on;
+    if(ImGui::Checkbox(std::string("##ScriptOn(" + std::to_string(i) + ")").c_str(), &new_script_on)){
+      object.stopScripts();
+      object.scripts[i].script_on = new_script_on;
+      object.startScripts();
+    };
+    
+    ImGui::SameLine();
     std::string label = "- script (" + std::to_string(i) + ")";
     
     char script_buffer[UW::Config::OBJECT_NAME_BUFFER_SIZE];
@@ -230,6 +238,7 @@ void UW::UI_Objects::guiObjectEditor(){
     if(ImGui::InputText(label.c_str(), script_buffer, UW::Config::OBJECT_NAME_BUFFER_SIZE)){
       object.stopScripts();
       object.scripts[i] = UW::GameObjectScriptRecord(std::string(script_buffer + '\0'));
+      object.scripts[i].script_on = new_script_on;
       object.startScripts();
     }
     

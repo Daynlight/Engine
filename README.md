@@ -348,10 +348,11 @@ Production is designed to create one executable with no additional files require
 - [x] Single compilation of scripts.
 - [x] Editor mode load from folder instead of cmrc. 
 - [x] Scripts param auto reload.
+- [x] Script on off btn.
 - [ ] Scripts runtime copy.
 - [ ] Script runtime simulation and edit.
-- [ ] Script on off btn.
 - [ ] Script async compile.
+- [ ] Shaders uniform parameters ui.
 - [ ] Game data backup.
 - [ ] Add Texture Serializer.
 - [ ] Last Time Write sync.

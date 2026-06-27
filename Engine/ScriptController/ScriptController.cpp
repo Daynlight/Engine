@@ -35,6 +35,7 @@ UW::GameObjectScriptRecord::GameObjectScriptRecord(const GameObjectScriptRecord&
   : path(other.path), cpp_file(other.cpp_file), so_file(other.so_file), log_observe_lock(other.log_observe_lock) {
   script_handler = nullptr;
   script = nullptr;
+  script_on = other.script_on;
 };
 
 
@@ -48,6 +49,7 @@ UW::GameObjectScriptRecord& UW::GameObjectScriptRecord::operator=(const GameObje
     log_observe_lock = other.log_observe_lock;
     script_handler = nullptr;
     script = nullptr;
+    script_on = other.script_on;
   };
   return *this;
 };
@@ -60,6 +62,7 @@ UW::GameObjectScriptRecord::GameObjectScriptRecord(GameObjectScriptRecord&& othe
     script_handler(other.script_handler), script(other.script) {
   other.script_handler = nullptr;
   other.script = nullptr;
+  script_on = other.script_on;
 };
 
 
@@ -76,6 +79,7 @@ UW::GameObjectScriptRecord& UW::GameObjectScriptRecord::operator=(GameObjectScri
 
     other.script_handler = nullptr;
     other.script = nullptr;
+    script_on = other.script_on;
   };
   return *this;
 };
@@ -101,6 +105,8 @@ void UW::GameObjectScriptRecord::observe(GameObjectData *data){
 
 
 void UW::GameObjectScriptRecord::onLoad(GameObjectData* data) {
+  if(!script_on) return;
+
   if(script){
     script->game_object_data = data;
     script->logger = static_cast<ILogger*>(&UW::Logger::get());
@@ -135,6 +141,8 @@ void UW::GameObjectScriptRecord::onLoad(GameObjectData* data) {
 
 
 void UW::GameObjectScriptRecord::onUpdate(float delta_time) {
+  if(!script_on) return;
+
   if(script){
 
 #ifndef PRODUCTION
@@ -166,6 +174,8 @@ void UW::GameObjectScriptRecord::onUpdate(float delta_time) {
 
 
 void UW::GameObjectScriptRecord::onFixedUpdate(float fixed_delta_time) {
+  if(!script_on) return;
+
   if(script){
 
 #ifndef PRODUCTION
@@ -197,6 +207,8 @@ void UW::GameObjectScriptRecord::onFixedUpdate(float fixed_delta_time) {
 
 
 void UW::GameObjectScriptRecord::onRender() {
+  if(!script_on) return;
+
   if(script){
 
 #ifndef PRODUCTION
@@ -228,6 +240,8 @@ void UW::GameObjectScriptRecord::onRender() {
 
 
 void UW::GameObjectScriptRecord::onDestroy() {
+  if(!script_on) return;
+
   if(script){
 
 #ifndef PRODUCTION
