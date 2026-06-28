@@ -352,7 +352,7 @@ Production is designed to create one executable with no additional files require
 - [x] Script runtime simulation and edit.
 - [x] Scripts runtime copy.
 - [x] Script async compile.
-- [ ] Tree like objects_manager.
+- [x] objects_manager for scripts.
 - [ ] Game data backup.
 - [ ] Move terrain, water, skybox to object_register vector.
 - [ ] Viewport ui.
