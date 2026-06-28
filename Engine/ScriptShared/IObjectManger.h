@@ -20,5 +20,6 @@ public:
   virtual GameObjectData* getGameObjectData(const std::string& name) = 0;
   virtual void addScript(const std::string& object_name, const std::string& path) = 0;
   virtual void removeScript(const std::string& object_name, const std::string& path) = 0;
+  virtual void saveRuntime(const std::string& object_name) = 0;
 };
 };

@@ -103,7 +103,16 @@ void UW::Scene::onLoad(){
 void UW::Scene::onUpdate(float delta_time){
   camera.event(&window);
 
-  for(UW::GameObject& el : UW::ObjectManager::get().objects) el.onUpdate(delta_time);
+  unsigned int size = UW::ObjectManager::get().objects.size();
+  for(int i = 0; i < size; i++){
+    UW::ObjectManager::get().objects[i].onUpdate(delta_time);
+    if(size != UW::ObjectManager::get().objects.size()){
+      size = UW::ObjectManager::get().objects.size();
+      i--;
+      if(size == 0) break;
+    };
+  };
+
   for(UW::Meduse& meduse : meduses) meduse.onUpdate(delta_time);
   if(terrain_on) terrain.onUpdate(delta_time);
   skybox.onUpdate(delta_time);
@@ -122,8 +131,17 @@ void UW::Scene::onFixedUpdate(float fixed_delta_time){
     Logger::get().info("Scene", "Auto-Save scene data");
   };
 #endif
+  
+  unsigned int size = UW::ObjectManager::get().objects.size();
+  for(int i = 0; i < size; i++){
+    UW::ObjectManager::get().objects[i].onFixedUpdate(fixed_delta_time);
+    if(size != UW::ObjectManager::get().objects.size()){
+      size = UW::ObjectManager::get().objects.size();
+      i--;
+      if(size == 0) break;
+    };
+  };
 
-  for(UW::GameObject& el : UW::ObjectManager::get().objects) el.onFixedUpdate(fixed_delta_time);
   for(UW::Meduse& meduse : meduses) meduse.onFixedUpdate(fixed_delta_time);
   if(terrain_on) terrain.onFixedUpdate(fixed_delta_time);
   skybox.onFixedUpdate(fixed_delta_time);

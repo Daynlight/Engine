@@ -75,3 +75,13 @@ void UW::ObjectManager::removeScript(const std::string &object_name, const std::
   };
   Logger::get().erro("ObjectManager", "Could not find object: " + object_name);
 };
+
+
+
+void UW::ObjectManager::saveRuntime(const std::string& object_name){
+  for (auto& obj : objects) {
+    if (obj.game_object_data.name == object_name) {
+      obj.game_object_data = obj.copy_game_object_data;
+    };
+  };
+};

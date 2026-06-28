@@ -131,11 +131,14 @@ public:
     child_data->parameters["p_size"] = int(path.size());
 
     for(int j = 0; j < path.size(); j++){
-      child_data->parameters["p_" + std::to_string(j)] = path[j] + randomVec3(j * i + 2754);
-      if(j == 0) child_data->position = path[0] + randomVec3(j * i + 2754);
+      int unique_seed = (j + 1) * i * 1337 + 2754;
+      child_data->parameters["p_" + std::to_string(j)] = path[j] + randomVec3(unique_seed);
+      if(j == 0) child_data->position = path[0] + randomVec3(unique_seed);
     }
 
     object_manager->addScript(new_child, "FishMovement");
+
+    object_manager->saveRuntime(new_child);
   };
 
 
