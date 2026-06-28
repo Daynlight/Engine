@@ -355,20 +355,23 @@ Production is designed to create one executable with no additional files require
 - [x] objects_manager for scripts.
 - [ ] Game data backup.
 - [ ] Move terrain, water, skybox to object_register vector.
-- [ ] Viewport ui.
 - [ ] Shaders uniform parameters ui.
+- [ ] Multiple Scenes.
 - [ ] Add Texture Serializer.
 - [ ] Last Time Write sync.
+- [ ] GlobResource script shared.
+- [ ] GlobConf script shared.
+- [ ] Debug Camera and Game Camera. Game Camera as game object specified in GlobConf. 
 - [ ] Window Data Serialization move in different file then ```imgui.ini```.
-- [ ] Multiple Scenes.
-- [ ] Optimization for Compile version (avoid maps).
-- [ ] Production optimization.
 - [ ] Clean up.
+- [ ] Production optimization.
+- [ ] Optimization for Compile version (avoid maps).
 </details>
 
 <details>
 <summary> Planed in Future </summary>
 
+- [ ] Viewport ui.
 - [ ] Better UI.
 - [ ] Texture UI.
 - [ ] Mesh UI.

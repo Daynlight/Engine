@@ -106,7 +106,7 @@ void UW::Scene::onUpdate(float delta_time){
   unsigned int size = UW::ObjectManager::get().objects.size();
   for(int i = 0; i < size; i++){
     UW::ObjectManager::get().objects[i].onUpdate(delta_time);
-    if(size != UW::ObjectManager::get().objects.size()){
+    if(size > UW::ObjectManager::get().objects.size()){
       size = UW::ObjectManager::get().objects.size();
       i--;
       if(size == 0) break;
@@ -135,7 +135,7 @@ void UW::Scene::onFixedUpdate(float fixed_delta_time){
   unsigned int size = UW::ObjectManager::get().objects.size();
   for(int i = 0; i < size; i++){
     UW::ObjectManager::get().objects[i].onFixedUpdate(fixed_delta_time);
-    if(size != UW::ObjectManager::get().objects.size()){
+    if(size > UW::ObjectManager::get().objects.size()){
       size = UW::ObjectManager::get().objects.size();
       i--;
       if(size == 0) break;
@@ -153,10 +153,18 @@ void UW::Scene::onFixedUpdate(float fixed_delta_time){
 void UW::Scene::onDestroy() {
   Logger::get().info("Scene", "Destroying Scene");
 
-#ifndef PRODUCTION
-  for(GameObject& object : UW::ObjectManager::get().objects) object.onDestroy();
+  unsigned int size = UW::ObjectManager::get().objects.size();
+  for(int i = 0; i < size; i++){
+    UW::ObjectManager::get().objects[i].onDestroy();
+    if(size > UW::ObjectManager::get().objects.size()){
+      size = UW::ObjectManager::get().objects.size();
+      i--;
+      if(size == 0) break;
+    };
+  };
   Logger::get().info("Scene", "Objects onDestroy");
-
+  
+#ifndef PRODUCTION
   DataSerializer::get().saveAll();
   Logger::get().info("Scene", "Force saved scene data");
 #endif
