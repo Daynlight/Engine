@@ -559,8 +559,9 @@ int UW::GameObjectScriptRecord::compile_thread(){
   std::filesystem::path cpp(cpp_file);
 
 #if defined(_WIN32) || defined(_WIN64)
-  std::string cmd = "\"" + compiler.string() + " -shared -o \"" + so.string() + "\" \"" + cpp.string() + "\"";
-  
+  std::string cmd = compiler.string() + " -shared -o \"" + so.string() + "\" \"" + cpp.string() + "\"";
+  Logger::get().warn("Script Controller", "Compile command: " + cmd);
+
   UW::Logger::get().info("Script Controller", "Compiling on Windows: " + cmd);
   int status = system(cmd.c_str());
   
@@ -568,7 +569,7 @@ int UW::GameObjectScriptRecord::compile_thread(){
     UW::Logger::get().info("Script Controller", "successful compilation");
     return 0;
   } else {
-    UW::Logger::get().error("Script Controller", "Compilation failed with status: " + std::to_string(status));
+    UW::Logger::get().erro("Script Controller", "Compilation failed with status: " + std::to_string(status));
     return -1;
   }
 

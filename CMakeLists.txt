@@ -18,16 +18,25 @@ option(PRODUCTION "Enable production build flags" OFF)
 
 
 
-execute_process(
-  COMMAND git submodule update --init --recursive
+include(FetchContent)
+
+
+FetchContent_Declare(CWindow
+  GIT_REPOSITORY  https://github.com/Daynlight/CWindow.git
+  GIT_TAG under_water
+  GIT_SHALLOW TRUE
 )
+FetchContent_MakeAvailable(CWindow)
 
-
-
-add_subdirectory(vendor/cmrc)
-add_subdirectory(vendor/CWindow)
 
 if(PRODUCTION)
+  FetchContent_Declare(cmrc
+    GIT_REPOSITORY  https://github.com/vector-of-bool/cmrc.git
+    GIT_TAG master
+    GIT_SHALLOW TRUE
+  )
+  FetchContent_MakeAvailable(cmrc)
+
   file(GLOB_RECURSE GameDataSet CONFIGURE_DEPENDS "GameData/**")
   cmrc_add_resource_library(GameData ${GameDataSet})
 endif()

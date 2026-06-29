@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include "../../vendor/CWindow/CWindow/vendor/glm/glm/glm.hpp"
-#include "../../vendor/CWindow/CWindow/vendor/glm/glm/gtc/quaternion.hpp"
+#include "../../build/_deps/cwindow-src/CWindow/vendor/glm/glm/glm.hpp"
+#include "../../build/_deps/cwindow-src/CWindow/vendor/glm/glm/gtc/quaternion.hpp"
 
 #include <string>
 #include <vector>
