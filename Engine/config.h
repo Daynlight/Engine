@@ -20,6 +20,7 @@ namespace UW::Config{
   inline const float SAVE_TIMESTAMP = 350000;
   inline const float MAX_FIXED_HZ = 50;
   inline const float MIN_FIXED_HZ = 0.1;
+  inline const int MAX_FIXED_STEPS = 5; 
   
   // generation
   inline constexpr unsigned int SEED = 123123;

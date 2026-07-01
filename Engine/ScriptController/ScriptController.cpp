@@ -606,19 +606,36 @@ int UW::GameObjectScriptRecord::compile_thread(){
   std::filesystem::path cpp(cpp_file);
 
 #if defined(_WIN32) || defined(_WIN64)
-  std::string cmd = compiler.string() + " -shared -o \"" + so.string() + "\" \"" + cpp.string() + "\"";
+  std::filesystem::path temp_so = so.string() + ".tmp";
+
+  STARTUPINFOA si = { sizeof(si) };
+  PROCESS_INFORMATION pi = { 0 };
+
+  std::string cmd = compiler.string() + " -shared -o \"" + temp_so.string() + "\" \"" + cpp.string() + "\"";
   Logger::get().warn("Script Controller", "Compile command: " + cmd);
 
   UW::Logger::get().info("Script Controller", "Compiling on Windows: " + cmd);
-  int status = system(cmd.c_str());
   
-  if (status == 0) {
-    UW::Logger::get().info("Script Controller", "successful compilation");
-    return 0;
-  } else {
-    UW::Logger::get().erro("Script Controller", "Compilation failed with status: " + std::to_string(status));
-    return -1;
-  }
+  char* cmd_buffer = _strdup(cmd.c_str());
+    
+  BOOL success = CreateProcessA(NULL, cmd_buffer, NULL, NULL, FALSE, CREATE_NO_WINDOW, NULL, NULL, &si, &pi);
+  free(cmd_buffer);
+  
+  if (success) {
+    WaitForSingleObject(pi.hProcess, INFINITE);
+    DWORD exit_code;
+    GetExitCodeProcess(pi.hProcess, &exit_code);
+    CloseHandle(pi.hProcess);
+    CloseHandle(pi.hThread);
+
+    if (exit_code == 0) {
+      std::error_code ec;
+      std::filesystem::rename(temp_so, so, ec);
+      return (ec ? -1 : 0);
+    };
+  };
+  
+  return -1;
 
 #else
   const char* command = compiler.c_str();

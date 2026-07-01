@@ -9,6 +9,15 @@
 
 
 
+#if defined(_WIN32) || defined(_WIN64)
+#include <windows.h>
+extern "C" {
+  __declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
+}
+#endif
+
+
+
 UW::App::App()
   :scene(window)
 #ifndef PRODUCTION
@@ -130,8 +139,9 @@ void UW::App::fixedUpdate(){
   if(UW::GlobResource::get().FIXED_HZ < UW::Config::MIN_FIXED_HZ) UW::GlobResource::get().FIXED_HZ = UW::Config::MIN_FIXED_HZ;
   
   float fixed_time_step = 1.0f / UW::GlobResource::get().FIXED_HZ;
-
-  while(fixed_update_time_acc >= fixed_time_step){
+  
+  int max_steps = UW::Config::MAX_FIXED_STEPS;
+  while(fixed_update_time_acc >= fixed_time_step && max_steps-- > 0){
     
 #ifndef PRODUCTION
     guiSettings.window_width = window.getWindowData()->width;
@@ -145,6 +155,8 @@ void UW::App::fixedUpdate(){
 
     fixed_update_time_acc -= fixed_time_step;
   };
+
+  if(max_steps <= 0) fixed_update_time_acc = 0;
 };
 
 
