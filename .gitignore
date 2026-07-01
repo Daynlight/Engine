@@ -75,4 +75,4 @@ build/
 
 temp*
 Scripts_DLL/
-/Scripts/ScriptShared/*
+**/Scripts/ScriptShared/
