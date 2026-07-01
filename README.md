@@ -403,11 +403,27 @@ Aborted (core dumped)
 <summary> Planed in Future </summary>
 
 - [ ] Multiple Scenes.
+- [ ] Viewport mode for editing and gameplay.
+- [ ] Optimization for Production.
+- [ ] Production BTN.
+- [ ] Full access to render engine from scripts.
+- [ ] Components base GameObjects.
+- [ ] UI Module for games.
+- [ ] Networking.
+- [ ] All entities on scene are Objects.
+- [ ] Object Tree.
+- [ ] Multi threading.
+- [ ] Physics Engine.
+- [ ] Audio Engine.
+- [ ] Animations.
+- [ ] Particle system.
 - [ ] Better UI.
 - [ ] Texture UI.
 - [ ] Mesh UI.
+- [ ] Build in meshes, scripts, textures, ...
 - [ ] Separate to multiple projects. 
 - [ ] Support for ```clang```, ```msvs```.
 - [ ] Editor Debug with movement.
-- [ ] Events with ```Ctrl + Z / Ctrl + Y```
+- [ ] Editor mode and runtime.
+- [ ] Events with ```Ctrl + Z / Ctrl + Y```.
 </details>
