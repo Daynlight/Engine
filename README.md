@@ -343,7 +343,7 @@ Production is designed to create one executable with no additional files require
 </details>
 
 <details open>
-<summary> 🌟 Iteration 6 🌟 </summary>
+<summary> 🌟 Iteration 6 🌟 (1.07.2026) </summary>
 
 - [x] Single compilation of scripts.
 - [x] Editor mode load from folder instead of cmrc. 
@@ -353,6 +353,13 @@ Production is designed to create one executable with no additional files require
 - [x] Scripts runtime copy.
 - [x] Script async compile.
 - [x] objects_manager for scripts.
+- [x] No Scripts blocks edibility issue with ```copy_game_object_data```.
+- [ ] Scripts on windows.
+</details> 
+
+<details>
+<summary> Iteration 7 </summary>
+
 - [ ] Game data backup.
 - [ ] Move terrain, water, skybox to object_register vector.
 - [ ] Shaders uniform parameters ui.
@@ -366,17 +373,23 @@ Production is designed to create one executable with no additional files require
 corrupted size vs. prev_size while consolidating
 Aborted (core dumped)
 ```
+- [ ] Fix issue
+```bash
+terminate called after throwing an instance of 'std::length_error'
+  what():  basic_string::_M_create
+Aborted (core dumped)
+```
 - [ ] Project as ```GameData``` and ```Scripts``` in folder.
 - [ ] Window Data Serialization move in different file then ```imgui.ini```.
-- [ ] Clean up.
-- [ ] Production optimization.
-- [ ] Optimization for Compile version (avoid maps).
-- [ ] Docs.
 </details>
 
 <details>
 <summary> Planed in Future </summary>
 
+- [ ] Clean up.
+- [ ] Production optimization.
+- [ ] Optimization for Compile version (avoid maps).
+- [ ] Docs.
 - [ ] Debug Camera and Game Camera. Game Camera as game object specified in GlobConf. 
 - [ ] Multiple Scenes.
 - [ ] Viewport ui.
@@ -384,6 +397,8 @@ Aborted (core dumped)
 - [ ] Texture UI.
 - [ ] Mesh UI.
 - [ ] Rule of 5.
+- [ ] Separate to multiple projects. 
+- [ ] Support for ```clang```, ```msvs```.
 - [ ] Editor Debug with movement.
 - [ ] Events with ```Ctrl + Z / Ctrl + Y```
 </details>
