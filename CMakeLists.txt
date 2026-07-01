@@ -28,18 +28,22 @@ FetchContent_Declare(CWindow
 )
 FetchContent_MakeAvailable(CWindow)
 
+FetchContent_Declare(cmrc
+  GIT_REPOSITORY  https://github.com/vector-of-bool/cmrc.git
+  GIT_TAG master
+  GIT_SHALLOW TRUE
+)
+FetchContent_MakeAvailable(cmrc)
+
 
 if(PRODUCTION)
-  FetchContent_Declare(cmrc
-    GIT_REPOSITORY  https://github.com/vector-of-bool/cmrc.git
-    GIT_TAG master
-    GIT_SHALLOW TRUE
-  )
-  FetchContent_MakeAvailable(cmrc)
-
   file(GLOB_RECURSE GameDataSet CONFIGURE_DEPENDS "GameData/**")
   cmrc_add_resource_library(GameData ${GameDataSet})
 endif()
+
+
+file(GLOB_RECURSE ScriptSharedSet CONFIGURE_DEPENDS "ScriptShared/**")
+cmrc_add_resource_library(ScriptShared ${ScriptSharedSet})
 
 
 add_subdirectory(Engine)

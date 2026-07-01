@@ -358,9 +358,9 @@ Production is designed to create one executable with no additional files require
 - [x] GlobResource Window title, vsync, fixed_hz.
 - [x] GlobResource keyevents, mouseevents. 
 - [x] Resources properties ui.
-- [ ] SharedScripts added proper folder via save in cmrc.
+- [x] SharedScripts added proper folder via save in cmrc.
+- [x] Project as ```GameData``` and ```Scripts``` in folder.
 - [ ] Scripts on windows.
-- [ ] Project as ```GameData``` and ```Scripts``` in folder.
 </details> 
 
 <details>
@@ -389,6 +389,7 @@ terminate called after throwing an instance of 'std::length_error'
 Aborted (core dumped)
 ```
 - [ ] Window Data Serialization move in different file then ```imgui.ini```.
+- [ ] Simpler glm in script shared.
 - [ ] Clean up.
 - [ ] Viewport ui.
 - [ ] Rule of 5.

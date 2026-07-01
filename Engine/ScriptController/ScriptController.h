@@ -77,6 +77,7 @@ public:
   void removeModule();
 
 private:
+  void initSharedFolder();
   bool checkLastWrite();
   void updateScript(GameObjectData* data);
 

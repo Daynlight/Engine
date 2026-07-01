@@ -9,6 +9,51 @@
 
 
 
+#ifndef PRODUCTION
+#include <cmrc/cmrc.hpp>
+CMRC_DECLARE(ScriptShared);
+#endif
+
+
+
+void UW::GameObjectScriptRecord::initSharedFolder() {
+#ifndef PRODUCTION
+  auto efs = cmrc::ScriptShared::get_filesystem();
+  std::filesystem::path dest_folder = UW::Config::SCRIPTS_SRC_FOLDER;
+
+  auto extract_dir = [&](auto& self, const std::string& virtual_path, const std::filesystem::path& physical_path) -> void { 
+    if (!std::filesystem::exists(physical_path)) std::filesystem::create_directories(physical_path);
+
+    for (auto&& entry : efs.iterate_directory(virtual_path)) {
+      std::string current_v_path = virtual_path.empty() ? entry.filename() : virtual_path + "/" + entry.filename();
+      std::filesystem::path current_p_path = physical_path / entry.filename();
+      if(std::filesystem::exists(current_p_path)) continue;
+
+      if (entry.is_directory()) self(self, current_v_path, current_p_path);
+      else if (entry.is_file()) {
+        auto file = efs.open(current_v_path);
+        bool should_write = true;
+
+        if (std::filesystem::exists(current_p_path) && std::filesystem::file_size(current_p_path) == file.size()) should_write = false; 
+
+        if (should_write) {
+          std::ofstream out(current_p_path, std::ios::binary);
+          if (out) out.write(file.begin(), file.size());
+          else UW::Logger::get().erro("Script Controller", "Failed to write extracted file: " + current_p_path.string());
+        };
+      };
+    };
+  };
+
+  extract_dir(extract_dir, "", dest_folder);
+  UW::Logger::get().info("Script Controller", "Shared folder successfully initialized from cmrc.");
+#else
+  UW::Logger::get().info("Script Controller", "In PRODUCTION mode: cmrc extraction skipped.");
+#endif
+};
+
+
+
 UW::GameObjectScriptRecord::GameObjectScriptRecord(const std::string &path)
   : path(path), 
     cpp_file(UW::Config::SCRIPTS_SRC_FOLDER + path + ".cpp"),
@@ -19,6 +64,7 @@ UW::GameObjectScriptRecord::GameObjectScriptRecord(const std::string &path)
 #endif 
 {
   UW::Logger::get().info("Script Controller", "Script Initialized");
+  initSharedFolder();
 };
 
 

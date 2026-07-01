@@ -67,8 +67,10 @@ target_link_libraries(Engine CWindow)
 
 if(PRODUCTION)
   target_link_libraries(Engine GameData)
+else()
+  target_link_libraries(Engine ScriptShared)
 endif()
 
 
 
-target_include_directories(Engine PUBLIC .)
+target_include_directories(Engine PUBLIC "." "../ScriptShared")
