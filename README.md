@@ -356,21 +356,29 @@ Production is designed to create one executable with no additional files require
 - [ ] Game data backup.
 - [ ] Move terrain, water, skybox to object_register vector.
 - [ ] Shaders uniform parameters ui.
-- [ ] Multiple Scenes.
 - [ ] Add Texture Serializer.
 - [ ] Last Time Write sync.
 - [ ] GlobResource script shared.
 - [ ] GlobConf script shared.
-- [ ] Debug Camera and Game Camera. Game Camera as game object specified in GlobConf. 
+- [ ] SharedScripts added proper folder via save in cmrc.
+- [ ] Fix pre_size size error.
+```bash
+corrupted size vs. prev_size while consolidating
+Aborted (core dumped)
+```
+- [ ] Project as ```GameData``` and ```Scripts``` in folder.
 - [ ] Window Data Serialization move in different file then ```imgui.ini```.
 - [ ] Clean up.
 - [ ] Production optimization.
 - [ ] Optimization for Compile version (avoid maps).
+- [ ] Docs.
 </details>
 
 <details>
 <summary> Planed in Future </summary>
 
+- [ ] Debug Camera and Game Camera. Game Camera as game object specified in GlobConf. 
+- [ ] Multiple Scenes.
 - [ ] Viewport ui.
 - [ ] Better UI.
 - [ ] Texture UI.
