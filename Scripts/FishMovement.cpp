@@ -44,6 +44,7 @@ public:
 
     logger->info(SCRIPT_FILE_NAME, "Loaded");
 
+
     path.clear();
     auto itr = game_object_data->parameters.find("rotation_adjustment");
     if (itr != game_object_data->parameters.end()) {

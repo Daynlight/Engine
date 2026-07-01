@@ -10,6 +10,7 @@
 #include "ScriptRegister.h"
 #include "GameObjectData.h"
 #include "IObjectManger.h"
+#include "GlobResource.h"
 
 
 
@@ -29,6 +30,7 @@ namespace UW{
 class GameObjectScriptInterface {
 public:
   GameObjectData* game_object_data = nullptr;
+  GlobResource* glob_res = nullptr;
   ILogger* logger = nullptr;
   IObjectManager* object_manager = nullptr;
 

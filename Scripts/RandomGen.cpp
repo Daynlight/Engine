@@ -35,6 +35,7 @@ public:
   void OnLoad(){
     logger->info(SCRIPT_FILE_NAME, "Loaded");
 
+
     auto its1 = game_object_data->parameters.find("amount");
     if (its1 != game_object_data->parameters.end()) {
       if (auto* new_amount = std::get_if<int>(&its1->second)) {

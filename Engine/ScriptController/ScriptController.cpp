@@ -113,6 +113,7 @@ void UW::GameObjectScriptRecord::observe(GameObjectData *data){
 void UW::GameObjectScriptRecord::onLoad(GameObjectData* data) {
   if(script){
     script->game_object_data = data;
+    script->glob_res = &UW::GlobResource::get();
     script->logger = static_cast<ILogger*>(&UW::Logger::get());
     script->object_manager = static_cast<IObjectManager*>(&UW::ObjectManager::get());
 

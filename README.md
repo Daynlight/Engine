@@ -354,11 +354,11 @@ Production is designed to create one executable with no additional files require
 - [x] Script async compile.
 - [x] objects_manager for scripts.
 - [x] No Scripts blocks edibility issue with ```copy_game_object_data```.
-- [ ] Scripts on windows.
-- [ ] GlobResource script shared.
+- [x] GlobResource script shared.
 - [ ] GlobConf script shared.
 - [ ] SharedScripts added proper folder via save in cmrc.
 - [ ] Project as ```GameData``` and ```Scripts``` in folder.
+- [ ] Scripts on windows.
 </details> 
 
 <details>
