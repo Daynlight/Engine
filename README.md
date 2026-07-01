@@ -356,11 +356,11 @@ Production is designed to create one executable with no additional files require
 - [x] No Scripts blocks edibility issue with ```copy_game_object_data```.
 - [x] GlobResource script shared.
 - [x] GlobResource Window title, vsync, fixed_hz.
-- [ ] GlobResource keyevents, mouseevents, window size. 
-- [ ] Resources properties ui.
+- [x] GlobResource keyevents, mouseevents. 
+- [x] Resources properties ui.
 - [ ] SharedScripts added proper folder via save in cmrc.
-- [ ] Project as ```GameData``` and ```Scripts``` in folder.
 - [ ] Scripts on windows.
+- [ ] Project as ```GameData``` and ```Scripts``` in folder.
 </details> 
 
 <details>

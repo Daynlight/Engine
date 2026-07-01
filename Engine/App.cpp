@@ -17,7 +17,11 @@ UW::App::App()
 {
   Logger::get().info("App", "App Initialization");
   
+
+  DataSerializer::get().loadAll();
   initWindow();
+  UW::GlobResource::get().input_data = window.getInputData();
+  
   onLoad();
 
   Logger::get().info("App", "App Initialized");
@@ -54,8 +58,6 @@ void UW::App::run(){
 // ===================================== //
 void UW::App::onLoad(){
   Logger::get().info("App", "App Loading");
-
-  DataSerializer::get().loadAll();
 
 #ifndef PRODUCTION
   ui.onLoad();
@@ -123,6 +125,9 @@ void UW::App::update(){
 
 void UW::App::fixedUpdate(){
   fixed_update_time_acc += window.getWindowData()->delta_time;
+
+  if(UW::GlobResource::get().FIXED_HZ > UW::Config::MAX_FIXED_HZ) UW::GlobResource::get().FIXED_HZ = UW::Config::MAX_FIXED_HZ;
+  if(UW::GlobResource::get().FIXED_HZ < UW::Config::MIN_FIXED_HZ) UW::GlobResource::get().FIXED_HZ = UW::Config::MIN_FIXED_HZ;
   
   float fixed_time_step = 1.0f / UW::GlobResource::get().FIXED_HZ;
 

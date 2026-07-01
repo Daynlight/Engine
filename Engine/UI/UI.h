@@ -20,6 +20,7 @@
 #include "Utils/Logger.h"
 #include "Objects/ObjectManager.h"
 #include "DataSerializer/DataSerializer.h"
+#include "ScriptShared/GlobResource.h"
 #include "Objects/GameObject.h"
 #include "Camera/Camera.h"
 #include "Scene.h"

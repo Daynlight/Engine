@@ -9,11 +9,18 @@
 
 #include "../../build/_deps/cwindow-src/CWindow/vendor/glm/glm/glm.hpp"
 #include "../../build/_deps/cwindow-src/CWindow/vendor/glm/glm/gtc/quaternion.hpp"
+#include "../../build/_deps/cwindow-src/CWindow/Renderer/Data/InputData.h"
 
 #include <string>
 #include <vector>
 #include <unordered_map>
 #include <variant>
+
+
+#pragma once
+#include <string>
+#include <chrono>
+#include <unordered_map>
 
 
 
@@ -29,9 +36,8 @@ public:
   std::string WINDOW_TITLE = "Under the Water (Daniel Stodulski)";
   float FIXED_HZ = 60.0f;
   unsigned int VSYNC = 0;
-
-  // key events
-  // mouse events
+  
+  const CW::Renderer::InputData* input_data;
   
   static GlobResource& get() {
     static GlobResource instance = GlobResource();

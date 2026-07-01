@@ -18,6 +18,8 @@ namespace UW::Config{
   inline constexpr float PI = 3.14159265358979f;
   inline constexpr float EPS = 1e-5f;
   inline const float SAVE_TIMESTAMP = 350000;
+  inline const float MAX_FIXED_HZ = 50;
+  inline const float MIN_FIXED_HZ = 0.1;
   
   // generation
   inline constexpr unsigned int SEED = 123123;
