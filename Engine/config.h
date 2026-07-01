@@ -17,10 +17,7 @@ namespace UW::Config{
   // system
   inline constexpr float PI = 3.14159265358979f;
   inline constexpr float EPS = 1e-5f;
-  inline constexpr float FIXED_HZ = 60.0f;
-  inline constexpr unsigned int VSYNC = 0;
-  inline const float SAVE_TIMESTAMP = 350000;         
-  inline const std::string WINDOW_TITLE = "Under the Water (Daniel Stodulski)";
+  inline const float SAVE_TIMESTAMP = 350000;
   
   // generation
   inline constexpr unsigned int SEED = 123123;
@@ -77,6 +74,7 @@ namespace UW::Config{
   inline const std::string LIGHTS_FILENAME = "Lights.lit";
   inline const std::string SCRIPTS_SRC_FOLDER = "Scripts/";
   inline const std::string SCRIPTS_DLL_FOLDER = "Scripts_DLL/";
+  inline const std::string RESOURCES_FILENAME = "Resources.res";
   inline const std::string LOG_FILE_PATH = "editor.log";
   inline const size_t LOGS_MAX_LINES = 10000;
   inline const size_t LOGS_TARGET_TRIM_LINES = 8000;

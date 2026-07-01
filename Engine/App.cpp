@@ -55,6 +55,8 @@ void UW::App::run(){
 void UW::App::onLoad(){
   Logger::get().info("App", "App Loading");
 
+  DataSerializer::get().loadAll();
+
 #ifndef PRODUCTION
   ui.onLoad();
   Logger::get().info("App", "UI Loaded");
@@ -71,7 +73,10 @@ void UW::App::onLoad(){
 void UW::App::onDestroy() {
   Logger::get().info("App", "Destroying App");
 
+
 #ifndef PRODUCTION
+  DataSerializer::get().saveAll();
+  Logger::get().info("Scene", "Force saved scene data");
   ui.onDestroy();
   Logger::get().info("App", "UI Destroyed");
 #endif
@@ -119,7 +124,7 @@ void UW::App::update(){
 void UW::App::fixedUpdate(){
   fixed_update_time_acc += window.getWindowData()->delta_time;
   
-  float fixed_time_step = 1.0f / UW::Config::FIXED_HZ;
+  float fixed_time_step = 1.0f / UW::GlobResource::get().FIXED_HZ;
 
   while(fixed_update_time_acc >= fixed_time_step){
     
@@ -127,6 +132,9 @@ void UW::App::fixedUpdate(){
     guiSettings.window_width = window.getWindowData()->width;
     guiSettings.window_height = window.getWindowData()->height;
 #endif
+
+    if(cached_title != UW::GlobResource::get().WINDOW_TITLE) updateTitle();
+    if(cached_vsync != UW::GlobResource::get().VSYNC) updateVsync();
     
     scene.onFixedUpdate(fixed_time_step);
 
@@ -142,16 +150,32 @@ void UW::App::fixedUpdate(){
 void UW::App::initWindow(){
   Logger::get().info("App", "Window Initialization");
 
-  window.setWindowTitle(UW::Config::WINDOW_TITLE);
-  Logger::get().info("App", "Title set to - " + UW::Config::WINDOW_TITLE);
+  updateTitle();
 
   window.setCursorVisibility(UW::Config::DEFAULT_CURSOR_IS_VISIBLE);
   Logger::get().info("App", "Cursor visiblity set to - " + std::string(UW::Config::DEFAULT_CURSOR_IS_VISIBLE == 1 ? "On" : "Off"));
 
-  window.setVsync(UW::Config::VSYNC);
-  Logger::get().info("App", "VSync set to - " + std::string(UW::Config::VSYNC != 0 ? "On" : "Off"));
+  updateVsync();
 
   Logger::get().info("App", "Window Initialized");
+};
+
+
+
+void UW::App::updateTitle(){
+  cached_title = UW::GlobResource::get().WINDOW_TITLE;
+
+  window.setWindowTitle(cached_title);
+  Logger::get().info("App", "Title set to - " + cached_title);
+};
+
+
+
+void UW::App::updateVsync(){
+  cached_vsync = UW::GlobResource::get().VSYNC;
+
+  window.setVsync(cached_vsync);
+  Logger::get().info("App", "VSync set to - " + std::string(cached_vsync != 0 ? "On" : "Off"));
 };
 
 

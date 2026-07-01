@@ -29,7 +29,6 @@ UW::Scene::~Scene(){
 void UW::Scene::onLoad(){
   Logger::get().info("Scene", "Loading Scene");
   
-  DataSerializer::get().loadAll();
   Logger::get().info("Scene", "Data Loaded from DataSerializer");
 
 
@@ -163,11 +162,6 @@ void UW::Scene::onDestroy() {
     };
   };
   Logger::get().info("Scene", "Objects onDestroy");
-  
-#ifndef PRODUCTION
-  DataSerializer::get().saveAll();
-  Logger::get().info("Scene", "Force saved scene data");
-#endif
   
   UW::ObjectManager::get().objects.clear();
   Logger::get().info("Scene", "Objects Removed");

@@ -18,6 +18,7 @@
 #include "config.h"
 #include "Utils/Logger.h"
 #include "Resources/Resources.h"
+#include "ScriptShared/GlobResource.h"
 #include "Scene.h"
 
 
@@ -25,6 +26,8 @@
 namespace UW{
 class App{
 private:
+  std::string cached_title = "";
+  unsigned int cached_vsync = 0;
   CW::Renderer::Renderer window;
   UW::Scene scene;
   
@@ -59,6 +62,8 @@ private:
 
   // helpers
   void initWindow();
+  void updateTitle();
+  void updateVsync();
   
 #ifndef PRODUCTION
   void swapCamera();

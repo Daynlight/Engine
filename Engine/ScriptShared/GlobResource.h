@@ -26,6 +26,12 @@ using GlobResourceName = std::variant<int, float, bool, glm::vec2, glm::vec3, st
 class GlobResource{
 public:
   std::unordered_map<std::string, GlobResourceName> resources;
+  std::string WINDOW_TITLE = "Under the Water (Daniel Stodulski)";
+  float FIXED_HZ = 60.0f;
+  unsigned int VSYNC = 0;
+
+  // key events
+  // mouse events
   
   static GlobResource& get() {
     static GlobResource instance = GlobResource();

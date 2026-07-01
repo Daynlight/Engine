@@ -31,6 +31,7 @@
 #include "DataSerializer/LightsSerialization.h"
 #include "DataSerializer/ShaderSerialization.h"
 #include "DataSerializer/ScriptSerialization.h"
+#include "DataSerializer/GlobResourceSerialization.h"
 
 
 
@@ -54,6 +55,7 @@ private:
   LightsSerialization lights_serializer;
   ShaderSerialization shader_serializer;
   ScriptSerialization script_serializer;
+  GlobResourceSerialization glob_serializer;
 
 public:
   static DataSerializer& get();
@@ -64,6 +66,11 @@ public:
   DataSerializer& operator=(DataSerializer&&) = delete;
 
 public:
+#ifndef PRODUCTION
+  void saveAllGlobResources();
+#endif
+  void loadAllGlobResources();
+
 #ifndef PRODUCTION
   void saveAllObjects(std::vector<GameObject>& objects);
 #endif

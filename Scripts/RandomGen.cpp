@@ -35,6 +35,9 @@ public:
   void OnLoad(){
     logger->info(SCRIPT_FILE_NAME, "Loaded");
 
+    glob_res->WINDOW_TITLE = "Test App";
+    glob_res->FIXED_HZ = 16;
+    glob_res->VSYNC = 1;
 
     auto its1 = game_object_data->parameters.find("amount");
     if (its1 != game_object_data->parameters.end()) {

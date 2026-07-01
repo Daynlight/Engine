@@ -30,6 +30,20 @@ UW::DataSerializer::DataSerializer()
 
 
 #ifndef PRODUCTION
+void UW::DataSerializer::saveAllGlobResources() {
+  glob_serializer.saveAll();
+};
+#endif
+
+
+
+void UW::DataSerializer::loadAllGlobResources() {
+  glob_serializer.loadAll();
+};
+
+
+
+#ifndef PRODUCTION
 void UW::DataSerializer::saveAllObjects(std::vector<GameObject>& objects) {
   objects_serializer->saveAll(objects);
 };
@@ -207,6 +221,7 @@ void UW::DataSerializer::loadAllTextures() {
 #ifndef PRODUCTION
 void UW::DataSerializer::saveAll() {
   Logger::get().info("DataSerializer", "Saving all game data...");
+  glob_serializer.saveAll();
   objects_serializer->saveAll(ObjectManager::get().objects);
   materials_serializer.saveAll(Resources::get().materials);
   lights_serializer.saveAll(Resources::get().lights);
@@ -219,6 +234,7 @@ void UW::DataSerializer::saveAll() {
 
 void UW::DataSerializer::loadAll() {
   Logger::get().info("DataSerializer", "Loading all game data...");
+  glob_serializer.loadAll();
   mesh_serializer->loadAll(Resources::get().meshes);
   lights_serializer.loadAll(Resources::get().lights);
   materials_serializer.loadAll(Resources::get().materials);

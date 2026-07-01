@@ -355,7 +355,9 @@ Production is designed to create one executable with no additional files require
 - [x] objects_manager for scripts.
 - [x] No Scripts blocks edibility issue with ```copy_game_object_data```.
 - [x] GlobResource script shared.
-- [ ] GlobConf script shared.
+- [x] GlobResource Window title, vsync, fixed_hz.
+- [ ] GlobResource keyevents, mouseevents, window size. 
+- [ ] Resources properties ui.
 - [ ] SharedScripts added proper folder via save in cmrc.
 - [ ] Project as ```GameData``` and ```Scripts``` in folder.
 - [ ] Scripts on windows.
@@ -372,6 +374,12 @@ Production is designed to create one executable with no additional files require
 - [ ] Fix pre_size size error.
 ```bash
 corrupted size vs. prev_size while consolidating
+Aborted (core dumped)
+```
+- [ ] Fix issue
+```bash
+terminate called after throwing an instance of 'std::length_error'
+  what():  basic_string::_M_create
 Aborted (core dumped)
 ```
 - [ ] Fix issue
