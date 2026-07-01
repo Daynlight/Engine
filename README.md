@@ -342,8 +342,8 @@ Production is designed to create one executable with no additional files require
 - [x] Asset Loader UI Check
 </details>
 
-<details open>
-<summary> 🌟 Iteration 6 🌟 </summary>
+<details>
+<summary> Iteration 6 (02.07.2026) </summary>
 
 - [x] Single compilation of scripts.
 - [x] Editor mode load from folder instead of cmrc. 
@@ -360,11 +360,11 @@ Production is designed to create one executable with no additional files require
 - [x] Resources properties ui.
 - [x] SharedScripts added proper folder via save in cmrc.
 - [x] Project as ```GameData``` and ```Scripts``` in folder.
-- [ ] Scripts on windows.
+- [x] Scripts on windows.
 </details> 
 
-<details>
-<summary> Iteration 7 </summary>
+<details open>
+<summary>🌟Iteration 7🌟</summary>
 
 - [ ] Game data backup.
 - [ ] Move terrain, water, skybox to object_register vector.
@@ -426,4 +426,5 @@ Aborted (core dumped)
 - [ ] Editor Debug with movement.
 - [ ] Editor mode and runtime.
 - [ ] Events with ```Ctrl + Z / Ctrl + Y```.
+- [ ] Windows Scripts optimization. 
 </details>
