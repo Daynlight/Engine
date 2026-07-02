@@ -367,20 +367,26 @@ Production is designed to create one executable with no additional files require
 <summary> 🌟 Iteration 7 🌟 </summary>
 
 - [x] Shaders uniform parameters ui.
+- [x] Skybox as GameObject.
+- [ ] Terrain as GameObject.
+- [ ] Water as GameObject.
+- [ ] Camera as GameObject.
 - [ ] Game data backup.
-- [ ] Move terrain, water, skybox to object_register vector.
+- [ ] Viewport ui.
 - [ ] Add Texture Serializer.
 - [ ] Last Time Write sync.
-- [ ] Fix pre_size size error.
-- [ ] Window Data Serialization move in different file then ```imgui.ini```.
-- [ ] Simpler glm in script shared.
-- [ ] Clean up.
-- [ ] Viewport ui.
-- [ ] Rule of 5.
-- [ ] Debug Camera and Game Camera. Game Camera as game object specified in GlobConf. 
+- [ ] Window Size in GlobResources.
 - [ ] Production optimization.
 - [ ] Optimization for Compile version (avoid maps).
+- [ ] Rule of 5.
+- [ ] Tests.
+- [ ] Unit Tests.
+- [ ] Full Clean up.
+- [ ] Functions Markers.
 - [ ] Docs.
+
+- [ ] Fix Issues:
+- [ ] Fix pre_size size error.
 ```bash
 corrupted size vs. prev_size while consolidating
 Aborted (core dumped)
@@ -403,6 +409,9 @@ Aborted (core dumped)
 <summary> Planed in Future </summary>
 
 - [ ] Multiple Scenes.
+- [ ] GameObject as Camera.
+- [ ] Editor Camera.
+- [ ] GameObject components system.
 - [ ] Viewport mode for editing and gameplay.
 - [ ] Optimization for Production.
 - [ ] Production BTN.
