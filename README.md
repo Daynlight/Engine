@@ -364,7 +364,7 @@ Production is designed to create one executable with no additional files require
 </details> 
 
 <details open>
-<summary>🌟Iteration 7🌟</summary>
+<summary> 🌟 Iteration 7 🌟 </summary>
 
 - [x] Shaders uniform parameters ui.
 - [ ] Game data backup.
