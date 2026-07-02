@@ -73,24 +73,6 @@ void UW::Scene::onLoad(){
   debug_camera.direction = {-0.668f, -0.734f, -0.122f};
   Logger::get().info("Scene", "Debug Camera Initialized");
 #endif
-  
-
-  for(int i = 0; i < 2; i++){
-    meduses.emplace_back();
-    meduses[i].genRandom(i, 
-      glm::vec3(-50, -10, -50), glm::vec3(50, 10, 50), glm::vec3(174.780f, 40.939f, -80.027f),
-      glm::vec3(-glm::radians(10.0f), -glm::radians(10.0f), -glm::radians(10.0f)), glm::vec3(glm::radians(10.0f), glm::radians(10.0f), glm::radians(10.0f)),
-      0.4f, 0.7f
-    );
-  };
-
-  meduses[0].setPath({glm::vec3(117.610, 51.472, -39.445), 
-                      glm::vec3(89.665, 25.785, -152.533),
-                      glm::vec3(253.161, 54.430, -68.562), 
-                      glm::vec3(282.921, 21.784, 0.884)});
-  meduses[0].setOrientation(glm::vec3(0.0f, 0.0f, 0.0f));
-  meduses[0].setSpeed(20.0f);
-  Logger::get().info("Scene", "Meduses SDF Objects Initialized");
     
 
   compileShadows();
@@ -112,7 +94,6 @@ void UW::Scene::onUpdate(float delta_time){
     };
   };
 
-  for(UW::Meduse& meduse : meduses) meduse.onUpdate(delta_time);
   if(terrain_on) terrain.onUpdate(delta_time);
   if(water_on) water.onUpdate(delta_time);
 };
@@ -140,7 +121,6 @@ void UW::Scene::onFixedUpdate(float fixed_delta_time){
     };
   };
 
-  for(UW::Meduse& meduse : meduses) meduse.onFixedUpdate(fixed_delta_time);
   if(terrain_on) terrain.onFixedUpdate(fixed_delta_time);
   if(water_on) water.onFixedUpdate(fixed_delta_time);
 };
@@ -222,14 +202,6 @@ void UW::Scene::render(){
 #endif
     renderFrame(camera);
 
-
-#ifndef PRODUCTION
-  if(debug_camera_on)
-    renderSFD(debug_camera);
-  else
-#endif
-    renderSFD(camera);
-
   fbo.unbind();
 
 
@@ -263,12 +235,6 @@ void UW::Scene::renderFrame(UW::Camera& camera){
   
   glActiveTexture(GL_TEXTURE16);
   glBindTexture(GL_TEXTURE_2D, 0);
-};
-
-
-
-void UW::Scene::renderSFD(UW::Camera& camera){
-  for(UW::Meduse& meduse : meduses) meduse.render(&window, this->camera, camera, shadows_uniform_off);
 };
 
 

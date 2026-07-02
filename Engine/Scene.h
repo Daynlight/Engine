@@ -18,7 +18,6 @@
 
 #include "Objects/Terrain/Terrain.h"
 #include "Objects/Water/Water.h"
-#include "Objects/Meduse/Meduse.h"
 
 
 
@@ -60,7 +59,6 @@ private:
 
   UW::Terrain terrain;
   UW::Water water;
-  std::vector<UW::Meduse> meduses;
 
 public:
   Scene(CW::Renderer::Renderer& window);
@@ -76,7 +74,6 @@ private:
   void postProcessing();
   void compileShadows();
   void renderFrame(UW::Camera& camera);
-  void renderSFD(UW::Camera& camera);
 
 };
 };

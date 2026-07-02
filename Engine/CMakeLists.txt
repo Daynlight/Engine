@@ -34,7 +34,6 @@ set(src
   "Resources/Materials/Materials.cpp"
   "Objects/Terrain/Terrain.cpp"
   "Objects/Water/Water.cpp"
-  "Objects/Meduse/Meduse.cpp"
   "Objects/GameObject.cpp"
   "Objects/ObjectManager.cpp"
   "DataSerializer/GlobResourceSerialization.cpp"
