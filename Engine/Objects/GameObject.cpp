@@ -226,7 +226,12 @@ void UW::GameObject::render(CW::Renderer::Renderer *renderer, Camera &culling_ca
     };
   };
 
-  if(isVisible(culling_camera.transformation(renderer), model, Resources::get().meshes[mesh_id])){
+  if(!copy_game_object_data.culling_on || isVisible(culling_camera.transformation(renderer), model, Resources::get().meshes[mesh_id])){
+    if(copy_game_object_data.gl_depth_lequal)
+      glDepthFunc(GL_LEQUAL);
+    if(copy_game_object_data.dont_write_to_depth_mask)
+      glDepthMask(GL_FALSE);
+
     uniform["model"]->set<glm::mat4>(model);
 
     for(unsigned int i = 0; i < copy_game_object_data.textures.size(); i++){
@@ -255,6 +260,11 @@ void UW::GameObject::render(CW::Renderer::Renderer *renderer, Camera &culling_ca
       Resources::get().getTexture(this->copy_game_object_data.textures[i]).unbind();
 
     Resources::get().getShader(this->copy_game_object_data.shader).getUniforms().clear();
+    
+    if(copy_game_object_data.gl_depth_lequal)
+      glDepthFunc(GL_LESS);
+    if(copy_game_object_data.dont_write_to_depth_mask)
+      glDepthMask(GL_TRUE);
   };
 };
 

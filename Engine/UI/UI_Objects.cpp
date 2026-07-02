@@ -162,6 +162,27 @@ void UW::UI_Objects::guiObjectEditor(){
     object.startScripts();
   };
 
+  bool culling_on = object.game_object_data.culling_on;
+  if(ImGui::Checkbox("Culling", &culling_on)){
+    object.stopScripts();
+    object.game_object_data.culling_on = culling_on;
+    object.startScripts();
+  };
+
+  bool dont_write_to_depth_mask = object.game_object_data.dont_write_to_depth_mask;
+  if(ImGui::Checkbox("DontWriteToDepth", &dont_write_to_depth_mask)){
+    object.stopScripts();
+    object.game_object_data.dont_write_to_depth_mask = dont_write_to_depth_mask;
+    object.startScripts();
+  };
+
+  bool gl_depth_lequal = object.game_object_data.gl_depth_lequal;
+  if(ImGui::Checkbox("DepthLEQ", &gl_depth_lequal)){
+    object.stopScripts();
+    object.game_object_data.gl_depth_lequal = gl_depth_lequal;
+    object.startScripts();
+  };
+
   ImGui::SeparatorText("Textures: ");
   for(int i = 0; i < object.game_object_data.textures.size(); i++){
     std::string label = "- texture (" + std::to_string(i) + ")";

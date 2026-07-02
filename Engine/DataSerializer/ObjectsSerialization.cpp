@@ -92,6 +92,9 @@ void UW::ObjectsSerialization::saveAll(std::vector<UW::GameObject>& objects) {
     record.textures = object.game_object_data.textures;
     record.materials = object.game_object_data.materials;
     record.parameters = object.game_object_data.parameters;
+    record.culling_on = object.game_object_data.culling_on;
+    record.dont_write_to_depth_mask = object.game_object_data.dont_write_to_depth_mask;
+    record.gl_depth_lequal = object.game_object_data.gl_depth_lequal;
     for(auto script : object.scripts) record.scripts.emplace_back(std::pair<std::string, bool>(script.getPath(), script.script_on));
 
     outFile << record;
@@ -142,6 +145,9 @@ void UW::ObjectsSerialization::loadAll(std::vector<UW::GameObject>& objects) {
         object.game_object_data.position = record.position;
         object.game_object_data.rotation = record.rotation;
         object.game_object_data.scale = record.scale;
+        object.game_object_data.culling_on = record.culling_on;
+        object.game_object_data.dont_write_to_depth_mask= record.dont_write_to_depth_mask;
+        object.game_object_data.gl_depth_lequal = record.gl_depth_lequal;
         object.game_object_data.textures = std::move(record.textures);
         object.game_object_data.materials = std::move(record.materials);
         object.game_object_data.parameters = std::move(record.parameters);
@@ -182,6 +188,9 @@ std::ostream& UW::operator<<(std::ostream& os, const UW::GameObjectRecord& recor
   os.write(reinterpret_cast<const char*>(&record.position), sizeof(glm::vec3));
   os.write(reinterpret_cast<const char*>(&record.rotation), sizeof(glm::vec3));
   os.write(reinterpret_cast<const char*>(&record.scale), sizeof(glm::vec3));
+  os.write(reinterpret_cast<const char*>(&record.culling_on), sizeof(bool));
+  os.write(reinterpret_cast<const char*>(&record.dont_write_to_depth_mask), sizeof(bool));
+  os.write(reinterpret_cast<const char*>(&record.gl_depth_lequal), sizeof(bool));
 
   size_t tex_count = record.textures.size();
   os.write(reinterpret_cast<const char*>(&tex_count), sizeof(tex_count));
@@ -264,6 +273,10 @@ std::istream& UW::operator>>(std::istream& is, UW::GameObjectRecord& record) {
   is.read(reinterpret_cast<char*>(&record.position), sizeof(glm::vec3));
   is.read(reinterpret_cast<char*>(&record.rotation), sizeof(glm::vec3));
   is.read(reinterpret_cast<char*>(&record.scale), sizeof(glm::vec3));
+  is.read(reinterpret_cast<char*>(&record.culling_on), sizeof(bool));
+  is.read(reinterpret_cast<char*>(&record.dont_write_to_depth_mask), sizeof(bool));
+  is.read(reinterpret_cast<char*>(&record.gl_depth_lequal), sizeof(bool));
+
 
   size_t tex_count = 0;
   is.read(reinterpret_cast<char*>(&tex_count), sizeof(tex_count));

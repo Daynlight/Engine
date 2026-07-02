@@ -38,6 +38,9 @@ struct GameObjectRecord {
   std::vector<std::string> materials;
   std::vector<std::pair<std::string, bool>> scripts;
   std::unordered_map<std::string, UW::GameObjectParameterType> parameters;
+  bool culling_on = true;
+  bool dont_write_to_depth_mask = false;
+  bool gl_depth_lequal = false;
 
   friend std::ostream& operator<<(std::ostream& os, const GameObjectRecord& record);
   friend std::istream& operator>>(std::istream& is, GameObjectRecord& record);

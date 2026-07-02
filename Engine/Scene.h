@@ -18,7 +18,6 @@
 
 #include "Objects/Terrain/Terrain.h"
 #include "Objects/Water/Water.h"
-#include "Objects/Skybox/Skybox.h"
 #include "Objects/Meduse/Meduse.h"
 
 
@@ -61,7 +60,6 @@ private:
 
   UW::Terrain terrain;
   UW::Water water;
-  UW::Skybox skybox;
   std::vector<UW::Meduse> meduses;
 
 public:
