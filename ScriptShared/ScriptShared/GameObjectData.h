@@ -16,6 +16,8 @@
 #include "../vendor/glm/glm/gtc/quaternion.hpp"
 #endif
 
+
+
 #include <string>
 #include <vector>
 #include <unordered_map>
@@ -44,5 +46,6 @@ struct GameObjectData{
   bool gl_depth_lequal = false;
 
   std::unordered_map<std::string, GameObjectParameterType> parameters;
+  std::unordered_map<std::string, GameObjectParameterType> uniforms;
 };
 };

@@ -219,6 +219,14 @@ void UW::GameObject::render(CW::Renderer::Renderer *renderer, Camera &culling_ca
   glm::mat4 postRotate = glm::translate(glm::mat4(1.0f), pivotOffset);
   glm::mat4 model = translationMat * postRotate * rotationMat * preRotate * scaleMat;
 
+  for(auto& el : copy_game_object_data.uniforms) {
+    std::visit([&](auto&& arg) {
+      using T = std::decay_t<decltype(arg)>;
+
+      if constexpr (std::is_same_v<T, int> || std::is_same_v<T, float> || std::is_same_v<T, glm::vec2> || std::is_same_v<T, glm::vec3>) uniform[el.first]->set<T>(arg);
+    }, el.second);
+  };
+
   if(Resources::get().simulation_mode){
     for(auto& script : scripts) {
       if(!script.script_on) continue;
@@ -239,8 +247,8 @@ void UW::GameObject::render(CW::Renderer::Renderer *renderer, Camera &culling_ca
       uniform["texture" + std::to_string(i)]->set<int>(i);
     };
     
-    Resources::get().getShader(this->copy_game_object_data.shader).getUniforms().emplace_back(&uniform);
     Resources::get().getShader(this->copy_game_object_data.shader).getUniforms().emplace_back(&shadows_uniform);
+    Resources::get().getShader(this->copy_game_object_data.shader).getUniforms().emplace_back(&uniform);
     
     Resources::get().getShader(this->copy_game_object_data.shader).bind();
     

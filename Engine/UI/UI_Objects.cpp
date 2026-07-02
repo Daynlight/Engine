@@ -321,6 +321,8 @@ void UW::UI_Objects::guiObjectEditor(){
         case 5: param_value = std::string(""); break;
       }
       object.startScripts();
+      ImGui::PopID();
+      break;
     }
 
     ImGui::SameLine();
@@ -424,6 +426,156 @@ void UW::UI_Objects::guiObjectEditor(){
     }
     
     params[unique_new_name] = 0;
+    object.startScripts();
+  }
+
+
+
+  ImGui::SeparatorText("Uniforms");
+
+  auto& uniforms = object.game_object_data.uniforms;
+
+  for (auto it = uniforms.begin(); it != uniforms.end();) {
+    const std::string& current_name = it->first;
+    auto& uniform_value = it->second;
+
+    ImGui::PushID(current_name.c_str());
+
+    bool delete_triggered = false;
+    bool rename_triggered = false;
+    char name_buffer[128];
+    strncpy(name_buffer, current_name.c_str(), sizeof(name_buffer) - 1);
+    name_buffer[sizeof(name_buffer) - 1] = '\0';
+
+    ImGui::SetNextItemWidth(120.0f);
+    if (ImGui::InputText("##UniformName", name_buffer, sizeof(name_buffer), ImGuiInputTextFlags_EnterReturnsTrue)) {
+      rename_triggered = true;
+    }
+    if (ImGui::IsItemDeactivatedAfterEdit()) {
+      rename_triggered = true;
+    }
+
+    ImGui::SameLine();
+
+    int current_type_idx = static_cast<int>(uniform_value.index());
+    ImGui::SetNextItemWidth(70.0f);
+    if (ImGui::Combo("##UniformType", &current_type_idx, UW::gameObjectParameterTypeName, IM_ARRAYSIZE(UW::gameObjectParameterTypeName))) {
+      object.stopScripts();
+      switch (current_type_idx) {
+        case 0: uniform_value = 0; break;
+        case 1: uniform_value = 0.0f; break;
+        case 2: uniform_value = false; break;
+        case 3: uniform_value = glm::vec2(0.0f); break;
+        case 4: uniform_value = glm::vec3(0.0f); break;
+        case 5: uniform_value = std::string(""); break;
+      }
+      object.startScripts();
+
+      ImGui::PopID();
+      break;
+    }
+
+    ImGui::SameLine();
+
+    std::visit([&object](auto&& arg) {
+      using T = std::decay_t<decltype(arg)>;
+      ImGui::SetNextItemWidth(150.0f);
+      
+      if constexpr (std::is_same_v<T, int>) {
+        int new_arg = arg;
+        if(ImGui::InputInt("##val", &new_arg)){
+          object.stopScripts();
+          arg = new_arg;
+          object.startScripts();
+        }
+      }
+      else if constexpr (std::is_same_v<T, float>) {
+        float new_arg = arg;
+        if(ImGui::DragFloat("##val", &new_arg, 0.05f)){
+          object.stopScripts();
+          arg = new_arg;
+          object.startScripts();
+        }
+      }
+      else if constexpr (std::is_same_v<T, bool>) {
+        bool new_arg = arg;
+        if(ImGui::Checkbox("##val", &new_arg)){
+          object.stopScripts();
+          arg = new_arg;
+          object.startScripts();
+        }
+      }
+      else if constexpr (std::is_same_v<T, glm::vec2>) {
+        glm::vec2 new_arg = arg;
+        if(ImGui::DragFloat2("##val", &new_arg.x, 0.05f)){
+          object.stopScripts();
+          arg = new_arg;
+          object.startScripts();
+        }
+      }
+      else if constexpr (std::is_same_v<T, glm::vec3>) {
+        glm::vec3 new_arg = arg;
+        if(ImGui::DragFloat3("##val", &new_arg.x, 0.05f)){
+          object.stopScripts();
+          arg = new_arg;
+          object.startScripts();
+        }
+      }
+      else if constexpr (std::is_same_v<T, std::string>) {
+        char str_buffer[256];
+        strncpy(str_buffer, arg.c_str(), sizeof(str_buffer) - 1);
+        str_buffer[sizeof(str_buffer) - 1] = '\0';
+        if (ImGui::InputText("##val", str_buffer, sizeof(str_buffer))) {
+          object.stopScripts();
+          arg = std::string(str_buffer);
+          object.startScripts();
+        }
+      }
+    }, uniform_value);
+
+    ImGui::SameLine();
+
+    if (ImGui::Button("Delete")) {
+      delete_triggered = true;
+    }
+
+    ImGui::PopID();
+
+    if (delete_triggered) {
+      object.stopScripts();
+      it = uniforms.erase(it);
+      object.startScripts();
+    } 
+    else if (rename_triggered && std::string(name_buffer) != current_name && !std::string(name_buffer).empty()) {
+      std::string new_key = name_buffer;
+      
+      object.stopScripts();
+      if (uniforms.find(new_key) == uniforms.end()) {
+        uniforms[new_key] = std::move(uniform_value);
+        it = uniforms.erase(it);
+      } else {
+        ++it;
+      }
+      object.startScripts();
+    } 
+    else {
+      ++it;
+    }
+  }
+
+  ImGui::Spacing();
+
+  std::string uniform_add_label = "Add Uniform (" + std::to_string(uniforms.size()) + ")";
+  if (ImGui::Button(uniform_add_label.c_str())) {
+    object.stopScripts();
+    std::string unique_new_name = "NewUniform_" + std::to_string(uniforms.size());
+    
+    int safety_counter = 0;
+    while(uniforms.find(unique_new_name) != uniforms.end()) {
+      unique_new_name = "NewUniform_" + std::to_string(uniforms.size() + (++safety_counter));
+    }
+    
+    uniforms[unique_new_name] = 0;
     object.startScripts();
   }
 };

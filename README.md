@@ -366,12 +366,21 @@ Production is designed to create one executable with no additional files require
 <details open>
 <summary>🌟Iteration 7🌟</summary>
 
+- [x] Shaders uniform parameters ui.
 - [ ] Game data backup.
 - [ ] Move terrain, water, skybox to object_register vector.
-- [ ] Shaders uniform parameters ui.
 - [ ] Add Texture Serializer.
 - [ ] Last Time Write sync.
 - [ ] Fix pre_size size error.
+- [ ] Window Data Serialization move in different file then ```imgui.ini```.
+- [ ] Simpler glm in script shared.
+- [ ] Clean up.
+- [ ] Viewport ui.
+- [ ] Rule of 5.
+- [ ] Debug Camera and Game Camera. Game Camera as game object specified in GlobConf. 
+- [ ] Production optimization.
+- [ ] Optimization for Compile version (avoid maps).
+- [ ] Docs.
 ```bash
 corrupted size vs. prev_size while consolidating
 Aborted (core dumped)
@@ -388,15 +397,6 @@ terminate called after throwing an instance of 'std::length_error'
   what():  basic_string::_M_create
 Aborted (core dumped)
 ```
-- [ ] Window Data Serialization move in different file then ```imgui.ini```.
-- [ ] Simpler glm in script shared.
-- [ ] Clean up.
-- [ ] Viewport ui.
-- [ ] Rule of 5.
-- [ ] Debug Camera and Game Camera. Game Camera as game object specified in GlobConf. 
-- [ ] Production optimization.
-- [ ] Optimization for Compile version (avoid maps).
-- [ ] Docs.
 </details>
 
 <details>
