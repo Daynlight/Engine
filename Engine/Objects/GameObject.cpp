@@ -239,6 +239,12 @@ void UW::GameObject::render(CW::Renderer::Renderer *renderer, Camera &culling_ca
       glDepthFunc(GL_LEQUAL);
     if(copy_game_object_data.dont_write_to_depth_mask)
       glDepthMask(GL_FALSE);
+    if(copy_game_object_data.gl_draw_patches)
+      glPatchParameteri(GL_PATCH_VERTICES, 4);
+    if(copy_game_object_data.gl_blend){
+      glEnable(GL_BLEND);
+      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    };
 
     uniform["model"]->set<glm::mat4>(model);
 
@@ -260,7 +266,10 @@ void UW::GameObject::render(CW::Renderer::Renderer *renderer, Camera &culling_ca
     GLint loc = glGetUniformLocation(Resources::get().getShader(copy_game_object_data.shader).getShaderProgram(), "mat_translate");
     glUniform1iv(loc, translation.size(), translation.data());
     
-    Resources::get().meshes[mesh_id].render();
+    if(copy_game_object_data.gl_draw_patches)
+      Resources::get().meshes[mesh_id].render(GL_PATCHES);
+    else
+      Resources::get().meshes[mesh_id].render();
     
     Resources::get().getShader(this->copy_game_object_data.shader).unbind();
 
@@ -273,6 +282,8 @@ void UW::GameObject::render(CW::Renderer::Renderer *renderer, Camera &culling_ca
       glDepthFunc(GL_LESS);
     if(copy_game_object_data.dont_write_to_depth_mask)
       glDepthMask(GL_TRUE);
+    if(copy_game_object_data.gl_blend)
+      glDisable(GL_BLEND);
   };
 };
 

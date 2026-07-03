@@ -93,9 +93,6 @@ void UW::Scene::onUpdate(float delta_time){
       if(size == 0) break;
     };
   };
-
-  if(terrain_on) terrain.onUpdate(delta_time);
-  if(water_on) water.onUpdate(delta_time);
 };
 
 
@@ -120,9 +117,6 @@ void UW::Scene::onFixedUpdate(float fixed_delta_time){
       if(size == 0) break;
     };
   };
-
-  if(terrain_on) terrain.onFixedUpdate(fixed_delta_time);
-  if(water_on) water.onFixedUpdate(fixed_delta_time);
 };
 
 
@@ -169,7 +163,6 @@ void UW::Scene::compileShadows(){
 
   window.beginFrame();
 
-  terrain.render(&window, light_camera, light_camera, shadows_uniform_off);
   for(UW::GameObject& object : UW::ObjectManager::get().objects) object.render(&window, light_camera, light_camera, shadows_uniform_off);
 
   shadows_fbo.unbind();
@@ -228,8 +221,6 @@ void UW::Scene::renderFrame(UW::Camera& camera){
   glActiveTexture(GL_TEXTURE16);
   glBindTexture(GL_TEXTURE_2D, shadows_fbo.getDepthTexture());
 
-  if(terrain_on) terrain.render(&window, this->camera, camera, shadows_uniform_on);
-  if(water_on) water.render(&window, this->camera, camera, shadows_uniform_off);
   for(UW::GameObject& object : UW::ObjectManager::get().objects) object.render(&window, this->camera, camera, shadows_uniform_on);
 
   

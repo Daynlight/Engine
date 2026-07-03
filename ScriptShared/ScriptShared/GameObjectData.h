@@ -44,6 +44,8 @@ struct GameObjectData{
   bool culling_on = true;
   bool dont_write_to_depth_mask = false;
   bool gl_depth_lequal = false;
+  bool gl_draw_patches = false;
+  bool gl_blend = false;
 
   std::unordered_map<std::string, GameObjectParameterType> parameters;
   std::unordered_map<std::string, GameObjectParameterType> uniforms;

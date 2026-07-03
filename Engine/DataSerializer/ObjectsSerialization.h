@@ -42,6 +42,8 @@ struct GameObjectRecord {
   bool culling_on = true;
   bool dont_write_to_depth_mask = false;
   bool gl_depth_lequal = false;
+  bool gl_draw_patches = false;
+  bool gl_blend = false;
 
   friend std::ostream& operator<<(std::ostream& os, const GameObjectRecord& record);
   friend std::istream& operator>>(std::istream& is, GameObjectRecord& record);

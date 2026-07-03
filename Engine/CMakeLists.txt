@@ -32,8 +32,6 @@ set(src
   "Resources/Meshes/Meshes.cpp"
   "Resources/Lights/Lights.cpp"
   "Resources/Materials/Materials.cpp"
-  "Objects/Terrain/Terrain.cpp"
-  "Objects/Water/Water.cpp"
   "Objects/GameObject.cpp"
   "Objects/ObjectManager.cpp"
   "DataSerializer/GlobResourceSerialization.cpp"

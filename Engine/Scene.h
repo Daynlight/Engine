@@ -16,9 +16,6 @@
 #include "Objects/ObjectManager.h"
 #include "DataSerializer/DataSerializer.h"
 
-#include "Objects/Terrain/Terrain.h"
-#include "Objects/Water/Water.h"
-
 
 
 namespace UW{
@@ -42,9 +39,6 @@ private:
   float save_acc = 0.0f;
   #endif
   
-  bool water_on = false;
-  bool terrain_on = true;
-  
   UW::Camera light_camera;
   CW::Renderer::Uniform shadows_uniform_on;
   CW::Renderer::Uniform shadows_uniform_off;
@@ -56,9 +50,6 @@ private:
   unsigned int screen_quad_mesh_id = 0;
   unsigned int meshes_version = -1;
   CW::Renderer::Uniform post_uniform;
-
-  UW::Terrain terrain;
-  UW::Water water;
 
 public:
   Scene(CW::Renderer::Renderer& window);

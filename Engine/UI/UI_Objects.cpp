@@ -183,6 +183,21 @@ void UW::UI_Objects::guiObjectEditor(){
     object.startScripts();
   };
 
+  bool gl_draw_patches = object.game_object_data.gl_draw_patches;
+  if(ImGui::Checkbox("DrawPatches", &gl_draw_patches)){
+    object.stopScripts();
+    object.game_object_data.gl_draw_patches = gl_draw_patches;
+    object.startScripts();
+  };
+
+  bool gl_blend = object.game_object_data.gl_blend;
+  if(ImGui::Checkbox("Blend", &gl_blend)){
+    object.stopScripts();
+    object.game_object_data.gl_blend = gl_blend;
+    object.startScripts();
+  };
+
+
   ImGui::SeparatorText("Textures: ");
   for(int i = 0; i < object.game_object_data.textures.size(); i++){
     std::string label = "- texture (" + std::to_string(i) + ")";

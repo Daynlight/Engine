@@ -47,6 +47,8 @@ void UW::ObjectsSerialization::save(const UW::GameObject& object) {
   record.culling_on = object.game_object_data.culling_on;
   record.dont_write_to_depth_mask = object.game_object_data.dont_write_to_depth_mask;
   record.gl_depth_lequal = object.game_object_data.gl_depth_lequal;
+  record.gl_draw_patches = object.game_object_data.gl_draw_patches;
+  record.gl_blend = object.game_object_data.gl_blend;
   for(auto script : object.scripts) record.scripts.emplace_back(std::pair<std::string, bool>(script.getPath(), script.script_on));
 
   outFile << record;
@@ -100,6 +102,8 @@ void UW::ObjectsSerialization::saveAll(std::vector<UW::GameObject>& objects) {
     record.culling_on = object.game_object_data.culling_on;
     record.dont_write_to_depth_mask = object.game_object_data.dont_write_to_depth_mask;
     record.gl_depth_lequal = object.game_object_data.gl_depth_lequal;
+    record.gl_draw_patches = object.game_object_data.gl_draw_patches;
+    record.gl_blend = object.game_object_data.gl_blend;
     for(auto script : object.scripts) record.scripts.emplace_back(std::pair<std::string, bool>(script.getPath(), script.script_on));
 
     outFile << record;
@@ -153,11 +157,13 @@ void UW::ObjectsSerialization::loadAll(std::vector<UW::GameObject>& objects) {
         object.game_object_data.culling_on = record.culling_on;
         object.game_object_data.dont_write_to_depth_mask= record.dont_write_to_depth_mask;
         object.game_object_data.gl_depth_lequal = record.gl_depth_lequal;
+        object.game_object_data.gl_draw_patches = record.gl_draw_patches;
+        object.game_object_data.gl_blend = record.gl_blend;
         object.game_object_data.textures = std::move(record.textures);
         object.game_object_data.materials = std::move(record.materials);
         object.game_object_data.parameters = std::move(record.parameters);
         object.game_object_data.uniforms = std::move(record.uniforms);
-        
+
         for(auto& script : record.scripts) {
           object.scripts.emplace_back(script.first);
           object.scripts[object.scripts.size() - 1].script_on = script.second;
@@ -198,6 +204,8 @@ std::ostream& UW::operator<<(std::ostream& os, const UW::GameObjectRecord& recor
   os.write(reinterpret_cast<const char*>(&record.culling_on), sizeof(bool));
   os.write(reinterpret_cast<const char*>(&record.dont_write_to_depth_mask), sizeof(bool));
   os.write(reinterpret_cast<const char*>(&record.gl_depth_lequal), sizeof(bool));
+  os.write(reinterpret_cast<const char*>(&record.gl_draw_patches), sizeof(bool));
+  os.write(reinterpret_cast<const char*>(&record.gl_blend), sizeof(bool));
 
   size_t tex_count = record.textures.size();
   os.write(reinterpret_cast<const char*>(&tex_count), sizeof(tex_count));
@@ -312,7 +320,8 @@ std::istream& UW::operator>>(std::istream& is, UW::GameObjectRecord& record) {
   is.read(reinterpret_cast<char*>(&record.culling_on), sizeof(bool));
   is.read(reinterpret_cast<char*>(&record.dont_write_to_depth_mask), sizeof(bool));
   is.read(reinterpret_cast<char*>(&record.gl_depth_lequal), sizeof(bool));
-
+  is.read(reinterpret_cast<char*>(&record.gl_draw_patches), sizeof(bool));
+  is.read(reinterpret_cast<char*>(&record.gl_blend), sizeof(bool));
 
   size_t tex_count = 0;
   is.read(reinterpret_cast<char*>(&tex_count), sizeof(tex_count));

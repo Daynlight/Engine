@@ -368,14 +368,17 @@ Production is designed to create one executable with no additional files require
 
 - [x] Shaders uniform parameters ui.
 - [x] Skybox as GameObject.
-- [ ] Terrain as GameObject.
-- [ ] Water as GameObject.
+- [x] Terrain as GameObject.
+- [x] Terrain fix materials.
+- [x] Rm Terrain_on btn.
+- [x] Water as GameObject.
 - [ ] Camera as GameObject.
 - [ ] Game data backup.
 - [ ] Viewport ui.
 - [ ] Add Texture Serializer.
 - [ ] Last Time Write sync.
 - [ ] Window Size in GlobResources.
+- [ ] Separated register for script objects.
 - [ ] Production optimization.
 - [ ] Optimization for Compile version (avoid maps).
 - [ ] Rule of 5.
