@@ -373,10 +373,8 @@ Production is designed to create one executable with no additional files require
 - [x] Rm Terrain_on btn.
 - [x] Water as GameObject.
 - [x] Game data backup.
-- [ ] Viewport ui.
 - [ ] Add Texture Serializer.
 - [ ] Last Time Write sync.
-- [ ] Window Size in GlobResources.
 - [ ] Separated register for script objects.
 - [ ] Production optimization.
 - [ ] Optimization for Compile version (avoid maps).
@@ -411,6 +409,8 @@ Aborted (core dumped)
 <summary> Planed in Future </summary>
 
 - [ ] Multiple Scenes.
+- [ ] Window Size in GlobResources.
+- [ ] Viewport ui.
 - [ ] Script Data Serializer.
 - [ ] Camera as GameObject.
 - [ ] Editor Camera.
