@@ -109,6 +109,7 @@ public:
   void loadAllTextures();
 
 #ifndef PRODUCTION
+  void backupGameData();
   void saveAll();
 #endif
 

@@ -372,8 +372,7 @@ Production is designed to create one executable with no additional files require
 - [x] Terrain fix materials.
 - [x] Rm Terrain_on btn.
 - [x] Water as GameObject.
-- [ ] Camera as GameObject.
-- [ ] Game data backup.
+- [x] Game data backup.
 - [ ] Viewport ui.
 - [ ] Add Texture Serializer.
 - [ ] Last Time Write sync.
@@ -412,7 +411,8 @@ Aborted (core dumped)
 <summary> Planed in Future </summary>
 
 - [ ] Multiple Scenes.
-- [ ] GameObject as Camera.
+- [ ] Script Data Serializer.
+- [ ] Camera as GameObject.
 - [ ] Editor Camera.
 - [ ] GameObject components system.
 - [ ] Viewport mode for editing and gameplay.

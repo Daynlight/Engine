@@ -66,6 +66,7 @@ namespace UW::Config{
   
   // serialization
   inline const std::string GAME_DATA_FOLDER = "GameData/";
+  inline const std::string BACKUP_GAME_DATA_FOLDER = ".GameData_back/";
   inline const std::string ASSETS_FOLDER = "Assets/";
   inline const std::string SHADERS_FOLDER = "Shaders/";
   inline const std::string TEXTURES_FOLDER = "Textures/";

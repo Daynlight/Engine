@@ -76,3 +76,4 @@ build/
 temp*
 Scripts_DLL/
 **/Scripts/ScriptShared/
+.GameData_back/

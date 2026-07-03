@@ -218,6 +218,32 @@ void UW::DataSerializer::loadAllTextures() {
 
 
 
+void UW::DataSerializer::backupGameData() {
+  Logger::get().info("DataSerializer", "Creating backup of GameData...");
+
+  namespace fs = std::filesystem;
+
+  try {
+    if (!fs::exists(UW::Config::GAME_DATA_FOLDER)) {
+      Logger::get().erro("DataSerializer", "Backup failed: Source folder missing.");
+      return;
+    };
+
+    if (fs::exists(UW::Config::BACKUP_GAME_DATA_FOLDER)) fs::remove_all(UW::Config::BACKUP_GAME_DATA_FOLDER);
+
+    fs::copy(UW::Config::GAME_DATA_FOLDER, UW::Config::BACKUP_GAME_DATA_FOLDER, fs::copy_options::recursive | fs::copy_options::overwrite_existing);
+
+    Logger::get().info("DataSerializer", "Game data backup completed successfully.");
+
+  } catch (const fs::filesystem_error& e) {
+    Logger::get().erro("DataSerializer", std::string("Filesystem error during backup: ") + e.what());
+  } catch (const std::exception& e) {
+    Logger::get().erro("DataSerializer", std::string("Unexpected error during backup: ") + e.what());
+  };
+};
+
+
+
 #ifndef PRODUCTION
 void UW::DataSerializer::saveAll() {
   Logger::get().info("DataSerializer", "Saving all game data...");
@@ -233,6 +259,12 @@ void UW::DataSerializer::saveAll() {
 
 
 void UW::DataSerializer::loadAll() {
+#ifndef PRODUCTION
+  Logger::get().info("DataSerializer", "Making Backup...");
+  backupGameData();
+  Logger::get().info("DataSerializer", "Backup done");
+#endif
+
   Logger::get().info("DataSerializer", "Loading all game data...");
   glob_serializer.loadAll();
   mesh_serializer->loadAll(Resources::get().meshes);
