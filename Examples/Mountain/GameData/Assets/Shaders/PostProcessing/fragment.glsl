@@ -9,7 +9,7 @@ uniform sampler2D u_SceneDepthTexture;
 uniform float u_FogDensity;
 uniform vec3 u_FogColor;
 
-uniform float u_water_height;
+float u_water_height = 200;
 uniform vec3 u_CamPos;
 uniform mat4 u_InvViewProj;
 
