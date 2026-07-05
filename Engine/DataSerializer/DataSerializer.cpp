@@ -25,7 +25,8 @@ UW::DataSerializer &UW::DataSerializer::get(){
 
 UW::DataSerializer::DataSerializer()
   : mesh_serializer(std::make_unique<MeshSerialization>()),
-    objects_serializer(std::make_unique<ObjectsSerialization>()){};
+    objects_serializer(std::make_unique<ObjectsSerialization>()),
+    texture_serializer(std::make_unique<TextureSerialization>()){};
 
 
 
@@ -143,77 +144,8 @@ std::string UW::DataSerializer::loadScript(const std::string& script_name){
 
 
 
-void UW::DataSerializer::loadAllTextures() {
-  Logger::get().info("DataSerializer", "Scanning and loading all textures...");
-
-  std::string root_path = UW::Config::GAME_DATA_FOLDER + UW::Config::ASSETS_FOLDER + UW::Config::TEXTURES_FOLDER;
-
-  if (!root_path.empty() && root_path.back() == '/') root_path.pop_back();
-
-#ifndef PRODUCTION
-  try {
-    if (std::filesystem::exists(root_path) && std::filesystem::is_directory(root_path)) {
-      for (const auto& entry : std::filesystem::directory_iterator(root_path)) {
-        if (entry.is_regular_file()) {
-          std::string file_name = entry.path().filename().string();
-
-          if (Resources::get().textures.find(file_name) != Resources::get().textures.end()) continue; 
-
-          std::ifstream file(entry.path(), std::ios::binary | std::ios::ate);
-          if (file.is_open()) {
-            std::streamsize size = file.tellg();
-            file.seekg(0, std::ios::beg);
-
-            std::vector<unsigned char> buffer(size);
-            if (file.read(reinterpret_cast<char*>(buffer.data()), size)) {
-              CW::Renderer::TextureLoader loader(buffer.data(), size);
-              
-              auto it = Resources::get().textures.emplace(file_name, CW::Renderer::Texture()).first;
-              it->second.compile(loader.data);
-              
-              Logger::get().info("DataSerializer", "Loaded texture from Disk: " + file_name);
-            };
-          };
-        };
-      };
-    } else {
-      Logger::get().warn("DataSerializer", "Filesystem - Directory not found: " + root_path);
-    }
-  } catch (const std::filesystem::filesystem_error& e) {
-    Logger::get().warn("DataSerializer", "[Filesystem] Could not scan local textures folder: " + std::string(e.what()));
-  };
-#else
-  try {
-    auto fs = cmrc::GameData::get_filesystem();
-    
-    if (fs.exists(root_path)) {
-      for (auto&& entry : fs.iterate_directory(root_path)) {
-        if (entry.is_file()) {
-          std::string file_name = entry.filename();
-          
-          if (Resources::get().textures.find(file_name) != Resources::get().textures.end()) continue;
-
-          std::string full_cmrc_path = root_path + "/" + file_name;
-          auto file = fs.open(full_cmrc_path); 
-          const unsigned char* data_ptr = reinterpret_cast<const unsigned char*>(file.begin());
-          
-          CW::Renderer::TextureLoader loader(data_ptr, file.size());
-
-          auto it = Resources::get().textures.emplace(file_name, CW::Renderer::Texture()).first;
-          it->second.compile(loader.data);
-          
-          Logger::get().info("DataSerializer", "Loaded texture from CMRC: " + file_name);
-        };
-      };
-    } else {
-      Logger::get().warn("DataSerializer", "CMRC - Directory not found: " + root_path);
-    }
-  } catch (const std::exception& e) {
-    Logger::get().warn("DataSerializer", "[CMRC] Could not scan textures folder: " + std::string(e.what()));
-  };
-#endif
-
-  Logger::get().info("DataSerializer", "Finished loading all textures.");
+void UW::DataSerializer::loadTexture(const std::string &texture_name){
+  return texture_serializer->load(texture_name);
 };
 
 
@@ -272,6 +204,6 @@ void UW::DataSerializer::loadAll() {
   materials_serializer.loadAll(Resources::get().materials);
   objects_serializer->loadAll(ObjectManager::get().objects);
   shader_serializer.loadAll();
-  loadAllTextures();
+  texture_serializer->loadAll();
   Logger::get().info("DataSerializer", "All game data has been loaded");
 };

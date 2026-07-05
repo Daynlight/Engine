@@ -48,51 +48,12 @@ void UW::Resources::destroy(){
 
 CW::Renderer::Texture &UW::Resources::getTexture(const std::string &path_to_asset){
   auto it = textures.find(path_to_asset);
-  
-  if (it != textures.end()) {
-    return it->second;
-  }
+  if (it != textures.end()) return it->second;
 
-  std::string local_path = UW::Config::GAME_DATA_FOLDER + UW::Config::ASSETS_FOLDER + UW::Config::TEXTURES_FOLDER + path_to_asset;
+  DataSerializer::get().loadTexture(path_to_asset);
 
-#ifndef PRODUCTION
-  if (std::filesystem::exists(local_path) && !std::filesystem::is_directory(local_path)) {
-    std::ifstream file(local_path, std::ios::binary | std::ios::ate);
-    if (file.is_open()) {
-      std::streamsize size = file.tellg();
-      file.seekg(0, std::ios::beg);
-
-      std::vector<unsigned char> buffer(size);
-      if (file.read(reinterpret_cast<char*>(buffer.data()), size)) {
-        CW::Renderer::TextureLoader loader(buffer.data(), size);
-        
-        it = textures.emplace(path_to_asset, CW::Renderer::Texture()).first;
-        it->second.compile(loader.data);
-        return it->second;
-      }
-    } else {
-      Logger::get().erro("Resources", "Failed to open texture file: " + local_path);
-    }
-  }
-#else
-  try {
-    auto fs = cmrc::GameData::get_filesystem();
-    
-    if (fs.exists(local_path)) {
-      auto file = fs.open(local_path); 
-      
-      const unsigned char* data_ptr = reinterpret_cast<const unsigned char*>(file.begin());
-      CW::Renderer::TextureLoader loader(data_ptr, file.size());
-
-      it = textures.emplace(path_to_asset, CW::Renderer::Texture()).first;
-      it->second.compile(loader.data);
-      
-      return it->second;
-    }
-  } catch (const std::exception& e) {
-    Logger::get().warn("Resources", "[getTexture] CMRC Exception: " + std::string(e.what()));
-  }
-#endif
+  auto ita = textures.find(path_to_asset);
+  if (ita != textures.end()) return ita->second;
 
   return textures[UW::Config::DEFAULT_TEXTURE]; 
 };

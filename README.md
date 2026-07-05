@@ -373,8 +373,7 @@ Production is designed to create one executable with no additional files require
 - [x] Rm Terrain_on btn.
 - [x] Water as GameObject.
 - [x] Game data backup.
-- [ ] Postprocessing in Editor.
-- [ ] Add Texture Serializer.
+- [x] Add Texture Serializer.
 - [ ] Last Time Write sync.
 - [ ] Separated register for script objects.
 - [ ] Production optimization.

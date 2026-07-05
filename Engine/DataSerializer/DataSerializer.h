@@ -27,6 +27,7 @@
 
 #include "DataSerializer/MeshSerialization.h"
 #include "DataSerializer/ObjectsSerialization.h"
+#include "DataSerializer/TextureSerialization.h"
 #include "DataSerializer/MaterialsSerialization.h"
 #include "DataSerializer/LightsSerialization.h"
 #include "DataSerializer/ShaderSerialization.h"
@@ -39,6 +40,7 @@ namespace UW {
   class GameObject; 
   class MeshSerialization;
   class ObjectsSerialization;
+  class TextureSerialization;
 };
 
 
@@ -51,6 +53,7 @@ private:
 
   std::unique_ptr<MeshSerialization> mesh_serializer;
   std::unique_ptr<ObjectsSerialization> objects_serializer;
+  std::unique_ptr<TextureSerialization> texture_serializer;
   MaterialsSerialization materials_serializer;
   LightsSerialization lights_serializer;
   ShaderSerialization shader_serializer;
@@ -106,7 +109,10 @@ public:
 #endif
   std::string loadScript(const std::string& script_name);
 
-  void loadAllTextures();
+// #ifndef PRODUCTION
+//   void saveTexture(const std::string& script_name, const std::string& source);
+// #endif
+  void loadTexture(const std::string& texture_name);
 
 #ifndef PRODUCTION
   void backupGameData();

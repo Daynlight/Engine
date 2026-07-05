@@ -43,6 +43,7 @@ set(src
   "DataSerializer/LightsSerialization.cpp"
   "DataSerializer/ShaderSerialization.cpp"
   "DataSerializer/ScriptSerialization.cpp"
+  "DataSerializer/TextureSerialization.cpp"
 )
 
 
