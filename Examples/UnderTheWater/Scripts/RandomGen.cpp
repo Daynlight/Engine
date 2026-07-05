@@ -116,9 +116,9 @@ public:
 
   void generateChild(const std::string& new_child, unsigned int i){
     child_object.emplace_back(new_child);
-    object_manager->emplace_back(new_child);
+    object_manager->emplace_backObjectScript(new_child);
 
-    GameObjectData* child_data = object_manager->getGameObjectData(new_child);
+    GameObjectData* child_data = object_manager->getGameObjectDataObjectScript(new_child);
     child_data->mesh = mesh;
     child_data->rotation = game_object_data->rotation;
     child_data->scale = game_object_data->scale;
@@ -136,9 +136,9 @@ public:
       if(j == 0) child_data->position = path[0] + randomVec3(unique_seed);
     }
 
-    object_manager->addScript(new_child, "FishMovement");
+    object_manager->addScriptObjectScript(new_child, "FishMovement");
 
-    object_manager->saveRuntime(new_child);
+    object_manager->saveRuntimeObjectScript(new_child);
   };
 
 
@@ -181,7 +181,7 @@ public:
 
   void OnDestroy(){
     for(std::string child : child_object){
-      object_manager->erase(child);
+      object_manager->eraseObjectScript(child);
     };
 
     logger->info(SCRIPT_FILE_NAME, "Destroyed");

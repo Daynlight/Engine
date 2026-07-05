@@ -374,8 +374,7 @@ Production is designed to create one executable with no additional files require
 - [x] Water as GameObject.
 - [x] Game data backup.
 - [x] Add Texture Serializer.
-- [ ] Last Time Write sync.
-- [ ] Separated register for script objects.
+- [x] Separated register for script objects.
 - [ ] Production optimization.
 - [ ] Optimization for Compile version (avoid maps).
 - [ ] Rule of 5.
@@ -408,6 +407,7 @@ Aborted (core dumped)
 <details>
 <summary> Planed in Future </summary>
 
+- [ ] Last Time Write sync.
 - [ ] Multiple Scenes.
 - [ ] Window Size in GlobResources.
 - [ ] Viewport ui.

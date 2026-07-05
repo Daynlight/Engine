@@ -93,6 +93,16 @@ void UW::Scene::onUpdate(float delta_time){
       if(size == 0) break;
     };
   };
+
+  size = UW::ObjectManager::get().script_objects.size();
+  for(int i = 0; i < size; i++){
+    UW::ObjectManager::get().script_objects[i].onUpdate(delta_time);
+    if(size > UW::ObjectManager::get().script_objects.size()){
+      size = UW::ObjectManager::get().script_objects.size();
+      i--;
+      if(size == 0) break;
+    };
+  };
 };
 
 
@@ -116,6 +126,16 @@ void UW::Scene::onFixedUpdate(float fixed_delta_time){
       i--;
       if(size == 0) break;
     };
+  }; 
+
+  size = UW::ObjectManager::get().script_objects.size();
+  for(int i = 0; i < size; i++){
+    UW::ObjectManager::get().script_objects[i].onFixedUpdate(fixed_delta_time);
+    if(size > UW::ObjectManager::get().script_objects.size()){
+      size = UW::ObjectManager::get().script_objects.size();
+      i--;
+      if(size == 0) break;
+    };
   };
 };
 
@@ -133,9 +153,21 @@ void UW::Scene::onDestroy() {
       if(size == 0) break;
     };
   };
+
+  size = UW::ObjectManager::get().script_objects.size();
+  for(int i = 0; i < size; i++){
+    UW::ObjectManager::get().script_objects[i].onDestroy();
+    if(size > UW::ObjectManager::get().script_objects.size()){
+      size = UW::ObjectManager::get().script_objects.size();
+      i--;
+      if(size == 0) break;
+    };
+  };
+
   Logger::get().info("Scene", "Objects onDestroy");
   
   UW::ObjectManager::get().objects.clear();
+  UW::ObjectManager::get().script_objects.clear();
   Logger::get().info("Scene", "Objects Removed");
 
   Logger::get().info("Scene", "Destroyed Scene");
@@ -164,6 +196,7 @@ void UW::Scene::compileShadows(){
   window.beginFrame();
 
   for(UW::GameObject& object : UW::ObjectManager::get().objects) object.render(&window, light_camera, light_camera, shadows_uniform_off);
+  for(UW::GameObject& object : UW::ObjectManager::get().script_objects) object.render(&window, light_camera, light_camera, shadows_uniform_off);
 
   shadows_fbo.unbind();
 };
@@ -222,6 +255,7 @@ void UW::Scene::renderFrame(UW::Camera& camera){
   glBindTexture(GL_TEXTURE_2D, shadows_fbo.getDepthTexture());
 
   for(UW::GameObject& object : UW::ObjectManager::get().objects) object.render(&window, this->camera, camera, shadows_uniform_on);
+  for(UW::GameObject& object : UW::ObjectManager::get().script_objects) object.render(&window, this->camera, camera, shadows_uniform_on);
 
   
   glActiveTexture(GL_TEXTURE16);

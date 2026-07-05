@@ -41,6 +41,7 @@ private:
 
 public:
   std::vector<UW::GameObject> objects;
+  std::vector<UW::GameObject> script_objects;
 
   void emplace_back(const std::string& name);
   void erase(const std::string& name);
@@ -48,6 +49,13 @@ public:
   void addScript(const std::string& object_name, const std::string& path);
   void removeScript(const std::string& object_name, const std::string& path);
   void saveRuntime(const std::string& object_name);
+
+  void emplace_backObjectScript(const std::string& name);
+  void eraseObjectScript(const std::string& name);
+  GameObjectData* getGameObjectDataObjectScript(const std::string& name);
+  void addScriptObjectScript(const std::string& object_name, const std::string& path);
+  void removeScriptObjectScript(const std::string& object_name, const std::string& path);
+  void saveRuntimeObjectScript(const std::string& object_name);
   
 };
 }; // namespace UW
