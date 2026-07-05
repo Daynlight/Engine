@@ -23,7 +23,7 @@ include(FetchContent)
 
 FetchContent_Declare(CWindow
   GIT_REPOSITORY  https://github.com/Daynlight/CWindow.git
-  GIT_TAG under_water
+  GIT_TAG engine
   GIT_SHALLOW TRUE
 )
 FetchContent_MakeAvailable(CWindow)
