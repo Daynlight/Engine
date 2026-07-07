@@ -48,6 +48,7 @@ public:
   unsigned int getLatestsVersion();
 
   void compileAll();
+  void manualVersionUpdate();
 
 };
 };

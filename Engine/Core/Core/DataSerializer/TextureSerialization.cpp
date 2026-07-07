@@ -67,8 +67,10 @@ void UW::TextureSerialization::load(const std::string& texture_name) {
       if (file.read(reinterpret_cast<char*>(buffer.data()), size)) {
         loader = CW::Renderer::TextureLoader(buffer.data(), size);
 
-        UW::Resources::get().textures.emplace(texture_name, CW::Renderer::Texture()).first;
-        UW::Resources::get().textures[texture_name].compile(loader.data);
+        UW::Resources::get().textures.emplace_back(texture_name, CW::Renderer::Texture());
+        unsigned int id = UW::Resources::get().textures.getID(texture_name);
+        UW::Resources::get().textures[id].compile(loader.data);
+        UW::Resources::get().textures.manualVersionUpdate();
       };
     } else {
       Logger::get().erro("Resources", "Failed to open texture file: " + file_path);
@@ -109,7 +111,7 @@ void UW::TextureSerialization::loadAll(){
         if (entry.is_regular_file()) {
           std::string file_name = entry.path().filename().string();
 
-          if (Resources::get().textures.find(file_name) != Resources::get().textures.end()) continue; 
+          if (!Resources::get().textures.exists(file_name)) continue; 
 
           std::ifstream file(entry.path(), std::ios::binary | std::ios::ate);
           if (file.is_open()) {
@@ -120,8 +122,9 @@ void UW::TextureSerialization::loadAll(){
             if (file.read(reinterpret_cast<char*>(buffer.data()), size)) {
               CW::Renderer::TextureLoader loader(buffer.data(), size);
               
-              auto it = Resources::get().textures.emplace(file_name, CW::Renderer::Texture()).first;
-              it->second.compile(loader.data);
+              Resources::get().textures.emplace_back(file_name, CW::Renderer::Texture());
+              unsigned int id = Resources::get().textures.getID(file_name);
+              Resources::get().textures[id].compile(loader.data);
               
               Logger::get().info("DataSerializer", "Loaded texture from Disk: " + file_name);
             };

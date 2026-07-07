@@ -141,3 +141,10 @@ template<typename T>
 void UW::ResourceController<T>::compileAll(){
   for(T& rec : data) rec.compile();
 };
+
+
+
+template<typename T>
+void UW::ResourceController<T>::manualVersionUpdate(){
+  version++;
+};

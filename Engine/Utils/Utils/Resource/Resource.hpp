@@ -84,6 +84,13 @@ void UW::Resource<T>::setName(const std::string& name){
 
 
 template<typename T>
+std::string UW::Resource<T>::getName(){
+  return name;
+};
+
+
+
+template<typename T>
 bool UW::Resource<T>::validate(){
   if(!controller) return 0;
 

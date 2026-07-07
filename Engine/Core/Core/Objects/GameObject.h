@@ -36,6 +36,7 @@ public:
 
   std::string mesh_last = "";
   UW::Resource<CW::Renderer::Mesh> mesh;
+  std::vector<UW::Resource<CW::Renderer::Texture>> textures_res;
 
   UW::GameObjectData game_object_data;
   UW::GameObjectData copy_game_object_data;

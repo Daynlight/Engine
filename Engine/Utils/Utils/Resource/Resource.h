@@ -37,6 +37,7 @@ public:
 
   T* get();
   void setName(const std::string& name);
+  std::string getName();
 
 private:
   bool validate();

@@ -252,8 +252,23 @@ void UW::GameObject::render(CW::Renderer::Renderer *renderer, Camera &culling_ca
 
     uniform["model"]->set<glm::mat4>(model);
 
+    if(copy_game_object_data.textures.size() >= textures_res.size()) textures_res.reserve(copy_game_object_data.textures.size() - textures_res.size() + 1);
     for(unsigned int i = 0; i < copy_game_object_data.textures.size(); i++){
-      Resources::get().getTexture(this->copy_game_object_data.textures[i]).bind(i);
+      if(i >= textures_res.size()) textures_res.emplace_back(copy_game_object_data.textures[i], &Resources::get().textures);
+      else if(textures_res[i].getName() != copy_game_object_data.textures[i]) textures_res[i].setName(copy_game_object_data.textures[i]);
+    };
+
+    while(textures_res.size() > copy_game_object_data.textures.size()) textures_res.pop_back();
+
+    for(unsigned int i = 0; i < copy_game_object_data.textures.size(); i++){
+      if(!Resources::get().textures.exists(copy_game_object_data.textures[i])) {
+        DataSerializer::get().loadTexture(copy_game_object_data.textures[i]);
+        UW::Resources::get().textures.manualVersionUpdate();
+      };
+
+      CW::Renderer::Texture* tex = textures_res[i].get();
+      if(!tex) continue;
+      tex->bind(i);
       uniform["texture" + std::to_string(i)]->set<int>(i);
     };
     
@@ -277,8 +292,11 @@ void UW::GameObject::render(CW::Renderer::Renderer *renderer, Camera &culling_ca
     
     Resources::get().getShader(this->copy_game_object_data.shader).unbind();
 
-    for(unsigned int i = 0; i < copy_game_object_data.textures.size(); i++) 
-      Resources::get().getTexture(this->copy_game_object_data.textures[i]).unbind();
+    for(unsigned int i = 0; i < copy_game_object_data.textures.size(); i++) {
+      CW::Renderer::Texture* tex = textures_res[i].get();
+      if(!tex) continue;
+      tex->unbind();
+    };
 
     Resources::get().getShader(this->copy_game_object_data.shader).getUniforms().clear();
     
