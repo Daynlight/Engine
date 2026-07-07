@@ -55,7 +55,7 @@ void UW::MeshSerialization::save(const std::string& name, const CW::Renderer::Me
 
 
 
-void UW::MeshSerialization::load(const std::string& path_to_mesh, UW::Meshes& meshes) {
+void UW::MeshSerialization::load(const std::string& path_to_mesh, ResourceController<CW::Renderer::Mesh>& meshes) {
   Logger::get().info("MeshSerialization", "Loading mesh: " + path_to_mesh);
   try {
 #ifndef PRODUCTION
@@ -105,12 +105,12 @@ void UW::MeshSerialization::load(const std::string& path_to_mesh, UW::Meshes& me
 
 
 #ifndef PRODUCTION
-void UW::MeshSerialization::saveAll(UW::Meshes& meshes) {
+void UW::MeshSerialization::saveAll(ResourceController<CW::Renderer::Mesh>& meshes) {
   Logger::get().info("MeshSerialization", "Saving all meshes...");
   
   std::vector<std::pair<std::string, unsigned int>> meshes_to_save;
   
-  for (const auto& pair : meshes.getMeshIDs())
+  for (const auto& pair : meshes.getIDs())
     meshes_to_save.push_back(pair);
 
   for (const auto& [mesh_name, mesh_id] : meshes_to_save)
@@ -122,7 +122,7 @@ void UW::MeshSerialization::saveAll(UW::Meshes& meshes) {
 
 
 
-void UW::MeshSerialization::loadAll(UW::Meshes& meshes) {
+void UW::MeshSerialization::loadAll(ResourceController<CW::Renderer::Mesh>& meshes) {
   Logger::get().info("MeshSerialization", "Loading all meshes...");
   try {
     std::string meshes_root = UW::Config::GAME_DATA_FOLDER + UW::Config::ASSETS_FOLDER + UW::Config::MESHES_FOLDER;

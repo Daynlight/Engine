@@ -16,7 +16,6 @@ set(src
   "Core/Scene.cpp"
   "Core/Camera/Camera.cpp"
   "Core/Resources/Resources.cpp"
-  "Core/Resources/Meshes/Meshes.cpp"
   "Core/Resources/Lights/Lights.cpp"
   "Core/Resources/Materials/Materials.cpp"
   "Core/Objects/GameObject.cpp"

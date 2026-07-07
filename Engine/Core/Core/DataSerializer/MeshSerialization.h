@@ -25,6 +25,7 @@
 #include "Resources/Resources.h"
 #include "config.h"
 #include "Utils/utils.h"
+#include "Utils/Resource/ResourceController.h"
 
 
 
@@ -57,12 +58,12 @@ public:
 #ifndef PRODUCTION
   void save(const std::string& name, const CW::Renderer::Mesh& mesh);
 #endif
-  void load(const std::string& path_to_mesh, UW::Meshes& meshes);
+  void load(const std::string& path_to_mesh, ResourceController<CW::Renderer::Mesh>& meshes);
 
 #ifndef PRODUCTION
-  void saveAll(UW::Meshes& meshes);
+  void saveAll(ResourceController<CW::Renderer::Mesh>& meshes);
 #endif
-  void loadAll(UW::Meshes& meshes);
+  void loadAll(ResourceController<CW::Renderer::Mesh>& meshes);
 
 private:
 #ifndef PRODUCTION

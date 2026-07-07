@@ -21,8 +21,8 @@
 #include "config.h"
 #include "Lights/Lights.h"
 #include "Materials/Materials.h"
-#include "Resources/Meshes/Meshes.h"
 #include "ScriptController/ScriptController.h"
+#include "Utils/Resource/ResourceController.h"
 
 
 
@@ -41,7 +41,7 @@ public:
 
   std::unordered_map<std::string, CW::Renderer::Texture> textures;
   std::unordered_map<std::string, CW::Renderer::Shader> shaders;
-  UW::Meshes meshes;
+  UW::ResourceController<CW::Renderer::Mesh> meshes;
   UW::Lights lights;
   UW::Materials materials;
   bool simulation_mode = true;

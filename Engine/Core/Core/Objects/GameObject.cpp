@@ -20,9 +20,8 @@ void PatchScriptPointers(std::vector<UW::GameObjectScriptRecord>& scripts, UW::G
 
 
 UW::GameObject::GameObject(const std::string& name, const std::string& mesh, const std::string& shader, const std::vector<std::string>& materials, const std::vector<std::string>& textures, const std::vector<UW::GameObjectScriptRecord>& scripts, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
-  : scripts(scripts) {
+  : scripts(scripts), mesh(mesh, &UW::Resources::get().meshes) {
   UW::Logger::get().info("GameObject", "GameObject Constructor Called!");
-  mesh_id = Resources::get().meshes.get_id(mesh);
   game_object_data.name = name;
   game_object_data.mesh = mesh;
   game_object_data.shader = shader;
@@ -32,6 +31,7 @@ UW::GameObject::GameObject(const std::string& name, const std::string& mesh, con
   game_object_data.rotation = rotation;
   game_object_data.scale = scale;
   copy_game_object_data = game_object_data;
+  this->mesh.setName(copy_game_object_data.mesh);
 
   onLoad();
 };
@@ -47,7 +47,7 @@ UW::GameObject::GameObject(const std::string& name, const GameObject& other){
   game_object_data.name = name;
   
   copy_game_object_data = game_object_data;
-  mesh_id = Resources::get().meshes.get_id(other.copy_game_object_data.mesh);
+  mesh = other.mesh;
 
   PatchScriptPointers(this->scripts, &this->copy_game_object_data);
   
@@ -64,10 +64,12 @@ UW::GameObject::~GameObject(){
 
 UW::GameObject::GameObject(const GameObject& other) 
   : Object(other), uniform(other.uniform), scripts(other.scripts),
-    mesh_last(other.mesh_last), mesh_id(other.mesh_id), mesh_version(other.mesh_version),
-    game_object_data(other.game_object_data)
+    mesh_last(other.mesh_last),
+    game_object_data(other.game_object_data),
+    mesh(other.mesh)
 {
   copy_game_object_data = game_object_data;
+  mesh.setName(copy_game_object_data.name);
   PatchScriptPointers(this->scripts, &this->copy_game_object_data);
 }
 
@@ -80,10 +82,10 @@ UW::GameObject& UW::GameObject::operator=(const GameObject& other) {
   uniform = other.uniform;
   scripts = other.scripts;
   mesh_last = other.mesh_last;
-  mesh_id = other.mesh_id;
-  mesh_version = other.mesh_version;
+  mesh = other.mesh;
   game_object_data = other.game_object_data;
   copy_game_object_data = game_object_data;
+  mesh.setName(copy_game_object_data.name);
 
   PatchScriptPointers(this->scripts, &this->copy_game_object_data);
   return *this;
@@ -93,10 +95,12 @@ UW::GameObject& UW::GameObject::operator=(const GameObject& other) {
 
 UW::GameObject::GameObject(GameObject&& other) noexcept
   : Object(std::move(other)), uniform(std::move(other.uniform)), scripts(std::move(other.scripts)),
-    mesh_last(std::move(other.mesh_last)), mesh_id(other.mesh_id), mesh_version(other.mesh_version),
-    game_object_data(std::move(other.game_object_data))
+    mesh_last(std::move(other.mesh_last)),
+    game_object_data(std::move(other.game_object_data)),
+    mesh(std::move(other.mesh))
 {
   copy_game_object_data = game_object_data;
+  mesh.setName(copy_game_object_data.name);
   PatchScriptPointers(this->scripts, &this->copy_game_object_data);
 };
 
@@ -109,10 +113,10 @@ UW::GameObject& UW::GameObject::operator=(GameObject&& other) noexcept {
   uniform = std::move(other.uniform);
   scripts = std::move(other.scripts);
   mesh_last = std::move(other.mesh_last);
-  mesh_id = other.mesh_id;
-  mesh_version = other.mesh_version;
+  mesh = std::move(other.mesh);
   game_object_data = std::move(other.game_object_data);
   copy_game_object_data = game_object_data;
+  mesh.setName(copy_game_object_data.name);
 
   PatchScriptPointers(this->scripts, &this->copy_game_object_data);
   return *this;
@@ -197,13 +201,13 @@ void UW::GameObject::render(CW::Renderer::Renderer *renderer, Camera &culling_ca
 
   if(scripts.size() == 0) copy_game_object_data = game_object_data;
   
-  if(Resources::get().meshes.validateVersion(mesh_version) || mesh_last != copy_game_object_data.mesh){
-    mesh_version = Resources::get().meshes.getLatestsVersion();
-    mesh_id = Resources::get().meshes.get_id(this->copy_game_object_data.mesh);
+  if(mesh_last != copy_game_object_data.mesh){
+    mesh.setName(copy_game_object_data.mesh);
     mesh_last = copy_game_object_data.mesh;
   };
 
-  if(Resources::get().meshes.size() <= mesh_id) return;
+  CW::Renderer::Mesh* mesh = this->mesh.get();
+  if(!mesh) return;
 
   uniform["projection"]->set<glm::mat4>(render_camera.projection(renderer));
   uniform["view"]->set<glm::mat4>(render_camera.view(renderer));
@@ -234,7 +238,7 @@ void UW::GameObject::render(CW::Renderer::Renderer *renderer, Camera &culling_ca
     };
   };
 
-  if(!copy_game_object_data.culling_on || isVisible(culling_camera.transformation(renderer), model, Resources::get().meshes[mesh_id])){
+  if(!copy_game_object_data.culling_on || isVisible(culling_camera.transformation(renderer), model, *mesh)){
     if(copy_game_object_data.gl_depth_lequal)
       glDepthFunc(GL_LEQUAL);
     if(copy_game_object_data.dont_write_to_depth_mask)
@@ -267,9 +271,9 @@ void UW::GameObject::render(CW::Renderer::Renderer *renderer, Camera &culling_ca
     glUniform1iv(loc, translation.size(), translation.data());
     
     if(copy_game_object_data.gl_draw_patches)
-      Resources::get().meshes[mesh_id].render(GL_PATCHES);
+      mesh->render(GL_PATCHES);
     else
-      Resources::get().meshes[mesh_id].render();
+      mesh->render();
     
     Resources::get().getShader(this->copy_game_object_data.shader).unbind();
 

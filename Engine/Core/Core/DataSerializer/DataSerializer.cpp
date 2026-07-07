@@ -87,28 +87,28 @@ void UW::DataSerializer::loadAllLights(UW::Lights &lights) {
 
 
 #ifndef PRODUCTION
-void UW::DataSerializer::saveMesh(const std::string &name, const CW::Renderer::Mesh &mesh) {
+void UW::DataSerializer::saveMesh(const std::string &name, const CW::Renderer::Mesh& mesh) {
   mesh_serializer->save(name, mesh);
 };
 #endif
 
 
 
-void UW::DataSerializer::loadMesh(const std::string& path_to_mesh, UW::Meshes &meshes) {
+void UW::DataSerializer::loadMesh(const std::string& path_to_mesh, ResourceController<CW::Renderer::Mesh> &meshes) {
   mesh_serializer->load(path_to_mesh, meshes);
 };
 
 
 
 #ifndef PRODUCTION
-void UW::DataSerializer::saveAllMeshes(UW::Meshes &meshes) {
+void UW::DataSerializer::saveAllMeshes(ResourceController<CW::Renderer::Mesh> &meshes) {
   mesh_serializer->saveAll(meshes);
 };
 #endif
 
 
 
-void UW::DataSerializer::loadAllMeshes(UW::Meshes &meshes) {
+void UW::DataSerializer::loadAllMeshes(ResourceController<CW::Renderer::Mesh> &meshes) {
   mesh_serializer->loadAll(meshes);
 };
 

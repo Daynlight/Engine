@@ -10,7 +10,7 @@
 
 
 UW::Scene::Scene(CW::Renderer::Renderer& window)
-  : window(window), light_camera(&window), fbo(1920, 1080), shadows_fbo(1920 * 5, 1080 * 5), camera(&window)
+  : window(window), light_camera(&window), fbo(1920, 1080), shadows_fbo(1920 * 5, 1080 * 5), camera(&window), screen_quad("screen_quad", &Resources::get().meshes)
 #ifndef PRODUCTION
   , debug_camera(&window)
 #endif
@@ -30,11 +30,6 @@ void UW::Scene::onLoad(){
   Logger::get().info("Scene", "Loading Scene");
   
   Logger::get().info("Scene", "Data Loaded from DataSerializer");
-
-
-  screen_quad_mesh_id = Resources::get().meshes.get_id("screen_quad");
-  meshes_version = Resources::get().meshes.getLatestsVersion();
-  Logger::get().info("Scene", "Meshes ID's Initialized");
 
 
   post_uniform["u_water_height"]->set<float>(UW::Config::WATER_HEIGHT);
@@ -265,11 +260,8 @@ void UW::Scene::renderFrame(UW::Camera& camera){
 
 
 void UW::Scene::postProcessing(){
-  if(meshes_version != Resources::get().meshes.getLatestsVersion()){
-    screen_quad_mesh_id = Resources::get().meshes.get_id("screen_quad");
-    meshes_version = Resources::get().meshes.getLatestsVersion();
-    Logger::get().info("Scene", "Meshes ID's Updated");
-  };
+  CW::Renderer::Mesh* screen_mesh =  screen_quad.get();
+  if(!screen_mesh) return;
 
   std::string shader_name = "PostProcessing";
 
@@ -301,7 +293,7 @@ void UW::Scene::postProcessing(){
   Resources::get().getShader(shader_name).getUniforms().emplace_back(&post_uniform);
   Resources::get().getShader(shader_name).bind();
   
-  Resources::get().meshes[screen_quad_mesh_id].render();
+  screen_mesh->render();
   
   Resources::get().getShader(shader_name).unbind();
   Resources::get().getShader(shader_name).getUniforms().clear();

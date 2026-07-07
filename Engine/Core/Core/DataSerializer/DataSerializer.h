@@ -92,12 +92,12 @@ public:
 #ifndef PRODUCTION
   void saveMesh(const std::string& name, const CW::Renderer::Mesh& mesh);
 #endif
-  void loadMesh(const std::string& path_to_mesh, UW::Meshes &meshes);
+  void loadMesh(const std::string& path_to_mesh, ResourceController<CW::Renderer::Mesh> &meshes);
 
 #ifndef PRODUCTION
-  void saveAllMeshes(UW::Meshes& meshes);
+  void saveAllMeshes(ResourceController<CW::Renderer::Mesh> &meshes);
 #endif
-  void loadAllMeshes(UW::Meshes& meshes);
+  void loadAllMeshes(ResourceController<CW::Renderer::Mesh> &meshes);
 
 #ifndef PRODUCTION
   void saveShaders(const std::string& shader_name, GLuint type);

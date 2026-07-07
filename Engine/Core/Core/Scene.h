@@ -15,6 +15,7 @@
 #include "Objects/GameObject.h"
 #include "Objects/ObjectManager.h"
 #include "DataSerializer/DataSerializer.h"
+#include "Utils/Resource/Resource.h"
 
 
 
@@ -47,8 +48,7 @@ private:
   glm::vec3 last_light_camera_dir = glm::vec3(0.0f);
   float last_light_camera_fov = 1.0f;
 
-  unsigned int screen_quad_mesh_id = 0;
-  unsigned int meshes_version = -1;
+  UW::Resource<CW::Renderer::Mesh> screen_quad;
   CW::Renderer::Uniform post_uniform;
 
 public:

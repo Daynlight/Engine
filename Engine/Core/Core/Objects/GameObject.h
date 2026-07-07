@@ -18,6 +18,7 @@
 #include "Resources/Resources.h"
 #include "ScriptShared/GameObjectData.h"
 #include "ScriptController/ScriptController.h"
+#include "Utils/Resource/Resource.h"
 
 
 
@@ -34,8 +35,7 @@ public:
   std::vector<UW::GameObjectScriptRecord> scripts;
 
   std::string mesh_last = "";
-  unsigned int mesh_id = -1;
-  unsigned int mesh_version = -1;
+  UW::Resource<CW::Renderer::Mesh> mesh;
 
   UW::GameObjectData game_object_data;
   UW::GameObjectData copy_game_object_data;

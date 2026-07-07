@@ -376,8 +376,8 @@ Production is designed to create one executable with no additional files require
 - [x] Add Texture Serializer.
 - [x] Separated register for script objects.
 - [x] Multi project structure
-- [ ] Production optimization.
 - [ ] Optimization for Compile version (avoid maps).
+- [ ] Production optimization.
 - [ ] Rule of 5.
 - [ ] Tests.
 - [ ] Unit Tests.

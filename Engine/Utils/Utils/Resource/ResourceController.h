@@ -16,33 +16,33 @@
 
 
 namespace UW {
-class Meshes {
+template<typename T>
+class ResourceController {
 private:
-  std::vector<CW::Renderer::Mesh> mesh_data;
-  std::unordered_map<std::string, unsigned int> mesh_id;
+  std::vector<T> data;
+  std::unordered_map<std::string, unsigned int> name_to_id;
   std::vector<std::string> id_to_name;
-
   unsigned int version = 0;
 
 public:
-  Meshes();
-  ~Meshes();
+  ResourceController();
+  ~ResourceController();
 
-  CW::Renderer::Mesh& operator[](unsigned int index);
+  T& operator[](unsigned int index);
   
-  const CW::Renderer::Mesh& operator[](unsigned int index) const;
+  const T& operator[](unsigned int index) const;
 
   static constexpr unsigned int INVALID_ID = -1; 
-  unsigned int get_id(const std::string& name);
+  unsigned int getID(const std::string& name);
 
   void erase(const std::string& name);
   unsigned int size() const;
   void clear();
 
-  void emplace_back(const std::string& name, CW::Renderer::Mesh&& mesh);
+  void emplace_back(const std::string& name, T&& mesh);
   bool exists(const std::string& name) const;
 
-  std::unordered_map<std::string, unsigned int>& getMeshIDs();
+  std::unordered_map<std::string, unsigned int>& getIDs();
 
   bool validateVersion(unsigned int version);
   unsigned int getLatestsVersion();
@@ -51,3 +51,7 @@ public:
 
 };
 };
+
+
+
+#include "ResourceController.hpp"

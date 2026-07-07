@@ -27,7 +27,7 @@ void UW::ObjectManager::erase(const std::string &name) {
     if (it->game_object_data.name == name) {
       it->onDestroy();
       it->scripts.clear(); 
-      it->mesh_id = -1;
+      // it->mesh_id = -1;
       it = objects.erase(it);
       
     } else {
@@ -99,7 +99,7 @@ void UW::ObjectManager::eraseObjectScript(const std::string &name) {
     if (it->game_object_data.name == name) {
       it->onDestroy();
       it->scripts.clear(); 
-      it->mesh_id = -1;
+      // it->mesh_id = -1;
       it = script_objects.erase(it);
       
     } else {
