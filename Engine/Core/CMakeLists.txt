@@ -34,6 +34,18 @@ set(src
 
 
 
+
+if(PRODUCTION)
+  file(GLOB_RECURSE GameDataSet CONFIGURE_DEPENDS "GameData/**")
+  cmrc_add_resource_library(GameData ${GameDataSet})
+endif()
+
+
+file(GLOB_RECURSE ScriptSharedSet CONFIGURE_DEPENDS "ScriptShared/**")
+cmrc_add_resource_library(ScriptShared ${ScriptSharedSet})
+
+
+
 add_library(Core STATIC ${src})
 
 
@@ -44,7 +56,11 @@ if(PRODUCTION)
   target_sources(Core PRIVATE ${PROD_SCRIPTS})
 endif()
 
-target_link_libraries(Core CWindow Utils Editor)
+target_link_libraries(Core CWindow Utils)
+
+if(NOT PRODUCTION)
+  target_link_libraries(Core Editor)
+endif()
 
 
 
@@ -57,3 +73,17 @@ endif()
 
 
 target_include_directories(Core PUBLIC "Core/" "../ScriptShared" "../Config")
+
+
+if(PRODUCTION)
+  target_compile_definitions(Core PRIVATE PRODUCTION)
+endif()
+
+# if(SANDBOX_SCRIPTS)
+#   target_compile_definitions(Core PRIVATE SANDBOX_SCRIPTS)
+# endif()
+
+
+target_compile_definitions(Core PRIVATE COMPILER_PATH="${CMAKE_CXX_COMPILER}")
+message(STATUS "ScriptController uses CMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}")
+message(STATUS "ScriptController uses COMPILER_PATH definition=${CMAKE_CXX_COMPILER}")

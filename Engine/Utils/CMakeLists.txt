@@ -19,3 +19,8 @@ add_library(Utils STATIC ${src})
 target_link_libraries(Utils CWindow)
 
 target_include_directories(Utils PUBLIC "." "../ScriptShared" "../Config")
+
+
+if(PRODUCTION)
+  target_compile_definitions(Utils PRIVATE PRODUCTION)
+endif()

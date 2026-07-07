@@ -13,9 +13,10 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_CXX_STANDARD 26)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
-option(PRODUCTION "Enable production build flags" OFF)
-# option(SANDBOX_SCRIPTS "Enable script sandboxing build flags" ON)
 
+
+option(PRODUCTION "Enable production build flags" OFF)
+option(SANDBOX_SCRIPTS "Enable script sandboxing build flags" OFF)
 
 
 include(FetchContent)
@@ -36,29 +37,4 @@ FetchContent_Declare(cmrc
 FetchContent_MakeAvailable(cmrc)
 
 
-if(PRODUCTION)
-  file(GLOB_RECURSE GameDataSet CONFIGURE_DEPENDS "GameData/**")
-  cmrc_add_resource_library(GameData ${GameDataSet})
-endif()
-
-
-file(GLOB_RECURSE ScriptSharedSet CONFIGURE_DEPENDS "ScriptShared/**")
-cmrc_add_resource_library(ScriptShared ${ScriptSharedSet})
-
-
 add_subdirectory(Engine)
-
-
-if(PRODUCTION)
-  target_compile_definitions(Core PRIVATE PRODUCTION)
-endif()
-
-
-target_compile_definitions(Core PRIVATE COMPILER_PATH="${CMAKE_CXX_COMPILER}")
-message(STATUS "ScriptController uses CMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}")
-message(STATUS "ScriptController uses COMPILER_PATH definition=${CMAKE_CXX_COMPILER}")
-
-
-# if(SANDBOX_SCRIPTS)
-#   target_compile_definitions(Engine PRIVATE SANDBOX_SCRIPTS)
-# endif()
