@@ -11,10 +11,7 @@
 
 #include <vector>
 #include <functional>
-
-#ifndef PRODUCTION
-#include "Editor.h"
-#endif
+#include "UI/UI.h"
 
 #include "config.h"
 #include "Utils/Logger.h"
@@ -25,40 +22,19 @@
 
 
 namespace UW{
-class App{
+class Editor{
 private:
-  Core core;
-  
-#ifndef PRODUCTION
-  UW::Editor editor;
-  float fps = 0.0f;
-  float fps_acc = 0.0f;
-  unsigned int fps_id = 0;
-
-  float total_fps_acc = 0.0f;
-  unsigned int total_fps_id = 0;
-#endif
-
-  float fixed_update_time_acc = 0.0f;
+  Core& core;
+  UI ui;
 
 public:
-  App();
-  ~App();
-
-  bool isRunning();
-  void run();
+  Editor(Core& core, float& fps);
+  ~Editor();
   
-private:
-  // core operations
+  // Editor operations
   void onLoad();
   void onDestroy();
   void render();
-  void update();
-  void fixedUpdate();
-  
-#ifndef PRODUCTION
-  void updateFps();
-#endif
 
 };
 };

@@ -20,7 +20,7 @@ extern "C" {
 
 UW::App::App()
 #ifndef PRODUCTION
-  : ui(core.window, fps, core.scene)
+  : editor(core, fps)
 #endif
 {
   Logger::get().info("App", "App Initialization");
@@ -44,15 +44,10 @@ bool UW::App::isRunning(){
 
 
 
-void UW::App::run(){
+void UW::App::run(){  
   update();
-  core.update();
-  
   fixedUpdate();
-  core.fixedUpdate();
-
   render();
-  core.render();
 };
 
 
@@ -64,8 +59,7 @@ void UW::App::onLoad(){
   Logger::get().info("App", "App Loading");
 
 #ifndef PRODUCTION
-  ui.onLoad();
-  Logger::get().info("App", "UI Loaded");
+  editor.onLoad();
 #endif
 
   core.onLoad();
@@ -81,7 +75,7 @@ void UW::App::onDestroy() {
 
 
 #ifndef PRODUCTION
-  ui.onDestroy();
+  editor.onDestroy();
   Logger::get().info("App", "UI Destroyed");
 #endif
 
@@ -101,7 +95,7 @@ void UW::App::render(){
   core.render();
 
 #ifndef PRODUCTION
-  ui.render();
+  editor.render();
 #endif
 
   core.swapFrame();

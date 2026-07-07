@@ -11,23 +11,24 @@ project(Editor LANGUAGES CXX C)
 
 
 set(src
-  "UI/UI.cpp"
-  "UI/UI_Logs.cpp"
-  "UI/UI_Materials.cpp"
-  "UI/UI_Shaders.cpp"
-  "UI/UI_Scripts.cpp"
-  "UI/UI_Objects.cpp"
-  "UI/UI_Lights.cpp"
-  "UI/UI_AssetLoader.cpp"
-  "UI/UI_ShaderEditors.cpp"
-  "UI/UI_ScriptEditor.cpp"
-  "UI/UI_Info.cpp"
+  "Editor/Editor.cpp"
+  "Editor/UI/UI.cpp"
+  "Editor/UI/UI_Logs.cpp"
+  "Editor/UI/UI_Materials.cpp"
+  "Editor/UI/UI_Shaders.cpp"
+  "Editor/UI/UI_Scripts.cpp"
+  "Editor/UI/UI_Objects.cpp"
+  "Editor/UI/UI_Lights.cpp"
+  "Editor/UI/UI_AssetLoader.cpp"
+  "Editor/UI/UI_ShaderEditors.cpp"
+  "Editor/UI/UI_ScriptEditor.cpp"
+  "Editor/UI/UI_Info.cpp"
 )
 
 add_library(Editor STATIC ${src})
 target_link_libraries(Editor CWindow Utils)
 
-target_include_directories(Editor PUBLIC "." "../Config" "../Core/Core" "../ScriptShared")
+target_include_directories(Editor PUBLIC "Editor/" "../Config" "../Core/Core" "../ScriptShared")
 
 if(PRODUCTION)
   target_compile_definitions(Editor PRIVATE PRODUCTION)
