@@ -19,20 +19,12 @@ extern "C" {
 
 
 UW::App::App()
-  :scene(window)
 #ifndef PRODUCTION
-  , ui(window, fps, scene)
+  : ui(core.window, fps, core.scene)
 #endif
 {
   Logger::get().info("App", "App Initialization");
-  
-
-  DataSerializer::get().loadAll();
-  initWindow();
-  UW::GlobResource::get().input_data = window.getInputData();
-  
   onLoad();
-
   Logger::get().info("App", "App Initialized");
 };
 
@@ -40,24 +32,27 @@ UW::App::App()
 
 UW::App::~App(){
   Logger::get().info("App", "App Destroying");
-
   onDestroy();
-  
   Logger::get().info("App", "App Destroyed");
 };
 
 
 
 bool UW::App::isRunning(){
-  return !window.getWindowData()->should_close;
+  return core.isRunning();
 };
 
 
 
 void UW::App::run(){
   update();
+  core.update();
+  
   fixedUpdate();
+  core.fixedUpdate();
+
   render();
+  core.render();
 };
 
 
@@ -73,7 +68,7 @@ void UW::App::onLoad(){
   Logger::get().info("App", "UI Loaded");
 #endif
 
-  scene.onLoad();
+  core.onLoad();
   Logger::get().info("App", "Scene Loaded");
 
   Logger::get().info("App", "App Loaded");
@@ -86,18 +81,13 @@ void UW::App::onDestroy() {
 
 
 #ifndef PRODUCTION
-  DataSerializer::get().saveAll();
-  Logger::get().info("Scene", "Force saved scene data");
   ui.onDestroy();
   Logger::get().info("App", "UI Destroyed");
 #endif
 
-  scene.onDestroy();
-  Logger::get().info("App", "Scene Destroyed");
+  core.onDestroy();
+  Logger::get().info("App", "Core Destroyed");
   
-  Resources::get().destroy();
-  Logger::get().info("App", "Resources Destroyed");
-
   Logger::get().info("App", "App Destroyed");
 
 #ifndef PRODUCTION
@@ -108,14 +98,13 @@ void UW::App::onDestroy() {
 
 
 void UW::App::render(){
-  scene.render();
+  core.render();
 
 #ifndef PRODUCTION
   ui.render();
 #endif
 
-  window.windowEvents();
-  window.swapBuffer();
+  core.swapFrame();
 };
 
 
@@ -124,93 +113,36 @@ void UW::App::render(){
 void UW::App::update(){
 #ifndef PRODUCTION
   updateFps();
-  swapCamera();
 #endif
 
-  scene.onUpdate(window.getWindowData()->delta_time);
+  core.update();
 };
 
 
 
 void UW::App::fixedUpdate(){
-  fixed_update_time_acc += window.getWindowData()->delta_time;
+#ifndef PRODUCTION
+  fixed_update_time_acc += core.window.getWindowData()->delta_time;
 
-  if(UW::GlobResource::get().FIXED_HZ > UW::Config::MAX_FIXED_HZ) UW::GlobResource::get().FIXED_HZ = UW::Config::MAX_FIXED_HZ;
-  if(UW::GlobResource::get().FIXED_HZ < UW::Config::MIN_FIXED_HZ) UW::GlobResource::get().FIXED_HZ = UW::Config::MIN_FIXED_HZ;
-  
   float fixed_time_step = 1.0f / UW::GlobResource::get().FIXED_HZ;
   
   int max_steps = UW::Config::MAX_FIXED_STEPS;
   while(fixed_update_time_acc >= fixed_time_step && max_steps-- > 0){
+    guiSettings.window_width = core.window.getWindowData()->width;
+    guiSettings.window_height = core.window.getWindowData()->height;
     
-#ifndef PRODUCTION
-    guiSettings.window_width = window.getWindowData()->width;
-    guiSettings.window_height = window.getWindowData()->height;
-#endif
-
-    if(cached_title != UW::GlobResource::get().WINDOW_TITLE) updateTitle();
-    if(cached_vsync != UW::GlobResource::get().VSYNC) updateVsync();
-    
-    scene.onFixedUpdate(fixed_time_step);
-
     fixed_update_time_acc -= fixed_time_step;
   };
-
   if(max_steps <= 0) fixed_update_time_acc = 0;
+#endif
+  
+  core.fixedUpdate();
 };
 
-
-
-// ============================= //
-// ========== Helpers ========== //
-// ============================= //
-void UW::App::initWindow(){
-  Logger::get().info("App", "Window Initialization");
-
-  updateTitle();
-
-  window.setCursorVisibility(UW::Config::DEFAULT_CURSOR_IS_VISIBLE);
-  Logger::get().info("App", "Cursor visiblity set to - " + std::string(UW::Config::DEFAULT_CURSOR_IS_VISIBLE == 1 ? "On" : "Off"));
-
-  updateVsync();
-
-  Logger::get().info("App", "Window Initialized");
-};
-
-
-
-void UW::App::updateTitle(){
-  cached_title = UW::GlobResource::get().WINDOW_TITLE;
-
-  window.setWindowTitle(cached_title);
-  Logger::get().info("App", "Title set to - " + cached_title);
-};
-
-
-
-void UW::App::updateVsync(){
-  cached_vsync = UW::GlobResource::get().VSYNC;
-
-  window.setVsync(cached_vsync);
-  Logger::get().info("App", "VSync set to - " + std::string(cached_vsync != 0 ? "On" : "Off"));
-};
 
 
 
 #ifndef PRODUCTION
-void UW::App::swapCamera(){
-  if(window.getInputData()->is_key_down(UW::Config::SWAP_CAMERA_BTN) && camera_swap_cooldown_acc <= 0.0f) {
-    scene.debug_camera_on = !scene.debug_camera_on;
-    camera_swap_cooldown_acc = UW::Config::CAMERA_SWAP_COOLDOWN;
-
-    Logger::get().info("App", "Camera Swapped to { "+ std::string(scene.debug_camera_on ? "DEBUG CAMERA" : "NORMAL CAMERA") + " }");
-  };
-
-  if(camera_swap_cooldown_acc >= 0.0f) camera_swap_cooldown_acc -= window.getWindowData()->delta_time;
-};
-
-
-
 void UW::App::updateFps(){
   if(fps_id > UW::Config::FPS_SAMPLES){
     fps = fps_id / fps_acc;
@@ -220,7 +152,7 @@ void UW::App::updateFps(){
     total_fps_id++;
   }
   else{
-    fps_acc += window.getWindowData()->delta_time;
+    fps_acc += core.window.getWindowData()->delta_time;
     fps_id++;
   };
 };

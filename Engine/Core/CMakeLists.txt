@@ -12,6 +12,7 @@ project(Core LANGUAGES CXX C)
 
 
 set(src
+  "Core/Core.cpp"
   "Core/Scene.cpp"
   "Core/Camera/Camera.cpp"
   "Core/Resources/Resources.cpp"
@@ -58,18 +59,12 @@ endif()
 
 target_link_libraries(Core CWindow Utils)
 
-if(NOT PRODUCTION)
-  target_link_libraries(Core Editor)
-endif()
-
-
 
 if(PRODUCTION)
   target_link_libraries(Core GameData)
 else()
   target_link_libraries(Core ScriptShared)
 endif()
-
 
 
 target_include_directories(Core PUBLIC "Core/" "../ScriptShared" "../Config")
@@ -79,11 +74,12 @@ if(PRODUCTION)
   target_compile_definitions(Core PRIVATE PRODUCTION)
 endif()
 
-# if(SANDBOX_SCRIPTS)
-#   target_compile_definitions(Core PRIVATE SANDBOX_SCRIPTS)
-# endif()
-
 
 target_compile_definitions(Core PRIVATE COMPILER_PATH="${CMAKE_CXX_COMPILER}")
 message(STATUS "ScriptController uses CMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}")
 message(STATUS "ScriptController uses COMPILER_PATH definition=${CMAKE_CXX_COMPILER}")
+
+
+# if(SANDBOX_SCRIPTS)
+#   target_compile_definitions(Core PRIVATE SANDBOX_SCRIPTS)
+# endif()

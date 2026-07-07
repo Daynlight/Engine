@@ -24,4 +24,6 @@ target_include_directories(App PUBLIC "App/" "../Config")
 
 if(PRODUCTION)
   target_compile_definitions(App PRIVATE PRODUCTION)
+else()
+  target_link_libraries(App Editor)
 endif()

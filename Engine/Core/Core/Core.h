@@ -7,14 +7,9 @@
 
 #pragma once
 #include "Renderer.h"
-#include "Core.h"
 
 #include <vector>
 #include <functional>
-
-#ifndef PRODUCTION
-#include "UI/UI.h"
-#endif
 
 #include "config.h"
 #include "Utils/Logger.h"
@@ -25,39 +20,43 @@
 
 
 namespace UW{
-class App{
+class Core{
+public:
+  CW::Renderer::Renderer window;
+  UW::Scene scene;
+
 private:
-  Core core;
+  std::string cached_title = "";
+  unsigned int cached_vsync = 0;
   
 #ifndef PRODUCTION
-  UW::UI ui;
-  float fps = 0.0f;
-  float fps_acc = 0.0f;
-  unsigned int fps_id = 0;
-
-  float total_fps_acc = 0.0f;
-  unsigned int total_fps_id = 0;
+  float camera_swap_cooldown_acc = 0.0f;
 #endif
 
   float fixed_update_time_acc = 0.0f;
 
 public:
-  App();
-  ~App();
+  Core();
+  ~Core();
 
   bool isRunning();
-  void run();
   
-private:
   // core operations
   void onLoad();
   void onDestroy();
   void render();
+  void swapFrame();
   void update();
   void fixedUpdate();
+
+private:
+  // helpers
+  void initWindow();
+  void updateTitle();
+  void updateVsync();
   
 #ifndef PRODUCTION
-  void updateFps();
+  void swapCamera();
 #endif
 
 };
