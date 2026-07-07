@@ -375,6 +375,7 @@ Production is designed to create one executable with no additional files require
 - [x] Game data backup.
 - [x] Add Texture Serializer.
 - [x] Separated register for script objects.
+- [x] Multi project structure
 - [ ] Production optimization.
 - [ ] Optimization for Compile version (avoid maps).
 - [ ] Rule of 5.

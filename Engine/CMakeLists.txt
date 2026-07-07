@@ -7,67 +7,10 @@
 
 cmake_minimum_required(VERSION 3.15)
 
-project(Engine LANGUAGES CXX C)
 
+add_subdirectory(Utils)
 
+add_subdirectory(Editor)
+add_subdirectory(Core)
 
-set(src
-  "main.cpp"
-  "App.cpp"
-  "Scene.cpp"
-  "UI/UI.cpp"
-  "UI/UI_Logs.cpp"
-  "UI/UI_Materials.cpp"
-  "UI/UI_Shaders.cpp"
-  "UI/UI_Scripts.cpp"
-  "UI/UI_Objects.cpp"
-  "UI/UI_Lights.cpp"
-  "UI/UI_AssetLoader.cpp"
-  "UI/UI_ShaderEditors.cpp"
-  "UI/UI_ScriptEditor.cpp"
-  "UI/UI_Info.cpp"
-  "Utils/Logger.cpp"
-  "Camera/Camera.cpp"
-  "Resources/Resources.cpp"
-  "Resources/Meshes/Meshes.cpp"
-  "Resources/Lights/Lights.cpp"
-  "Resources/Materials/Materials.cpp"
-  "Objects/GameObject.cpp"
-  "Objects/ObjectManager.cpp"
-  "DataSerializer/GlobResourceSerialization.cpp"
-  "ScriptController/ScriptController.cpp"
-  "DataSerializer/DataSerializer.cpp"
-  "DataSerializer/MeshSerialization.cpp"
-  "DataSerializer/ObjectsSerialization.cpp"
-  "DataSerializer/MaterialsSerialization.cpp"
-  "DataSerializer/LightsSerialization.cpp"
-  "DataSerializer/ShaderSerialization.cpp"
-  "DataSerializer/ScriptSerialization.cpp"
-  "DataSerializer/TextureSerialization.cpp"
-)
-
-
-
-add_executable(Engine ${src})
-
-
-
-if(PRODUCTION)
-  target_compile_definitions(Engine PRIVATE PRODUCTION)
-  file(GLOB_RECURSE PROD_SCRIPTS CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/../Scripts/*.cpp")
-  target_sources(Engine PRIVATE ${PROD_SCRIPTS})
-endif()
-
-target_link_libraries(Engine CWindow)
-
-
-
-if(PRODUCTION)
-  target_link_libraries(Engine GameData)
-else()
-  target_link_libraries(Engine ScriptShared)
-endif()
-
-
-
-target_include_directories(Engine PUBLIC "." "../ScriptShared")
+add_subdirectory(App)

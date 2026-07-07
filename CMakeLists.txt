@@ -50,11 +50,11 @@ add_subdirectory(Engine)
 
 
 if(PRODUCTION)
-  target_compile_definitions(Engine PRIVATE PRODUCTION)
+  target_compile_definitions(Core PRIVATE PRODUCTION)
 endif()
 
 
-target_compile_definitions(Engine PRIVATE COMPILER_PATH="${CMAKE_CXX_COMPILER}")
+target_compile_definitions(Core PRIVATE COMPILER_PATH="${CMAKE_CXX_COMPILER}")
 message(STATUS "ScriptController uses CMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}")
 message(STATUS "ScriptController uses COMPILER_PATH definition=${CMAKE_CXX_COMPILER}")
 
