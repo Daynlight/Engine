@@ -23,7 +23,6 @@ target_link_libraries(Utils
 
 target_include_directories(Utils PUBLIC 
   "."
-  "Config/"
   "../ScriptShared"
 )
 

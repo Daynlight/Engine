@@ -16,7 +16,7 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 
-#include "config.h"
+#include "Utils/config.h"
 #include "Utils/Logger.h"
 #include "Objects/ObjectManager.h"
 #include "DataSerializer/DataSerializer.h"

@@ -13,7 +13,7 @@
 #include <fstream>
 #include <filesystem>
 
-#include "config.h"
+#include "Utils/config.h"
 #include "ScriptShared/ILogger.h"
 
 

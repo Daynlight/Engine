@@ -12,7 +12,7 @@
 #include "../vendor/glm/glm/gtx/euler_angles.hpp"
 #include "../vendor/glm/glm/gtx/quaternion.hpp"
 
-#include "config.h"
+#include "Utils/config.h"
 
 
 

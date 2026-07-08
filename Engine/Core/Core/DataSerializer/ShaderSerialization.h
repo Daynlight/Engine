@@ -18,7 +18,7 @@
 #endif
 
 #include "Renderer.h"
-#include "config.h"
+#include "Utils/config.h"
 #include "Utils/Logger.h"
 
 

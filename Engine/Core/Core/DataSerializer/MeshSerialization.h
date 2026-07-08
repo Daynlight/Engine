@@ -23,7 +23,7 @@
 
 #include "Utils/Logger.h"
 #include "Resources/Resources.h"
-#include "config.h"
+#include "Utils/config.h"
 #include "Utils/utils.h"
 #include "Utils/Resource/ResourceController.h"
 

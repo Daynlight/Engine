@@ -11,7 +11,7 @@
 #include <vector>
 #include <algorithm>
 
-#include "config.h"
+#include "Utils/config.h"
 #include "DataSerializer/DataSerializer.h"
 #include "Objects/Object.h"
 #include "Objects/GameObject.h"

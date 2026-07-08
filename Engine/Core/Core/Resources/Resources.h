@@ -18,7 +18,7 @@
 #include <mutex>
 
 #include "Utils/utils.h"
-#include "config.h"
+#include "Utils/config.h"
 #include "Lights/Lights.h"
 #include "Materials/Materials.h"
 #include "ScriptController/ScriptController.h"

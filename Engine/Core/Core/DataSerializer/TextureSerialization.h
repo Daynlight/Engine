@@ -18,7 +18,7 @@
 #include <cmrc/cmrc.hpp>
 #endif
 
-#include "config.h"
+#include "Utils/config.h"
 #include "Utils/Logger.h"
 #include "Resources/Resources.h"
 

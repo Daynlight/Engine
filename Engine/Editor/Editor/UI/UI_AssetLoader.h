@@ -24,7 +24,7 @@
 
 #include "Resources/Resources.h"
 #include "Objects/ObjectManager.h"
-#include "config.h"
+#include "Utils/config.h"
 
 #include "UI/Settings.h"
 #include "Scene.h"

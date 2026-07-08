@@ -16,7 +16,7 @@
 #include "Editor.h"
 #endif
 
-#include "config.h"
+#include "Utils/config.h"
 #include "Utils/Logger.h"
 #include "Resources/Resources.h"
 #include "ScriptShared/GlobResource.h"
