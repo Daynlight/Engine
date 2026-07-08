@@ -6,7 +6,6 @@
 
 
 #pragma once
-#include "Renderer.h"
 #include "Gui.h"
 
 #include <string>
@@ -15,12 +14,11 @@
 #include <filesystem>
 
 #include "config.h"
-
 #include "ScriptShared/ILogger.h"
 
 
 
-namespace UW{
+namespace Engine::Utils{
 enum LogType{
   INFO = 0,
   WARN = 1,
@@ -34,22 +32,22 @@ struct Log{
   std::string module;
   std::string text;
 
-  Log(LogType type, const std::string& module, const std::string& text);
-  std::string getText() const;
+  Log(LogType type, const std::string& module, const std::string& text) noexcept;
+  std::string getText() const noexcept;
 
-  std::string getTypeText() const;
-  ImVec4 getLogColor() const;
+  std::string getTypeText() const noexcept;
+  ImVec4 getLogColor() const noexcept;
 };
 
 
 
-class Logger : public ILogger {
+class Logger : public UW::ILogger {
 private:
-  std::vector<Log> data;
+  std::vector<Engine::Utils::Log> data;
   size_t current_lines = 0;
 
 public:
-  static Logger& get();
+  static Logger& get() noexcept;
 
   Logger(const Logger&) = delete;
   Logger& operator=(const Logger&) = delete;
@@ -57,20 +55,20 @@ public:
   Logger& operator=(Logger&&) = delete;
 
 private:
-  Logger();
-  ~Logger() = default;
+  Logger() noexcept;
+  ~Logger() noexcept = default;
   
 public:
-  void info(const std::string& module, const std::string& text);
-  void warn(const std::string& module, const std::string& text);
-  void erro(const std::string& module, const std::string& text);
+  void info(const std::string& module, const std::string& text) noexcept;
+  void warn(const std::string& module, const std::string& text) noexcept;
+  void erro(const std::string& module, const std::string& text) noexcept;
 
-  const std::vector<Log>& getLogs() const;
+  const std::vector<Log>& getLogs() const noexcept;
 
 private:
-  void checkAndTrimLog();
-  void calculateInitialLineCount();
-  void log_to_file(Log log);
+  void checkAndTrimLog() noexcept;
+  void calculateInitialLineCount() noexcept;
+  void log_to_file(Log log) noexcept;
 
 };
 };

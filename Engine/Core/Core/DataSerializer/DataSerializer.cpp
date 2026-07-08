@@ -94,21 +94,21 @@ void UW::DataSerializer::saveMesh(const std::string &name, const CW::Renderer::M
 
 
 
-void UW::DataSerializer::loadMesh(const std::string& path_to_mesh, ResourceController<CW::Renderer::Mesh> &meshes) {
+void UW::DataSerializer::loadMesh(const std::string& path_to_mesh, Engine::Utils::ResourceController<CW::Renderer::Mesh> &meshes) {
   mesh_serializer->load(path_to_mesh, meshes);
 };
 
 
 
 #ifndef PRODUCTION
-void UW::DataSerializer::saveAllMeshes(ResourceController<CW::Renderer::Mesh> &meshes) {
+void UW::DataSerializer::saveAllMeshes(Engine::Utils::ResourceController<CW::Renderer::Mesh> &meshes) {
   mesh_serializer->saveAll(meshes);
 };
 #endif
 
 
 
-void UW::DataSerializer::loadAllMeshes(ResourceController<CW::Renderer::Mesh> &meshes) {
+void UW::DataSerializer::loadAllMeshes(Engine::Utils::ResourceController<CW::Renderer::Mesh> &meshes) {
   mesh_serializer->loadAll(meshes);
 };
 
@@ -151,26 +151,26 @@ void UW::DataSerializer::loadTexture(const std::string &texture_name){
 
 
 void UW::DataSerializer::backupGameData() {
-  Logger::get().info("DataSerializer", "Creating backup of GameData...");
+  Engine::Utils::Logger::get().info("DataSerializer", "Creating backup of GameData...");
 
   namespace fs = std::filesystem;
 
   try {
-    if (!fs::exists(UW::Config::GAME_DATA_FOLDER)) {
-      Logger::get().erro("DataSerializer", "Backup failed: Source folder missing.");
+    if (!fs::exists(Engine::Config::GAME_DATA_FOLDER)) {
+      Engine::Utils::Logger::get().erro("DataSerializer", "Backup failed: Source folder missing.");
       return;
     };
 
-    if (fs::exists(UW::Config::BACKUP_GAME_DATA_FOLDER)) fs::remove_all(UW::Config::BACKUP_GAME_DATA_FOLDER);
+    if (fs::exists(Engine::Config::BACKUP_GAME_DATA_FOLDER)) fs::remove_all(Engine::Config::BACKUP_GAME_DATA_FOLDER);
 
-    fs::copy(UW::Config::GAME_DATA_FOLDER, UW::Config::BACKUP_GAME_DATA_FOLDER, fs::copy_options::recursive | fs::copy_options::overwrite_existing);
+    fs::copy(Engine::Config::GAME_DATA_FOLDER, Engine::Config::BACKUP_GAME_DATA_FOLDER, fs::copy_options::recursive | fs::copy_options::overwrite_existing);
 
-    Logger::get().info("DataSerializer", "Game data backup completed successfully.");
+    Engine::Utils::Logger::get().info("DataSerializer", "Game data backup completed successfully.");
 
   } catch (const fs::filesystem_error& e) {
-    Logger::get().erro("DataSerializer", std::string("Filesystem error during backup: ") + e.what());
+    Engine::Utils::Logger::get().erro("DataSerializer", std::string("Filesystem error during backup: ") + e.what());
   } catch (const std::exception& e) {
-    Logger::get().erro("DataSerializer", std::string("Unexpected error during backup: ") + e.what());
+    Engine::Utils::Logger::get().erro("DataSerializer", std::string("Unexpected error during backup: ") + e.what());
   };
 };
 
@@ -178,13 +178,13 @@ void UW::DataSerializer::backupGameData() {
 
 #ifndef PRODUCTION
 void UW::DataSerializer::saveAll() {
-  Logger::get().info("DataSerializer", "Saving all game data...");
+  Engine::Utils::Logger::get().info("DataSerializer", "Saving all game data...");
   glob_serializer.saveAll();
   objects_serializer->saveAll(ObjectManager::get().objects);
   materials_serializer.saveAll(Resources::get().materials);
   lights_serializer.saveAll(Resources::get().lights);
   mesh_serializer->saveAll(Resources::get().meshes);
-  Logger::get().info("DataSerializer", "All game data has been saved");
+  Engine::Utils::Logger::get().info("DataSerializer", "All game data has been saved");
 };
 #endif
 
@@ -192,12 +192,12 @@ void UW::DataSerializer::saveAll() {
 
 void UW::DataSerializer::loadAll() {
 #ifndef PRODUCTION
-  Logger::get().info("DataSerializer", "Making Backup...");
+  Engine::Utils::Logger::get().info("DataSerializer", "Making Backup...");
   backupGameData();
-  Logger::get().info("DataSerializer", "Backup done");
+  Engine::Utils::Logger::get().info("DataSerializer", "Backup done");
 #endif
 
-  Logger::get().info("DataSerializer", "Loading all game data...");
+  Engine::Utils::Logger::get().info("DataSerializer", "Loading all game data...");
   glob_serializer.loadAll();
   mesh_serializer->loadAll(Resources::get().meshes);
   lights_serializer.loadAll(Resources::get().lights);
@@ -205,5 +205,5 @@ void UW::DataSerializer::loadAll() {
   objects_serializer->loadAll(ObjectManager::get().objects);
   shader_serializer.loadAll();
   texture_serializer->loadAll();
-  Logger::get().info("DataSerializer", "All game data has been loaded");
+  Engine::Utils::Logger::get().info("DataSerializer", "All game data has been loaded");
 };

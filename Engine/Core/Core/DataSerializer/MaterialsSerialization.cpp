@@ -30,19 +30,19 @@ void UW::MaterialsSerialization::load(UW::Material& material) {
 
 #ifndef PRODUCTION
 void UW::MaterialsSerialization::saveAll(UW::Materials& materials) {
-  Logger::get().info("MaterialsSerialization", "Saving all materials...");
+  Engine::Utils::Logger::get().info("MaterialsSerialization", "Saving all materials...");
   try {
-    std::filesystem::path p(UW::Config::GAME_DATA_FOLDER + UW::Config::MATERIALS_FILENAME);
+    std::filesystem::path p(Engine::Config::GAME_DATA_FOLDER + Engine::Config::MATERIALS_FILENAME);
     if (p.has_parent_path())
       std::filesystem::create_directories(p.parent_path());
   } catch (const std::filesystem::filesystem_error& e) {
-    Logger::get().erro("MaterialsSerialization", "Filesystem error - " + std::string(e.what()));
+    Engine::Utils::Logger::get().erro("MaterialsSerialization", "Filesystem error - " + std::string(e.what()));
     return;
   }
 
-  std::ofstream outFile(UW::Config::GAME_DATA_FOLDER + UW::Config::MATERIALS_FILENAME, std::ios::binary);
+  std::ofstream outFile(Engine::Config::GAME_DATA_FOLDER + Engine::Config::MATERIALS_FILENAME, std::ios::binary);
   if (!outFile.is_open()) {
-    Logger::get().erro("MaterialsSerialization", "Failed to open file for saving");
+    Engine::Utils::Logger::get().erro("MaterialsSerialization", "Failed to open file for saving");
     return;
   };
 
@@ -62,33 +62,33 @@ void UW::MaterialsSerialization::saveAll(UW::Materials& materials) {
     record.ambient_occlusion = material.ambient_occlusion;
 
     outFile << record;
-    Logger::get().info("MaterialsSerialization", "Material saved { " + el.first + " }");
+    Engine::Utils::Logger::get().info("MaterialsSerialization", "Material saved { " + el.first + " }");
   };
 
   outFile.close();
-  Logger::get().info("MaterialsSerialization", "All Materials Had Been Saved");
+  Engine::Utils::Logger::get().info("MaterialsSerialization", "All Materials Had Been Saved");
 };
 #endif
 
 
 
 void UW::MaterialsSerialization::loadAll(UW::Materials& materials) {
-  Logger::get().info("MaterialsSerialization", "Loading all materials...");
+  Engine::Utils::Logger::get().info("MaterialsSerialization", "Loading all materials...");
   try {
-    std::string resourcePath = UW::Config::GAME_DATA_FOLDER + UW::Config::MATERIALS_FILENAME;
+    std::string resourcePath = Engine::Config::GAME_DATA_FOLDER + Engine::Config::MATERIALS_FILENAME;
 
 #ifndef PRODUCTION
     std::ifstream inFile(resourcePath, std::ios::binary);
     
     if (!inFile.is_open()) {
-      Logger::get().erro("MaterialsSerialization", "Failed to open file for loading - " + resourcePath);
+      Engine::Utils::Logger::get().erro("MaterialsSerialization", "Failed to open file for loading - " + resourcePath);
       return;
     }
 #else
     auto fs = cmrc::GameData::get_filesystem();
     
     if (!fs.exists(resourcePath)) {
-      Logger::get().erro("MaterialsSerialization", "CMRC - File not found - " + resourcePath);
+      Engine::Utils::Logger::get().erro("MaterialsSerialization", "CMRC - File not found - " + resourcePath);
       return;
     }
 
@@ -114,15 +114,15 @@ void UW::MaterialsSerialization::loadAll(UW::Materials& materials) {
         material.ambient_occlusion = record.ambient_occlusion;
 
         materials.emplace_back(record.name, std::move(material));
-        Logger::get().info("MaterialsSerialization", "Material loaded { " + record.name + " }");
+        Engine::Utils::Logger::get().info("MaterialsSerialization", "Material loaded { " + record.name + " }");
       } else {
-        Logger::get().erro("MaterialsSerialization", "File format corrupted at index " + std::to_string(i));
+        Engine::Utils::Logger::get().erro("MaterialsSerialization", "File format corrupted at index " + std::to_string(i));
         break;
       };
     };
-    Logger::get().info("MaterialsSerialization", "All materials have been loaded");
+    Engine::Utils::Logger::get().info("MaterialsSerialization", "All materials have been loaded");
   } catch(const std::exception& e) {
-    Logger::get().erro("MaterialsSerialization", "Exception - " + std::string(e.what()));
+    Engine::Utils::Logger::get().erro("MaterialsSerialization", "Exception - " + std::string(e.what()));
   };
 };
 

@@ -8,48 +8,16 @@
 #pragma once
 #include <filesystem>
 #include <string>
-
-#if defined(_WIN32)
-  #define WIN32_LEAN_AND_MEAN
-  #include <windows.h>
-#else 
-  #include <unistd.h>
-  #include <limits.h>
-#endif
+#include <regex>
 
 #ifdef PRODUCTION
 #include <cmrc/cmrc.hpp>
 #endif
 
-#include <regex>
 
 
-
-namespace UW::Utils {
-inline std::string GetExecutablePath() {
-#if defined(_WIN32)
-  char buffer[MAX_PATH];
-  DWORD size = GetModuleFileNameA(NULL, buffer, MAX_PATH);
-  if (size == 0) return "";
-  return std::string(buffer, size);
-#else 
-  char result[PATH_MAX];
-  ssize_t count = readlink("/proc/self/exe", result, PATH_MAX);
-  return std::string(result, (count > 0) ? count : 0);
-#endif
-};
-
-
-
-inline std::string GetExeDir() {
-  std::string path = GetExecutablePath();
-  if (path.empty()) return "";
-  return std::filesystem::path(path).parent_path().string();
-};
-
-
-
-inline uint32_t hash(uint32_t x) {
+namespace Engine::Utils {
+constexpr inline uint32_t hash(uint32_t x) noexcept {
   x = ((x >> 16) ^ x) * 0x45d9f3b;
   x = ((x >> 16) ^ x) * 0x45d9f3b;
   x = (x >> 16) ^ x;
@@ -59,10 +27,9 @@ inline uint32_t hash(uint32_t x) {
 
 
 template<typename T>
-inline void uploadTypedBuffer(CW::Renderer::Mesh& mesh, const std::vector<std::uint8_t>& buffer, unsigned int dimension, unsigned int layout, GLenum type) {
+inline void uploadTypedBuffer(CW::Renderer::Mesh& mesh, const std::vector<std::uint8_t>& buffer, unsigned int dimension, unsigned int layout, GLenum type) noexcept {
   if (buffer.empty()) return;
-
-  if (buffer.size() % sizeof(T) != 0) throw std::runtime_error("Mesh buffer size not aligned with type size");
+  if (buffer.size() % sizeof(T) != 0) return;
 
   size_t count = buffer.size() / sizeof(T);
 
@@ -75,7 +42,7 @@ inline void uploadTypedBuffer(CW::Renderer::Mesh& mesh, const std::vector<std::u
 
 
 
-inline void uploadBufferByType(CW::Renderer::Mesh& engine_mesh, GLenum type, const std::vector<std::uint8_t>& buffer, unsigned int dimension, unsigned int key){
+inline void uploadBufferByType(CW::Renderer::Mesh& engine_mesh, GLenum type, const std::vector<std::uint8_t>& buffer, unsigned int dimension, unsigned int key) noexcept {
   if (buffer.empty()) return;
 
   switch (type){
@@ -89,14 +56,14 @@ inline void uploadBufferByType(CW::Renderer::Mesh& engine_mesh, GLenum type, con
       uploadTypedBuffer<unsigned short>(engine_mesh, buffer, dimension, key, type);
       break;
     default:
-      throw std::runtime_error("Unsupported GL type in mesh data");
+      break;
   };
 };
 
 
 
 #ifdef PRODUCTION
-inline void scanCmrcDirectory(const cmrc::embedded_filesystem& fs, const std::string& current_path, const std::string& pattern_str, std::vector<std::string>& out_mesh_files){
+inline void scanCmrcDirectory(const cmrc::embedded_filesystem& fs, const std::string& current_path, const std::string& pattern_str, std::vector<std::string>& out_mesh_files) noexcept {
   std::regex pattern(pattern_str);
 
   for (const auto& entry : fs.iterate_directory(current_path)) {
@@ -107,5 +74,4 @@ inline void scanCmrcDirectory(const cmrc::embedded_filesystem& fs, const std::st
   };
 };
 #endif
-
-};
+}; // namespace Engine::Utils

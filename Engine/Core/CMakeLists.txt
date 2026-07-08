@@ -66,7 +66,7 @@ else()
 endif()
 
 
-target_include_directories(Core PUBLIC "Core/" "../ScriptShared" "../Config")
+target_include_directories(Core PUBLIC "Core/" "../ScriptShared")
 
 
 if(PRODUCTION)

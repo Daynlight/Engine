@@ -41,7 +41,7 @@ public:
 
   std::unordered_map<std::string, CW::Renderer::Texture> textures;
   std::unordered_map<std::string, CW::Renderer::Shader> shaders;
-  UW::ResourceController<CW::Renderer::Mesh> meshes;
+  Engine::Utils::ResourceController<CW::Renderer::Mesh> meshes;
   UW::Lights lights;
   UW::Materials materials;
   bool simulation_mode = true;

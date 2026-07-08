@@ -55,7 +55,7 @@ void UW::ObjectManager::addScript(const std::string &object_name, const std::str
       return;
     };
   };
-  Logger::get().erro("ObjectManager", "Could not find object: " + object_name);
+  Engine::Utils::Logger::get().erro("ObjectManager", "Could not find object: " + object_name);
 };
 
 
@@ -73,7 +73,7 @@ void UW::ObjectManager::removeScript(const std::string &object_name, const std::
       return;
     };
   };
-  Logger::get().erro("ObjectManager", "Could not find object: " + object_name);
+  Engine::Utils::Logger::get().erro("ObjectManager", "Could not find object: " + object_name);
 };
 
 
@@ -127,7 +127,7 @@ void UW::ObjectManager::addScriptObjectScript(const std::string &object_name, co
       return;
     };
   };
-  Logger::get().erro("ObjectManager", "Could not find object: " + object_name);
+  Engine::Utils::Logger::get().erro("ObjectManager", "Could not find object: " + object_name);
 };
 
 
@@ -145,7 +145,7 @@ void UW::ObjectManager::removeScriptObjectScript(const std::string &object_name,
       return;
     };
   };
-  Logger::get().erro("ObjectManager", "Could not find object: " + object_name);
+  Engine::Utils::Logger::get().erro("ObjectManager", "Could not find object: " + object_name);
 };
 
 

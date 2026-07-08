@@ -7,13 +7,9 @@
 
 cmake_minimum_required(VERSION 3.15)
 
-
 add_subdirectory(Utils)
-
 if(NOT PRODUCTION)
   add_subdirectory(Editor)
 endif()
-
 add_subdirectory(Core)
-
 add_subdirectory(App)

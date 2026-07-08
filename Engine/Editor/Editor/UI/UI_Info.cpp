@@ -22,11 +22,11 @@ UW::UI_Info::~UI_Info(){};
 
 void UW::UI_Info::uiControl(){
   if(guiSettings.infoWindowOn){
-    Logger::get().info("UI", "Opening Info Gui");
+    Engine::Utils::Logger::get().info("UI", "Opening Info Gui");
     gui.addWindow("Info Gui", ui());
   }
   else{
-    Logger::get().info("UI", "Closing Info GUI");
+    Engine::Utils::Logger::get().info("UI", "Closing Info GUI");
     gui.deleteWindow("Info Gui");  
   };
 };
@@ -52,11 +52,11 @@ inline void UW::UI_Info::guiInfo(){
     mesh_mode_is_updated = true;
     if(guiSettings.mesh_mode_on){
       glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-      Logger::get().info("UI", "Changed Draw Mode To Mesh");
+      Engine::Utils::Logger::get().info("UI", "Changed Draw Mode To Mesh");
     }
     else{
       glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-      Logger::get().info("UI", "Changed Draw Mode To Normal");
+      Engine::Utils::Logger::get().info("UI", "Changed Draw Mode To Normal");
     };
   };
 
@@ -69,14 +69,14 @@ inline void UW::UI_Info::guiInfo(){
 void UW::UI_Info::guiControlsInfo(){
   ImGui::SeparatorText("Controls Info");
 
-  ImGui::Text("- Swap Camera: %s", UW::Config::SWAP_CAMERA_BTN.c_str());
-  ImGui::Text("- Swap Camera Mode: %s", UW::Config::CAMERA_SWAP_MODE_BTN.c_str());
-  ImGui::Text("- Camera Accelerate: %s", UW::Config::CAMERA_ACCELERATE.c_str());
-  ImGui::Text("- Camera Decelerate: %s", UW::Config::CAMERA_DECELERATE.c_str());
-  ImGui::Text("- Move Forward: %s", UW::Config::CAMERA_MOVE_FORWARD.c_str());
-  ImGui::Text("- Move Back: %s", UW::Config::CAMERA_MOVE_BACK.c_str());
-  ImGui::Text("- Move Right: %s", UW::Config::CAMERA_MOVE_RIGHT.c_str());
-  ImGui::Text("- Move Left: %s", UW::Config::CAMERA_MOVE_LEFT.c_str());
+  ImGui::Text("- Swap Camera: %s", Engine::Config::SWAP_CAMERA_BTN.c_str());
+  ImGui::Text("- Swap Camera Mode: %s", Engine::Config::CAMERA_SWAP_MODE_BTN.c_str());
+  ImGui::Text("- Camera Accelerate: %s", Engine::Config::CAMERA_ACCELERATE.c_str());
+  ImGui::Text("- Camera Decelerate: %s", Engine::Config::CAMERA_DECELERATE.c_str());
+  ImGui::Text("- Move Forward: %s", Engine::Config::CAMERA_MOVE_FORWARD.c_str());
+  ImGui::Text("- Move Back: %s", Engine::Config::CAMERA_MOVE_BACK.c_str());
+  ImGui::Text("- Move Right: %s", Engine::Config::CAMERA_MOVE_RIGHT.c_str());
+  ImGui::Text("- Move Left: %s", Engine::Config::CAMERA_MOVE_LEFT.c_str());
 };
 
 

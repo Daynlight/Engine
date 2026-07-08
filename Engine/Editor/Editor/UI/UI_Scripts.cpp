@@ -27,11 +27,11 @@ UW::UI_Scripts::~UI_Scripts(){
 
 void UW::UI_Scripts::uiControl(){
   if(guiSettings.scriptsExplorerWindowOn){
-    Logger::get().info("UI_Scripts", "Opening Script Explorer GUI");
+    Engine::Utils::Logger::get().info("UI_Scripts", "Opening Script Explorer GUI");
     gui.addWindow("Script Explorer", scriptExplorerGui());
   }
   else{
-    Logger::get().info("UI_Scripts", "Closing Script Explorer GUI");
+    Engine::Utils::Logger::get().info("UI_Scripts", "Closing Script Explorer GUI");
     gui.deleteWindow("Script Explorer");
   };
 };
@@ -39,7 +39,7 @@ void UW::UI_Scripts::uiControl(){
 
 
 void UW::UI_Scripts::loadScriptEditors(){
-  Logger::get().info("UI_Scripts", "Loading Scripts Editors");
+  Engine::Utils::Logger::get().info("UI_Scripts", "Loading Scripts Editors");
 
   script_editors.clear();
   
@@ -51,7 +51,7 @@ void UW::UI_Scripts::loadScriptEditors(){
 
 
 void UW::UI_Scripts::saveScriptEditors(){
-  Logger::get().info("UI_Scripts", "Saving Scripts Editors");
+  Engine::Utils::Logger::get().info("UI_Scripts", "Saving Scripts Editors");
 
   guiSettings.scripts_editors_reg.clear();
   for(const auto& el : script_editors){
@@ -64,8 +64,8 @@ void UW::UI_Scripts::saveScriptEditors(){
 std::vector<std::string> UW::UI_Scripts::getAvailableScripts() {
   std::vector<std::string> script_files;
   
-  if (fs::exists(UW::Config::SCRIPTS_FOLDER) && fs::is_directory(UW::Config::SCRIPTS_FOLDER)) {
-    for (const auto& entry : fs::directory_iterator(UW::Config::SCRIPTS_FOLDER)) {
+  if (fs::exists(Engine::Config::SCRIPTS_FOLDER) && fs::is_directory(Engine::Config::SCRIPTS_FOLDER)) {
+    for (const auto& entry : fs::directory_iterator(Engine::Config::SCRIPTS_FOLDER)) {
       if (entry.is_regular_file() && entry.path().extension() == ".cpp") {
         script_files.push_back(entry.path().filename().string());
       };

@@ -13,7 +13,7 @@
 
 
 
-namespace UW::Config{
+namespace Engine::Config{
   // system
   inline constexpr float PI = 3.14159265358979f;
   inline constexpr float EPS = 1e-5f;

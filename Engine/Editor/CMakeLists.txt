@@ -28,7 +28,7 @@ set(src
 add_library(Editor STATIC ${src})
 target_link_libraries(Editor CWindow Utils)
 
-target_include_directories(Editor PUBLIC "Editor/" "../Config" "../Core/Core" "../ScriptShared")
+target_include_directories(Editor PUBLIC "Editor/" "../Core/Core" "../ScriptShared")
 
 if(PRODUCTION)
   target_compile_definitions(Editor PRIVATE PRODUCTION)

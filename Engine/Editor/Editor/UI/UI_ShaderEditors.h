@@ -26,7 +26,7 @@ private:
   CW::Gui::Gui& gui;
   bool shader_is_loaded = false;
   bool shader_is_updated = false;
-  char buffer[UW::Config::SHADER_EDITOR_BUFFER_SIZE] = {0};
+  char buffer[Engine::Config::SHADER_EDITOR_BUFFER_SIZE] = {0};
   std::string shader_name = "";
   GLenum shader_type = 0;
 

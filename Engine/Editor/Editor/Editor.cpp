@@ -12,13 +12,13 @@
 UW::Editor::Editor(Core& core, float& fps)
   :core(core), ui(core.window, fps, core.scene)
 {
-  Logger::get().info("Editor", "Editor Initialized");
+  Engine::Utils::Logger::get().info("Editor", "Editor Initialized");
 };
 
 
 
 UW::Editor::~Editor(){
-  Logger::get().info("Editor", "Editor Destroyed");
+  Engine::Utils::Logger::get().info("Editor", "Editor Destroyed");
 };
 
 
@@ -27,17 +27,17 @@ UW::Editor::~Editor(){
 // ========== Editor Operations ========== //
 // ===================================== //
 void UW::Editor::onLoad(){
-  Logger::get().info("Editor", "Editor Loading");
+  Engine::Utils::Logger::get().info("Editor", "Editor Loading");
   ui.onLoad();
-  Logger::get().info("Editor", "Editor Loaded");
+  Engine::Utils::Logger::get().info("Editor", "Editor Loaded");
 };
 
 
 
 void UW::Editor::onDestroy() {
-  Logger::get().info("Editor", "Destroying Editor");
+  Engine::Utils::Logger::get().info("Editor", "Destroying Editor");
   ui.onDestroy();
-  Logger::get().info("Editor", "Editor Destroyed");
+  Engine::Utils::Logger::get().info("Editor", "Editor Destroyed");
 };
 
 

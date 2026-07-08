@@ -34,7 +34,7 @@
 namespace UW {
 struct TempAssetData {
   std::string original_name;
-  char new_name[UW::Config::OBJECT_NAME_BUFFER_SIZE];
+  char new_name[Engine::Config::OBJECT_NAME_BUFFER_SIZE];
 };
 
 

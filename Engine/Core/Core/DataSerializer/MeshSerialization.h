@@ -58,12 +58,12 @@ public:
 #ifndef PRODUCTION
   void save(const std::string& name, const CW::Renderer::Mesh& mesh);
 #endif
-  void load(const std::string& path_to_mesh, ResourceController<CW::Renderer::Mesh>& meshes);
+  void load(const std::string& path_to_mesh, Engine::Utils::ResourceController<CW::Renderer::Mesh>& meshes);
 
 #ifndef PRODUCTION
-  void saveAll(ResourceController<CW::Renderer::Mesh>& meshes);
+  void saveAll(Engine::Utils::ResourceController<CW::Renderer::Mesh>& meshes);
 #endif
-  void loadAll(ResourceController<CW::Renderer::Mesh>& meshes);
+  void loadAll(Engine::Utils::ResourceController<CW::Renderer::Mesh>& meshes);
 
 private:
 #ifndef PRODUCTION

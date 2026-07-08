@@ -23,11 +23,11 @@ UW::UI_Lights::~UI_Lights(){
 
 void UW::UI_Lights::uiControl(){
   if(guiSettings.lightsExplorerOn){
-    Logger::get().info("UI", "Opening Lights Explorer GUI");
+    Engine::Utils::Logger::get().info("UI", "Opening Lights Explorer GUI");
     gui.addWindow("Lights Editor", ui());
   }
   else{
-    Logger::get().info("UI", "Closing Lights Explorer GUI");
+    Engine::Utils::Logger::get().info("UI", "Closing Lights Explorer GUI");
     gui.deleteWindow("Lights Editor");
   };
 };
@@ -49,7 +49,7 @@ void UW::UI_Lights::guiLights(){
     std::string delete_light_label = "Delete ##(" + std::to_string(i) + ")";
     if(ImGui::Button(delete_light_label.c_str())) {
       Resources::get().lights.erase(i);
-      Logger::get().info("UI", "Deleted Light at {" + std::to_string(i) + "}");
+      Engine::Utils::Logger::get().info("UI", "Deleted Light at {" + std::to_string(i) + "}");
       lights_updated = true;
     };
 
@@ -59,13 +59,13 @@ void UW::UI_Lights::guiLights(){
   std::string add_light_label = "Add Light ##(" + std::to_string(Resources::get().lights.size()) + ")";
   if(ImGui::Button(add_light_label.c_str())) {
     Resources::get().lights.emplace_back(UW::Light({0, 0, 0}, {1, 1, 1}, 1));
-    Logger::get().info("UI", "Added Light at {" + std::to_string(Resources::get().lights.size()) + "}");
+    Engine::Utils::Logger::get().info("UI", "Added Light at {" + std::to_string(Resources::get().lights.size()) + "}");
     lights_updated = true;
   };
 
   if(lights_updated){
     DataSerializer::get().saveAllLights(Resources::get().lights);
-    Logger::get().info("UI", "Lights saved");
+    Engine::Utils::Logger::get().info("UI", "Lights saved");
   };
 };
 

@@ -23,17 +23,17 @@ UW::App::App()
   : editor(core, fps)
 #endif
 {
-  Logger::get().info("App", "App Initialization");
+  Engine::Utils::Logger::get().info("App", "App Initialization");
   onLoad();
-  Logger::get().info("App", "App Initialized");
+  Engine::Utils::Logger::get().info("App", "App Initialized");
 };
 
 
 
 UW::App::~App(){
-  Logger::get().info("App", "App Destroying");
+  Engine::Utils::Logger::get().info("App", "App Destroying");
   onDestroy();
-  Logger::get().info("App", "App Destroyed");
+  Engine::Utils::Logger::get().info("App", "App Destroyed");
 };
 
 
@@ -56,36 +56,36 @@ void UW::App::run(){
 // ========== Core Operations ========== //
 // ===================================== //
 void UW::App::onLoad(){
-  Logger::get().info("App", "App Loading");
+  Engine::Utils::Logger::get().info("App", "App Loading");
 
 #ifndef PRODUCTION
   editor.onLoad();
 #endif
 
   core.onLoad();
-  Logger::get().info("App", "Scene Loaded");
+  Engine::Utils::Logger::get().info("App", "Scene Loaded");
 
-  Logger::get().info("App", "App Loaded");
+  Engine::Utils::Logger::get().info("App", "App Loaded");
 };
 
 
 
 void UW::App::onDestroy() {
-  Logger::get().info("App", "Destroying App");
+  Engine::Utils::Logger::get().info("App", "Destroying App");
 
 
 #ifndef PRODUCTION
   editor.onDestroy();
-  Logger::get().info("App", "UI Destroyed");
+  Engine::Utils::Logger::get().info("App", "UI Destroyed");
 #endif
 
   core.onDestroy();
-  Logger::get().info("App", "Core Destroyed");
+  Engine::Utils::Logger::get().info("App", "Core Destroyed");
   
-  Logger::get().info("App", "App Destroyed");
+  Engine::Utils::Logger::get().info("App", "App Destroyed");
 
 #ifndef PRODUCTION
-  Logger::get().info("App", "Recorded AVG FPS = " + std::to_string(total_fps_acc / total_fps_id));
+  Engine::Utils::Logger::get().info("App", "Recorded AVG FPS = " + std::to_string(total_fps_acc / total_fps_id));
 #endif
 };
 
@@ -120,7 +120,7 @@ void UW::App::fixedUpdate(){
 
   float fixed_time_step = 1.0f / UW::GlobResource::get().FIXED_HZ;
   
-  int max_steps = UW::Config::MAX_FIXED_STEPS;
+  int max_steps = Engine::Config::MAX_FIXED_STEPS;
   while(fixed_update_time_acc >= fixed_time_step && max_steps-- > 0){
     guiSettings.window_width = core.window.getWindowData()->width;
     guiSettings.window_height = core.window.getWindowData()->height;
@@ -138,7 +138,7 @@ void UW::App::fixedUpdate(){
 
 #ifndef PRODUCTION
 void UW::App::updateFps(){
-  if(fps_id > UW::Config::FPS_SAMPLES){
+  if(fps_id > Engine::Config::FPS_SAMPLES){
     fps = fps_id / fps_acc;
     fps_acc = 0.0f;
     fps_id = 0;

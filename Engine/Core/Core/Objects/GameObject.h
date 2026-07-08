@@ -35,7 +35,7 @@ public:
   std::vector<UW::GameObjectScriptRecord> scripts;
 
   std::string mesh_last = "";
-  UW::Resource<CW::Renderer::Mesh> mesh;
+  Engine::Utils::Resource<CW::Renderer::Mesh> mesh;
 
   UW::GameObjectData game_object_data;
   UW::GameObjectData copy_game_object_data;

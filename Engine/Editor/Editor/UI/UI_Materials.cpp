@@ -23,20 +23,20 @@ UW::UI_Materials::~UI_Materials(){
 
 void UW::UI_Materials::uiControl(){
   if(guiSettings.materialExplorerOn){
-    Logger::get().info("UI", "Opening Materials Explorer GUI");
+    Engine::Utils::Logger::get().info("UI", "Opening Materials Explorer GUI");
     gui.addWindow("Material Explorer", materialExplorerGui());
   }
   else{
-    Logger::get().info("UI", "Closing Materials Explorer GUI");
+    Engine::Utils::Logger::get().info("UI", "Closing Materials Explorer GUI");
     gui.deleteWindow("Material Explorer");
   };
   
   if(guiSettings.materialEditorOn){
-    Logger::get().info("UI", "Opening Materials Editor GUI");
+    Engine::Utils::Logger::get().info("UI", "Opening Materials Editor GUI");
     gui.addWindow("Material Editor", materialEditorGui());
   }
   else{
-    Logger::get().info("UI", "Closing Materials Editor GUI");
+    Engine::Utils::Logger::get().info("UI", "Closing Materials Editor GUI");
     gui.deleteWindow("Material Editor");
   };
 };
@@ -54,7 +54,7 @@ inline void UW::UI_Materials::guiMaterialList(){
     ImGui::SameLine();
     if (ImGui::Button(button_label.c_str())) {
       Resources::get().materials.erase(el.first);
-      Logger::get().warn("UI", "Deleted Material { " + el.first + " }");
+      Engine::Utils::Logger::get().warn("UI", "Deleted Material { " + el.first + " }");
       break;
     };
   };
@@ -62,7 +62,7 @@ inline void UW::UI_Materials::guiMaterialList(){
   std::string button_label = "Add " + std::to_string(Resources::get().materials.size());
   if (ImGui::Button(button_label.c_str())) {
     Resources::get().materials.emplace_back("new material", UW::Material());
-    Logger::get().info("UI", "Added new Material { new material }");
+    Engine::Utils::Logger::get().info("UI", "Added new Material { new material }");
   };
 };
 
@@ -84,10 +84,10 @@ inline void UW::UI_Materials::guiMaterialParameters(){
 
   Material temp_mat = Resources::get().materials.getMaterial(guiSettings.material_name);
 
-  char name_buffer[UW::Config::OBJECT_NAME_BUFFER_SIZE];
+  char name_buffer[Engine::Config::OBJECT_NAME_BUFFER_SIZE];
   memcpy(name_buffer, guiSettings.material_name.data(), guiSettings.material_name.size());
   name_buffer[guiSettings.material_name.size()] = '\0';
-  if(ImGui::InputText("name", name_buffer, UW::Config::OBJECT_NAME_BUFFER_SIZE)){
+  if(ImGui::InputText("name", name_buffer, Engine::Config::OBJECT_NAME_BUFFER_SIZE)){
     Resources::get().materials.erase(guiSettings.material_name);
     guiSettings.material_name = std::string(name_buffer + '\0');
     Resources::get().materials.emplace_back(guiSettings.material_name, temp_mat);
@@ -101,7 +101,7 @@ inline void UW::UI_Materials::guiMaterialParameters(){
   if(ImGui::SliderFloat("Ambient Occlusion: ", &temp_mat.ambient_occlusion, 0.0f, 1.0f)) material_is_updated = true;
 
   if(material_is_updated){
-    Logger::get().info("UI", "Updating Material { " +  guiSettings.material_name + " }");
+    Engine::Utils::Logger::get().info("UI", "Updating Material { " +  guiSettings.material_name + " }");
     material_is_updated = false;
     Resources::get().materials[guiSettings.material_name] = temp_mat;
     Resources::get().materials.compile();

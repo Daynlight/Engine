@@ -30,19 +30,19 @@ void UW::LightsSerialization::load(const std::string& name, UW::Light& light) {
 
 #ifndef PRODUCTION
 void UW::LightsSerialization::saveAll(UW::Lights& lights) {
-  Logger::get().info("LightsSerialization", "Saving all lights...");
+  Engine::Utils::Logger::get().info("LightsSerialization", "Saving all lights...");
   try {
-    std::filesystem::path p(UW::Config::GAME_DATA_FOLDER + UW::Config::LIGHTS_FILENAME);
+    std::filesystem::path p(Engine::Config::GAME_DATA_FOLDER + Engine::Config::LIGHTS_FILENAME);
     if (p.has_parent_path())
       std::filesystem::create_directories(p.parent_path());
   } catch (const std::filesystem::filesystem_error& e) {
-    Logger::get().erro("LightsSerialization", "Filesystem error - " + std::string(e.what()));
+    Engine::Utils::Logger::get().erro("LightsSerialization", "Filesystem error - " + std::string(e.what()));
     return;
   }
 
-  std::ofstream outFile(UW::Config::GAME_DATA_FOLDER + UW::Config::LIGHTS_FILENAME, std::ios::binary);
+  std::ofstream outFile(Engine::Config::GAME_DATA_FOLDER + Engine::Config::LIGHTS_FILENAME, std::ios::binary);
   if (!outFile.is_open()) {
-    Logger::get().erro("LightsSerialization", "Failed to open file for saving");
+    Engine::Utils::Logger::get().erro("LightsSerialization", "Failed to open file for saving");
     return;
   }
 
@@ -62,29 +62,29 @@ void UW::LightsSerialization::saveAll(UW::Lights& lights) {
   };
 
   outFile.close();
-  Logger::get().info("LightsSerialization", "All lights have been saved");
+  Engine::Utils::Logger::get().info("LightsSerialization", "All lights have been saved");
 };
 #endif
 
 
 
 void UW::LightsSerialization::loadAll(UW::Lights& lights) {
-  Logger::get().info("LightsSerialization", "Loading all lights...");
+  Engine::Utils::Logger::get().info("LightsSerialization", "Loading all lights...");
   try {
-    std::string resourcePath = UW::Config::GAME_DATA_FOLDER + UW::Config::LIGHTS_FILENAME;
+    std::string resourcePath = Engine::Config::GAME_DATA_FOLDER + Engine::Config::LIGHTS_FILENAME;
 
 #ifndef PRODUCTION
     std::ifstream inFile(resourcePath, std::ios::binary);
     
     if (!inFile.is_open()) {
-      Logger::get().erro("LightsSerialization", "Failed to open file for loading - " + resourcePath);
+      Engine::Utils::Logger::get().erro("LightsSerialization", "Failed to open file for loading - " + resourcePath);
       return;
     }
 #else
     auto fs = cmrc::GameData::get_filesystem();
     
     if (!fs.exists(resourcePath)) {
-      Logger::get().erro("LightsSerialization", "CMRC - File not found - " + resourcePath);
+      Engine::Utils::Logger::get().erro("LightsSerialization", "CMRC - File not found - " + resourcePath);
       return;
     }
 
@@ -104,16 +104,16 @@ void UW::LightsSerialization::loadAll(UW::Lights& lights) {
         UW::Light light(record.position, record.color, record.strength);
         lights.emplace_back(light);
       } else {
-        Logger::get().erro("LightsSerialization", "File format corrupted at index " + std::to_string(i));
+        Engine::Utils::Logger::get().erro("LightsSerialization", "File format corrupted at index " + std::to_string(i));
         break;
       };
     };
 
     lights.compile();
 
-    Logger::get().info("LightsSerialization", "All lights have been loaded");
+    Engine::Utils::Logger::get().info("LightsSerialization", "All lights have been loaded");
   } catch(const std::exception& e) {
-    Logger::get().erro("LightsSerialization", "Exception - " + std::string(e.what()));
+    Engine::Utils::Logger::get().erro("LightsSerialization", "Exception - " + std::string(e.what()));
   };
 };
 

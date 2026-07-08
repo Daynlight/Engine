@@ -19,7 +19,7 @@ CMRC_DECLARE(ScriptShared);
 void UW::GameObjectScriptRecord::initSharedFolder() {
 #ifndef PRODUCTION
   auto efs = cmrc::ScriptShared::get_filesystem();
-  std::filesystem::path dest_folder = UW::Config::SCRIPTS_SRC_FOLDER;
+  std::filesystem::path dest_folder = Engine::Config::SCRIPTS_SRC_FOLDER;
 
   auto extract_dir = [&](auto& self, const std::string& virtual_path, const std::filesystem::path& physical_path) -> void { 
     if (!std::filesystem::exists(physical_path)) std::filesystem::create_directories(physical_path);
@@ -39,16 +39,16 @@ void UW::GameObjectScriptRecord::initSharedFolder() {
         if (should_write) {
           std::ofstream out(current_p_path, std::ios::binary);
           if (out) out.write(file.begin(), file.size());
-          else UW::Logger::get().erro("Script Controller", "Failed to write extracted file: " + current_p_path.string());
+          else Engine::Utils::Logger::get().erro("Script Controller", "Failed to write extracted file: " + current_p_path.string());
         };
       };
     };
   };
 
   extract_dir(extract_dir, "", dest_folder);
-  UW::Logger::get().info("Script Controller", "Shared folder successfully initialized from cmrc.");
+  Engine::Utils::Logger::get().info("Script Controller", "Shared folder successfully initialized from cmrc.");
 #else
-  UW::Logger::get().info("Script Controller", "In PRODUCTION mode: cmrc extraction skipped.");
+  Engine::Utils::Logger::get().info("Script Controller", "In PRODUCTION mode: cmrc extraction skipped.");
 #endif
 };
 
@@ -56,23 +56,23 @@ void UW::GameObjectScriptRecord::initSharedFolder() {
 
 UW::GameObjectScriptRecord::GameObjectScriptRecord(const std::string &path)
   : path(path), 
-    cpp_file(UW::Config::SCRIPTS_SRC_FOLDER + path + ".cpp"),
+    cpp_file(Engine::Config::SCRIPTS_SRC_FOLDER + path + ".cpp"),
 #if defined(_WIN32) || defined(_WIN64)
-    so_file(UW::Config::SCRIPTS_DLL_FOLDER + path + ".dll")
+    so_file(Engine::Config::SCRIPTS_DLL_FOLDER + path + ".dll")
 #else
-    so_file(UW::Config::SCRIPTS_DLL_FOLDER + path + ".so")
+    so_file(Engine::Config::SCRIPTS_DLL_FOLDER + path + ".so")
 #endif 
 {
-  UW::Logger::get().info("Script Controller", "Script Initialized");
+  Engine::Utils::Logger::get().info("Script Controller", "Script Initialized");
   initSharedFolder();
 };
 
 
 
 UW::GameObjectScriptRecord::~GameObjectScriptRecord(){
-  UW::Logger::get().info("Script Controller", "Script Destroying");
+  Engine::Utils::Logger::get().info("Script Controller", "Script Destroying");
   removeModule();
-  UW::Logger::get().info("Script Controller", "Script Destroyed");
+  Engine::Utils::Logger::get().info("Script Controller", "Script Destroyed");
 };
 
 
@@ -160,7 +160,7 @@ void UW::GameObjectScriptRecord::onLoad(GameObjectData* data) {
   if(script){
     script->game_object_data = data;
     script->glob_res = &UW::GlobResource::get();
-    script->logger = static_cast<ILogger*>(&UW::Logger::get());
+    script->logger = static_cast<ILogger*>(&Engine::Utils::Logger::get());
     script->object_manager = static_cast<IObjectManager*>(&UW::ObjectManager::get());
 
 #ifndef PRODUCTION
@@ -177,7 +177,7 @@ void UW::GameObjectScriptRecord::onLoad(GameObjectData* data) {
       waitpid(pid, &status, 0);
 
       if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) { 
-        UW::Logger::get().erro("Script Controller", std::to_string(status) + " - Init failed!");
+        Engine::Utils::Logger::get().erro("Script Controller", std::to_string(status) + " - Init failed!");
         return; 
       };
     };
@@ -210,7 +210,7 @@ void UW::GameObjectScriptRecord::onUpdate(float delta_time) {
       waitpid(pid, &status, 0);
 
       if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) { 
-        UW::Logger::get().erro("Script Controller", std::to_string(status) + " - Update failed!");
+        Engine::Utils::Logger::get().erro("Script Controller", std::to_string(status) + " - Update failed!");
         return; 
       };
     };
@@ -243,7 +243,7 @@ void UW::GameObjectScriptRecord::onFixedUpdate(float fixed_delta_time) {
       waitpid(pid, &status, 0);
 
       if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) { 
-        UW::Logger::get().erro("Script Controller", std::to_string(status) + " - FixedUpdate failed!");
+        Engine::Utils::Logger::get().erro("Script Controller", std::to_string(status) + " - FixedUpdate failed!");
         return; 
       };
     };
@@ -276,7 +276,7 @@ void UW::GameObjectScriptRecord::onRender() {
       waitpid(pid, &status, 0);
 
       if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) { 
-        UW::Logger::get().erro("Script Controller", std::to_string(status) + " - Render failed!");
+        Engine::Utils::Logger::get().erro("Script Controller", std::to_string(status) + " - Render failed!");
         return; 
       };
     };
@@ -307,7 +307,7 @@ void UW::GameObjectScriptRecord::onDestroy() {
       waitpid(pid, &status, 0);
 
       if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) { 
-        UW::Logger::get().erro("Script Controller", std::to_string(status) + " - Destroy failed!");
+        Engine::Utils::Logger::get().erro("Script Controller", std::to_string(status) + " - Destroy failed!");
         return; 
       };
     };
@@ -328,7 +328,7 @@ std::string UW::GameObjectScriptRecord::getPath() const {
 
 
 int UW::GameObjectScriptRecord::loadModule() {
-  UW::Logger::get().info("Script Controller", "Module loading");
+  Engine::Utils::Logger::get().info("Script Controller", "Module loading");
 
   removeModule();
 
@@ -336,12 +336,12 @@ int UW::GameObjectScriptRecord::loadModule() {
   script = UW::ScriptRegistry::get().createScript(path);
   
   if (!script) {
-    UW::Logger::get().erro("Script Controller", "Script not found in registry: " + path);
+    Engine::Utils::Logger::get().erro("Script Controller", "Script not found in registry: " + path);
     return -1;
   };
   
   module_initialized = 1;
-  UW::Logger::get().info("Script Controller", "Module Loaded statically");
+  Engine::Utils::Logger::get().info("Script Controller", "Module Loaded statically");
   return 0;
 
 #else
@@ -352,7 +352,7 @@ int UW::GameObjectScriptRecord::loadModule() {
 #if defined(_WIN32) || defined(_WIN64)
   script_handler = LoadLibraryA(so_file.c_str());
   if (!script_handler) {
-    Logger::get().erro("Script Controller", "Failed to load DLL - Error Code: " + std::to_string(GetLastError()));
+    Engine::Utils::Logger::get().erro("Script Controller", "Failed to load DLL - Error Code: " + std::to_string(GetLastError()));
     return -1;
   }
 
@@ -360,7 +360,7 @@ int UW::GameObjectScriptRecord::loadModule() {
   GetScriptFunc getScript = (GetScriptFunc)GetProcAddress((HMODULE)script_handler, "GetScript");
   
   if (!getScript) {
-    Logger::get().erro("Script Controller", "Cannot load symbol 'GetScript' - Error Code: " + std::to_string(GetLastError()));
+    Engine::Utils::Logger::get().erro("Script Controller", "Cannot load symbol 'GetScript' - Error Code: " + std::to_string(GetLastError()));
     removeModule();
     return -1;
   }
@@ -368,7 +368,7 @@ int UW::GameObjectScriptRecord::loadModule() {
   script_handler = dlopen((so_file).c_str(), RTLD_NOW);
 
   if (!script_handler) {
-    Logger::get().erro("Script Controller", "Failed to load script - " + std::string(dlerror()));
+    Engine::Utils::Logger::get().erro("Script Controller", "Failed to load script - " + std::string(dlerror()));
     return -1;
   };
 
@@ -379,7 +379,7 @@ int UW::GameObjectScriptRecord::loadModule() {
   const char* dlsym_error = dlerror();
   
   if (dlsym_error || !getScript) {
-    Logger::get().erro("Script Controller", "Cannot load symbol 'GetScript' - " + std::string(dlsym_error));
+    Engine::Utils::Logger::get().erro("Script Controller", "Cannot load symbol 'GetScript' - " + std::string(dlsym_error));
     removeModule();
     return -1;
   };
@@ -389,20 +389,20 @@ int UW::GameObjectScriptRecord::loadModule() {
 
   if(!script){
     removeModule();
-    UW::Logger::get().erro("Script Controller", "Script load failed");
+    Engine::Utils::Logger::get().erro("Script Controller", "Script load failed");
     return -1;
   };
 
 #endif
 
-  Logger::get().info("Script Controller", "Module Loaded");
+  Engine::Utils::Logger::get().info("Script Controller", "Module Loaded");
   return 0;
 };
 
 
 
 void UW::GameObjectScriptRecord::removeModule(){
-  UW::Logger::get().info("Script Controller", "Module destroying");
+  Engine::Utils::Logger::get().info("Script Controller", "Module destroying");
 
 #ifdef PRODUCTION
   if (script) {
@@ -417,7 +417,7 @@ void UW::GameObjectScriptRecord::removeModule(){
 
   if (!script_handler) {
     script = nullptr;
-    UW::Logger::get().info("Script Controller", "Module doesn't exists");
+    Engine::Utils::Logger::get().info("Script Controller", "Module doesn't exists");
     return;
   };
 
@@ -430,7 +430,7 @@ void UW::GameObjectScriptRecord::removeModule(){
     DeleteScriptFunc deleteScript = (DeleteScriptFunc)GetProcAddress((HMODULE)script_handler, "DeleteScript");
 
     if (!deleteScript) {
-      Logger::get().warn("Script Controller", "DeleteScript not found or invalid");
+      Engine::Utils::Logger::get().warn("Script Controller", "DeleteScript not found or invalid");
       script = nullptr;
     } else {
       deleteScript(script);
@@ -443,7 +443,7 @@ void UW::GameObjectScriptRecord::removeModule(){
     const char* dlsym_error = dlerror();
 
     if (dlsym_error || !deleteScript) {
-    Logger::get().warn("Script Controller", "DeleteScript not found or invalid - " + std::string(dlsym_error ? dlsym_error : "null"));
+    Engine::Utils::Logger::get().warn("Script Controller", "DeleteScript not found or invalid - " + std::string(dlsym_error ? dlsym_error : "null"));
       script = nullptr;
     }
     else{
@@ -464,7 +464,7 @@ void UW::GameObjectScriptRecord::removeModule(){
 
 #endif
 
-  UW::Logger::get().info("Script Controller", "Module destroyed");
+  Engine::Utils::Logger::get().info("Script Controller", "Module destroyed");
 };
 
 
@@ -476,7 +476,7 @@ bool UW::GameObjectScriptRecord::checkLastWrite(){
   bool changed = 0;
 
   if(log_observe_lock && !file_exist){
-    UW::Logger::get().erro("Script Controller", "No file named: " + cpp_file);
+    Engine::Utils::Logger::get().erro("Script Controller", "No file named: " + cpp_file);
     log_observe_lock = 0;
   };
   
@@ -488,14 +488,14 @@ bool UW::GameObjectScriptRecord::checkLastWrite(){
   try{
     currentWriteTime = std::filesystem::last_write_time(cpp_file);
   } catch(const std::filesystem::filesystem_error& e){
-    UW::Logger::get().erro("Script Controller", "Filesystem error - " + std::string(e.what()));
+    Engine::Utils::Logger::get().erro("Script Controller", "Filesystem error - " + std::string(e.what()));
     return false;
   };
 
   if(currentWriteTime != lastWriteTime){
     changed = 1;
     lastWriteTime = currentWriteTime;
-    Logger::get().info("Script Controller", "Script changed lastWriteTime != currentWriteTime");
+    Engine::Utils::Logger::get().info("Script Controller", "Script changed lastWriteTime != currentWriteTime");
   };
 
   return changed;
@@ -509,7 +509,7 @@ bool UW::GameObjectScriptRecord::checkLastWrite(){
 
 void UW::GameObjectScriptRecord::updateScript(GameObjectData* data) {
 #ifndef PRODUCTION
-  UW::Logger::get().info("Script Controller", "Script is Updating...");
+  Engine::Utils::Logger::get().info("Script Controller", "Script is Updating...");
 
   removeModule();
 
@@ -518,7 +518,7 @@ void UW::GameObjectScriptRecord::updateScript(GameObjectData* data) {
     if(!loadModule()) 
       onLoad(data);
     else{
-      UW::Logger::get().info("Script Controller", "loadModule failed");
+      Engine::Utils::Logger::get().info("Script Controller", "loadModule failed");
       return;
     };
 
@@ -528,11 +528,11 @@ void UW::GameObjectScriptRecord::updateScript(GameObjectData* data) {
     compiling = 1;
   }
   else{
-    UW::Logger::get().info("Script Controller", "compilation failed");
+    Engine::Utils::Logger::get().info("Script Controller", "compilation failed");
     return;
   };
 
-  UW::Logger::get().info("Script Controller", "Script Updated");
+  Engine::Utils::Logger::get().info("Script Controller", "Script Updated");
 #endif
 };
 
@@ -558,20 +558,20 @@ int UW::GameObjectScriptRecord::compile() {
 
   if (is_up_to_date) {
     if (is_compiling) {
-      Logger::get().info("Script Controller", "Compilation Exist Check: Still working in background...");
+      Engine::Utils::Logger::get().info("Script Controller", "Compilation Exist Check: Still working in background...");
       return 1;
     } else {
-      Logger::get().info("Script Controller", "Compilation Exist Check: Up to date, skipping.");
+      Engine::Utils::Logger::get().info("Script Controller", "Compilation Exist Check: Up to date, skipping.");
       return 0;
     };
   } 
   else {
     if (is_compiling) {
-      Logger::get().info("Script Controller", "Compilation Reload: New changes saved while compiling! Waiting for current pass...");
+      Engine::Utils::Logger::get().info("Script Controller", "Compilation Reload: New changes saved while compiling! Waiting for current pass...");
       return 1;
     } 
     else {
-      Logger::get().info("Script Controller", "Compilation Start: Kicking off new compilation thread.");
+      Engine::Utils::Logger::get().info("Script Controller", "Compilation Start: Kicking off new compilation thread.");
 
       resources.script_active_compilers[path] = std::jthread([this]() {
 
@@ -612,9 +612,9 @@ int UW::GameObjectScriptRecord::compile_thread(){
   PROCESS_INFORMATION pi = { 0 };
 
   std::string cmd = compiler.string() + " -shared -o \"" + temp_so.string() + "\" \"" + cpp.string() + "\"";
-  Logger::get().warn("Script Controller", "Compile command: " + cmd);
+  Engine::Utils::Logger::get().warn("Script Controller", "Compile command: " + cmd);
 
-  UW::Logger::get().info("Script Controller", "Compiling on Windows: " + cmd);
+  Engine::Utils::Logger::get().info("Script Controller", "Compiling on Windows: " + cmd);
   
   char* cmd_buffer = _strdup(cmd.c_str());
     
@@ -652,7 +652,7 @@ int UW::GameObjectScriptRecord::compile_thread(){
   pid_t pid = fork();
   if(pid == 0){
     execvp(command, const_cast<char* const*>(argv)); 
-    Logger::get().erro("Script Controller", "Failed to exec g++");
+    Engine::Utils::Logger::get().erro("Script Controller", "Failed to exec g++");
     exit(-1);
   }
   else if(pid > 0){
@@ -661,16 +661,16 @@ int UW::GameObjectScriptRecord::compile_thread(){
     waitpid(pid, &status, 0);
     
     if (WIFEXITED(status) && WEXITSTATUS(status) == 0) {
-      UW::Logger::get().info("Script Controller", "successful compilation");
+      Engine::Utils::Logger::get().info("Script Controller", "successful compilation");
       return 0; 
     } 
     else { 
-      UW::Logger::get().erro("Script Controller", "Compilation failed!");
+      Engine::Utils::Logger::get().erro("Script Controller", "Compilation failed!");
       return -1; 
     };
   };
 
-  UW::Logger::get().erro("Script Controller", "Failed to fork()");
+  Engine::Utils::Logger::get().erro("Script Controller", "Failed to fork()");
   return -1;
 #endif
 };

@@ -16,9 +16,9 @@ CMRC_DECLARE(GameData);
 
 #ifndef PRODUCTION
 void UW::MeshSerialization::save(const std::string& name, const CW::Renderer::Mesh& mesh) {
-  Logger::get().info("MeshSerialization", "Saving mesh: " + name);
-  std::string folder_path = UW::Config::GAME_DATA_FOLDER + UW::Config::ASSETS_FOLDER + UW::Config::MESHES_FOLDER;
-  std::string file_path = folder_path + name + UW::Config::MESH_EXTENSION;
+  Engine::Utils::Logger::get().info("MeshSerialization", "Saving mesh: " + name);
+  std::string folder_path = Engine::Config::GAME_DATA_FOLDER + Engine::Config::ASSETS_FOLDER + Engine::Config::MESHES_FOLDER;
+  std::string file_path = folder_path + name + Engine::Config::MESH_EXTENSION;
 
   std::filesystem::create_directories(folder_path);
 
@@ -49,20 +49,20 @@ void UW::MeshSerialization::save(const std::string& name, const CW::Renderer::Me
   };
 
   outFile << record;
-  Logger::get().info("MeshSerialization", "Mesh saved: " + name);
+  Engine::Utils::Logger::get().info("MeshSerialization", "Mesh saved: " + name);
 };
 #endif
 
 
 
-void UW::MeshSerialization::load(const std::string& path_to_mesh, ResourceController<CW::Renderer::Mesh>& meshes) {
-  Logger::get().info("MeshSerialization", "Loading mesh: " + path_to_mesh);
+void UW::MeshSerialization::load(const std::string& path_to_mesh, Engine::Utils::ResourceController<CW::Renderer::Mesh>& meshes) {
+  Engine::Utils::Logger::get().info("MeshSerialization", "Loading mesh: " + path_to_mesh);
   try {
 #ifndef PRODUCTION
     std::ifstream inFile(path_to_mesh, std::ios::binary);
     
     if (!inFile.is_open()) {
-      Logger::get().erro("MeshSerialization", "Failed to open file for loading - " + path_to_mesh);
+      Engine::Utils::Logger::get().erro("MeshSerialization", "Failed to open file for loading - " + path_to_mesh);
       return;
     }
 #else
@@ -90,23 +90,23 @@ void UW::MeshSerialization::load(const std::string& path_to_mesh, ResourceContro
         std::memcpy(vertices.data(), e.data.data(), e.data.size());
         engine_mesh.addVertices(vertices, e.dimension, e.key);
       } else {
-        UW::Utils::uploadBufferByType(engine_mesh, e.type, e.data, e.dimension, e.key);
+        Engine::Utils::uploadBufferByType(engine_mesh, e.type, e.data, e.dimension, e.key);
       };
     };
 
     meshes.emplace_back(record.name, std::move(engine_mesh));
     
-    Logger::get().info("MeshSerialization", "Mesh loaded: " + record.name);
+    Engine::Utils::Logger::get().info("MeshSerialization", "Mesh loaded: " + record.name);
   } catch (const std::exception& e) {
-    Logger::get().erro("MeshSerialization", "CMRC EXCEPTION: " + std::string(e.what()));
+    Engine::Utils::Logger::get().erro("MeshSerialization", "CMRC EXCEPTION: " + std::string(e.what()));
   };
 };
 
 
 
 #ifndef PRODUCTION
-void UW::MeshSerialization::saveAll(ResourceController<CW::Renderer::Mesh>& meshes) {
-  Logger::get().info("MeshSerialization", "Saving all meshes...");
+void UW::MeshSerialization::saveAll(Engine::Utils::ResourceController<CW::Renderer::Mesh>& meshes) {
+  Engine::Utils::Logger::get().info("MeshSerialization", "Saving all meshes...");
   
   std::vector<std::pair<std::string, unsigned int>> meshes_to_save;
   
@@ -116,33 +116,33 @@ void UW::MeshSerialization::saveAll(ResourceController<CW::Renderer::Mesh>& mesh
   for (const auto& [mesh_name, mesh_id] : meshes_to_save)
     save(mesh_name, meshes[mesh_id]);
   
-  Logger::get().info("MeshSerialization", "All meshes have been saved");
+  Engine::Utils::Logger::get().info("MeshSerialization", "All meshes have been saved");
 };
 #endif
 
 
 
-void UW::MeshSerialization::loadAll(ResourceController<CW::Renderer::Mesh>& meshes) {
-  Logger::get().info("MeshSerialization", "Loading all meshes...");
+void UW::MeshSerialization::loadAll(Engine::Utils::ResourceController<CW::Renderer::Mesh>& meshes) {
+  Engine::Utils::Logger::get().info("MeshSerialization", "Loading all meshes...");
   try {
-    std::string meshes_root = UW::Config::GAME_DATA_FOLDER + UW::Config::ASSETS_FOLDER + UW::Config::MESHES_FOLDER;
+    std::string meshes_root = Engine::Config::GAME_DATA_FOLDER + Engine::Config::ASSETS_FOLDER + Engine::Config::MESHES_FOLDER;
     std::vector<std::string> mesh_files;
 
 #ifndef PRODUCTION
     if (std::filesystem::exists(meshes_root) && std::filesystem::is_directory(meshes_root)) {
       for (const auto& entry : std::filesystem::recursive_directory_iterator(meshes_root)) {
-        if (entry.is_regular_file() && entry.path().extension() == UW::Config::MESH_EXTENSION) {
+        if (entry.is_regular_file() && entry.path().extension() == Engine::Config::MESH_EXTENSION) {
           mesh_files.push_back(entry.path().string());
         }
       }
     } else {
-      Logger::get().erro("MeshSerialization", "Filesystem - Directory not found: " + meshes_root);
+      Engine::Utils::Logger::get().erro("MeshSerialization", "Filesystem - Directory not found: " + meshes_root);
       return;
     }
 #else
     auto fs = cmrc::GameData::get_filesystem();
     if (!fs.exists(meshes_root)) {
-      Logger::get().erro("MeshSerialization", "CMRC - Directory not found: " + meshes_root);
+      Engine::Utils::Logger::get().erro("MeshSerialization", "CMRC - Directory not found: " + meshes_root);
       return;
     }
     UW::Utils::scanCmrcDirectory(fs, meshes_root, "\\.msh$", mesh_files);
@@ -152,9 +152,9 @@ void UW::MeshSerialization::loadAll(ResourceController<CW::Renderer::Mesh>& mesh
 
     meshes.compileAll();
 
-    Logger::get().info("MeshSerialization", "All meshes have been loaded");
+    Engine::Utils::Logger::get().info("MeshSerialization", "All meshes have been loaded");
   } catch (const std::exception& e) {
-    Logger::get().erro("MeshSerialization", "CMRC EXCEPTION: " + std::string(e.what()));
+    Engine::Utils::Logger::get().erro("MeshSerialization", "CMRC EXCEPTION: " + std::string(e.what()));
   };
 };
 

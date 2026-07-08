@@ -31,8 +31,8 @@ struct GuiSettings{
   bool mesh_mode_on = false;
   bool assetLoaderWindowOn = false;
   bool lightsExplorerOn = false;
-  std::string material_name = UW::Config::DEFAULT_GUI_MATERIAL;
-  unsigned int object_id = UW::Config::DEFAULT_GUI_OBJECT;
+  std::string material_name = Engine::Config::DEFAULT_GUI_MATERIAL;
+  unsigned int object_id = Engine::Config::DEFAULT_GUI_OBJECT;
   std::vector<std::pair<std::string, GLenum>> shader_editors_reg;
   std::vector<std::string> scripts_editors_reg;
   int window_width = 800;

@@ -10,33 +10,33 @@
 
 
 template<typename T>
-UW::ResourceController<T>::ResourceController() {
+Engine::Utils::ResourceController<T>::ResourceController() {
 };
 
 
 
 template<typename T>
-UW::ResourceController<T>::~ResourceController() {
+Engine::Utils::ResourceController<T>::~ResourceController() {
 };
 
 
 
 template<typename T>
-T& UW::ResourceController<T>::operator[](unsigned int index) {
+T& Engine::Utils::ResourceController<T>::operator[](unsigned int index) {
   return data[index];
 };
 
 
 
 template<typename T>
-const T& UW::ResourceController<T>::operator[](unsigned int index) const {
+const T& Engine::Utils::ResourceController<T>::operator[](unsigned int index) const {
   return data[index];
 };
 
 
 
 template<typename T>
-unsigned int UW::ResourceController<T>::getID(const std::string& name) {
+unsigned int Engine::Utils::ResourceController<T>::getID(const std::string& name) {
   auto it = name_to_id.find(name);
   if (it == name_to_id.end()) {
     return INVALID_ID;
@@ -48,14 +48,14 @@ unsigned int UW::ResourceController<T>::getID(const std::string& name) {
 
 
 template<typename T>
-bool UW::ResourceController<T>::exists(const std::string& name) const {
+bool Engine::Utils::ResourceController<T>::exists(const std::string& name) const {
   return name_to_id.find(name) != name_to_id.end();
 };
 
 
 
 template<typename T>
-void UW::ResourceController<T>::emplace_back(const std::string& name, T&& mesh) {
+void Engine::Utils::ResourceController<T>::emplace_back(const std::string& name, T&& mesh) {
   version += 1;
 
   auto it = name_to_id.find(name);
@@ -74,7 +74,7 @@ void UW::ResourceController<T>::emplace_back(const std::string& name, T&& mesh) 
 
 
 template<typename T>
-void UW::ResourceController<T>::erase(const std::string& name) {
+void Engine::Utils::ResourceController<T>::erase(const std::string& name) {
   if (!exists(name)) return;
   version += 1;
 
@@ -99,7 +99,7 @@ void UW::ResourceController<T>::erase(const std::string& name) {
 
 
 template<typename T>
-unsigned int UW::ResourceController<T>::size() const{
+unsigned int Engine::Utils::ResourceController<T>::size() const{
   return data.size();
 };
 
@@ -107,7 +107,7 @@ unsigned int UW::ResourceController<T>::size() const{
 
 
 template<typename T>
-void UW::ResourceController<T>::clear(){
+void Engine::Utils::ResourceController<T>::clear(){
   version += 1;
   data.clear();
   name_to_id.clear();
@@ -117,27 +117,27 @@ void UW::ResourceController<T>::clear(){
 
 
 template<typename T>
-std::unordered_map<std::string, unsigned int>& UW::ResourceController<T>::getIDs(){
+std::unordered_map<std::string, unsigned int>& Engine::Utils::ResourceController<T>::getIDs(){
   return name_to_id;
 };
 
 
 
 template<typename T>
-bool UW::ResourceController<T>::validateVersion(unsigned int version){
+bool Engine::Utils::ResourceController<T>::validateVersion(unsigned int version){
   return version == this->version;
 };
 
 
 
 template<typename T>
-unsigned int UW::ResourceController<T>::getLatestsVersion(){
+unsigned int Engine::Utils::ResourceController<T>::getLatestsVersion(){
   return version;
 };
 
 
 
 template<typename T>
-void UW::ResourceController<T>::compileAll(){
+void Engine::Utils::ResourceController<T>::compileAll(){
   for(T& rec : data) rec.compile();
 };

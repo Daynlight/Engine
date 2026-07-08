@@ -55,7 +55,7 @@ CW::Renderer::Texture &UW::Resources::getTexture(const std::string &path_to_asse
   auto ita = textures.find(path_to_asset);
   if (ita != textures.end()) return ita->second;
 
-  return textures[UW::Config::DEFAULT_TEXTURE]; 
+  return textures[Engine::Config::DEFAULT_TEXTURE]; 
 };
 
 
@@ -75,7 +75,7 @@ CW::Renderer::Shader &UW::Resources::getShader(const std::string &path_to_asset)
     return ita->second;
   };
   
-  return shaders[UW::Config::DEFAULT_SHADER];
+  return shaders[Engine::Config::DEFAULT_SHADER];
 };
 
 
@@ -224,7 +224,7 @@ void UW::Resources::initMeshes(){
   default_mesh.setData<GLfloat>(uvs, 2, 2);
   default_mesh.setData<GLint>(mat_id, 1, 3);
   default_mesh.addIndices(indices);
-  meshes.emplace_back(UW::Config::DEFAULT_MESH, std::move(default_mesh));
+  meshes.emplace_back(Engine::Config::DEFAULT_MESH, std::move(default_mesh));
 
 };
 

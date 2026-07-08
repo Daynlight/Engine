@@ -21,7 +21,7 @@ void PatchScriptPointers(std::vector<UW::GameObjectScriptRecord>& scripts, UW::G
 
 UW::GameObject::GameObject(const std::string& name, const std::string& mesh, const std::string& shader, const std::vector<std::string>& materials, const std::vector<std::string>& textures, const std::vector<UW::GameObjectScriptRecord>& scripts, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
   : scripts(scripts), mesh(mesh, &UW::Resources::get().meshes) {
-  UW::Logger::get().info("GameObject", "GameObject Constructor Called!");
+  Engine::Utils::Logger::get().info("GameObject", "GameObject Constructor Called!");
   game_object_data.name = name;
   game_object_data.mesh = mesh;
   game_object_data.shader = shader;
@@ -39,7 +39,7 @@ UW::GameObject::GameObject(const std::string& name, const std::string& mesh, con
 
 
 UW::GameObject::GameObject(const std::string& name, const GameObject& other){
-  UW::Logger::get().info("GameObject", "GameObject Duplicating");
+  Engine::Utils::Logger::get().info("GameObject", "GameObject Duplicating");
   
   for(const auto& script : other.scripts) scripts.emplace_back(script.getPath());
   game_object_data = other.game_object_data;

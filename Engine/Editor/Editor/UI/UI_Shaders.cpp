@@ -27,11 +27,11 @@ UW::UI_Shaders::~UI_Shaders(){
 
 void UW::UI_Shaders::uiControl(){
   if(guiSettings.shaderExplorerWindowOn){
-    Logger::get().info("UI", "Opening Shader Explorer GUI");
+    Engine::Utils::Logger::get().info("UI", "Opening Shader Explorer GUI");
     gui.addWindow("Shader Explorer", shaderExplorerGui());
   }
   else{
-    Logger::get().info("UI", "Closing Shader Explorer GUI");
+    Engine::Utils::Logger::get().info("UI", "Closing Shader Explorer GUI");
     gui.deleteWindow("Shader Explorer");
   };
 };
@@ -39,7 +39,7 @@ void UW::UI_Shaders::uiControl(){
 
 
 void UW::UI_Shaders::loadShaderEditors(){
-  Logger::get().info("UI", "Loading Shader Editors");
+  Engine::Utils::Logger::get().info("UI", "Loading Shader Editors");
 
   shader_editors.clear();
   
@@ -50,7 +50,7 @@ void UW::UI_Shaders::loadShaderEditors(){
 
 
 void UW::UI_Shaders::saveShaderEditors(){
-  Logger::get().info("UI", "Saving Shader Editors");
+  Engine::Utils::Logger::get().info("UI", "Saving Shader Editors");
 
   guiSettings.shader_editors_reg.clear();
   for(const auto& el : shader_editors){
@@ -64,14 +64,14 @@ void UW::UI_Shaders::guiShaderList(){
   ImGui::SeparatorText("Shader List");
 
   if(ImGui::Button("reset")) {
-    Logger::get().info("UI", "Refreshing Shaders");
+    Engine::Utils::Logger::get().info("UI", "Refreshing Shaders");
     Resources::get().shaders.clear();
   };
 
   for (const auto& [ key, values ] : Resources::get().shaders) {
     if(ImGui::CollapsingHeader(key.c_str())){
       for (const auto& [key_s, values_s] : values.getRegisterShader()){
-        std::string button_label = UW::Config::SHADER_TYPE_TO_NAME[key_s] +  "##-" + key;
+        std::string button_label = Engine::Config::SHADER_TYPE_TO_NAME[key_s] +  "##-" + key;
         if (ImGui::Button(button_label.c_str())){
           bool exists = std::any_of(
             shader_editors.begin(),

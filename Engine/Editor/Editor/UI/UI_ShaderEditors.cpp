@@ -13,15 +13,15 @@
 UW::UI_ShaderEditor::UI_ShaderEditor(CW::Gui::Gui& gui, const std::string& name, GLenum type)
   :gui(gui), shader_name(name), shader_type(type){
 
-  Logger::get().info("UI_ShaderEditor", "Opened { " + shader_name + " : " + UW::Config::SHADER_TYPE_TO_NAME[shader_type] + " }");
-  gui.addWindow("Shader Editor " + shader_name + " : " + UW::Config::SHADER_TYPE_TO_NAME[shader_type], shaderEditorGui());
+  Engine::Utils::Logger::get().info("UI_ShaderEditor", "Opened { " + shader_name + " : " + Engine::Config::SHADER_TYPE_TO_NAME[shader_type] + " }");
+  gui.addWindow("Shader Editor " + shader_name + " : " + Engine::Config::SHADER_TYPE_TO_NAME[shader_type], shaderEditorGui());
 };
 
 
 
 UW::UI_ShaderEditor::~UI_ShaderEditor(){
-  gui.deleteWindow("Shader Editor " + shader_name + " : " + UW::Config::SHADER_TYPE_TO_NAME[shader_type]);
-  Logger::get().info("UI_ShaderEditor", "Closed { " + shader_name + " : " + UW::Config::SHADER_TYPE_TO_NAME[shader_type] + " }");
+  gui.deleteWindow("Shader Editor " + shader_name + " : " + Engine::Config::SHADER_TYPE_TO_NAME[shader_type]);
+  Engine::Utils::Logger::get().info("UI_ShaderEditor", "Closed { " + shader_name + " : " + Engine::Config::SHADER_TYPE_TO_NAME[shader_type] + " }");
 };
 
 
@@ -31,7 +31,7 @@ void UW::UI_ShaderEditor::guiShaderLoad(const std::string& name, GLenum type){
 
   shader_name = name;
   shader_type = type;
-  memset(buffer, '\0', UW::Config::SHADER_EDITOR_BUFFER_SIZE);
+  memset(buffer, '\0', Engine::Config::SHADER_EDITOR_BUFFER_SIZE);
   
   auto it = Resources::get().shaders.find(name);
   if(it == Resources::get().shaders.end()) return;
@@ -44,7 +44,7 @@ void UW::UI_ShaderEditor::guiShaderLoad(const std::string& name, GLenum type){
   memcpy(buffer, source.data(), source.size());
 
 
-  Logger::get().info("UI_ShaderEditor", "Loaded { " + shader_name + " : " + UW::Config::SHADER_TYPE_TO_NAME[shader_type] + " }");
+  Engine::Utils::Logger::get().info("UI_ShaderEditor", "Loaded { " + shader_name + " : " + Engine::Config::SHADER_TYPE_TO_NAME[shader_type] + " }");
   shader_is_loaded = true;
 };
 
@@ -55,9 +55,9 @@ void UW::UI_ShaderEditor::guiShaderEditor(){
   float height = ImGui::GetContentRegionAvail().y - 50.0f;
   
   ImGui::SeparatorText("Shader Editor");
-  ImGui::Text("Shader: %s : %s", shader_name.c_str(), UW::Config::SHADER_TYPE_TO_NAME[shader_type].c_str());
+  ImGui::Text("Shader: %s : %s", shader_name.c_str(), Engine::Config::SHADER_TYPE_TO_NAME[shader_type].c_str());
   
-  ImGui::InputTextMultiline("##Shader Content", buffer, UW::Config::SHADER_EDITOR_BUFFER_SIZE, ImVec2(width, height), ImGuiInputTextFlags_WordWrap);
+  ImGui::InputTextMultiline("##Shader Content", buffer, Engine::Config::SHADER_EDITOR_BUFFER_SIZE, ImVec2(width, height), ImGuiInputTextFlags_WordWrap);
 
   auto it = Resources::get().shaders.find(shader_name);
   if(it == Resources::get().shaders.end()) return;
@@ -77,7 +77,7 @@ void UW::UI_ShaderEditor::guiShaderEditor(){
     Resources::get().getShader(shader_name).compile();
     DataSerializer::get().saveShaders(shader_name, shader_type);
 
-    Logger::get().info("UI_ShaderEditor", "Saved { " + shader_name + " : " + UW::Config::SHADER_TYPE_TO_NAME[shader_type] + " }");
+    Engine::Utils::Logger::get().info("UI_ShaderEditor", "Saved { " + shader_name + " : " + Engine::Config::SHADER_TYPE_TO_NAME[shader_type] + " }");
   };
 };
 

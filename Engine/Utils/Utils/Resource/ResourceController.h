@@ -15,7 +15,7 @@
 
 
 
-namespace UW {
+namespace Engine::Utils {
 template<typename T>
 class ResourceController {
 private:

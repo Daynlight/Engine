@@ -15,9 +15,9 @@ namespace fs = std::filesystem;
 
 #ifndef PRODUCTION
 void UW::ScriptSerialization::save(const std::string& script_name, const std::string& source) {
-  Logger::get().info("ScriptSerialization", "Saving script: " + UW::Config::SCRIPTS_FOLDER + script_name);
+  Engine::Utils::Logger::get().info("ScriptSerialization", "Saving script: " + Engine::Config::SCRIPTS_FOLDER + script_name);
   
-  std::string folder_path = UW::Config::SCRIPTS_FOLDER;
+  std::string folder_path = Engine::Config::SCRIPTS_FOLDER;
   std::string file_path = folder_path + script_name;
 
   try {
@@ -25,32 +25,32 @@ void UW::ScriptSerialization::save(const std::string& script_name, const std::st
 
     std::ofstream outFile(file_path);
     if (!outFile.is_open()) {
-      Logger::get().erro("ScriptSerialization", "Failed to open file: " + file_path);
+      Engine::Utils::Logger::get().erro("ScriptSerialization", "Failed to open file: " + file_path);
       return;
     };
 
     outFile << source;
     outFile.close();
 
-    Logger::get().info("ScriptSerialization", "Script saved: " + file_path);
+    Engine::Utils::Logger::get().info("ScriptSerialization", "Script saved: " + file_path);
   } catch (const fs::filesystem_error& e) {
-    Logger::get().erro("ScriptSerialization", "Filesystem error: " + std::string(e.what()));
+    Engine::Utils::Logger::get().erro("ScriptSerialization", "Filesystem error: " + std::string(e.what()));
   };
 };
 
 
 
 std::string UW::ScriptSerialization::load(const std::string& script_name) {
-  std::string file_path = UW::Config::SCRIPTS_FOLDER + script_name;
+  std::string file_path = Engine::Config::SCRIPTS_FOLDER + script_name;
 
   if (!fs::exists(file_path)) {
-    Logger::get().warn("ScriptSerialization", "Script file not found: " + file_path);
+    Engine::Utils::Logger::get().warn("ScriptSerialization", "Script file not found: " + file_path);
     return "";
   };
 
   std::ifstream inFile(file_path);
   if (!inFile.is_open()) {
-    Logger::get().erro("ScriptSerialization", "Failed to open file: " + file_path);
+    Engine::Utils::Logger::get().erro("ScriptSerialization", "Failed to open file: " + file_path);
     return "";
   };
 

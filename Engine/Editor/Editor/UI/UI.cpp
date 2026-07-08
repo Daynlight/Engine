@@ -20,7 +20,7 @@ UW::UI::UI(CW::Renderer::Renderer &window, float &fps, UW::Scene& scene)
   shader_ui(gui),
   asset_loader_ui(gui, scene),
   scripts_ui(gui){
-  Logger::get().info("UI", "Initializing UI");
+  Engine::Utils::Logger::get().info("UI", "Initializing UI");
   
   gui.setWorkspace(appWorkspace());
 };
@@ -34,11 +34,11 @@ UW::UI::~UI(){
 
 
 void UW::UI::onLoad(){
-  Logger::get().info("UI", "Loading UI");
+  Engine::Utils::Logger::get().info("UI", "Loading UI");
 
   uiLoad();
   window.setSize(guiSettings.window_width, guiSettings.window_height);
-  Logger::get().info("UI", "Window Size Setted { "+ std::to_string(guiSettings.window_width) + " x " + std::to_string(guiSettings.window_height) +" }");
+  Engine::Utils::Logger::get().info("UI", "Window Size Setted { "+ std::to_string(guiSettings.window_width) + " x " + std::to_string(guiSettings.window_height) +" }");
 };
 
 
@@ -50,7 +50,7 @@ void UW::UI::render(){
 
 
 void UW::UI::onDestroy() {
-  Logger::get().info("UI", "Destroying UI");
+  Engine::Utils::Logger::get().info("UI", "Destroying UI");
   scripts_ui.saveScriptEditors();
   shader_ui.saveShaderEditors();
 };
@@ -63,7 +63,7 @@ void UW::UI::onDestroy() {
 void UW::UI::uiLoad(){
   configControl();
   ImGui::LoadIniSettingsFromDisk(ImGui::GetIO().IniFilename);
-  Logger::get().info("UI", "Loading UI Data from disck");
+  Engine::Utils::Logger::get().info("UI", "Loading UI Data from disck");
 
   Resources::get().simulation_mode = guiSettings.simulation_mode;
 
@@ -230,9 +230,9 @@ void UW::UI::menuBarGui(){
     };
 
     if(ImGui::BeginMenu("Properties")){
-      char title_buffer[UW::Config::OBJECT_NAME_BUFFER_SIZE] = {};
+      char title_buffer[Engine::Config::OBJECT_NAME_BUFFER_SIZE] = {};
       memcpy(title_buffer, UW::GlobResource::get().WINDOW_TITLE.data(), UW::GlobResource::get().WINDOW_TITLE.size());
-      if(ImGui::InputText("Window Title", title_buffer, UW::Config::OBJECT_NAME_BUFFER_SIZE)){
+      if(ImGui::InputText("Window Title", title_buffer, Engine::Config::OBJECT_NAME_BUFFER_SIZE)){
         UW::GlobResource::get().WINDOW_TITLE = std::string(title_buffer);
       };
       

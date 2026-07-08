@@ -9,25 +9,25 @@
 
 
 
-UW::Log::Log(UW::LogType type, const std::string& module, const std::string& text)
+Engine::Utils::Log::Log(Engine::Utils::LogType type, const std::string& module, const std::string& text) noexcept
   :type(type), module(module), text(text){};
 
 
 
-std::string UW::Log::getText() const {
+std::string Engine::Utils::Log::getText() const noexcept {
   return "["+ getTypeText() +"] ("+ module +"): " + text;
 };
 
 
 
-std::string UW::Log::getTypeText() const{
+std::string Engine::Utils::Log::getTypeText() const noexcept {
   #ifndef PRODUCTION
   switch (type){
-    case UW::LogType::INFO:
+    case Engine::Utils::LogType::INFO:
       return "INFO";
-    case UW::LogType::WARN:
+    case Engine::Utils::LogType::WARN:
       return "WARN";
-    case UW::LogType::ERRO:
+    case Engine::Utils::LogType::ERRO:
       return "ERRO";  
     default:
       return "NO TYPE";
@@ -39,14 +39,14 @@ std::string UW::Log::getTypeText() const{
 
 
 
-ImVec4 UW::Log::getLogColor() const{
+ImVec4 Engine::Utils::Log::getLogColor() const noexcept {
   #ifndef PRODUCTION
   switch(type){
-    case UW::LogType::INFO:
+    case Engine::Utils::LogType::INFO:
       return ImVec4(0.0f, 0.0f, 1.0f, 1.0f);
-    case UW::LogType::WARN:
+    case Engine::Utils::LogType::WARN:
       return ImVec4(1.0f, 1.0f, 0.0f, 1.0f);
-    case UW::LogType::ERRO:
+    case Engine::Utils::LogType::ERRO:
       return ImVec4(1.0f, 0.0f, 0.0f, 1.0f);
     default:
       return ImVec4(1.0f, 1.0f, 1.0f, 1.0f); 
@@ -61,54 +61,54 @@ ImVec4 UW::Log::getLogColor() const{
 
 
 
-UW::Logger &UW::Logger::get(){
+Engine::Utils::Logger &Engine::Utils::Logger::get() noexcept {
   static Logger instance;
   return instance;
 };
 
 
 
-UW::Logger::Logger(){
+Engine::Utils::Logger::Logger() noexcept {
   calculateInitialLineCount();
 };
 
 
 
-void UW::Logger::info(const std::string& module, const std::string& text){
+void Engine::Utils::Logger::info(const std::string& module, const std::string& text) noexcept {
 #ifndef PRODUCTION
-  data.emplace_back(UW::LogType::INFO, module, text);
+  data.emplace_back(Engine::Utils::LogType::INFO, module, text);
   log_to_file(data[data.size() - 1]);
 #endif
 };
 
 
 
-void UW::Logger::warn(const std::string& module, const std::string& text){
+void Engine::Utils::Logger::warn(const std::string& module, const std::string& text) noexcept {
 #ifndef PRODUCTION
-  data.emplace_back(UW::LogType::WARN, module, text);
+  data.emplace_back(Engine::Utils::LogType::WARN, module, text);
   log_to_file(data[data.size() - 1]);
 #endif
 };
 
 
 
-void UW::Logger::erro(const std::string& module, const std::string& text){
+void Engine::Utils::Logger::erro(const std::string& module, const std::string& text) noexcept {
 #ifndef PRODUCTION
-  data.emplace_back(UW::LogType::ERRO, module, text);
+  data.emplace_back(Engine::Utils::LogType::ERRO, module, text);
   log_to_file(data[data.size() - 1]);
 #endif
 };
 
 
 
-const std::vector<UW::Log>& UW::Logger::getLogs() const {
+const std::vector<Engine::Utils::Log>& Engine::Utils::Logger::getLogs() const noexcept {
   return data;
 };
 
 
 
-void UW::Logger::checkAndTrimLog() {
-  std::ifstream infile(UW::Config::LOG_FILE_PATH);
+void Engine::Utils::Logger::checkAndTrimLog() noexcept {
+  std::ifstream infile(Engine::Config::LOG_FILE_PATH);
   if (!infile.is_open()) return;
 
   std::vector<std::string> lines;
@@ -118,23 +118,23 @@ void UW::Logger::checkAndTrimLog() {
   }
   infile.close();
 
-  if (lines.size() >= UW::Config::LOGS_MAX_LINES) {
-    std::ofstream outfile(UW::Config::LOG_FILE_PATH, std::ios::trunc);
+  if (lines.size() >= Engine::Config::LOGS_MAX_LINES) {
+    std::ofstream outfile(Engine::Config::LOG_FILE_PATH, std::ios::trunc);
     if (outfile.is_open()) {
-      size_t start_index = lines.size() - UW::Config::LOGS_TARGET_TRIM_LINES;
+      size_t start_index = lines.size() - Engine::Config::LOGS_TARGET_TRIM_LINES;
       for (size_t i = start_index; i < lines.size(); ++i) {
         outfile << lines[i] << "\n";
       }
-      current_lines = UW::Config::LOGS_TARGET_TRIM_LINES;
+      current_lines = Engine::Config::LOGS_TARGET_TRIM_LINES;
     };
   };
 };
 
 
 
-void UW::Logger::calculateInitialLineCount() {
-  if (!std::filesystem::exists(UW::Config::LOG_FILE_PATH)) return;
-  std::ifstream infile(UW::Config::LOG_FILE_PATH);
+void Engine::Utils::Logger::calculateInitialLineCount() noexcept {
+  if (!std::filesystem::exists(Engine::Config::LOG_FILE_PATH)) return;
+  std::ifstream infile(Engine::Config::LOG_FILE_PATH);
   std::string line;
   while (std::getline(infile, line)) {
     current_lines++;
@@ -143,14 +143,14 @@ void UW::Logger::calculateInitialLineCount() {
 
 
 
-void UW::Logger::log_to_file(Log log){
-  std::ofstream log_file(UW::Config::LOG_FILE_PATH, std::ios::app);
+void Engine::Utils::Logger::log_to_file(Log log) noexcept {
+  std::ofstream log_file(Engine::Config::LOG_FILE_PATH, std::ios::app);
   if (log_file.is_open()) {
     log_file << log.getText() << "\n";
     current_lines++;
     log_file.close();
 
-    if (current_lines >= UW::Config::LOGS_MAX_LINES) {
+    if (current_lines >= Engine::Config::LOGS_MAX_LINES) {
       checkAndTrimLog();
     };
   };

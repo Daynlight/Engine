@@ -16,20 +16,20 @@ CMRC_DECLARE(GameData);
 
 #ifndef PRODUCTION
 void UW::ObjectsSerialization::save(const UW::GameObject& object) {
-  Logger::get().info("ObjectsSerialization", "Saving object: " + object.game_object_data.name);
+  Engine::Utils::Logger::get().info("ObjectsSerialization", "Saving object: " + object.game_object_data.name);
   
   try {
-    std::filesystem::path p(UW::Config::GAME_DATA_FOLDER + UW::Config::OBJECTS_FILENAME);
+    std::filesystem::path p(Engine::Config::GAME_DATA_FOLDER + Engine::Config::OBJECTS_FILENAME);
     if (p.has_parent_path())
       std::filesystem::create_directories(p.parent_path());
   } catch (const std::filesystem::filesystem_error& e) {
-    Logger::get().erro("ObjectsSerialization", "Filesystem error - " + std::string(e.what()));
+    Engine::Utils::Logger::get().erro("ObjectsSerialization", "Filesystem error - " + std::string(e.what()));
     return;
   };
 
-  std::ofstream outFile(UW::Config::GAME_DATA_FOLDER + UW::Config::OBJECTS_FILENAME, std::ios::binary | std::ios::app);
+  std::ofstream outFile(Engine::Config::GAME_DATA_FOLDER + Engine::Config::OBJECTS_FILENAME, std::ios::binary | std::ios::app);
   if (!outFile.is_open()) {
-    Logger::get().erro("ObjectsSerialization", "Failed to open file for saving");
+    Engine::Utils::Logger::get().erro("ObjectsSerialization", "Failed to open file for saving");
     return;
   };
 
@@ -54,7 +54,7 @@ void UW::ObjectsSerialization::save(const UW::GameObject& object) {
   outFile << record;
   outFile.close();
 
-  Logger::get().info("ObjectsSerialization", "Object saved { " + object.game_object_data.name + " }");
+  Engine::Utils::Logger::get().info("ObjectsSerialization", "Object saved { " + object.game_object_data.name + " }");
 };
 #endif
 
@@ -68,19 +68,19 @@ void UW::ObjectsSerialization::load(UW::GameObject& object) {
 
 #ifndef PRODUCTION
 void UW::ObjectsSerialization::saveAll(std::vector<UW::GameObject>& objects) {
-  Logger::get().info("ObjectsSerialization", "Saving all objects...");
+  Engine::Utils::Logger::get().info("ObjectsSerialization", "Saving all objects...");
   try {
-    std::filesystem::path p(UW::Config::GAME_DATA_FOLDER + UW::Config::OBJECTS_FILENAME);
+    std::filesystem::path p(Engine::Config::GAME_DATA_FOLDER + Engine::Config::OBJECTS_FILENAME);
     if (p.has_parent_path())
       std::filesystem::create_directories(p.parent_path());
   } catch (const std::filesystem::filesystem_error& e) {
-    Logger::get().erro("ObjectsSerialization", "Filesystem error - " + std::string(e.what()));
+    Engine::Utils::Logger::get().erro("ObjectsSerialization", "Filesystem error - " + std::string(e.what()));
     return;
   }
 
-  std::ofstream outFile(UW::Config::GAME_DATA_FOLDER + UW::Config::OBJECTS_FILENAME, std::ios::binary);
+  std::ofstream outFile(Engine::Config::GAME_DATA_FOLDER + Engine::Config::OBJECTS_FILENAME, std::ios::binary);
   if (!outFile.is_open()) {
-    Logger::get().erro("ObjectsSerialization", "Failed to open file for saving");
+    Engine::Utils::Logger::get().erro("ObjectsSerialization", "Failed to open file for saving");
     return;
   };
 
@@ -107,33 +107,33 @@ void UW::ObjectsSerialization::saveAll(std::vector<UW::GameObject>& objects) {
     for(auto script : object.scripts) record.scripts.emplace_back(std::pair<std::string, bool>(script.getPath(), script.script_on));
 
     outFile << record;
-    Logger::get().info("ObjectsSerialization", "Object saved { " + object.game_object_data.name + " }");
+    Engine::Utils::Logger::get().info("ObjectsSerialization", "Object saved { " + object.game_object_data.name + " }");
   };
 
   outFile.close();
-  Logger::get().info("ObjectsSerialization", "All Objects Had Been Saved");
+  Engine::Utils::Logger::get().info("ObjectsSerialization", "All Objects Had Been Saved");
 };
 #endif
 
 
 
 void UW::ObjectsSerialization::loadAll(std::vector<UW::GameObject>& objects) {
-  Logger::get().info("ObjectsSerialization", "Loading all objects...");
+  Engine::Utils::Logger::get().info("ObjectsSerialization", "Loading all objects...");
   try {
-    std::string resourcePath = UW::Config::GAME_DATA_FOLDER + UW::Config::OBJECTS_FILENAME;
+    std::string resourcePath = Engine::Config::GAME_DATA_FOLDER + Engine::Config::OBJECTS_FILENAME;
 
 #ifndef PRODUCTION
     std::ifstream inFile(resourcePath, std::ios::binary);
     
     if (!inFile.is_open()) {
-      Logger::get().erro("ObjectsSerialization", "Failed to open file for loading - " + resourcePath);
+      Engine::Utils::Logger::get().erro("ObjectsSerialization", "Failed to open file for loading - " + resourcePath);
       return;
     };
 #else
     auto fs = cmrc::GameData::get_filesystem();
     
     if (!fs.exists(resourcePath)) {
-      Logger::get().erro("ObjectsSerialization", "CMRC - File not found - " + resourcePath);
+      Engine::Utils::Logger::get().erro("ObjectsSerialization", "CMRC - File not found - " + resourcePath);
       return;
     };
 
@@ -170,15 +170,15 @@ void UW::ObjectsSerialization::loadAll(std::vector<UW::GameObject>& objects) {
         };
 
         objects.push_back(std::move(object));
-        Logger::get().info("ObjectsSerialization", "Object loaded { " + record.name + " }");
+        Engine::Utils::Logger::get().info("ObjectsSerialization", "Object loaded { " + record.name + " }");
       } else {
-        Logger::get().erro("ObjectsSerialization", "File format corrupted at index " + std::to_string(i));
+        Engine::Utils::Logger::get().erro("ObjectsSerialization", "File format corrupted at index " + std::to_string(i));
         break;
       };
     };
-    Logger::get().info("ObjectsSerialization", "All objects have been loaded");
+    Engine::Utils::Logger::get().info("ObjectsSerialization", "All objects have been loaded");
   } catch(const std::exception& e) {
-    Logger::get().erro("ObjectsSerialization", "Exception - " + std::string(e.what()));
+    Engine::Utils::Logger::get().erro("ObjectsSerialization", "Exception - " + std::string(e.what()));
   };
 };
 

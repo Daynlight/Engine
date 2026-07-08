@@ -60,13 +60,13 @@ glm::mat4 UW::Camera::projection(CW::Renderer::Renderer* renderer) {
   float aspectRatio = renderer->getWindowData()->width / (float)renderer->getWindowData()->height;
 
   if (is_ortho) {
-    float orthoSize = UW::Config::CAMERA_ORTHO_SIZE; 
+    float orthoSize = Engine::Config::CAMERA_ORTHO_SIZE; 
     float halfWidth = (orthoSize * aspectRatio) * 0.5f;
     float halfHeight = orthoSize * 0.5f;
 
-    return glm::ortho(-halfWidth, halfWidth, -halfHeight, halfHeight, UW::Config::CAMERA_NEAR_PLANE, UW::Config::CAMERA_ORTHO_FAR_PLANE);
+    return glm::ortho(-halfWidth, halfWidth, -halfHeight, halfHeight, Engine::Config::CAMERA_NEAR_PLANE, Engine::Config::CAMERA_ORTHO_FAR_PLANE);
   } else {
-    return glm::perspective(glm::radians(UW::Config::CAMERA_FOV), aspectRatio, UW::Config::CAMERA_NEAR_PLANE, UW::Config::CAMERA_FAR_PLANE);
+    return glm::perspective(glm::radians(Engine::Config::CAMERA_FOV), aspectRatio, Engine::Config::CAMERA_NEAR_PLANE, Engine::Config::CAMERA_FAR_PLANE);
   };
 };
 
@@ -78,9 +78,9 @@ void UW::Camera::event(CW::Renderer::Renderer* renderer) {
   if (cursor_lock) renderer->setCursorOn(true);
   else renderer->setCursorOn(false);
 
-  if (renderer->getInputData()->is_key_down(UW::Config::CAMERA_SWAP_MODE_BTN) && cursor_visible_lock <= 0.0f) {
+  if (renderer->getInputData()->is_key_down(Engine::Config::CAMERA_SWAP_MODE_BTN) && cursor_visible_lock <= 0.0f) {
     cursor_lock = !cursor_lock;
-    cursor_visible_lock = UW::Config::CAMERA_SWAP_COOLDOWN;
+    cursor_visible_lock = Engine::Config::CAMERA_SWAP_COOLDOWN;
     resetMouse();
   }
   else if (cursor_visible_lock > 0.0f) {
@@ -89,24 +89,24 @@ void UW::Camera::event(CW::Renderer::Renderer* renderer) {
 
   if (cursor_lock) return;
 
-  if (renderer->getInputData()->is_key_down(UW::Config::CAMERA_ACCELERATE)) velocity += UW::Config::CAMERA_ACCELERATION_RATE * dt;
-  if (renderer->getInputData()->is_key_down(UW::Config::CAMERA_DECELERATE)) velocity -= UW::Config::CAMERA_ACCELERATION_RATE * dt;
-  if (velocity < UW::Config::CAMERA_MIN_VELOCITY) velocity = UW::Config::CAMERA_MIN_VELOCITY;
+  if (renderer->getInputData()->is_key_down(Engine::Config::CAMERA_ACCELERATE)) velocity += Engine::Config::CAMERA_ACCELERATION_RATE * dt;
+  if (renderer->getInputData()->is_key_down(Engine::Config::CAMERA_DECELERATE)) velocity -= Engine::Config::CAMERA_ACCELERATION_RATE * dt;
+  if (velocity < Engine::Config::CAMERA_MIN_VELOCITY) velocity = Engine::Config::CAMERA_MIN_VELOCITY;
 
   glm::vec3 right = orientation * glm::vec3(1.0f, 0.0f, 0.0f);
   float target_bank = 0.0f;
 
-  if (renderer->getInputData()->is_key_down(UW::Config::CAMERA_MOVE_FORWARD)) position += direction * velocity * dt;
-  if (renderer->getInputData()->is_key_down(UW::Config::CAMERA_MOVE_BACK))    position -= direction * velocity * dt;
+  if (renderer->getInputData()->is_key_down(Engine::Config::CAMERA_MOVE_FORWARD)) position += direction * velocity * dt;
+  if (renderer->getInputData()->is_key_down(Engine::Config::CAMERA_MOVE_BACK))    position -= direction * velocity * dt;
   
-  if (renderer->getInputData()->is_key_down(UW::Config::CAMERA_MOVE_RIGHT)) {
+  if (renderer->getInputData()->is_key_down(Engine::Config::CAMERA_MOVE_RIGHT)) {
     position -= right * velocity * dt;
-    target_bank -= UW::Config::CAMERA_TILT_ACCELERATION;
+    target_bank -= Engine::Config::CAMERA_TILT_ACCELERATION;
   };
   
-  if (renderer->getInputData()->is_key_down(UW::Config::CAMERA_MOVE_LEFT)) {
+  if (renderer->getInputData()->is_key_down(Engine::Config::CAMERA_MOVE_LEFT)) {
     position += right * velocity * dt;
-    target_bank += UW::Config::CAMERA_TILT_ACCELERATION;
+    target_bank += Engine::Config::CAMERA_TILT_ACCELERATION;
   };
 
   float xoffset = renderer->getInputData()->mouse_x - lastMouseX;
@@ -120,20 +120,20 @@ void UW::Camera::event(CW::Renderer::Renderer* renderer) {
   float zoffset = 0.0f;
   bool manual_roll = false;
 
-  if (renderer->getInputData()->is_key_down(UW::Config::CAMERA_ROLL_LEFT)) {
-    if (current_roll > -UW::Config::CAMERA_MAX_TILT){
-      zoffset -= UW::Config::CAMERA_MANUAL_ROLL_SPEED * dt;
+  if (renderer->getInputData()->is_key_down(Engine::Config::CAMERA_ROLL_LEFT)) {
+    if (current_roll > -Engine::Config::CAMERA_MAX_TILT){
+      zoffset -= Engine::Config::CAMERA_MANUAL_ROLL_SPEED * dt;
       manual_roll = true;
     };
   };
-  if (renderer->getInputData()->is_key_down(UW::Config::CAMERA_ROLL_RIGHT)) {
-    if (current_roll < UW::Config::CAMERA_MAX_TILT){
-      zoffset += UW::Config::CAMERA_MANUAL_ROLL_SPEED * dt;
+  if (renderer->getInputData()->is_key_down(Engine::Config::CAMERA_ROLL_RIGHT)) {
+    if (current_roll < Engine::Config::CAMERA_MAX_TILT){
+      zoffset += Engine::Config::CAMERA_MANUAL_ROLL_SPEED * dt;
       manual_roll = true;
     };
   };
 
-  if (!manual_roll) zoffset += (target_bank - current_roll) * UW::Config::CAMERA_ROLL_INTERPOLATION_SPEED * dt;
+  if (!manual_roll) zoffset += (target_bank - current_roll) * Engine::Config::CAMERA_ROLL_INTERPOLATION_SPEED * dt;
 
   rotate(mouse_is_active ? xoffset : 0.0f, mouse_is_active ? yoffset : 0.0f, zoffset);
   mouse_is_active = true;

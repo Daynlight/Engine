@@ -13,7 +13,7 @@
 
 UW::UI_AssetLoader::UI_AssetLoader(CW::Gui::Gui& gui, UW::Scene& scene)
   : gui(gui), scene(scene) {
-  Logger::get().info("UI_AssetLoader", "Initialized Asset Loader");
+  Engine::Utils::Logger::get().info("UI_AssetLoader", "Initialized Asset Loader");
 };
 
 
@@ -26,7 +26,7 @@ UW::UI_AssetLoader::~UI_AssetLoader() {
 
 void UW::UI_AssetLoader::uiControl(){
   if(guiSettings.assetLoaderWindowOn){
-    Logger::get().info("UI", "Opening Asset Loader GUI");
+    Engine::Utils::Logger::get().info("UI", "Opening Asset Loader GUI");
     gui.addWindow("Asset Loader", assetLoaderGui());
   } else {
     gui.deleteWindow("Asset Loader");
@@ -62,11 +62,11 @@ void UW::UI_AssetLoader::loadModelFromFile(const std::string& path) {
 
   if (!current_scene || current_scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !current_scene->mRootNode) {
     load_error_msg = importer.GetErrorString();
-    Logger::get().erro("UI_AssetLoader", "Failed to load model: " + load_error_msg);
+    Engine::Utils::Logger::get().erro("UI_AssetLoader", "Failed to load model: " + load_error_msg);
     return;
   };
 
-  Logger::get().info("UI_AssetLoader", "Successfully loaded model: " + path);
+  Engine::Utils::Logger::get().info("UI_AssetLoader", "Successfully loaded model: " + path);
 
   for (unsigned int i = 0; i < current_scene->mNumMaterials; i++) {
     aiString matName;
@@ -76,7 +76,7 @@ void UW::UI_AssetLoader::loadModelFromFile(const std::string& path) {
     matData.original_name = matName.C_Str();
     if (matData.original_name.empty()) matData.original_name = "Material_" + std::to_string(i);
     
-    strncpy(matData.new_name, matData.original_name.c_str(), UW::Config::OBJECT_NAME_BUFFER_SIZE);
+    strncpy(matData.new_name, matData.original_name.c_str(), Engine::Config::OBJECT_NAME_BUFFER_SIZE);
     temp_materials.push_back(matData);
     
     material_import_toggles.push_back(true);
@@ -87,7 +87,7 @@ void UW::UI_AssetLoader::loadModelFromFile(const std::string& path) {
     meshData.original_name = current_scene->mMeshes[i]->mName.C_Str();
     if (meshData.original_name.empty()) meshData.original_name = "Mesh_" + std::to_string(i);
     
-    strncpy(meshData.new_name, meshData.original_name.c_str(), UW::Config::OBJECT_NAME_BUFFER_SIZE);
+    strncpy(meshData.new_name, meshData.original_name.c_str(), Engine::Config::OBJECT_NAME_BUFFER_SIZE);
     temp_meshes.push_back(meshData);
     
     mesh_import_toggles.push_back(true);
@@ -137,7 +137,7 @@ void UW::UI_AssetLoader::guiAssetLoader() {
         ImGui::Text("Orig: %s", temp_materials[i].original_name.c_str());
         ImGui::SameLine(180.0f);
         ImGui::SetNextItemWidth(-1);
-        ImGui::InputText("##NewMatName", temp_materials[i].new_name, UW::Config::OBJECT_NAME_BUFFER_SIZE);
+        ImGui::InputText("##NewMatName", temp_materials[i].new_name, Engine::Config::OBJECT_NAME_BUFFER_SIZE);
         ImGui::PopID();
       };
     };
@@ -154,7 +154,7 @@ void UW::UI_AssetLoader::guiAssetLoader() {
         ImGui::SameLine();
 
         ImGui::SetNextItemWidth(120.0f);
-        ImGui::InputText("##NewMeshName", temp_meshes[i].new_name, UW::Config::OBJECT_NAME_BUFFER_SIZE);
+        ImGui::InputText("##NewMeshName", temp_meshes[i].new_name, Engine::Config::OBJECT_NAME_BUFFER_SIZE);
         ImGui::SameLine();
 
         if (!temp_materials.empty()) {
@@ -209,7 +209,7 @@ void UW::UI_AssetLoader::guiAssetLoader() {
 
 
 void UW::UI_AssetLoader::finalizeImport() {
-  Logger::get().info("UI_AssetLoader", "Finalizing Separate Import...");
+  Engine::Utils::Logger::get().info("UI_AssetLoader", "Finalizing Separate Import...");
 
   std::vector<int> oldToNew = finalizeMaterials();
 
@@ -230,7 +230,7 @@ void UW::UI_AssetLoader::finalizeImport() {
     UW::GameObject new_obj(
       final_mesh_name,
       final_mesh_name,
-      UW::Config::DEFAULT_SHADER,
+      Engine::Config::DEFAULT_SHADER,
       { assigned_mat_name },
       {},
       {},
@@ -242,14 +242,14 @@ void UW::UI_AssetLoader::finalizeImport() {
     UW::ObjectManager::get().objects.push_back(new_obj);
   };
 
-  Logger::get().info("UI_AssetLoader", "Separate Import successful!");
+  Engine::Utils::Logger::get().info("UI_AssetLoader", "Separate Import successful!");
   clearTemporaryData(); 
 };
 
 
 
 void UW::UI_AssetLoader::finalizeImportMerged(const std::string& merged_name) {
-  Logger::get().info("UI_AssetLoader", "Finalizing Merged Import...");
+  Engine::Utils::Logger::get().info("UI_AssetLoader", "Finalizing Merged Import...");
 
   std::vector<int> oldToNew = finalizeMaterials();
 
@@ -324,7 +324,7 @@ void UW::UI_AssetLoader::finalizeImportMerged(const std::string& merged_name) {
   UW::GameObject new_obj(
     final_merged_name,
     final_merged_name,
-    UW::Config::DEFAULT_SHADER,
+    Engine::Config::DEFAULT_SHADER,
     assigned_materials,
     {},
     {},
@@ -335,14 +335,14 @@ void UW::UI_AssetLoader::finalizeImportMerged(const std::string& merged_name) {
 
   UW::ObjectManager::get().objects.push_back(new_obj);
 
-  Logger::get().info("UI_AssetLoader", "Merged Import successful!");
+  Engine::Utils::Logger::get().info("UI_AssetLoader", "Merged Import successful!");
   clearTemporaryData(); 
 };
 
 
 
 std::vector<int> UW::UI_AssetLoader::finalizeMaterials(){
-  Logger::get().info("UI_AssetLoader", "Finalizing Materials...");
+  Engine::Utils::Logger::get().info("UI_AssetLoader", "Finalizing Materials...");
 
   std::vector<int> oldToNewMap(temp_materials.size(), -1);
   int newIndex = 0;
@@ -388,7 +388,7 @@ std::vector<int> UW::UI_AssetLoader::finalizeMaterials(){
     newIndex++;
   };
 
-  Logger::get().info("UI_AssetLoader", "Materials Import successful!");
+  Engine::Utils::Logger::get().info("UI_AssetLoader", "Materials Import successful!");
   return oldToNewMap;
 };
 

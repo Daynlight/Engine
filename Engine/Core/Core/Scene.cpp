@@ -15,29 +15,29 @@ UW::Scene::Scene(CW::Renderer::Renderer& window)
   , debug_camera(&window)
 #endif
 {
-  UW::Logger::get().info("Scene", "Scene Initialized");
+  Engine::Utils::Logger::get().info("Scene", "Scene Initialized");
 };
 
 
 
 UW::Scene::~Scene(){
-  UW::Logger::get().info("Scene", "Scene Destroyed");
+  Engine::Utils::Logger::get().info("Scene", "Scene Destroyed");
 };
 
 
 
 void UW::Scene::onLoad(){
-  Logger::get().info("Scene", "Loading Scene");
+  Engine::Utils::Logger::get().info("Scene", "Loading Scene");
   
-  Logger::get().info("Scene", "Data Loaded from DataSerializer");
+  Engine::Utils::Logger::get().info("Scene", "Data Loaded from DataSerializer");
 
 
-  post_uniform["u_water_height"]->set<float>(UW::Config::WATER_HEIGHT);
-  post_uniform["u_Near"]->set<float>(UW::Config::CAMERA_NEAR_PLANE);
-  post_uniform["u_Far"]->set<float>(UW::Config::CAMERA_ORTHO_FAR_PLANE);
-  post_uniform["u_FogDensity"]->set<float>(UW::Config::FOG_DENSITY);
-  post_uniform["u_FogColor"]->set<glm::vec3>(UW::Config::FOG_COLOR);
-  Logger::get().info("Scene", "PostProcessing Uniforms Initialized");
+  post_uniform["u_water_height"]->set<float>(Engine::Config::WATER_HEIGHT);
+  post_uniform["u_Near"]->set<float>(Engine::Config::CAMERA_NEAR_PLANE);
+  post_uniform["u_Far"]->set<float>(Engine::Config::CAMERA_ORTHO_FAR_PLANE);
+  post_uniform["u_FogDensity"]->set<float>(Engine::Config::FOG_DENSITY);
+  post_uniform["u_FogColor"]->set<glm::vec3>(Engine::Config::FOG_COLOR);
+  Engine::Utils::Logger::get().info("Scene", "PostProcessing Uniforms Initialized");
   
 
   light_camera.setOrthographic(true);
@@ -55,23 +55,23 @@ void UW::Scene::onLoad(){
   shadows_uniform_on["u_ShadowEnabled"]->set<int>(1);
   shadows_uniform_on["u_ShadowDepthTexture"]->set<int>(16);
   shadows_uniform_on["u_LightSpaceMatrix"]->set<glm::mat4>(light_space_matrix);
-  Logger::get().info("Scene", "Shadows Camera and Uniform Initialized");
+  Engine::Utils::Logger::get().info("Scene", "Shadows Camera and Uniform Initialized");
   
 
   camera.position = {174.780f, 26.939f, -80.027f};
   camera.direction = {-0.847f, -0.466f, -0.256f};
-  Logger::get().info("Scene", "Main Camera Initialized");
+  Engine::Utils::Logger::get().info("Scene", "Main Camera Initialized");
 
 
 #ifndef PRODUCTION
   debug_camera.position = {453.198f, 250.233f, -26.842f};
   debug_camera.direction = {-0.668f, -0.734f, -0.122f};
-  Logger::get().info("Scene", "Debug Camera Initialized");
+  Engine::Utils::Logger::get().info("Scene", "Debug Camera Initialized");
 #endif
     
 
   compileShadows();
-  Logger::get().info("Scene", "Shadows Compiled");
+  Engine::Utils::Logger::get().info("Scene", "Shadows Compiled");
 };
 
 
@@ -106,10 +106,10 @@ void UW::Scene::onFixedUpdate(float fixed_delta_time){
 #ifndef PRODUCTION
   save_acc += fixed_delta_time;
 
-  if(save_acc >= UW::Config::SAVE_TIMESTAMP){
-    save_acc -= UW::Config::SAVE_TIMESTAMP;
+  if(save_acc >= Engine::Config::SAVE_TIMESTAMP){
+    save_acc -= Engine::Config::SAVE_TIMESTAMP;
     DataSerializer::get().saveAll();
-    Logger::get().info("Scene", "Auto-Save scene data");
+    Engine::Utils::Logger::get().info("Scene", "Auto-Save scene data");
   };
 #endif
   
@@ -137,7 +137,7 @@ void UW::Scene::onFixedUpdate(float fixed_delta_time){
 
 
 void UW::Scene::onDestroy() {
-  Logger::get().info("Scene", "Destroying Scene");
+  Engine::Utils::Logger::get().info("Scene", "Destroying Scene");
 
   unsigned int size = UW::ObjectManager::get().objects.size();
   for(int i = 0; i < size; i++){
@@ -159,13 +159,13 @@ void UW::Scene::onDestroy() {
     };
   };
 
-  Logger::get().info("Scene", "Objects onDestroy");
+  Engine::Utils::Logger::get().info("Scene", "Objects onDestroy");
   
   UW::ObjectManager::get().objects.clear();
   UW::ObjectManager::get().script_objects.clear();
-  Logger::get().info("Scene", "Objects Removed");
+  Engine::Utils::Logger::get().info("Scene", "Objects Removed");
 
-  Logger::get().info("Scene", "Destroyed Scene");
+  Engine::Utils::Logger::get().info("Scene", "Destroyed Scene");
 };
 
 

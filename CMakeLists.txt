@@ -21,7 +21,6 @@ option(SANDBOX_SCRIPTS "Enable script sandboxing build flags" OFF)
 
 include(FetchContent)
 
-
 FetchContent_Declare(CWindow
   GIT_REPOSITORY  https://github.com/Daynlight/CWindow.git
   GIT_TAG engine

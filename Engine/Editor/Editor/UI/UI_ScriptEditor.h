@@ -27,7 +27,7 @@ private:
   CW::Gui::Gui& gui;
   bool script_is_loaded = false;
   bool script_is_updated = false;
-  char buffer[UW::Config::SCRIPT_EDITOR_BUFFER_SIZE] = {0};
+  char buffer[Engine::Config::SCRIPT_EDITOR_BUFFER_SIZE] = {0};
   std::string script_name = "";
   std::chrono::steady_clock::time_point last_save_time;
   std::chrono::steady_clock::duration save_cooldown_duration;

@@ -21,14 +21,14 @@ class Camera {
 public:
   glm::vec3 position = {0.0f, 0.0f, 0.0f};
   glm::vec3 direction = {0.0f, 0.0f, 1.0f};
-  float fov = UW::Config::CAMERA_FOV;
+  float fov = Engine::Config::CAMERA_FOV;
   
 private:
   glm::quat orientation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f); 
   bool is_ortho = false;
 
-  float sensitivity = UW::Config::CAMERA_SENSITIVITY;
-  float velocity = UW::Config::CAMERA_DEFAULT_VELOCITY;
+  float sensitivity = Engine::Config::CAMERA_SENSITIVITY;
+  float velocity = Engine::Config::CAMERA_DEFAULT_VELOCITY;
   
   float lastMouseX = 0.0f;
   float lastMouseY = 0.0f;

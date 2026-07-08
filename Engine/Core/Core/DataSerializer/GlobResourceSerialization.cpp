@@ -16,19 +16,19 @@ CMRC_DECLARE(GameData);
 
 #ifndef PRODUCTION
 void UW::GlobResourceSerialization::saveAll() {
-  Logger::get().info("GlobResourceSerialization", "Saving resources data");
+  Engine::Utils::Logger::get().info("GlobResourceSerialization", "Saving resources data");
   try {
-    std::filesystem::path p(UW::Config::GAME_DATA_FOLDER + UW::Config::RESOURCES_FILENAME);
+    std::filesystem::path p(Engine::Config::GAME_DATA_FOLDER + Engine::Config::RESOURCES_FILENAME);
     if (p.has_parent_path())
       std::filesystem::create_directories(p.parent_path());
   } catch (const std::filesystem::filesystem_error& e) {
-    Logger::get().erro("GlobResourceSerialization", "Filesystem error - " + std::string(e.what()));
+    Engine::Utils::Logger::get().erro("GlobResourceSerialization", "Filesystem error - " + std::string(e.what()));
     return;
   }
 
-  std::ofstream outFile(UW::Config::GAME_DATA_FOLDER + UW::Config::RESOURCES_FILENAME, std::ios::binary);
+  std::ofstream outFile(Engine::Config::GAME_DATA_FOLDER + Engine::Config::RESOURCES_FILENAME, std::ios::binary);
   if (!outFile.is_open()) {
-    Logger::get().erro("GlobResourceSerialization", "Failed to open file for saving");
+    Engine::Utils::Logger::get().erro("GlobResourceSerialization", "Failed to open file for saving");
     return;
   };
 
@@ -40,29 +40,29 @@ void UW::GlobResourceSerialization::saveAll() {
   outFile << record;
   
   outFile.close();
-  Logger::get().info("GlobResourceSerialization", "Glob Resources saved");
+  Engine::Utils::Logger::get().info("GlobResourceSerialization", "Glob Resources saved");
 };
 #endif
 
 
 
 void UW::GlobResourceSerialization::loadAll() {
-  Logger::get().info("GlobResourceSerialization", "Loading all Resources...");
+  Engine::Utils::Logger::get().info("GlobResourceSerialization", "Loading all Resources...");
   try {
-    std::string resourcePath = UW::Config::GAME_DATA_FOLDER + UW::Config::RESOURCES_FILENAME;
+    std::string resourcePath = Engine::Config::GAME_DATA_FOLDER + Engine::Config::RESOURCES_FILENAME;
 
 #ifndef PRODUCTION
     std::ifstream inFile(resourcePath, std::ios::binary);
     
     if (!inFile.is_open()) {
-      Logger::get().erro("GlobResourceSerialization", "Failed to open file for loading - " + resourcePath);
+      Engine::Utils::Logger::get().erro("GlobResourceSerialization", "Failed to open file for loading - " + resourcePath);
       return;
     };
 #else
     auto fs = cmrc::GameData::get_filesystem();
     
     if (!fs.exists(resourcePath)) {
-      Logger::get().erro("GlobResourceSerialization", "CMRC - File not found - " + resourcePath);
+      Engine::Utils::Logger::get().erro("GlobResourceSerialization", "CMRC - File not found - " + resourcePath);
       return;
     };
 
@@ -78,13 +78,13 @@ void UW::GlobResourceSerialization::loadAll() {
       UW::GlobResource::get().VSYNC = record.vsync;
       
 
-      Logger::get().info("GlobResourceSerialization", "Glob Resources Loaded");
+      Engine::Utils::Logger::get().info("GlobResourceSerialization", "Glob Resources Loaded");
     } else {
-      Logger::get().erro("GlobResourceSerialization", "File format is corrupted");
+      Engine::Utils::Logger::get().erro("GlobResourceSerialization", "File format is corrupted");
     };
 
   } catch(const std::exception& e) {
-    Logger::get().erro("GlobResourceSerialization", "Exception - " + std::string(e.what()));
+    Engine::Utils::Logger::get().erro("GlobResourceSerialization", "Exception - " + std::string(e.what()));
   };
 };
 

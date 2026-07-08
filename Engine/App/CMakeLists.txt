@@ -19,7 +19,7 @@ set(src
 add_executable(App ${src})
 target_link_libraries(App Core)
 
-target_include_directories(App PUBLIC "App/" "../Config")
+target_include_directories(App PUBLIC "App/")
 
 
 if(PRODUCTION)

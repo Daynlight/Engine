@@ -23,11 +23,11 @@ UW::UI_Log::~UI_Log(){
 
 void UW::UI_Log::uiControl(){
   if(guiSettings.logWindowOn){
-    Logger::get().info("UI", "Opening Log GUI");
+    Engine::Utils::Logger::get().info("UI", "Opening Log GUI");
     gui.addWindow("Log Gui", ui());
   }
   else{
-    Logger::get().info("UI", "Closing Log GUI");
+    Engine::Utils::Logger::get().info("UI", "Closing Log GUI");
     gui.deleteWindow("Log Gui");
   };
 };
@@ -35,7 +35,7 @@ void UW::UI_Log::uiControl(){
 
 
 void UW::UI_Log::guiLogs() {
-  const auto& logs = Logger::get().getLogs();
+  const auto& logs = Engine::Utils::Logger::get().getLogs();
   int totalItems = static_cast<int>(logs.size());
 
   ImGuiListClipper clipper;

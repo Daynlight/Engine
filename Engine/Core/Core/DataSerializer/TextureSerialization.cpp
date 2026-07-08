@@ -15,9 +15,9 @@ namespace fs = std::filesystem;
 
 #ifndef PRODUCTION
 void UW::TextureSerialization::save(const std::string& texture_name, const CW::Renderer::Texture& source) {
-  // Logger::get().info("ScriptSerialization", "Saving script: " + UW::Config::TEXTURES_FOLDER + texture_name);
+  // Engine::Utils::Logger::get().info("ScriptSerialization", "Saving script: " + Engine::Config::TEXTURES_FOLDER + texture_name);
   
-  // std::string folder_path = UW::Config::GAME_DATA_FOLDER + UW::Config::TEXTURES_FOLDER;
+  // std::string folder_path = Engine::Config::GAME_DATA_FOLDER + Engine::Config::TEXTURES_FOLDER;
   // std::string file_path = folder_path + texture_name;
 
   // try {
@@ -25,16 +25,16 @@ void UW::TextureSerialization::save(const std::string& texture_name, const CW::R
 
   //   std::ofstream outFile(file_path);
   //   if (!outFile.is_open()) {
-  //     Logger::get().erro("ScriptSerialization", "Failed to open file: " + file_path);
+  //     Engine::Utils::Logger::get().erro("ScriptSerialization", "Failed to open file: " + file_path);
   //     return;
   //   };
 
   //   outFile << source;
   //   outFile.close();
 
-  //   Logger::get().info("ScriptSerialization", "Script saved: " + file_path);
+  //   Engine::Utils::Logger::get().info("ScriptSerialization", "Script saved: " + file_path);
   // } catch (const fs::filesystem_error& e) {
-  //   Logger::get().erro("ScriptSerialization", "Filesystem error: " + std::string(e.what()));
+  //   Engine::Utils::Logger::get().erro("ScriptSerialization", "Filesystem error: " + std::string(e.what()));
   // };
 };
 
@@ -42,16 +42,16 @@ void UW::TextureSerialization::save(const std::string& texture_name, const CW::R
 
 
 void UW::TextureSerialization::load(const std::string& texture_name) {
-  std::string file_path = UW::Config::GAME_DATA_FOLDER + UW::Config::ASSETS_FOLDER + UW::Config::TEXTURES_FOLDER + texture_name;
+  std::string file_path = Engine::Config::GAME_DATA_FOLDER + Engine::Config::ASSETS_FOLDER + Engine::Config::TEXTURES_FOLDER + texture_name;
 
   if (!fs::exists(file_path)) {
-    Logger::get().warn("TextureSerialization", "Texture file not found: " + file_path);
+    Engine::Utils::Logger::get().warn("TextureSerialization", "Texture file not found: " + file_path);
     return;
   };
 
   std::ifstream inFile(file_path);
   if (!inFile.is_open()) {
-    Logger::get().erro("TextureSerialization", "Failed to open file: " + file_path);
+    Engine::Utils::Logger::get().erro("TextureSerialization", "Failed to open file: " + file_path);
     return;
   };
 
@@ -71,7 +71,7 @@ void UW::TextureSerialization::load(const std::string& texture_name) {
         UW::Resources::get().textures[texture_name].compile(loader.data);
       };
     } else {
-      Logger::get().erro("Resources", "Failed to open texture file: " + file_path);
+      Engine::Utils::Logger::get().erro("Resources", "Failed to open texture file: " + file_path);
     };
   };
 #else
@@ -88,7 +88,7 @@ void UW::TextureSerialization::load(const std::string& texture_name) {
       UW::Resources::get().textures[texture_name].compile(loader.data);
     };
   } catch (const std::exception& e) {
-    Logger::get().warn("Resources", "[getTexture] CMRC Exception: " + std::string(e.what()));
+    Engine::Utils::Logger::get().warn("Resources", "[getTexture] CMRC Exception: " + std::string(e.what()));
   };
 #endif
 };
@@ -96,9 +96,9 @@ void UW::TextureSerialization::load(const std::string& texture_name) {
 
 
 void UW::TextureSerialization::loadAll(){
-  Logger::get().info("DataSerializer", "Scanning and loading all textures...");
+  Engine::Utils::Logger::get().info("DataSerializer", "Scanning and loading all textures...");
 
-  std::string root_path = UW::Config::GAME_DATA_FOLDER + UW::Config::ASSETS_FOLDER + UW::Config::TEXTURES_FOLDER;
+  std::string root_path = Engine::Config::GAME_DATA_FOLDER + Engine::Config::ASSETS_FOLDER + Engine::Config::TEXTURES_FOLDER;
 
   if (!root_path.empty() && root_path.back() == '/') root_path.pop_back();
 
@@ -123,16 +123,16 @@ void UW::TextureSerialization::loadAll(){
               auto it = Resources::get().textures.emplace(file_name, CW::Renderer::Texture()).first;
               it->second.compile(loader.data);
               
-              Logger::get().info("DataSerializer", "Loaded texture from Disk: " + file_name);
+              Engine::Utils::Logger::get().info("DataSerializer", "Loaded texture from Disk: " + file_name);
             };
           };
         };
       };
     } else {
-      Logger::get().warn("DataSerializer", "Filesystem - Directory not found: " + root_path);
+      Engine::Utils::Logger::get().warn("DataSerializer", "Filesystem - Directory not found: " + root_path);
     }
   } catch (const std::filesystem::filesystem_error& e) {
-    Logger::get().warn("DataSerializer", "[Filesystem] Could not scan local textures folder: " + std::string(e.what()));
+    Engine::Utils::Logger::get().warn("DataSerializer", "[Filesystem] Could not scan local textures folder: " + std::string(e.what()));
   };
 #else
   try {
@@ -154,16 +154,16 @@ void UW::TextureSerialization::loadAll(){
           auto it = Resources::get().textures.emplace(file_name, CW::Renderer::Texture()).first;
           it->second.compile(loader.data);
           
-          Logger::get().info("DataSerializer", "Loaded texture from CMRC: " + file_name);
+          Engine::Utils::Logger::get().info("DataSerializer", "Loaded texture from CMRC: " + file_name);
         };
       };
     } else {
-      Logger::get().warn("DataSerializer", "CMRC - Directory not found: " + root_path);
+      Engine::Utils::Logger::get().warn("DataSerializer", "CMRC - Directory not found: " + root_path);
     }
   } catch (const std::exception& e) {
-    Logger::get().warn("DataSerializer", "[CMRC] Could not scan textures folder: " + std::string(e.what()));
+    Engine::Utils::Logger::get().warn("DataSerializer", "[CMRC] Could not scan textures folder: " + std::string(e.what()));
   };
 #endif
 
-  Logger::get().info("DataSerializer", "Finished loading all textures.");
+  Engine::Utils::Logger::get().info("DataSerializer", "Finished loading all textures.");
 };

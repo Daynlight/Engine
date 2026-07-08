@@ -16,7 +16,7 @@
 
 
 
-namespace UW {
+namespace Engine::Utils {
 template<typename T>
 class Resource {
 private:
