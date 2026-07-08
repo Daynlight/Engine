@@ -8,7 +8,7 @@
 #pragma once
 
 #include "Renderer.h"
-#include "Resources/Lights/Lights.h"
+
 #include <string>
 #include <fstream>
 #include <unordered_map>
@@ -17,6 +17,7 @@
 
 #include "Utils/Logger.h"
 #include "Utils/config.h"
+#include "Resources/Lights/Lights.h"
 
 
 

@@ -8,6 +8,7 @@
 #pragma once
 
 #include "Renderer.h"
+
 #include <string>
 #include <fstream>
 #include <unordered_map>
@@ -22,7 +23,6 @@
 #endif
 
 #include "Utils/Logger.h"
-#include "Resources/Resources.h"
 #include "Utils/config.h"
 #include "Utils/utils.h"
 #include "Utils/Resource/ResourceController.h"

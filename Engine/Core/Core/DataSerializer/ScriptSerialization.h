@@ -6,6 +6,7 @@
 
 
 #pragma once
+#include "Renderer.h"
 
 #include <string>
 #include <fstream>
@@ -17,7 +18,6 @@
 #include <cmrc/cmrc.hpp>
 #endif
 
-#include "Renderer.h"
 #include "Utils/config.h"
 #include "Utils/Logger.h"
 

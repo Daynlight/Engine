@@ -41,7 +41,7 @@ void UW::TextureSerialization::save(const std::string& texture_name, const CW::R
 #endif
 
 
-void UW::TextureSerialization::load(const std::string& texture_name) {
+void UW::TextureSerialization::load(const std::string& texture_name, std::unordered_map<std::string, CW::Renderer::Texture>& textures) {
   std::string file_path = Engine::Config::GAME_DATA_FOLDER + Engine::Config::ASSETS_FOLDER + Engine::Config::TEXTURES_FOLDER + texture_name;
 
   if (!fs::exists(file_path)) {
@@ -67,8 +67,8 @@ void UW::TextureSerialization::load(const std::string& texture_name) {
       if (file.read(reinterpret_cast<char*>(buffer.data()), size)) {
         loader = CW::Renderer::TextureLoader(buffer.data(), size);
 
-        UW::Resources::get().textures.emplace(texture_name, CW::Renderer::Texture()).first;
-        UW::Resources::get().textures[texture_name].compile(loader.data);
+        textures.emplace(texture_name, CW::Renderer::Texture()).first;
+        textures[texture_name].compile(loader.data);
       };
     } else {
       Engine::Utils::Logger::get().erro("Resources", "Failed to open texture file: " + file_path);
@@ -95,7 +95,7 @@ void UW::TextureSerialization::load(const std::string& texture_name) {
 
 
 
-void UW::TextureSerialization::loadAll(){
+void UW::TextureSerialization::loadAll(std::unordered_map<std::string, CW::Renderer::Texture>& textures){
   Engine::Utils::Logger::get().info("DataSerializer", "Scanning and loading all textures...");
 
   std::string root_path = Engine::Config::GAME_DATA_FOLDER + Engine::Config::ASSETS_FOLDER + Engine::Config::TEXTURES_FOLDER;
@@ -109,7 +109,7 @@ void UW::TextureSerialization::loadAll(){
         if (entry.is_regular_file()) {
           std::string file_name = entry.path().filename().string();
 
-          if (Resources::get().textures.find(file_name) != Resources::get().textures.end()) continue; 
+          if (textures.find(file_name) != textures.end()) continue; 
 
           std::ifstream file(entry.path(), std::ios::binary | std::ios::ate);
           if (file.is_open()) {
@@ -120,7 +120,7 @@ void UW::TextureSerialization::loadAll(){
             if (file.read(reinterpret_cast<char*>(buffer.data()), size)) {
               CW::Renderer::TextureLoader loader(buffer.data(), size);
               
-              auto it = Resources::get().textures.emplace(file_name, CW::Renderer::Texture()).first;
+              auto it = textures.emplace(file_name, CW::Renderer::Texture()).first;
               it->second.compile(loader.data);
               
               Engine::Utils::Logger::get().info("DataSerializer", "Loaded texture from Disk: " + file_name);

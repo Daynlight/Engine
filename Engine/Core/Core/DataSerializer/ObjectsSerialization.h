@@ -6,6 +6,7 @@
 
 
 #pragma once
+#include "Renderer.h"
 
 #include <string>
 #include <fstream>
@@ -13,15 +14,13 @@
 #include <filesystem>
 #include <vector>
 
-#include "Renderer.h"
-#include "Objects/Object.h"
-#include "Objects/GameObject.h"
 #include "Utils/Logger.h"
+#include "ScriptShared/GameObjectData.h"
 
 
 
 namespace UW {
-  class GameObject; 
+  class GameObject;
 };
 
 

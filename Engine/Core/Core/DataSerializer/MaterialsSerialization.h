@@ -6,9 +6,8 @@
 
 
 #pragma once
-
 #include "Renderer.h"
-#include "Resources/Materials/Materials.h"
+
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -17,6 +16,7 @@
 
 #include "Utils/Logger.h"
 #include "Utils/config.h"
+#include "Resources/Materials/Materials.h"
 
 
 

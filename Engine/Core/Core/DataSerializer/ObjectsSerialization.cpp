@@ -12,6 +12,9 @@
 CMRC_DECLARE(GameData);
 #endif
 
+#include "Objects/Object.h"
+#include "Objects/GameObject.h"
+
 
 
 #ifndef PRODUCTION

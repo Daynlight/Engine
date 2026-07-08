@@ -6,6 +6,7 @@
 
 
 #pragma once
+#include "Renderer.h"
 
 #include <string>
 #include <fstream>
@@ -17,7 +18,6 @@
 #include <cmrc/cmrc.hpp>
 #endif
 
-#include "Renderer.h"
 #include "Utils/config.h"
 #include "Utils/Logger.h"
 
@@ -30,10 +30,10 @@ public:
   ~ShaderSerialization() = default;
   
 #ifndef PRODUCTION
-  void save(const std::string& shader_name, GLuint type);
+  void save(const std::string& shader_name, GLuint type, const std::string& source, std::unordered_map<std::string, CW::Renderer::Shader>& shaders);
 #endif
-  void load(const std::string& shader_name);
+  void load(const std::string& shader_name, std::unordered_map<std::string, CW::Renderer::Shader>& shaders);
 
-  void loadAll();
+  void loadAll(std::unordered_map<std::string, CW::Renderer::Shader>& shaders);
 };
 }; // namespace UW

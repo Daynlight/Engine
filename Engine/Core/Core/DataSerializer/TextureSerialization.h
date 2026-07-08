@@ -20,7 +20,6 @@
 
 #include "Utils/config.h"
 #include "Utils/Logger.h"
-#include "Resources/Resources.h"
 
 
 
@@ -33,8 +32,8 @@ public:
 #ifndef PRODUCTION
   void save(const std::string& texture_path, const CW::Renderer::Texture& source);
 #endif
-  void load(const std::string& texture_path);
+  void load(const std::string& texture_path, std::unordered_map<std::string, CW::Renderer::Texture>& textures);
 
-  void loadAll();
+  void loadAll(std::unordered_map<std::string, CW::Renderer::Texture>& textures);
 };
 }; // namespace UW
