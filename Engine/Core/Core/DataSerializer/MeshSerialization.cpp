@@ -145,7 +145,7 @@ void UW::MeshSerialization::loadAll(Engine::Utils::ResourceController<CW::Render
       Engine::Utils::Logger::get().erro("MeshSerialization", "CMRC - Directory not found: " + meshes_root);
       return;
     }
-    UW::Utils::scanCmrcDirectory(fs, meshes_root, "\\.msh$", mesh_files);
+    Engine::Utils::scanCmrcDirectory(fs, meshes_root, "\\.msh$", mesh_files);
 #endif
 
     for (const auto& file_path : mesh_files) load(file_path, meshes);

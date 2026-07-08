@@ -108,7 +108,7 @@ void UW::ShaderSerialization::loadAll(std::unordered_map<std::string, CW::Render
     if (fs.exists(root_path)) {
       for (auto&& entry : fs.iterate_directory(root_path)) {
         if (entry.is_directory()) {
-          load(entry.filename());
+          load(entry.filename(), shaders);
         }
       }
     } else {

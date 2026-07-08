@@ -35,5 +35,20 @@ FetchContent_Declare(cmrc
 )
 FetchContent_MakeAvailable(cmrc)
 
+if(PRODUCTION)
+  file(GLOB_RECURSE GameDataSet CONFIGURE_DEPENDS "GameData/**")
+  cmrc_add_resource_library(GameData ${GameDataSet})
+endif()
+
+file(GLOB_RECURSE ScriptSharedSet CONFIGURE_DEPENDS "Engine/ScriptShared/**")
+cmrc_add_resource_library(ScriptShared ${ScriptSharedSet})
+
 
 add_subdirectory(Engine)
+
+
+if(PRODUCTION)
+  target_compile_definitions(Core PRIVATE PRODUCTION)
+  file(GLOB_RECURSE PROD_SCRIPTS CONFIGURE_DEPENDS "Scripts/*.cpp")
+  target_sources(Core PRIVATE ${PROD_SCRIPTS})
+endif()

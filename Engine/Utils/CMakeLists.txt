@@ -9,6 +9,9 @@ cmake_minimum_required(VERSION 3.15)
 
 project(Utils LANGUAGES CXX C)
 
+option(PRODUCTION "Enable production build flags" OFF)
+
+
 set(src
   "Utils/Logger.cpp"
 )

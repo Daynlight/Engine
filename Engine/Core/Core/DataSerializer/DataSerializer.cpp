@@ -148,6 +148,7 @@ void UW::DataSerializer::loadTexture(const std::string &texture_name){
 
 
 
+#ifndef PRODUCTION
 void UW::DataSerializer::backupGameData() {
   Engine::Utils::Logger::get().info("DataSerializer", "Creating backup of GameData...");
 
@@ -174,7 +175,6 @@ void UW::DataSerializer::backupGameData() {
 
 
 
-#ifndef PRODUCTION
 void UW::DataSerializer::saveAll() {
   Engine::Utils::Logger::get().info("DataSerializer", "Saving all game data...");
   glob_serializer.saveAll();

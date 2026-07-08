@@ -6,12 +6,11 @@
 
 
 #pragma once
-#include "Gui.h"
-
 #include <string>
 #include <vector>
 #include <fstream>
 #include <filesystem>
+#include <array>
 
 #include "Utils/config.h"
 #include "ScriptShared/ILogger.h"
@@ -36,7 +35,7 @@ struct Log{
   std::string getText() const noexcept;
 
   std::string getTypeText() const noexcept;
-  ImVec4 getLogColor() const noexcept;
+  std::array<float, 4> getLogColor() const noexcept;
 };
 
 
@@ -69,6 +68,5 @@ private:
   void checkAndTrimLog() noexcept;
   void calculateInitialLineCount() noexcept;
   void log_to_file(Log log) noexcept;
-
 };
-};
+}; // namespace Engine::Utils

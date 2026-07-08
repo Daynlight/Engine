@@ -9,6 +9,8 @@ cmake_minimum_required(VERSION 3.15)
 
 project(App LANGUAGES CXX C)
 
+option(PRODUCTION "Enable production build flags" OFF)
+
 
 set(src
   "App/main.cpp"

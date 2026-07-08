@@ -8,6 +8,11 @@
 #include "TextureSerialization.h"
 
 
+#ifdef PRODUCTION
+#include <cmrc/cmrc.hpp>
+CMRC_DECLARE(GameData);
+#endif
+
 
 namespace fs = std::filesystem;
 
@@ -78,14 +83,14 @@ void UW::TextureSerialization::load(const std::string& texture_name, std::unorde
   try {
     auto fs = cmrc::GameData::get_filesystem();
     
-    if (fs.exists(local_path)) {
-      auto file = fs.open(local_path); 
+    if (fs.exists(file_path)) {
+      auto file = fs.open(file_path); 
       
       const unsigned char* data_ptr = reinterpret_cast<const unsigned char*>(file.begin());
       CW::Renderer::TextureLoader loader(data_ptr, file.size());
 
-      UW::Resources::get().textures.emplace(texture_name, CW::Renderer::Texture()).first;
-      UW::Resources::get().textures[texture_name].compile(loader.data);
+      textures.emplace(texture_name, CW::Renderer::Texture()).first;
+      textures[texture_name].compile(loader.data);
     };
   } catch (const std::exception& e) {
     Engine::Utils::Logger::get().warn("Resources", "[getTexture] CMRC Exception: " + std::string(e.what()));
@@ -143,7 +148,7 @@ void UW::TextureSerialization::loadAll(std::unordered_map<std::string, CW::Rende
         if (entry.is_file()) {
           std::string file_name = entry.filename();
           
-          if (Resources::get().textures.find(file_name) != Resources::get().textures.end()) continue;
+          if (textures.find(file_name) != textures.end()) continue;
 
           std::string full_cmrc_path = root_path + "/" + file_name;
           auto file = fs.open(full_cmrc_path); 
@@ -151,7 +156,7 @@ void UW::TextureSerialization::loadAll(std::unordered_map<std::string, CW::Rende
           
           CW::Renderer::TextureLoader loader(data_ptr, file.size());
 
-          auto it = Resources::get().textures.emplace(file_name, CW::Renderer::Texture()).first;
+          auto it = textures.emplace(file_name, CW::Renderer::Texture()).first;
           it->second.compile(loader.data);
           
           Engine::Utils::Logger::get().info("DataSerializer", "Loaded texture from CMRC: " + file_name);

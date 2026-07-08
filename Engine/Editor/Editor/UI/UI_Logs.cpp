@@ -44,7 +44,8 @@ void UW::UI_Log::guiLogs() {
   while (clipper.Step()) {
     for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++) {
       const auto& entry = logs[i];
-      ImGui::PushStyleColor(ImGuiCol_Text, entry.getLogColor());
+      std::array<float, 4> color = entry.getLogColor();
+      ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(color[0], color[1], color[2], color[3]));
       ImGui::TextUnformatted(entry.getText().c_str());
       ImGui::PopStyleColor();
     };

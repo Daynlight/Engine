@@ -10,7 +10,6 @@ cmake_minimum_required(VERSION 3.15)
 project(Core LANGUAGES CXX C)
 
 
-
 set(src
   "Core/Core.cpp"
   "Core/Scene.cpp"
@@ -33,28 +32,7 @@ set(src
 )
 
 
-
-
-if(PRODUCTION)
-  file(GLOB_RECURSE GameDataSet CONFIGURE_DEPENDS "GameData/**")
-  cmrc_add_resource_library(GameData ${GameDataSet})
-endif()
-
-
-file(GLOB_RECURSE ScriptSharedSet CONFIGURE_DEPENDS "ScriptShared/**")
-cmrc_add_resource_library(ScriptShared ${ScriptSharedSet})
-
-
-
 add_library(Core STATIC ${src})
-
-
-
-if(PRODUCTION)
-  target_compile_definitions(Core PRIVATE PRODUCTION)
-  file(GLOB_RECURSE PROD_SCRIPTS CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/../Scripts/*.cpp")
-  target_sources(Core PRIVATE ${PROD_SCRIPTS})
-endif()
 
 target_link_libraries(Core CWindow Utils)
 

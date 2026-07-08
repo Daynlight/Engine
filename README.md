@@ -125,7 +125,7 @@ cd build-prod
 cmake -B . -DPRODUCTION=ON -DCMAKE_BUILD_TYPE=Release ..
 cmake --build .
 cd ..
-./build-prod/bin/UnderTheWater
+./build-prod/bin/App
 ```
 
 

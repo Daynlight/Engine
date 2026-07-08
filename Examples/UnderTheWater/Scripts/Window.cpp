@@ -5,8 +5,8 @@
 
 
 
-#define SCRIPT_NAME Script_AnimationWater
-#define SCRIPT_FILE_NAME "AnimationWater"
+#define SCRIPT_NAME Script_Window
+#define SCRIPT_FILE_NAME "Window"
 #define BUILDING_SCRIPT_DLL
 
 #include "ScriptShared/ScriptShared/GameObjectScriptInterface.h"
@@ -19,26 +19,39 @@
 namespace UW{
 class SCRIPT_NAME : public GameObjectScriptInterface {
 private:
-  float elapsed_time = 0.0f;
+  std::string base_name = "Under The Water";
+  unsigned int samples = 0;
+  float acc_time = 0.0f;
+
 public:
   ~SCRIPT_NAME() = default;
   
   void OnLoad(){
+    glob_res->WINDOW_TITLE = base_name;
     logger->info(SCRIPT_FILE_NAME, "Loaded");
   };
   
   void OnUpdate(float delta_time){
-    elapsed_time += delta_time;
+    if(samples > 200){
+      float fps = samples / acc_time;
+      glob_res->WINDOW_TITLE = base_name + " | " + std::to_string(floor(fps)) + " fps";
+      acc_time = 0.0f;
+      samples = 0;
+    }
+    else{
+      acc_time += delta_time;
+      samples++;
+    }
   };
   
   void OnFixedUpdate(float fixed_delta_time){
   };
   
   void OnRender(){
-    game_object_data->uniforms["time"] = elapsed_time;
   };
   
   void OnDestroy(){
+    glob_res->WINDOW_TITLE = base_name;
     logger->info(SCRIPT_FILE_NAME, "Destroyed");
   };
 };

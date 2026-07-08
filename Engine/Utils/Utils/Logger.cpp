@@ -39,21 +39,21 @@ std::string Engine::Utils::Log::getTypeText() const noexcept {
 
 
 
-ImVec4 Engine::Utils::Log::getLogColor() const noexcept {
+std::array<float, 4> Engine::Utils::Log::getLogColor() const noexcept {
   #ifndef PRODUCTION
   switch(type){
     case Engine::Utils::LogType::INFO:
-      return ImVec4(0.0f, 0.0f, 1.0f, 1.0f);
+      return {0.0f, 0.0f, 1.0f, 1.0f};
     case Engine::Utils::LogType::WARN:
-      return ImVec4(1.0f, 1.0f, 0.0f, 1.0f);
+      return {1.0f, 1.0f, 0.0f, 1.0f};
     case Engine::Utils::LogType::ERRO:
-      return ImVec4(1.0f, 0.0f, 0.0f, 1.0f);
+      return {1.0f, 0.0f, 0.0f, 1.0f};
     default:
-      return ImVec4(1.0f, 1.0f, 1.0f, 1.0f); 
+      return {1.0f, 1.0f, 1.0f, 1.0f}; 
   };
   #endif
 
-  return ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
+  return {1.0f, 1.0f, 1.0f, 1.0f};
 };
 
 
