@@ -596,6 +596,7 @@ int UW::GameObjectScriptRecord::compile() {
 
 
 int UW::GameObjectScriptRecord::compile_thread(){
+#ifndef PRODUCTION
   std::filesystem::path p(so_file);
   std::filesystem::path dir = p.parent_path();
 
@@ -672,5 +673,6 @@ int UW::GameObjectScriptRecord::compile_thread(){
 
   Engine::Utils::Logger::get().erro("Script Controller", "Failed to fork()");
   return -1;
+#endif
 #endif
 };

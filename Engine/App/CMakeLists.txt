@@ -7,9 +7,8 @@
 
 cmake_minimum_required(VERSION 3.15)
 
+project(AppDev LANGUAGES CXX C)
 project(App LANGUAGES CXX C)
-
-option(PRODUCTION "Enable production build flags" OFF)
 
 
 set(src
@@ -18,14 +17,13 @@ set(src
 )
 
 
+add_executable(AppDev ${src})
+target_link_libraries(AppDev CoreDev)
+target_include_directories(AppDev PUBLIC "App/")
+target_link_libraries(AppDev Editor)
+
+
 add_executable(App ${src})
-target_link_libraries(App Core)
-
+target_link_libraries(App PRIVATE "-Wl,--whole-archive" Core "-Wl,--no-whole-archive")
 target_include_directories(App PUBLIC "App/")
-
-
-if(PRODUCTION)
-  target_compile_definitions(App PRIVATE PRODUCTION)
-else()
-  target_link_libraries(App Editor)
-endif()
+target_compile_definitions(App PRIVATE PRODUCTION)

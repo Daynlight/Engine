@@ -24,6 +24,7 @@
 #include <fcntl.h>
 
 #include "ScriptShared/GameObjectScriptInterface.h"
+
 #include "Utils/Logger.h"
 #include "Objects/ObjectManager.h"
 #include "Utils/config.h"

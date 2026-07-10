@@ -7,6 +7,11 @@
 
 cmake_minimum_required(VERSION 3.15)
 
+
+file(GLOB_RECURSE ScriptSharedSet CONFIGURE_DEPENDS "ScriptShared/**")
+cmrc_add_resource_library(ScriptShared ${ScriptSharedSet})
+
+
 add_subdirectory(Utils)
 if(NOT PRODUCTION)
   add_subdirectory(Editor)

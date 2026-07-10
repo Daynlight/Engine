@@ -8,6 +8,7 @@
 cmake_minimum_required(VERSION 3.15)
 
 project(Core LANGUAGES CXX C)
+project(CoreDev LANGUAGES CXX C)
 
 
 set(src
@@ -32,29 +33,21 @@ set(src
 )
 
 
-add_library(Core STATIC ${src})
-
+add_library(Core STATIC ${src} ${PROD_SCRIPTS})
 target_link_libraries(Core CWindow Utils)
-
-
-if(PRODUCTION)
-  target_link_libraries(Core GameData)
-else()
-  target_link_libraries(Core ScriptShared)
-endif()
-
-
+target_link_libraries(Core GameData)
 target_include_directories(Core PUBLIC "Core/" "../ScriptShared")
+target_compile_definitions(Core PRIVATE PRODUCTION)
 
-
-if(PRODUCTION)
-  target_compile_definitions(Core PRIVATE PRODUCTION)
-endif()
-
-
-target_compile_definitions(Core PRIVATE COMPILER_PATH="${CMAKE_CXX_COMPILER}")
+add_library(CoreDev STATIC ${src})
+target_link_libraries(CoreDev CWindow UtilsDev)
+target_link_libraries(CoreDev ScriptShared)
+target_include_directories(CoreDev PUBLIC "Core/" "../ScriptShared")
+target_compile_definitions(CoreDev PRIVATE COMPILER_PATH="${CMAKE_CXX_COMPILER}")
 message(STATUS "ScriptController uses CMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}")
 message(STATUS "ScriptController uses COMPILER_PATH definition=${CMAKE_CXX_COMPILER}")
+
+
 
 
 # if(SANDBOX_SCRIPTS)

@@ -9,8 +9,6 @@ cmake_minimum_required(VERSION 3.15)
 
 project(Editor LANGUAGES CXX C)
 
-option(PRODUCTION "Enable production build flags" OFF)
-
 
 set(src
   "Editor/Editor.cpp"
@@ -27,11 +25,7 @@ set(src
   "Editor/UI/UI_Info.cpp"
 )
 
+
 add_library(Editor STATIC ${src})
-target_link_libraries(Editor CWindow Utils)
-
+target_link_libraries(Editor CWindow UtilsDev)
 target_include_directories(Editor PUBLIC "Editor/" "../Core/Core" "../ScriptShared")
-
-if(PRODUCTION)
-  target_compile_definitions(Editor PRIVATE PRODUCTION)
-endif()

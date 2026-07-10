@@ -11,6 +11,7 @@
 #include <string>
 #include <unordered_map>
 #include <functional>
+#include <cstdio>
 #include "GameObjectScriptInterface.h"
 #include "ILogger.h"
 
@@ -34,6 +35,7 @@ public:
     };
 
     void registerScript(const std::string& name, ScriptFactory factory) {
+      printf("Reg: %s\n", name.c_str());
       factories[name] = factory;
     };
 
@@ -64,5 +66,5 @@ public:
 
   #define REGISTER_SCRIPT(RegKey, ScriptClassName) REGISTER_SCRIPT_INTERNAL(RegKey, ScriptClassName)
 #else
-  #define REGISTER_SCRIPT(RegKey, ScriptClassName)
+  #define REGISTER_SCRIPT(RegKey, ScriptClassName) printf("NO Reg: %s\n", ScriptClassName.c_str());
 #endif

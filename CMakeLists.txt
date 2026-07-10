@@ -7,9 +7,6 @@
 
 cmake_minimum_required(VERSION 3.15)
 
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_CXX_STANDARD 26)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -35,20 +32,11 @@ FetchContent_Declare(cmrc
 )
 FetchContent_MakeAvailable(cmrc)
 
-if(PRODUCTION)
-  file(GLOB_RECURSE GameDataSet CONFIGURE_DEPENDS "GameData/**")
-  cmrc_add_resource_library(GameData ${GameDataSet})
-endif()
 
-file(GLOB_RECURSE ScriptSharedSet CONFIGURE_DEPENDS "Engine/ScriptShared/**")
-cmrc_add_resource_library(ScriptShared ${ScriptSharedSet})
+file(GLOB_RECURSE GameDataSet CONFIGURE_DEPENDS "GameData/**")
+cmrc_add_resource_library(GameData ${GameDataSet})
+
+file(GLOB_RECURSE PROD_SCRIPTS CONFIGURE_DEPENDS "Scripts/*.cpp")
 
 
 add_subdirectory(Engine)
-
-
-if(PRODUCTION)
-  target_compile_definitions(Core PRIVATE PRODUCTION)
-  file(GLOB_RECURSE PROD_SCRIPTS CONFIGURE_DEPENDS "Scripts/*.cpp")
-  target_sources(Core PRIVATE ${PROD_SCRIPTS})
-endif()
