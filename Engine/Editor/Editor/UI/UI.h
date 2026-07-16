@@ -64,11 +64,13 @@ public:
   void onDestroy();
 
 private:
-// gui
+  // gui
   void uiLoad();
   void configControl();
   void uiControl();
   void menuBarGui();
+  void buildProject();
+  void runProject();
 
   std::function<void(std::function<void()> render_windows)> appWorkspace();
 

@@ -33,6 +33,10 @@ FetchContent_Declare(cmrc
 FetchContent_MakeAvailable(cmrc)
 
 
+file(GLOB_RECURSE EngineSet CONFIGURE_DEPENDS "Engine/**" "CMakeLists.txt")
+list(FILTER EngineSet EXCLUDE REGEX ".*/Examples/.*")
+cmrc_add_resource_library(EngineData ${EngineSet})
+
 file(GLOB_RECURSE GameDataSet CONFIGURE_DEPENDS "GameData/**")
 cmrc_add_resource_library(GameData ${GameDataSet})
 
@@ -40,3 +44,8 @@ file(GLOB_RECURSE PROD_SCRIPTS CONFIGURE_DEPENDS "Scripts/*.cpp")
 
 
 add_subdirectory(Engine)
+
+
+install(TARGETS AppDev
+  DESTINATION bin
+)

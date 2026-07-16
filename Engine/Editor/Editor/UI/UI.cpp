@@ -8,6 +8,9 @@
 #include "UI.h"
 #ifndef PRODUCTION
 
+#include <cmrc/cmrc.hpp>
+CMRC_DECLARE(EngineData);
+
 
 
 UW::UI::UI(CW::Renderer::Renderer &window, float &fps, UW::Scene& scene)
@@ -253,9 +256,178 @@ void UW::UI::menuBarGui(){
       guiSettings.simulation_mode = new_simulation_mode;
     };
 
+    if(ImGui::Button("Build")) buildProject();
+    if(ImGui::Button("Run")) runProject();
+
     ImGui::EndMenuBar();
   };
 };
+
+
+
+void UW::UI::buildProject(){
+  #ifndef PRODUCTION
+  Engine::Utils::Logger::get().info("UI", "Building ...");
+  
+  std::filesystem::path dest_folder = Engine::Config::COMPILATION_FOLDER;
+  std::string build_dir = (dest_folder / "build").string();
+  
+  // clean stage
+  if(std::filesystem::exists(dest_folder)){
+    std::filesystem::remove_all(dest_folder / Engine::Config::GAME_DATA_FOLDER);
+    std::filesystem::remove_all(dest_folder / Engine::Config::SCRIPTS_SRC_FOLDER);
+  };
+
+  
+  // copy stage
+  auto efs = cmrc::EngineData::get_filesystem();
+
+  auto extract_dir = [&](auto& self, const std::string& virtual_path, const std::filesystem::path& physical_path) -> void { 
+    if (!std::filesystem::exists(physical_path)) std::filesystem::create_directories(physical_path);
+
+    for (auto&& entry : efs.iterate_directory(virtual_path)) {
+      std::string current_v_path = virtual_path.empty() ? entry.filename() : virtual_path + "/" + entry.filename();
+      std::filesystem::path current_p_path = physical_path / entry.filename();
+      if(std::filesystem::exists(current_p_path)) continue;
+
+      if (entry.is_directory()) self(self, current_v_path, current_p_path);
+      else if (entry.is_file()) {
+        auto file = efs.open(current_v_path);
+        bool should_write = true;
+
+        if (std::filesystem::exists(current_p_path) && std::filesystem::file_size(current_p_path) == file.size()) should_write = false; 
+
+        if (should_write) {
+          std::ofstream out(current_p_path, std::ios::binary);
+          if (out) out.write(file.begin(), file.size());
+          else Engine::Utils::Logger::get().erro("UI", "Failed to write extracted file: " + current_p_path.string());
+        };
+      };
+    };
+  };
+
+  extract_dir(extract_dir, "", dest_folder);
+  Engine::Utils::Logger::get().info("UI", "Engine data successfully initialized from cmrc.");
+  
+  // copying game data
+  std::filesystem::copy(
+    Engine::Config::GAME_DATA_FOLDER,
+    dest_folder / Engine::Config::GAME_DATA_FOLDER,
+    std::filesystem::copy_options::recursive |
+    std::filesystem::copy_options::overwrite_existing
+  );
+
+  std::filesystem::copy(
+    Engine::Config::SCRIPTS_SRC_FOLDER,
+    dest_folder / Engine::Config::SCRIPTS_SRC_FOLDER,
+    std::filesystem::copy_options::recursive |
+    std::filesystem::copy_options::overwrite_existing
+  );
+
+  // compilation stage
+  const char* config[] = {
+    "cmake",
+    "-S",
+    dest_folder.c_str(), 
+    "-B",
+    build_dir.c_str(),
+    nullptr
+  };
+
+  const char* build[] = {
+    "cmake",
+    "--build", 
+    build_dir.c_str(),
+    "--target", 
+    "App",
+    nullptr
+  };
+
+  pid_t pid = fork();
+  if(pid == 0){
+    execvp("cmake", const_cast<char* const*>(config)); 
+    Engine::Utils::Logger::get().erro("UI", "Failed to exec g++");
+    exit(-1);
+  }
+  else if(pid > 0){
+    int status = 0; 
+    
+    waitpid(pid, &status, 0);
+    
+    if (WIFEXITED(status) && WEXITSTATUS(status) == 0) {
+      Engine::Utils::Logger::get().info("UI", "successful compilation");
+      // return; 
+    } 
+    else { 
+      Engine::Utils::Logger::get().erro("UI", "Compilation failed!");
+      return; 
+    };
+  };
+
+  pid_t pid1 = fork();
+  if(pid1 == 0){
+    execvp("cmake", const_cast<char* const*>(build)); 
+    Engine::Utils::Logger::get().erro("UI", "Failed to exec g++");
+    exit(-1);
+  }
+  else if(pid1 > 0){
+    int status = 0; 
+    
+    waitpid(pid1, &status, 0);
+    
+    if (WIFEXITED(status) && WEXITSTATUS(status) == 0) {
+      Engine::Utils::Logger::get().info("UI", "successful compilation");
+      // return; 
+    } 
+    else { 
+      Engine::Utils::Logger::get().erro("UI", "Compilation failed!");
+      return; 
+    };
+  };
+
+  std::filesystem::copy(dest_folder / "build" / "Engine" / "App" / "App", "App", std::filesystem::copy_options::overwrite_existing);
+  
+  
+  Engine::Utils::Logger::get().info("UI", "Project Builded");
+#else
+  Engine::Utils::Logger::get().info("UI", "In PRODUCTION mode: cmrc extraction skipped.");
+#endif
+};
+
+
+
+void UW::UI::runProject(){
+  UW::DataSerializer::get().saveAll();
+
+  buildProject();
+
+  const char* run[] = { 
+    "./App",
+    nullptr
+  };
+  
+  pid_t pid1 = fork();
+  if(pid1 == 0){
+    execvp("./App", const_cast<char* const*>(run)); 
+    Engine::Utils::Logger::get().erro("UI", "Failed to exec g++");
+    exit(-1);
+  }
+  else if(pid1 > 0){
+    int status = 0; 
+    
+    waitpid(pid1, &status, 0);
+    
+    if (WIFEXITED(status) && WEXITSTATUS(status) == 0) {
+      Engine::Utils::Logger::get().info("UI", "successful compilation");
+      // return; 
+    } 
+    else { 
+      Engine::Utils::Logger::get().erro("UI", "Compilation failed!");
+      return; 
+    };
+  };
+};
+
 
 
 std::function<void(std::function<void()> render_windows)> UW::UI::appWorkspace() {

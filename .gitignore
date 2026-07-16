@@ -74,7 +74,8 @@ bin/
 build/
 *.ini
 
-temp*
+*temp*
+Examples/**/App
 Scripts_DLL/
 **/Scripts/ScriptShared/
 .GameData_back/

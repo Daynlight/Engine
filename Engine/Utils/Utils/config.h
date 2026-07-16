@@ -77,6 +77,7 @@ namespace Engine::Config{
   inline const std::string OBJECTS_FILENAME = "Objects.obj";
   inline const std::string LIGHTS_FILENAME = "Lights.lit";
   inline const std::string SCRIPTS_SRC_FOLDER = "Scripts/";
+  inline const std::string COMPILATION_FOLDER = "compile_temp/";
   inline const std::string SCRIPTS_DLL_FOLDER = "Scripts_DLL/";
   inline const std::string RESOURCES_FILENAME = "Resources.res";
   inline const std::string LOG_FILE_PATH = "editor.log";
