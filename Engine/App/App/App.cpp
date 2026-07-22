@@ -14,6 +14,14 @@
 extern "C" {
   __declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
 }
+#elif defined(__linux__)
+#include <cstdlib>
+__attribute__((constructor)) void forceLinuxDiscreteGPU() {
+  setenv("__NV_PRIME_RENDER_OFFLOAD", "1", 1);
+  setenv("__GLX_VENDOR_LIBRARY_NAME", "nvidia", 1);
+  setenv("__VK_LAYER_NV_optimus", "NVIDIA_only", 1);
+  setenv("DRI_PRIME", "1", 1);
+}
 #endif
 
 

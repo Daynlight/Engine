@@ -50,40 +50,38 @@ list(FILTER EngineSet EXCLUDE REGEX ".*engine_data\\.zip$")
 list(FILTER EngineSet EXCLUDE REGEX ".*/CMakeCache\\.txt$")
 list(FILTER EngineSet EXCLUDE REGEX ".*/CMakeFiles/.*")
 
-if(NOT EXISTS "${ENGINE_ZIP_DEST}")
-  if(NOT IS_PROD_BUILD)
-    message(STATUS "Synchronously configuring production build...")
-    execute_process(
-      COMMAND ${CMAKE_COMMAND} -S ${CMAKE_SOURCE_DIR} -B ${CMAKE_BINARY_DIR}/build-prod -G "${CMAKE_GENERATOR}" -DIS_PROD_BUILD=ON
-      RESULT_VARIABLE prod_config_result
-      COMMAND_ECHO STDOUT
-    )
+if(NOT IS_PROD_BUILD)
+  message(STATUS "Synchronously configuring production build...")
+  execute_process(
+    COMMAND ${CMAKE_COMMAND} -S ${CMAKE_SOURCE_DIR} -B ${CMAKE_BINARY_DIR}/build-prod -G "${CMAKE_GENERATOR}" -DIS_PROD_BUILD=ON
+    RESULT_VARIABLE prod_config_result
+    COMMAND_ECHO STDOUT
+  )
 
-    if(prod_config_result EQUAL 0)
-      message(STATUS "Synchronously building production App...")
-      execute_process(
-        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR}/build-prod --target App
-        RESULT_VARIABLE prod_build_result
-      )
-      if(NOT prod_build_result EQUAL 0)
-        message(FATAL_ERROR "Production build failed. Cannot continue configuration.")
-      endif()
-    else()
-      message(FATAL_ERROR "Production configuration failed. Cannot continue.")
+  if(prod_config_result EQUAL 0)
+    message(STATUS "Synchronously building production App...")
+    execute_process(
+      COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR}/build-prod --target App
+      RESULT_VARIABLE prod_build_result
+    )
+    if(NOT prod_build_result EQUAL 0)
+      message(FATAL_ERROR "Production build failed. Cannot continue configuration.")
     endif()
-    
-    file(ARCHIVE_CREATE
-      OUTPUT "${ENGINE_ZIP}"
-      PATHS ${EngineSet}
-      FORMAT zip
-    )
-
-    execute_process(
-      COMMAND ${CMAKE_COMMAND} -E copy "${ENGINE_ZIP}" "${ENGINE_ZIP_DEST}"
-      RESULT_VARIABLE copy_result
-      COMMAND_ECHO STDOUT
-    )
+  else()
+    message(FATAL_ERROR "Production configuration failed. Cannot continue.")
   endif()
+  
+  file(ARCHIVE_CREATE
+    OUTPUT "${ENGINE_ZIP}"
+    PATHS ${EngineSet}
+    FORMAT zip
+  )
+
+  execute_process(
+    COMMAND ${CMAKE_COMMAND} -E copy "${ENGINE_ZIP}" "${ENGINE_ZIP_DEST}"
+    RESULT_VARIABLE copy_result
+    COMMAND_ECHO STDOUT
+  )
 endif()
   
 
