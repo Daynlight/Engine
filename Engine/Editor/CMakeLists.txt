@@ -28,5 +28,4 @@ set(src
 
 add_library(Editor STATIC ${src})
 target_link_libraries(Editor CWindow UtilsDev)
-target_link_libraries(Editor EngineData)
 target_include_directories(Editor PUBLIC "Editor/" "../Core/Core" "../ScriptShared")
