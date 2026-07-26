@@ -60,25 +60,25 @@ void UW::TextureSerialization::load(const std::string& texture_name, std::unorde
     return;
   };
 
-  CW::Renderer::TextureLoader loader = CW::Renderer::TextureLoader(file_path);
 #ifndef PRODUCTION
   if (std::filesystem::exists(file_path) && !std::filesystem::is_directory(file_path)) {
-    std::ifstream file(file_path, std::ios::binary | std::ios::ate);
-    if (file.is_open()) {
-      std::streamsize size = file.tellg();
-      file.seekg(0, std::ios::beg);
+    CW::Renderer::TextureLoader loader = CW::Renderer::TextureLoader(file_path);
+    // std::ifstream file(file_path, std::ios::binary | std::ios::ate);
+    // if (file.is_open()) {
+    //   std::streamsize size = file.tellg();
+    //   file.seekg(0, std::ios::beg);
 
-      std::vector<unsigned char> buffer(size);
-      if (file.read(reinterpret_cast<char*>(buffer.data()), size)) {
-        loader = CW::Renderer::TextureLoader(buffer.data(), size);
+    //   std::vector<unsigned char> buffer(size);
+    //   if (file.read(reinterpret_cast<char*>(buffer.data()), size)) {
+    //     loader = CW::Renderer::TextureLoader(buffer.data(), size);
 
         textures.emplace(texture_name, CW::Renderer::Texture()).first;
         textures[texture_name].compile(loader.data);
-      };
-    } else {
-      Engine::Utils::Logger::get().erro("Resources", "Failed to open texture file: " + file_path);
+    //   };
+    // } else {
+    //   Engine::Utils::Logger::get().erro("Resources", "Failed to open texture file: " + file_path);
     };
-  };
+  // };
 #else
   try {
     auto fs = cmrc::GameData::get_filesystem();
