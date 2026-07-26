@@ -231,17 +231,17 @@ void UW::UI::menuBarGui(){
 
     if(ImGui::BeginMenu("Properties")){
       char title_buffer[Engine::Config::OBJECT_NAME_BUFFER_SIZE] = {};
-      memcpy(title_buffer, UW::GlobResource::get().WINDOW_TITLE.data(), UW::GlobResource::get().WINDOW_TITLE.size());
+      memcpy(title_buffer, Engine::ScriptShared::GlobResource::get().WINDOW_TITLE.data(), Engine::ScriptShared::GlobResource::get().WINDOW_TITLE.size());
       if(ImGui::InputText("Window Title", title_buffer, Engine::Config::OBJECT_NAME_BUFFER_SIZE)){
-        UW::GlobResource::get().WINDOW_TITLE = std::string(title_buffer);
+        Engine::ScriptShared::GlobResource::get().WINDOW_TITLE = std::string(title_buffer);
       };
       
-      bool vsync_on = UW::GlobResource::get().VSYNC;
-      if(ImGui::Checkbox("Vsync", &vsync_on)) UW::GlobResource::get().VSYNC = vsync_on;
+      bool vsync_on = Engine::ScriptShared::GlobResource::get().VSYNC;
+      if(ImGui::Checkbox("Vsync", &vsync_on)) Engine::ScriptShared::GlobResource::get().VSYNC = vsync_on;
 
-      float fixed_hz = UW::GlobResource::get().FIXED_HZ;
+      float fixed_hz = Engine::ScriptShared::GlobResource::get().FIXED_HZ;
       if(ImGui::InputFloat("Fixed_HZ", &fixed_hz)){
-        UW::GlobResource::get().FIXED_HZ = fixed_hz;
+        Engine::ScriptShared::GlobResource::get().FIXED_HZ = fixed_hz;
       };
 
       ImGui::EndMenu();

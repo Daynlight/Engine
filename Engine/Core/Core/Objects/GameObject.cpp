@@ -9,7 +9,7 @@
 
 
 
-void PatchScriptPointers(std::vector<UW::GameObjectScriptRecord>& scripts, UW::GameObjectData* new_data_ptr) {
+void PatchScriptPointers(std::vector<UW::GameObjectScriptRecord>& scripts, Engine::ScriptShared::GameObjectData* new_data_ptr) {
   for (auto& record : scripts) {
     if (record.script) {
       record.script->game_object_data = new_data_ptr;

@@ -132,13 +132,13 @@ UW::GameObjectScriptRecord& UW::GameObjectScriptRecord::operator=(GameObjectScri
 
 
 
-void UW::GameObjectScriptRecord::syncPointer(GameObjectData* data) {
+void UW::GameObjectScriptRecord::syncPointer(Engine::ScriptShared::GameObjectData* data) {
   if (script) script->game_object_data = data;
 };
 
 
 
-void UW::GameObjectScriptRecord::observe(GameObjectData *data){
+void UW::GameObjectScriptRecord::observe(Engine::ScriptShared::GameObjectData *data){
 #ifndef PRODUCTION
   if(compiling) {
     checkLastWrite();
@@ -156,12 +156,12 @@ void UW::GameObjectScriptRecord::observe(GameObjectData *data){
 
 
 
-void UW::GameObjectScriptRecord::onLoad(GameObjectData* data) {
+void UW::GameObjectScriptRecord::onLoad(Engine::ScriptShared::GameObjectData* data) {
   if(script){
     script->game_object_data = data;
-    script->glob_res = &UW::GlobResource::get();
-    script->logger = static_cast<ILogger*>(&Engine::Utils::Logger::get());
-    script->object_manager = static_cast<IObjectManager*>(&UW::ObjectManager::get());
+    script->glob_res = &Engine::ScriptShared::GlobResource::get();
+    script->logger = static_cast<Engine::ScriptShared::ILogger*>(&Engine::Utils::Logger::get());
+    script->object_manager = static_cast<Engine::ScriptShared::IObjectManager*>(&UW::ObjectManager::get());
 
 #ifndef PRODUCTION
 #ifdef SANDBOX_SCRIPTS
@@ -333,7 +333,7 @@ int UW::GameObjectScriptRecord::loadModule() {
   removeModule();
 
 #ifdef PRODUCTION
-  script = UW::ScriptRegistry::get().createScript(path);
+  script = Engine::ScriptShared::ScriptRegistry::get().createScript(path);
   
   if (!script) {
     Engine::Utils::Logger::get().erro("Script Controller", "Script not found in registry: " + path);
@@ -374,7 +374,7 @@ int UW::GameObjectScriptRecord::loadModule() {
 
   dlerror();
 
-  typedef GameObjectScriptInterface* (*GetScriptFunc)();
+  typedef Engine::ScriptShared::GameObjectScriptInterface* (*GetScriptFunc)();
   GetScriptFunc getScript = (GetScriptFunc)dlsym(script_handler, "GetScript");
   const char* dlsym_error = dlerror();
   
@@ -438,7 +438,7 @@ void UW::GameObjectScriptRecord::removeModule(){
     }
 #else
     dlerror();
-    using DeleteScriptFunc = void (*)(GameObjectScriptInterface*);
+    using DeleteScriptFunc = void (*)(Engine::ScriptShared::GameObjectScriptInterface*);
     DeleteScriptFunc deleteScript = (DeleteScriptFunc)dlsym(script_handler, "DeleteScript");
     const char* dlsym_error = dlerror();
 
@@ -507,7 +507,7 @@ bool UW::GameObjectScriptRecord::checkLastWrite(){
 
 
 
-void UW::GameObjectScriptRecord::updateScript(GameObjectData* data) {
+void UW::GameObjectScriptRecord::updateScript(Engine::ScriptShared::GameObjectData* data) {
 #ifndef PRODUCTION
   Engine::Utils::Logger::get().info("Script Controller", "Script is Updating...");
 

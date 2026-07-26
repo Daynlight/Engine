@@ -17,7 +17,7 @@
 
 
 
-namespace UW {
+namespace Engine::ScriptShared {
   class GameObjectScriptInterface;
 
   using ScriptFactory = std::function<GameObjectScriptInterface*()>;
@@ -56,8 +56,8 @@ public:
     namespace { \
       struct ScriptRegisterer_##ScriptClassName { \
         ScriptRegisterer_##ScriptClassName() { \
-          UW::ScriptRegistry::get().registerScript(RegKey, []() -> UW::GameObjectScriptInterface* { \
-            return new UW::ScriptClassName(); \
+          Engine::ScriptShared::ScriptRegistry::get().registerScript(RegKey, []() -> Engine::ScriptShared::GameObjectScriptInterface* { \
+            return new Engine::ScriptShared::ScriptClassName(); \
           }); \
         } \
       }; \

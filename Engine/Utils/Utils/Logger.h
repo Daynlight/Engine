@@ -40,7 +40,7 @@ struct Log{
 
 
 
-class Logger : public UW::ILogger {
+class Logger : public Engine::ScriptShared::ILogger {
 private:
   std::vector<Engine::Utils::Log> data;
   size_t current_lines = 0;

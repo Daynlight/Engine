@@ -36,8 +36,8 @@ struct GameObjectRecord {
   std::vector<std::string> textures;
   std::vector<std::string> materials;
   std::vector<std::pair<std::string, bool>> scripts;
-  std::unordered_map<std::string, UW::GameObjectParameterType> parameters;
-  std::unordered_map<std::string, UW::GameObjectParameterType> uniforms;
+  std::unordered_map<std::string, Engine::ScriptShared::GameObjectParameterType> parameters;
+  std::unordered_map<std::string, Engine::ScriptShared::GameObjectParameterType> uniforms;
   bool culling_on = true;
   bool dont_write_to_depth_mask = false;
   bool gl_depth_lequal = false;

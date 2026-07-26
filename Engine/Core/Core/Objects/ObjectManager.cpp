@@ -38,7 +38,7 @@ void UW::ObjectManager::erase(const std::string &name) {
 
 
 
-UW::GameObjectData *UW::ObjectManager::getGameObjectData(const std::string &name){
+Engine::ScriptShared::GameObjectData *UW::ObjectManager::getGameObjectData(const std::string &name){
   for(auto& object : objects)
     if(object.game_object_data.name == name)
       return &object.copy_game_object_data;
@@ -110,7 +110,7 @@ void UW::ObjectManager::eraseObjectScript(const std::string &name) {
 
 
 
-UW::GameObjectData *UW::ObjectManager::getGameObjectDataObjectScript(const std::string &name){
+Engine::ScriptShared::GameObjectData *UW::ObjectManager::getGameObjectDataObjectScript(const std::string &name){
   for(auto& object : script_objects)
     if(object.game_object_data.name == name)
       return &object.copy_game_object_data;

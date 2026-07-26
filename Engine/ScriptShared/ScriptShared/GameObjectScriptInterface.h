@@ -26,7 +26,7 @@
 
 
 
-namespace UW{
+namespace Engine::ScriptShared{
 class GameObjectScriptInterface {
 public:
   GameObjectData* game_object_data = nullptr;

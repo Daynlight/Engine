@@ -126,7 +126,7 @@ void UW::App::fixedUpdate(){
 #ifndef PRODUCTION
   fixed_update_time_acc += core.window.getWindowData()->delta_time;
 
-  float fixed_time_step = 1.0f / UW::GlobResource::get().FIXED_HZ;
+  float fixed_time_step = 1.0f / Engine::ScriptShared::GlobResource::get().FIXED_HZ;
   
   int max_steps = Engine::Config::MAX_FIXED_STEPS;
   while(fixed_update_time_acc >= fixed_time_step && max_steps-- > 0){

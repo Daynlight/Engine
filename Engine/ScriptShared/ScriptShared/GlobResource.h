@@ -37,7 +37,7 @@ class InoutData;
 
 
 
-namespace UW{
+namespace Engine::ScriptShared{
 inline constexpr const char* globResourceName[] = {"int", "float", "bool", "vec2", "vec3", "str"};
 using GlobResourceName = std::variant<int, float, bool, glm::vec2, glm::vec3, std::string>;
 

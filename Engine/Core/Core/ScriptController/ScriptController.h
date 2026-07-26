@@ -51,7 +51,7 @@ class GameObjectScriptRecord{
   void* script_handler = nullptr;
 
 public:
-  GameObjectScriptInterface* script = nullptr;
+  Engine::ScriptShared::GameObjectScriptInterface* script = nullptr;
   bool script_on = true;
 
 public:
@@ -62,11 +62,11 @@ public:
   GameObjectScriptRecord& operator=(const GameObjectScriptRecord& other);
   GameObjectScriptRecord(GameObjectScriptRecord&& other) noexcept;
   GameObjectScriptRecord& operator=(GameObjectScriptRecord&& other) noexcept;
-  void syncPointer(GameObjectData* data);
+  void syncPointer(Engine::ScriptShared::GameObjectData* data);
 
-  void observe(GameObjectData* data);
+  void observe(Engine::ScriptShared::GameObjectData* data);
   
-  void onLoad(GameObjectData* data);
+  void onLoad(Engine::ScriptShared::GameObjectData* data);
   void onUpdate(float delta_time);
   void onFixedUpdate(float fixed_delta_time);
   void onRender();
@@ -80,7 +80,7 @@ public:
 private:
   void initSharedFolder();
   bool checkLastWrite();
-  void updateScript(GameObjectData* data);
+  void updateScript(Engine::ScriptShared::GameObjectData* data);
 
   int compile();
   int compile_thread();

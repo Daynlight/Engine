@@ -12,7 +12,7 @@
 #include "GameObjectData.h"
 
 
-namespace UW {
+namespace Engine::ScriptShared {
 class IObjectManager {
 public:
   virtual void emplace_back(const std::string& name) = 0;

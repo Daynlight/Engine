@@ -25,7 +25,7 @@
 
 
 
-namespace UW{
+namespace Engine::ScriptShared{
 inline constexpr const char* gameObjectParameterTypeName[] = {"int", "float", "bool", "vec2", "vec3", "str"};
 using GameObjectParameterType = std::variant<int, float, bool, glm::vec2, glm::vec3, std::string>;
 

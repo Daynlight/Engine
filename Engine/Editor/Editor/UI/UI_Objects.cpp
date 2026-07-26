@@ -325,7 +325,7 @@ void UW::UI_Objects::guiObjectEditor(){
 
     int current_type_idx = static_cast<int>(param_value.index());
     ImGui::SetNextItemWidth(70.0f);
-    if (ImGui::Combo("##ParamType", &current_type_idx, UW::gameObjectParameterTypeName, IM_ARRAYSIZE(UW::gameObjectParameterTypeName))) {
+    if (ImGui::Combo("##ParamType", &current_type_idx, Engine::ScriptShared::gameObjectParameterTypeName, IM_ARRAYSIZE(Engine::ScriptShared::gameObjectParameterTypeName))) {
       object.stopScripts();
       switch (current_type_idx) {
         case 0: param_value = 0; break;
@@ -474,7 +474,7 @@ void UW::UI_Objects::guiObjectEditor(){
 
     int current_type_idx = static_cast<int>(uniform_value.index());
     ImGui::SetNextItemWidth(70.0f);
-    if (ImGui::Combo("##UniformType", &current_type_idx, UW::gameObjectParameterTypeName, IM_ARRAYSIZE(UW::gameObjectParameterTypeName))) {
+    if (ImGui::Combo("##UniformType", &current_type_idx, Engine::ScriptShared::gameObjectParameterTypeName, IM_ARRAYSIZE(Engine::ScriptShared::gameObjectParameterTypeName))) {
       object.stopScripts();
       switch (current_type_idx) {
         case 0: uniform_value = 0; break;

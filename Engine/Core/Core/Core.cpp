@@ -37,7 +37,7 @@ void UW::Core::onLoad(){
 
   DataSerializer::get().loadAll();
   initWindow();
-  UW::GlobResource::get().input_data = window.getInputData();
+  Engine::ScriptShared::GlobResource::get().input_data = window.getInputData();
 
   scene.onLoad();
   Engine::Utils::Logger::get().info("Core", "Scene Loaded");
@@ -93,15 +93,15 @@ void UW::Core::update(){
 void UW::Core::fixedUpdate(){
   fixed_update_time_acc += window.getWindowData()->delta_time;
 
-  if(UW::GlobResource::get().FIXED_HZ > Engine::Config::MAX_FIXED_HZ) UW::GlobResource::get().FIXED_HZ = Engine::Config::MAX_FIXED_HZ;
-  if(UW::GlobResource::get().FIXED_HZ < Engine::Config::MIN_FIXED_HZ) UW::GlobResource::get().FIXED_HZ = Engine::Config::MIN_FIXED_HZ;
+  if(Engine::ScriptShared::GlobResource::get().FIXED_HZ > Engine::Config::MAX_FIXED_HZ) Engine::ScriptShared::GlobResource::get().FIXED_HZ = Engine::Config::MAX_FIXED_HZ;
+  if(Engine::ScriptShared::GlobResource::get().FIXED_HZ < Engine::Config::MIN_FIXED_HZ) Engine::ScriptShared::GlobResource::get().FIXED_HZ = Engine::Config::MIN_FIXED_HZ;
   
-  float fixed_time_step = 1.0f / UW::GlobResource::get().FIXED_HZ;
+  float fixed_time_step = 1.0f / Engine::ScriptShared::GlobResource::get().FIXED_HZ;
   
   int max_steps = Engine::Config::MAX_FIXED_STEPS;
   while(fixed_update_time_acc >= fixed_time_step && max_steps-- > 0){
-    if(cached_title != UW::GlobResource::get().WINDOW_TITLE) updateTitle();
-    if(cached_vsync != UW::GlobResource::get().VSYNC) updateVsync();
+    if(cached_title != Engine::ScriptShared::GlobResource::get().WINDOW_TITLE) updateTitle();
+    if(cached_vsync != Engine::ScriptShared::GlobResource::get().VSYNC) updateVsync();
     
     scene.onFixedUpdate(fixed_time_step);
 
@@ -132,7 +132,7 @@ void UW::Core::initWindow(){
 
 
 void UW::Core::updateTitle(){
-  cached_title = UW::GlobResource::get().WINDOW_TITLE;
+  cached_title = Engine::ScriptShared::GlobResource::get().WINDOW_TITLE;
 
   window.setWindowTitle(cached_title);
   Engine::Utils::Logger::get().info("Core", "Title set to - " + cached_title);
@@ -141,7 +141,7 @@ void UW::Core::updateTitle(){
 
 
 void UW::Core::updateVsync(){
-  cached_vsync = UW::GlobResource::get().VSYNC;
+  cached_vsync = Engine::ScriptShared::GlobResource::get().VSYNC;
 
   window.setVsync(cached_vsync);
   Engine::Utils::Logger::get().info("Core", "VSync set to - " + std::string(cached_vsync != 0 ? "On" : "Off"));

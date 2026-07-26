@@ -33,9 +33,9 @@ void UW::GlobResourceSerialization::saveAll() {
   };
 
   UW::GlobResourceRecord record;
-  record.window_title = UW::GlobResource::get().WINDOW_TITLE;
-  record.Fixed_HZ = UW::GlobResource::get().FIXED_HZ;
-  record.vsync = UW::GlobResource::get().VSYNC;
+  record.window_title = Engine::ScriptShared::GlobResource::get().WINDOW_TITLE;
+  record.Fixed_HZ = Engine::ScriptShared::GlobResource::get().FIXED_HZ;
+  record.vsync = Engine::ScriptShared::GlobResource::get().VSYNC;
     
   outFile << record;
   
@@ -73,9 +73,9 @@ void UW::GlobResourceSerialization::loadAll() {
 
     UW::GlobResourceRecord record;
     if (inFile >> record) {
-      UW::GlobResource::get().WINDOW_TITLE = record.window_title;
-      UW::GlobResource::get().FIXED_HZ = record.Fixed_HZ;
-      UW::GlobResource::get().VSYNC = record.vsync;
+      Engine::ScriptShared::GlobResource::get().WINDOW_TITLE = record.window_title;
+      Engine::ScriptShared::GlobResource::get().FIXED_HZ = record.Fixed_HZ;
+      Engine::ScriptShared::GlobResource::get().VSYNC = record.vsync;
       
 
       Engine::Utils::Logger::get().info("GlobResourceSerialization", "Glob Resources Loaded");

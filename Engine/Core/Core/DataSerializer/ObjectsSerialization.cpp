@@ -396,7 +396,7 @@ std::istream& UW::operator>>(std::istream& is, UW::GameObjectRecord& record) {
     size_t type_idx = 0;
     is.read(reinterpret_cast<char*>(&type_idx), sizeof(type_idx));
 
-    UW::GameObjectParameterType param_var;
+    Engine::ScriptShared::GameObjectParameterType param_var;
     switch (type_idx) {
       case 0: { // int
         int val = 0;
@@ -466,7 +466,7 @@ std::istream& UW::operator>>(std::istream& is, UW::GameObjectRecord& record) {
     size_t type_idx = 0;
     is.read(reinterpret_cast<char*>(&type_idx), sizeof(type_idx));
 
-    UW::GameObjectParameterType uni_var;
+    Engine::ScriptShared::GameObjectParameterType uni_var;
     switch (type_idx) {
       case 0: { // int
         int val = 0;

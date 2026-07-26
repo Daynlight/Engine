@@ -11,7 +11,7 @@
 
 
 
-namespace UW {
+namespace Engine::ScriptShared {
 class ILogger {
 public:
   virtual ~ILogger() = default;
