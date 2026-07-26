@@ -41,7 +41,7 @@ target_compile_definitions(Core PRIVATE PRODUCTION)
 
 add_library(CoreDev STATIC ${src})
 target_link_libraries(CoreDev CWindow UtilsDev)
-target_link_libraries(CoreDev ScriptShared)
+target_link_libraries(CoreDev ScriptShared GameData)
 target_include_directories(CoreDev PUBLIC "Core/" "../ScriptShared")
 target_compile_definitions(CoreDev PRIVATE COMPILER_PATH="${CMAKE_CXX_COMPILER}")
 message(STATUS "ScriptController uses CMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}")
