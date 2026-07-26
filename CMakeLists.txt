@@ -58,11 +58,8 @@ cmrc_add_resource_library(GameData ${GameDataSet})
 file(GLOB_RECURSE PROD_SCRIPTS CONFIGURE_DEPENDS "Scripts/*.cpp")
 
 add_subdirectory(Engine)
-target_compile_definitions(Editor PRIVATE ENGINE_DATA_ZIP="${ENGINE_ZIP_DEST}")
-target_compile_definitions(Editor PRIVATE GENERATOR="${CMAKE_GENERATOR}")
 
 
-
-install(TARGETS AppDev
+install(TARGETS Engine
   DESTINATION bin
 )

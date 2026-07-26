@@ -9,15 +9,6 @@
 
 
 
-#if defined(_WIN32) || defined(_WIN64)
-#include <windows.h>
-extern "C" {
-  __declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
-}
-#endif
-
-
-
 UW::Core::Core()
   :scene(window)
 {
@@ -164,7 +155,7 @@ void UW::Core::swapCamera(){
     scene.debug_camera_on = !scene.debug_camera_on;
     camera_swap_cooldown_acc = Engine::Config::CAMERA_SWAP_COOLDOWN;
 
-    Engine::Utils::Logger::get().info("Core", "Camera SwCoreed to { "+ std::string(scene.debug_camera_on ? "DEBUG CAMERA" : "NORMAL CAMERA") + " }");
+    Engine::Utils::Logger::get().info("Core", "Camera Core to { "+ std::string(scene.debug_camera_on ? "DEBUG CAMERA" : "NORMAL CAMERA") + " }");
   };
 
   if(camera_swap_cooldown_acc >= 0.0f) camera_swap_cooldown_acc -= window.getWindowData()->delta_time;

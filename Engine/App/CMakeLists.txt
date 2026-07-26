@@ -7,7 +7,7 @@
 
 cmake_minimum_required(VERSION 3.15)
 
-project(AppDev LANGUAGES CXX C)
+project(Engine LANGUAGES CXX C)
 project(App LANGUAGES CXX C)
 
 
@@ -17,10 +17,10 @@ set(src
 )
 
 
-add_executable(AppDev ${src})
-target_link_libraries(AppDev CoreDev)
-target_include_directories(AppDev PUBLIC "App/")
-target_link_libraries(AppDev Editor)
+add_executable(Engine ${src})
+target_link_libraries(Engine CoreDev)
+target_include_directories(Engine PUBLIC "App/")
+target_link_libraries(Engine Editor)
 
 
 add_executable(App ${src})

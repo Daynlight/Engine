@@ -339,8 +339,8 @@ void UW::UI::buildProject(){
     "-B",
     build_dir.c_str(),
     "-G", 
-    generator.c_str(), 
-    "-DIS_PROD_BUILD=ON",
+    generator.c_str(),
+    "-DPRODUCTION=ON",
     nullptr
   };
 

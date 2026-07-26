@@ -363,8 +363,8 @@ Production is designed to create one executable with no additional files require
 - [x] Scripts on windows.
 </details> 
 
-<details open>
-<summary> 🌟 Iteration 7 🌟 </summary>
+<details>
+<summary> Iteration 7 (26.07.2026) </summary>
 
 - [x] Shaders uniform parameters ui.
 - [x] Skybox as GameObject.
@@ -380,11 +380,17 @@ Production is designed to create one executable with no additional files require
 - [x] Src in App Dev.
 - [x] Build/Run btn.
 - [x] Installer.
-- [ ] Optimization for Compile version (avoid maps).
-- [ ] Production optimization.
-- [ ] Rule of 5.
+</details> 
+
+<details open>
+<summary> 🌟 Iteration 8 🌟 </summary>
+
+- [ ] Entity, Component, System.
 - [ ] Tests.
 - [ ] Unit Tests.
+- [ ] Rule of 5.
+- [ ] Offset fixed update.
+- [ ] Threads for fixed update.
 - [ ] Full Clean up.
 - [ ] Functions Markers.
 - [ ] Docs.
