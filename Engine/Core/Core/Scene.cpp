@@ -10,7 +10,7 @@
 
 
 UW::Scene::Scene(CW::Renderer::Renderer& window)
-  : window(window), light_camera(&window), fbo(1920, 1080), shadows_fbo(1920 * 5, 1080 * 5), camera(&window), screen_quad("screen_quad", &Resources::get().meshes)
+  : window(window), light_camera(&window), fbo(1920, 1080), post_fbo(1920, 1080), shadows_fbo(1920 * 5, 1080 * 5), camera(&window), screen_quad("screen_quad", &Resources::get().meshes)
 #ifndef PRODUCTION
   , debug_camera(&window)
 #endif
@@ -233,9 +233,13 @@ void UW::Scene::render(){
   window.beginFrame();
 
 
+  // fbo.blitToScreen(window.getWindowData()->width, window.getWindowData()->height);
+  // else
+  // #endif
+  
 #ifndef PRODUCTION
   if(!post_processing_on)
-    fbo.blitToScreen(window.getWindowData()->width, window.getWindowData()->height);
+    post_fbo = fbo;
   else
 #endif
     postProcessing();
@@ -262,6 +266,8 @@ void UW::Scene::renderFrame(UW::Camera& camera){
 void UW::Scene::postProcessing(){
   CW::Renderer::Mesh* screen_mesh =  screen_quad.get();
   if(!screen_mesh) return;
+
+  post_fbo.bind();
 
   std::string shader_name = "PostProcessing";
 
@@ -301,4 +307,6 @@ void UW::Scene::postProcessing(){
 
   glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, 0);
   glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, 0);
+
+  post_fbo.unbind();
 };

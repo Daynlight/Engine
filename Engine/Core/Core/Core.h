@@ -45,6 +45,7 @@ public:
   void onLoad();
   void onDestroy();
   void render();
+  CW::Renderer::Framebuffer& get_fbo();
   void swapFrame();
   void update();
   void fixedUpdate();

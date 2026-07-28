@@ -28,7 +28,7 @@ private:
   UI ui;
 
 public:
-  Editor(Core& core, float& fps);
+  Editor(Core& core, float& fps, CW::Renderer::Framebuffer& viewport_fbo);
   ~Editor();
   
   // Editor operations

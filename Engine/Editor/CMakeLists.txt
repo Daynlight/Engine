@@ -23,6 +23,7 @@ set(src
   "Editor/UI/UI_ShaderEditors.cpp"
   "Editor/UI/UI_ScriptEditor.cpp"
   "Editor/UI/UI_Info.cpp"
+  "Editor/UI/UI_Viewport.cpp"
 )
 
 

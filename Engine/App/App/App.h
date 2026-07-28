@@ -24,10 +24,10 @@
 
 
 
-namespace UW{
+namespace Engine{
 class App{
 private:
-  Core core;
+  UW::Core core;
   
 #ifndef PRODUCTION
   UW::Editor editor;
@@ -37,6 +37,8 @@ private:
 
   float total_fps_acc = 0.0f;
   unsigned int total_fps_id = 0;
+
+  CW::Renderer::Framebuffer viewport_fbo;
 #endif
 
   float fixed_update_time_acc = 0.0f;

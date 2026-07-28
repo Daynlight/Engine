@@ -21,13 +21,16 @@
 
 namespace UW{
 class Scene{
+public:
+  CW::Renderer::Framebuffer post_fbo;
+  CW::Renderer::Framebuffer fbo;
+
 #ifndef PRODUCTION
 public:
 #else
 private:
 #endif
   CW::Renderer::Renderer& window;
-  CW::Renderer::Framebuffer fbo;
   CW::Renderer::Framebuffer shadows_fbo;
   UW::Camera camera;
   

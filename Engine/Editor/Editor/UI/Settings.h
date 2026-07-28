@@ -20,6 +20,7 @@ namespace UW{
 struct GuiSettings{
   bool infoWindowOn = false;
   bool logWindowOn = false;
+  bool viewportWindowOn = true;
   bool materialExplorerOn = false;
   bool materialEditorOn = false;
   bool shaderExplorerWindowOn = false;

@@ -22,7 +22,7 @@ vec3 GetWorldPos(float depth) {
 
 float WaterDepthFog(float camY) {
   float d = max(0.0, u_water_height - camY);
-  return 1.0 - exp(-d * u_FogDensity * 2.0);
+  return 1.0 - exp(-d * u_FogDensity * 1.0);
 }
 
 void main() {
@@ -73,3 +73,4 @@ void main() {
   vec3 finalColor = mix(u_FogColor, sceneColor, fogFactor);
   FragColor = vec4(finalColor, 1.0);
 }
+

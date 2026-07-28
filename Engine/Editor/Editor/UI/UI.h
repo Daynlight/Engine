@@ -36,6 +36,7 @@
 #include "UI/UI_Shaders.h"
 #include "UI/UI_Scripts.h"
 #include "UI/UI_ScriptEditor.h"
+#include "UI/UI_Viewport.h"
 
 
 
@@ -55,9 +56,10 @@ private:
   UW::UI_Lights lights_ui;
   UW::UI_Shaders shader_ui;
   UW::UI_Scripts scripts_ui;
+  UW::UI_Viewport viewport_ui;
 
 public:
-  UI(CW::Renderer::Renderer &window, float &fps, UW::Scene& scene);
+  UI(CW::Renderer::Renderer &window, float &fps, UW::Scene& scene, CW::Renderer::Framebuffer& viewport_fbo);
   ~UI();
   void onLoad();
   void render();

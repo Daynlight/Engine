@@ -10,7 +10,7 @@
 
 
 
-UW::UI::UI(CW::Renderer::Renderer &window, float &fps, UW::Scene& scene)
+UW::UI::UI(CW::Renderer::Renderer &window, float &fps, UW::Scene& scene, CW::Renderer::Framebuffer& viewport_fbo)
   :window(window), gui(&window), scene(scene),
   info_ui(gui, fps, scene),
   log_ui(gui),
@@ -19,7 +19,8 @@ UW::UI::UI(CW::Renderer::Renderer &window, float &fps, UW::Scene& scene)
   lights_ui(gui),
   shader_ui(gui),
   asset_loader_ui(gui, scene),
-  scripts_ui(gui){
+  scripts_ui(gui),
+  viewport_ui(gui, viewport_fbo){
   Engine::Utils::Logger::get().info("UI", "Initializing UI");
   
   gui.setWorkspace(appWorkspace());
@@ -89,6 +90,7 @@ void UW::UI::configControl(){
     int value;
     if (sscanf(line, "InfoWindowOn=%d", &value) == 1) s->infoWindowOn = value;
     if (sscanf(line, "LogWindowOn=%d", &value) == 1) s->logWindowOn = value;
+    if (sscanf(line, "viewportWindowOn=%d", &value) == 1) s->viewportWindowOn = value;
     if (sscanf(line, "MaterialExplorerOn=%d", &value) == 1) s->materialExplorerOn = value;
     if (sscanf(line, "LightsExplorerOn=%d", &value) == 1) s->lightsExplorerOn = value;
     if (sscanf(line, "MaterialEditorOn=%d", &value) == 1) s->materialEditorOn = value;
@@ -123,6 +125,7 @@ void UW::UI::configControl(){
     out_buf->appendf("[%s][Main]\n", handler->TypeName);
     out_buf->appendf("InfoWindowOn=%d\n", guiSettings.infoWindowOn);
     out_buf->appendf("LogWindowOn=%d\n", guiSettings.logWindowOn);
+    out_buf->appendf("viewportWindowOn=%d\n", guiSettings.viewportWindowOn);
     out_buf->appendf("MaterialExplorerOn=%d\n", guiSettings.materialExplorerOn);
     out_buf->appendf("LightsExplorerOn=%d\n", guiSettings.lightsExplorerOn);
     out_buf->appendf("MaterialEditorOn=%d\n", guiSettings.materialEditorOn);
@@ -175,6 +178,7 @@ void UW::UI::uiControl(){
   shader_ui.uiControl();
   asset_loader_ui.uiControl();
   scripts_ui.uiControl();
+  viewport_ui.uiControl();
 };
 
 
@@ -216,6 +220,10 @@ void UW::UI::menuBarGui(){
       };
       if(ImGui::MenuItem("Object Editor")){
         guiSettings.objectEditorWindowOn = !guiSettings.objectEditorWindowOn;
+        uiControl();
+      };
+      if(ImGui::MenuItem("Viewport")){
+        guiSettings.viewportWindowOn = !guiSettings.viewportWindowOn;
         uiControl();
       };
       ImGui::EndMenu();

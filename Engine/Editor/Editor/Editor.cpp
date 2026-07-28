@@ -9,8 +9,8 @@
 
 
 
-UW::Editor::Editor(Core& core, float& fps)
-  :core(core), ui(core.window, fps, core.scene)
+UW::Editor::Editor(Core& core, float& fps, CW::Renderer::Framebuffer& viewport_fbo)
+  :core(core), ui(core.window, fps, core.scene, viewport_fbo)
 {
   Engine::Utils::Logger::get().info("Editor", "Editor Initialized");
 };

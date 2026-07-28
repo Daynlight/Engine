@@ -73,6 +73,12 @@ void UW::Core::render(){
 
 
 
+CW::Renderer::Framebuffer& UW::Core::get_fbo(){
+  return scene.post_fbo;
+};
+
+
+
 void UW::Core::swapFrame(){
   window.windowEvents();
   window.swapBuffer();
