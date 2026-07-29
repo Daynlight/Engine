@@ -9,8 +9,8 @@
 
 
 
-UW::Scene::Scene(CW::Renderer::Renderer& window)
-  : window(window), light_camera(&window), fbo(1920, 1080), post_fbo(1920, 1080), shadows_fbo(1920 * 5, 1080 * 5), camera(&window), screen_quad("screen_quad", &Resources::get().meshes)
+Engine::Core::Scene::Scene(CW::Renderer::Renderer& window)
+  : window(window), light_camera(&window), fbo(1920, 1080), post_fbo(1920, 1080), shadows_fbo(1920 * 5, 1080 * 5), camera(&window), screen_quad("screen_quad", &Engine::Core::Resources::get().meshes)
 #ifndef PRODUCTION
   , debug_camera(&window)
 #endif
@@ -20,13 +20,13 @@ UW::Scene::Scene(CW::Renderer::Renderer& window)
 
 
 
-UW::Scene::~Scene(){
+Engine::Core::Scene::~Scene(){
   Engine::Utils::Logger::get().info("Scene", "Scene Destroyed");
 };
 
 
 
-void UW::Scene::onLoad(){
+void Engine::Core::Scene::onLoad(){
   Engine::Utils::Logger::get().info("Scene", "Loading Scene");
   
   Engine::Utils::Logger::get().info("Scene", "Data Loaded from DataSerializer");
@@ -43,9 +43,9 @@ void UW::Scene::onLoad(){
   light_camera.setOrthographic(true);
   light_camera.fov = 110.0f;
   last_light_camera_fov = light_camera.fov; 
-  light_camera.position = Resources::get().lights[0].position;
+  light_camera.position = Engine::Core::Resources::get().lights[0].position;
   last_light_camera_pos = light_camera.position;
-  light_camera.direction = glm::normalize(-Resources::get().lights[0].position);
+  light_camera.direction = glm::normalize(-Engine::Core::Resources::get().lights[0].position);
   last_light_camera_dir = light_camera.direction;
   light_space_matrix = light_camera.transformation(&window);
   
@@ -76,24 +76,24 @@ void UW::Scene::onLoad(){
 
 
 
-void UW::Scene::onUpdate(float delta_time){
+void Engine::Core::Scene::onUpdate(float delta_time){
   camera.event(&window);
 
-  unsigned int size = UW::ObjectManager::get().objects.size();
+  unsigned int size = Engine::ObjectManager::get().objects.size();
   for(int i = 0; i < size; i++){
-    UW::ObjectManager::get().objects[i].onUpdate(delta_time);
-    if(size > UW::ObjectManager::get().objects.size()){
-      size = UW::ObjectManager::get().objects.size();
+    Engine::ObjectManager::get().objects[i].onUpdate(delta_time);
+    if(size > Engine::ObjectManager::get().objects.size()){
+      size = Engine::ObjectManager::get().objects.size();
       i--;
       if(size == 0) break;
     };
   };
 
-  size = UW::ObjectManager::get().script_objects.size();
+  size = Engine::ObjectManager::get().script_objects.size();
   for(int i = 0; i < size; i++){
-    UW::ObjectManager::get().script_objects[i].onUpdate(delta_time);
-    if(size > UW::ObjectManager::get().script_objects.size()){
-      size = UW::ObjectManager::get().script_objects.size();
+    Engine::ObjectManager::get().script_objects[i].onUpdate(delta_time);
+    if(size > Engine::ObjectManager::get().script_objects.size()){
+      size = Engine::ObjectManager::get().script_objects.size();
       i--;
       if(size == 0) break;
     };
@@ -102,7 +102,7 @@ void UW::Scene::onUpdate(float delta_time){
 
 
 
-void UW::Scene::onFixedUpdate(float fixed_delta_time){
+void Engine::Core::Scene::onFixedUpdate(float fixed_delta_time){
 #ifndef PRODUCTION
   save_acc += fixed_delta_time;
 
@@ -113,21 +113,21 @@ void UW::Scene::onFixedUpdate(float fixed_delta_time){
   };
 #endif
   
-  unsigned int size = UW::ObjectManager::get().objects.size();
+  unsigned int size = Engine::ObjectManager::get().objects.size();
   for(int i = 0; i < size; i++){
-    UW::ObjectManager::get().objects[i].onFixedUpdate(fixed_delta_time);
-    if(size > UW::ObjectManager::get().objects.size()){
-      size = UW::ObjectManager::get().objects.size();
+    Engine::ObjectManager::get().objects[i].onFixedUpdate(fixed_delta_time);
+    if(size > Engine::ObjectManager::get().objects.size()){
+      size = Engine::ObjectManager::get().objects.size();
       i--;
       if(size == 0) break;
     };
   }; 
 
-  size = UW::ObjectManager::get().script_objects.size();
+  size = Engine::ObjectManager::get().script_objects.size();
   for(int i = 0; i < size; i++){
-    UW::ObjectManager::get().script_objects[i].onFixedUpdate(fixed_delta_time);
-    if(size > UW::ObjectManager::get().script_objects.size()){
-      size = UW::ObjectManager::get().script_objects.size();
+    Engine::ObjectManager::get().script_objects[i].onFixedUpdate(fixed_delta_time);
+    if(size > Engine::ObjectManager::get().script_objects.size()){
+      size = Engine::ObjectManager::get().script_objects.size();
       i--;
       if(size == 0) break;
     };
@@ -136,24 +136,24 @@ void UW::Scene::onFixedUpdate(float fixed_delta_time){
 
 
 
-void UW::Scene::onDestroy() {
+void Engine::Core::Scene::onDestroy() {
   Engine::Utils::Logger::get().info("Scene", "Destroying Scene");
 
-  unsigned int size = UW::ObjectManager::get().objects.size();
+  unsigned int size = Engine::ObjectManager::get().objects.size();
   for(int i = 0; i < size; i++){
-    UW::ObjectManager::get().objects[i].onDestroy();
-    if(size > UW::ObjectManager::get().objects.size()){
-      size = UW::ObjectManager::get().objects.size();
+    Engine::ObjectManager::get().objects[i].onDestroy();
+    if(size > Engine::ObjectManager::get().objects.size()){
+      size = Engine::ObjectManager::get().objects.size();
       i--;
       if(size == 0) break;
     };
   };
 
-  size = UW::ObjectManager::get().script_objects.size();
+  size = Engine::ObjectManager::get().script_objects.size();
   for(int i = 0; i < size; i++){
-    UW::ObjectManager::get().script_objects[i].onDestroy();
-    if(size > UW::ObjectManager::get().script_objects.size()){
-      size = UW::ObjectManager::get().script_objects.size();
+    Engine::ObjectManager::get().script_objects[i].onDestroy();
+    if(size > Engine::ObjectManager::get().script_objects.size()){
+      size = Engine::ObjectManager::get().script_objects.size();
       i--;
       if(size == 0) break;
     };
@@ -161,8 +161,8 @@ void UW::Scene::onDestroy() {
 
   Engine::Utils::Logger::get().info("Scene", "Objects onDestroy");
   
-  UW::ObjectManager::get().objects.clear();
-  UW::ObjectManager::get().script_objects.clear();
+  Engine::ObjectManager::get().objects.clear();
+  Engine::ObjectManager::get().script_objects.clear();
   Engine::Utils::Logger::get().info("Scene", "Objects Removed");
 
   Engine::Utils::Logger::get().info("Scene", "Destroyed Scene");
@@ -170,17 +170,17 @@ void UW::Scene::onDestroy() {
 
 
 
-void UW::Scene::compileShadows(){
+void Engine::Core::Scene::compileShadows(){
   shadows_fbo.bind();
   
   if(last_light_camera_pos != light_camera.position){
     light_camera.fov = 110.0f;
     last_light_camera_fov = light_camera.fov;
 
-    light_camera.position = Resources::get().lights[0].position;
+    light_camera.position = Engine::Core::Resources::get().lights[0].position;
     last_light_camera_pos = light_camera.position;
     
-    light_camera.direction = glm::normalize(-Resources::get().lights[0].position);
+    light_camera.direction = glm::normalize(-Engine::Core::Resources::get().lights[0].position);
     last_light_camera_dir = light_camera.direction;
     
     light_space_matrix = light_camera.transformation(&window);
@@ -190,17 +190,17 @@ void UW::Scene::compileShadows(){
 
   window.beginFrame();
 
-  for(UW::GameObject& object : UW::ObjectManager::get().objects) object.render(&window, light_camera, light_camera, shadows_uniform_off);
-  for(UW::GameObject& object : UW::ObjectManager::get().script_objects) object.render(&window, light_camera, light_camera, shadows_uniform_off);
+  for(Engine::GameObject& object : Engine::ObjectManager::get().objects) object.render(&window, light_camera, light_camera, shadows_uniform_off);
+  for(Engine::GameObject& object : Engine::ObjectManager::get().script_objects) object.render(&window, light_camera, light_camera, shadows_uniform_off);
 
   shadows_fbo.unbind();
 };
 
 
 
-void UW::Scene::render(){
-  Resources::get().lights.bind(0);
-  Resources::get().materials.bind(1);
+void Engine::Core::Scene::render(){
+  Engine::Core::Resources::get().lights.bind(0);
+  Engine::Core::Resources::get().materials.bind(1);
 
 
 #ifndef PRODUCTION
@@ -226,8 +226,8 @@ void UW::Scene::render(){
   fbo.unbind();
 
 
-  Resources::get().materials.unbind();
-  Resources::get().lights.unbind();
+  Engine::Core::Resources::get().materials.unbind();
+  Engine::Core::Resources::get().lights.unbind();
 
 
   window.beginFrame();
@@ -247,14 +247,14 @@ void UW::Scene::render(){
 
 
 
-void UW::Scene::renderFrame(UW::Camera& camera){
+void Engine::Core::Scene::renderFrame(Engine::Camera& camera){
   window.beginFrame();
 
   glActiveTexture(GL_TEXTURE16);
   glBindTexture(GL_TEXTURE_2D, shadows_fbo.getDepthTexture());
 
-  for(UW::GameObject& object : UW::ObjectManager::get().objects) object.render(&window, this->camera, camera, shadows_uniform_on);
-  for(UW::GameObject& object : UW::ObjectManager::get().script_objects) object.render(&window, this->camera, camera, shadows_uniform_on);
+  for(Engine::GameObject& object : Engine::ObjectManager::get().objects) object.render(&window, this->camera, camera, shadows_uniform_on);
+  for(Engine::GameObject& object : Engine::ObjectManager::get().script_objects) object.render(&window, this->camera, camera, shadows_uniform_on);
 
   
   glActiveTexture(GL_TEXTURE16);
@@ -263,7 +263,7 @@ void UW::Scene::renderFrame(UW::Camera& camera){
 
 
 
-void UW::Scene::postProcessing(){
+void Engine::Core::Scene::postProcessing(){
   CW::Renderer::Mesh* screen_mesh =  screen_quad.get();
   if(!screen_mesh) return;
 
@@ -296,13 +296,13 @@ void UW::Scene::postProcessing(){
 #endif
 
 
-  Resources::get().getShader(shader_name).getUniforms().emplace_back(&post_uniform);
-  Resources::get().getShader(shader_name).bind();
+  Engine::Core::Resources::get().getShader(shader_name).getUniforms().emplace_back(&post_uniform);
+  Engine::Core::Resources::get().getShader(shader_name).bind();
   
   screen_mesh->render();
   
-  Resources::get().getShader(shader_name).unbind();
-  Resources::get().getShader(shader_name).getUniforms().clear();
+  Engine::Core::Resources::get().getShader(shader_name).unbind();
+  Engine::Core::Resources::get().getShader(shader_name).getUniforms().clear();
 
 
   glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, 0);

@@ -19,17 +19,17 @@
 #include "Scene.h"
 
 
-namespace UW{
+namespace Engine::Editor{
 class UI_Info{
 private:
   float &fps;
   bool mesh_mode_is_updated = false;
-  UW::Scene& scene;
+  Engine::Core::Scene& scene;
 
   CW::Gui::Gui& gui;
 
 public:
-  UI_Info(CW::Gui::Gui& gui, float &fps, UW::Scene& scene);
+  UI_Info(CW::Gui::Gui& gui, float &fps, Engine::Core::Scene& scene);
   ~UI_Info();
   void uiControl();
 

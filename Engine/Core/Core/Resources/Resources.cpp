@@ -15,27 +15,27 @@ CMRC_DECLARE(GameData);
 
 
 
-UW::Resources& UW::Resources::get(){
-  static Resources instance; 
+Engine::Core::Resources& Engine::Core::Resources::get(){
+  static Engine::Core::Resources instance; 
   return instance;
 };
 
 
 
-UW::Resources::Resources(){
+Engine::Core::Resources::Resources(){
   initMeshes();
   initLights();
 };
 
 
 
-UW::Resources::~Resources(){
+Engine::Core::Resources::~Resources(){
   destroy();
 };
 
 
 
-void UW::Resources::destroy(){
+void Engine::Core::Resources::destroy(){
   meshes.clear();
   textures.clear();
   shaders.clear();
@@ -46,7 +46,7 @@ void UW::Resources::destroy(){
 
 
 
-CW::Renderer::Texture &UW::Resources::getTexture(const std::string &path_to_asset){
+CW::Renderer::Texture &Engine::Core::Resources::getTexture(const std::string &path_to_asset){
   auto it = textures.find(path_to_asset);
   if (it != textures.end()) return it->second;
 
@@ -60,7 +60,7 @@ CW::Renderer::Texture &UW::Resources::getTexture(const std::string &path_to_asse
 
 
 
-CW::Renderer::Shader &UW::Resources::getShader(const std::string &path_to_asset){
+CW::Renderer::Shader &Engine::Core::Resources::getShader(const std::string &path_to_asset){
   auto it = shaders.find(path_to_asset);
   
   if (it != shaders.end()) {
@@ -80,7 +80,7 @@ CW::Renderer::Shader &UW::Resources::getShader(const std::string &path_to_asset)
 
 
 
-void UW::Resources::initMeshes(){
+void Engine::Core::Resources::initMeshes(){
   // ============================= //
   // ========== Empty ============ //
   // ============================= //
@@ -230,8 +230,8 @@ void UW::Resources::initMeshes(){
 
 
 
-void UW::Resources::initLights(){
-  UW::Light light(glm::vec3(0, 1000, 0), glm::vec3(1.0f, 1.0f,1.0f), 2.0f);
+void Engine::Core::Resources::initLights(){
+  Engine::Core::Light light(glm::vec3(0, 1000, 0), glm::vec3(1.0f, 1.0f,1.0f), 2.0f);
   lights.emplace_back({light});
   lights.compile();
 };

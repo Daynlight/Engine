@@ -14,7 +14,7 @@ namespace fs = std::filesystem;
 
 
 #ifndef PRODUCTION
-void UW::ScriptSerialization::save(const std::string& script_name, const std::string& source) {
+void Engine::ScriptSerialization::save(const std::string& script_name, const std::string& source) {
   Engine::Utils::Logger::get().info("ScriptSerialization", "Saving script: " + Engine::Config::SCRIPTS_FOLDER + script_name);
   
   std::string folder_path = Engine::Config::SCRIPTS_FOLDER;
@@ -40,7 +40,7 @@ void UW::ScriptSerialization::save(const std::string& script_name, const std::st
 
 
 
-std::string UW::ScriptSerialization::load(const std::string& script_name) {
+std::string Engine::ScriptSerialization::load(const std::string& script_name) {
   std::string file_path = Engine::Config::SCRIPTS_FOLDER + script_name;
 
   if (!fs::exists(file_path)) {

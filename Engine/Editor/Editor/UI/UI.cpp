@@ -10,7 +10,7 @@
 
 
 
-UW::UI::UI(CW::Renderer::Renderer &window, float &fps, UW::Scene& scene, CW::Renderer::Framebuffer& viewport_fbo)
+Engine::Editor::UI::UI(CW::Renderer::Renderer &window, float &fps, Engine::Core::Scene& scene, CW::Renderer::Framebuffer& viewport_fbo)
   :window(window), gui(&window), scene(scene),
   info_ui(gui, fps, scene),
   log_ui(gui),
@@ -28,29 +28,29 @@ UW::UI::UI(CW::Renderer::Renderer &window, float &fps, UW::Scene& scene, CW::Ren
 
 
 
-UW::UI::~UI(){
+Engine::Editor::UI::~UI(){
   onDestroy();
 };
 
 
 
-void UW::UI::onLoad(){
+void Engine::Editor::UI::onLoad(){
   Engine::Utils::Logger::get().info("UI", "Loading UI");
 
   uiLoad();
-  window.setSize(guiSettings.window_width, guiSettings.window_height);
+  window.setSize(guiSettings.window_width, Engine::Editor::guiSettings.window_height);
   Engine::Utils::Logger::get().info("UI", "Window Size Setted { "+ std::to_string(guiSettings.window_width) + " x " + std::to_string(guiSettings.window_height) +" }");
 };
 
 
 
-void UW::UI::render(){
+void Engine::Editor::UI::render(){
   gui.render();
 };
 
 
 
-void UW::UI::onDestroy() {
+void Engine::Editor::UI::onDestroy() {
   Engine::Utils::Logger::get().info("UI", "Destroying UI");
   scripts_ui.saveScriptEditors();
   shader_ui.saveShaderEditors();
@@ -61,12 +61,12 @@ void UW::UI::onDestroy() {
 // ========================= //
 // ========== GUI ========== //
 // ========================= //
-void UW::UI::uiLoad(){
+void Engine::Editor::UI::uiLoad(){
   configControl();
   ImGui::LoadIniSettingsFromDisk(ImGui::GetIO().IniFilename);
   Engine::Utils::Logger::get().info("UI", "Loading UI Data from disck");
 
-  Resources::get().simulation_mode = guiSettings.simulation_mode;
+  Engine::Core::Resources::get().simulation_mode = Engine::Editor::guiSettings.simulation_mode;
 
   shader_ui.loadShaderEditors();
   scripts_ui.loadScriptEditors();
@@ -75,17 +75,17 @@ void UW::UI::uiLoad(){
 };
 
 
-void UW::UI::configControl(){
+void Engine::Editor::UI::configControl(){
   ImGuiSettingsHandler handler;
   handler.TypeName = "GuiSettings";
   handler.TypeHash = ImHashStr("GuiSettings");
 
   handler.ReadOpenFn = [](ImGuiContext*, ImGuiSettingsHandler*, const char*){
-    return (void*)&UW::guiSettings;
+    return (void*)&Engine::Editor::guiSettings;
   };
 
   handler.ReadLineFn = [](ImGuiContext*, ImGuiSettingsHandler*, void* entry, const char* line){
-    GuiSettings* s = (GuiSettings*)entry;
+    Engine::Editor::GuiSettings* s = (Engine::Editor::GuiSettings*)entry;
 
     int value;
     if (sscanf(line, "InfoWindowOn=%d", &value) == 1) s->infoWindowOn = value;
@@ -123,41 +123,41 @@ void UW::UI::configControl(){
 
   handler.WriteAllFn = [](ImGuiContext*, ImGuiSettingsHandler* handler, ImGuiTextBuffer* out_buf){
     out_buf->appendf("[%s][Main]\n", handler->TypeName);
-    out_buf->appendf("InfoWindowOn=%d\n", guiSettings.infoWindowOn);
-    out_buf->appendf("LogWindowOn=%d\n", guiSettings.logWindowOn);
-    out_buf->appendf("viewportWindowOn=%d\n", guiSettings.viewportWindowOn);
-    out_buf->appendf("MaterialExplorerOn=%d\n", guiSettings.materialExplorerOn);
-    out_buf->appendf("LightsExplorerOn=%d\n", guiSettings.lightsExplorerOn);
-    out_buf->appendf("MaterialEditorOn=%d\n", guiSettings.materialEditorOn);
-    out_buf->appendf("ShaderExplorerWindowOn=%d\n", guiSettings.shaderExplorerWindowOn);
-    out_buf->appendf("ScriptsExplorerWindowOn=%d\n", guiSettings.scriptsExplorerWindowOn);
-    out_buf->appendf("ShaderEditorWindowOn=%d\n", guiSettings.shaderEditorWindowOn);
-    out_buf->appendf("ScriptEditorWindowOn=%d\n", guiSettings.scriptEditorWindowOn);
-    out_buf->appendf("ObjectExplorerWindowOn=%d\n", guiSettings.objectExplorerWindowOn);
-    out_buf->appendf("ObjectEditorWindowOn=%d\n", guiSettings.objectEditorWindowOn);
-    out_buf->appendf("Object_ID=%d\n", guiSettings.object_id);
-    out_buf->appendf("Mesh_Mode_On=%d\n", guiSettings.mesh_mode_on);
-    out_buf->appendf("Window_Width=%d\n", guiSettings.window_width);
-    out_buf->appendf("Window_Height=%d\n", guiSettings.window_height);
-    out_buf->appendf("Material_ID=%s\n", guiSettings.material_name.c_str());
-    out_buf->appendf("Simulation_Mode=%d\n", guiSettings.simulation_mode);
+    out_buf->appendf("InfoWindowOn=%d\n", Engine::Editor::guiSettings.infoWindowOn);
+    out_buf->appendf("LogWindowOn=%d\n", Engine::Editor::guiSettings.logWindowOn);
+    out_buf->appendf("viewportWindowOn=%d\n", Engine::Editor::guiSettings.viewportWindowOn);
+    out_buf->appendf("MaterialExplorerOn=%d\n", Engine::Editor::guiSettings.materialExplorerOn);
+    out_buf->appendf("LightsExplorerOn=%d\n", Engine::Editor::guiSettings.lightsExplorerOn);
+    out_buf->appendf("MaterialEditorOn=%d\n", Engine::Editor::guiSettings.materialEditorOn);
+    out_buf->appendf("ShaderExplorerWindowOn=%d\n", Engine::Editor::guiSettings.shaderExplorerWindowOn);
+    out_buf->appendf("ScriptsExplorerWindowOn=%d\n", Engine::Editor::guiSettings.scriptsExplorerWindowOn);
+    out_buf->appendf("ShaderEditorWindowOn=%d\n", Engine::Editor::guiSettings.shaderEditorWindowOn);
+    out_buf->appendf("ScriptEditorWindowOn=%d\n", Engine::Editor::guiSettings.scriptEditorWindowOn);
+    out_buf->appendf("ObjectExplorerWindowOn=%d\n", Engine::Editor::guiSettings.objectExplorerWindowOn);
+    out_buf->appendf("ObjectEditorWindowOn=%d\n", Engine::Editor::guiSettings.objectEditorWindowOn);
+    out_buf->appendf("Object_ID=%d\n", Engine::Editor::guiSettings.object_id);
+    out_buf->appendf("Mesh_Mode_On=%d\n", Engine::Editor::guiSettings.mesh_mode_on);
+    out_buf->appendf("Window_Width=%d\n", Engine::Editor::guiSettings.window_width);
+    out_buf->appendf("Window_Height=%d\n", Engine::Editor::guiSettings.window_height);
+    out_buf->appendf("Material_ID=%s\n", Engine::Editor::guiSettings.material_name.c_str());
+    out_buf->appendf("Simulation_Mode=%d\n", Engine::Editor::guiSettings.simulation_mode);
     
-    out_buf->appendf("ShaderEditorCount=%zu\n", guiSettings.shader_editors_reg.size());
+    out_buf->appendf("ShaderEditorCount=%zu\n", Engine::Editor::guiSettings.shader_editors_reg.size());
 
-    for (size_t i = 0; i < guiSettings.shader_editors_reg.size(); ++i){
+    for (size_t i = 0; i < Engine::Editor::guiSettings.shader_editors_reg.size(); ++i){
       out_buf->appendf(
         "ShaderEditor=%s,%u\n",
-        guiSettings.shader_editors_reg[i].first.c_str(),
-        guiSettings.shader_editors_reg[i].second
+        Engine::Editor::guiSettings.shader_editors_reg[i].first.c_str(),
+        Engine::Editor::guiSettings.shader_editors_reg[i].second
       );
     };
 
-    out_buf->appendf("ScriptEditorCount=%zu\n", guiSettings.scripts_editors_reg.size());
+    out_buf->appendf("ScriptEditorCount=%zu\n", Engine::Editor::guiSettings.scripts_editors_reg.size());
 
-    for (size_t i = 0; i < guiSettings.scripts_editors_reg.size(); ++i){
+    for (size_t i = 0; i < Engine::Editor::guiSettings.scripts_editors_reg.size(); ++i){
       out_buf->appendf(
         "ScriptEditor=%s\n",
-        guiSettings.scripts_editors_reg[i].c_str()
+        Engine::Editor::guiSettings.scripts_editors_reg[i].c_str()
       );
     };
 
@@ -169,7 +169,7 @@ void UW::UI::configControl(){
 
 
 
-void UW::UI::uiControl(){
+void Engine::Editor::UI::uiControl(){
   info_ui.uiControl();
   log_ui.uiControl();
   materials_ui.uiControl();
@@ -183,47 +183,47 @@ void UW::UI::uiControl(){
 
 
 
-void UW::UI::menuBarGui(){
+void Engine::Editor::UI::menuBarGui(){
   if (ImGui::BeginMenuBar()) {
     if (ImGui::BeginMenu("Window")) {
       if(ImGui::MenuItem("Info")){
-        guiSettings.infoWindowOn = !guiSettings.infoWindowOn;
+        Engine::Editor::guiSettings.infoWindowOn = !Engine::Editor::guiSettings.infoWindowOn;
         uiControl();
       };
       if(ImGui::MenuItem("Logs")){
-        guiSettings.logWindowOn = !guiSettings.logWindowOn;
+        Engine::Editor::guiSettings.logWindowOn = !Engine::Editor::guiSettings.logWindowOn;
         uiControl();
       };
       if(ImGui::MenuItem("Material Explorer")){
-        guiSettings.materialExplorerOn = !guiSettings.materialExplorerOn;
+        Engine::Editor::guiSettings.materialExplorerOn = !Engine::Editor::guiSettings.materialExplorerOn;
         uiControl();
       };
       if(ImGui::MenuItem("Material Editor")){
-        guiSettings.materialEditorOn = !guiSettings.materialEditorOn;
+        Engine::Editor::guiSettings.materialEditorOn = !Engine::Editor::guiSettings.materialEditorOn;
         uiControl();
       };
       if(ImGui::MenuItem("Lights Explorer")){
-        guiSettings.lightsExplorerOn = !guiSettings.lightsExplorerOn;
+        Engine::Editor::guiSettings.lightsExplorerOn = !Engine::Editor::guiSettings.lightsExplorerOn;
         uiControl();
       };
       if(ImGui::MenuItem("Shader Explorer")){
-        guiSettings.shaderExplorerWindowOn = !guiSettings.shaderExplorerWindowOn;
+        Engine::Editor::guiSettings.shaderExplorerWindowOn = !Engine::Editor::guiSettings.shaderExplorerWindowOn;
         uiControl();
       };
       if(ImGui::MenuItem("Script Explorer")){
-        guiSettings.scriptsExplorerWindowOn = !guiSettings.scriptsExplorerWindowOn;
+        Engine::Editor::guiSettings.scriptsExplorerWindowOn = !Engine::Editor::guiSettings.scriptsExplorerWindowOn;
         uiControl();
       };
       if(ImGui::MenuItem("Object Explorer")){
-        guiSettings.objectExplorerWindowOn = !guiSettings.objectExplorerWindowOn;
+        Engine::Editor::guiSettings.objectExplorerWindowOn = !Engine::Editor::guiSettings.objectExplorerWindowOn;
         uiControl();
       };
       if(ImGui::MenuItem("Object Editor")){
-        guiSettings.objectEditorWindowOn = !guiSettings.objectEditorWindowOn;
+        Engine::Editor::guiSettings.objectEditorWindowOn = !Engine::Editor::guiSettings.objectEditorWindowOn;
         uiControl();
       };
       if(ImGui::MenuItem("Viewport")){
-        guiSettings.viewportWindowOn = !guiSettings.viewportWindowOn;
+        Engine::Editor::guiSettings.viewportWindowOn = !Engine::Editor::guiSettings.viewportWindowOn;
         uiControl();
       };
       ImGui::EndMenu();
@@ -231,7 +231,7 @@ void UW::UI::menuBarGui(){
 
     if(ImGui::BeginMenu("Assets")){
       if(ImGui::MenuItem("Asset Loader")){
-        guiSettings.assetLoaderWindowOn = !guiSettings.assetLoaderWindowOn;
+        Engine::Editor::guiSettings.assetLoaderWindowOn = !Engine::Editor::guiSettings.assetLoaderWindowOn;
         uiControl();
       };
       ImGui::EndMenu();
@@ -255,10 +255,10 @@ void UW::UI::menuBarGui(){
       ImGui::EndMenu();
     };
     
-    bool new_simulation_mode = Resources::get().simulation_mode;
+    bool new_simulation_mode = Engine::Core::Resources::get().simulation_mode;
     if(ImGui::Checkbox("Simulation", &new_simulation_mode)){
-      Resources::get().simulation_mode = new_simulation_mode;
-      guiSettings.simulation_mode = new_simulation_mode;
+      Engine::Core::Resources::get().simulation_mode = new_simulation_mode;
+      Engine::Editor::guiSettings.simulation_mode = new_simulation_mode;
     };
 
     if(ImGui::Button("Build")) buildProject();
@@ -270,7 +270,7 @@ void UW::UI::menuBarGui(){
 
 
 
-void UW::UI::buildProject(){
+void Engine::Editor::UI::buildProject(){
   #ifndef PRODUCTION
   Engine::Utils::Logger::get().info("UI", "Building ...");
   
@@ -413,8 +413,8 @@ void UW::UI::buildProject(){
 
 
 
-void UW::UI::runProject(){
-  UW::DataSerializer::get().saveAll();
+void Engine::Editor::UI::runProject(){
+  Engine::DataSerializer::get().saveAll();
 
   buildProject();
 
@@ -447,7 +447,7 @@ void UW::UI::runProject(){
 
 
 
-std::function<void(std::function<void()> render_windows)> UW::UI::appWorkspace() {
+std::function<void(std::function<void()> render_windows)> Engine::Editor::UI::appWorkspace() {
   return [this](std::function<void()> render_windows){
     ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_MenuBar;
 

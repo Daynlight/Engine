@@ -15,21 +15,21 @@ CMRC_DECLARE(GameData);
 
 
 #ifndef PRODUCTION
-void UW::MaterialsSerialization::save(const UW::Material& material) {
+void Engine::MaterialsSerialization::save(const Engine::Core::Material& material) {
   
 };
 #endif
 
 
 
-void UW::MaterialsSerialization::load(UW::Material& material) {
+void Engine::MaterialsSerialization::load(Engine::Core::Material& material) {
   
 };
 
 
 
 #ifndef PRODUCTION
-void UW::MaterialsSerialization::saveAll(UW::Materials& materials) {
+void Engine::MaterialsSerialization::saveAll(Engine::Core::Materials& materials) {
   Engine::Utils::Logger::get().info("MaterialsSerialization", "Saving all materials...");
   try {
     std::filesystem::path p(Engine::Config::GAME_DATA_FOLDER + Engine::Config::MATERIALS_FILENAME);
@@ -50,8 +50,8 @@ void UW::MaterialsSerialization::saveAll(UW::Materials& materials) {
   outFile.write(reinterpret_cast<const char*>(&mat_size), sizeof(mat_size));
 
   for (auto& el : materials.getMaterialReg()) {
-    UW::MaterialsRecord record;
-    UW::Material material = el.second;
+    Engine::MaterialsRecord record;
+    Engine::Core::Material material = el.second;
 
     record.name = el.first;
     record.albedo = material.albedo;
@@ -72,7 +72,7 @@ void UW::MaterialsSerialization::saveAll(UW::Materials& materials) {
 
 
 
-void UW::MaterialsSerialization::loadAll(UW::Materials& materials) {
+void Engine::MaterialsSerialization::loadAll(Engine::Core::Materials& materials) {
   Engine::Utils::Logger::get().info("MaterialsSerialization", "Loading all materials...");
   try {
     std::string resourcePath = Engine::Config::GAME_DATA_FOLDER + Engine::Config::MATERIALS_FILENAME;
@@ -103,9 +103,9 @@ void UW::MaterialsSerialization::loadAll(UW::Materials& materials) {
     inFile.read(reinterpret_cast<char*>(&materialCount), sizeof(materialCount));
 
     for (size_t i = 0; i < materialCount; ++i) {
-      UW::MaterialsRecord record;
+      Engine::MaterialsRecord record;
       if (inFile >> record) {
-        Material material;
+        Engine::Core::Material material;
         material.albedo = record.albedo;
         material.metallic = record.metallic;
         material.roughness = record.roughness;
@@ -129,7 +129,7 @@ void UW::MaterialsSerialization::loadAll(UW::Materials& materials) {
 
 
 #ifndef PRODUCTION
-std::ostream& UW::operator<<(std::ostream& os, const UW::MaterialsRecord& record) {
+std::ostream& Engine::operator<<(std::ostream& os, const Engine::MaterialsRecord& record) {
   size_t name_sz = record.name.size();
   os.write(reinterpret_cast<const char*>(&name_sz), sizeof(size_t));
   if(name_sz > 0) os.write(reinterpret_cast<const char*>(record.name.data()), name_sz);
@@ -147,7 +147,7 @@ std::ostream& UW::operator<<(std::ostream& os, const UW::MaterialsRecord& record
 
 
 
-std::istream& UW::operator>>(std::istream& is, UW::MaterialsRecord& record) {
+std::istream& Engine::operator>>(std::istream& is, Engine::MaterialsRecord& record) {
   size_t name_sz = 0;
   if (!is.read(reinterpret_cast<char*>(&name_sz), sizeof(name_sz))) return is;
   record.name.resize(name_sz);

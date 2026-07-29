@@ -23,7 +23,7 @@
 
 
 
-namespace UW {
+namespace Engine {
 class ScriptSerialization {
 public:
   ScriptSerialization() = default;
@@ -35,4 +35,4 @@ public:
 #endif
 
 };
-}; // namespace UW
+}; // namespace Engine

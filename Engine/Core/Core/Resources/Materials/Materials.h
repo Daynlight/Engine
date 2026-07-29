@@ -13,7 +13,7 @@
 
 
 
-namespace UW{
+namespace Engine::Core{
 struct Material{
   alignas(16) glm::vec3 albedo = glm::vec3(1.0f);
   alignas(4) float metallic = 0.0f;

@@ -21,7 +21,7 @@
 
 
 
-namespace UW {
+namespace Engine {
 struct LightsRecord {
   glm::vec3 position;
   glm::vec3 color;
@@ -39,14 +39,14 @@ public:
   ~LightsSerialization() = default;
 
 #ifndef PRODUCTION
-  void save(const std::string& name, const UW::Light& light);
+  void save(const std::string& name, const Engine::Core::Light& light);
 #endif
-  void load(const std::string& name, UW::Light& light);
+  void load(const std::string& name, Engine::Core::Light& light);
 
 #ifndef PRODUCTION
-  void saveAll(UW::Lights& lights);
+  void saveAll(Engine::Core::Lights& lights);
 #endif
-  void loadAll(UW::Lights& lights);
+  void loadAll(Engine::Core::Lights& lights);
 
 private:
 #ifndef PRODUCTION
@@ -54,4 +54,4 @@ private:
 #endif
   friend std::istream& operator>>(std::istream& is, LightsRecord& record);
 };
-}; // namespace UW
+}; // namespace Engine

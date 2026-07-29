@@ -26,7 +26,7 @@
 
 
 
-namespace UW{
+namespace Engine::Core{
 class Resources{
 public:
   std::unordered_map<std::string, std::filesystem::file_time_type> scripts_last_time_write;
@@ -42,8 +42,8 @@ public:
   std::unordered_map<std::string, CW::Renderer::Texture> textures;
   std::unordered_map<std::string, CW::Renderer::Shader> shaders;
   Engine::Utils::ResourceController<CW::Renderer::Mesh> meshes;
-  UW::Lights lights;
-  UW::Materials materials;
+  Engine::Core::Lights lights;
+  Engine::Core::Materials materials;
   bool simulation_mode = true;
 
 public:

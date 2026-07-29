@@ -11,18 +11,18 @@
 
 
 
-UW::UI_Viewport::UI_Viewport(CW::Gui::Gui &gui, CW::Renderer::Framebuffer& viewport_fbo)
+Engine::Editor::UI_Viewport::UI_Viewport(CW::Gui::Gui &gui, CW::Renderer::Framebuffer& viewport_fbo)
   :viewport_fbo(viewport_fbo), gui(gui){};
 
 
 
-UW::UI_Viewport::~UI_Viewport(){
+Engine::Editor::UI_Viewport::~UI_Viewport(){
 };
 
 
 
-void UW::UI_Viewport::uiControl(){
-  if(guiSettings.viewportWindowOn){
+void Engine::Editor::UI_Viewport::uiControl(){
+  if(Engine::Editor::guiSettings.viewportWindowOn){
     Engine::Utils::Logger::get().info("UI", "Opening Viewport Gui");
     gui.addWindow("Viewport Gui", ui());
   }
@@ -34,7 +34,7 @@ void UW::UI_Viewport::uiControl(){
 
 
 
-void UW::UI_Viewport::guiViewport() {
+void Engine::Editor::UI_Viewport::guiViewport() {
   uint32_t textureID = viewport_fbo.getColorTexture(); 
   ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
   
@@ -48,7 +48,7 @@ void UW::UI_Viewport::guiViewport() {
 
 
 
-std::function<void(CW::Renderer::iRenderer *window)> UW::UI_Viewport::ui(){
+std::function<void(CW::Renderer::iRenderer *window)> Engine::Editor::UI_Viewport::ui(){
   return [this](CW::Renderer::iRenderer *window){
     guiViewport();
   };

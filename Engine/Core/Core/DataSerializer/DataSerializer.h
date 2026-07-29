@@ -35,7 +35,7 @@
 
 
 
-namespace UW{
+namespace Engine{
 class DataSerializer{
 private:
   DataSerializer();
@@ -70,14 +70,14 @@ public:
   void loadAllObjects(std::vector<GameObject>& objects);
 
 #ifndef PRODUCTION
-  void saveAllMaterials(UW::Materials &materials);
+  void saveAllMaterials(Engine::Core::Materials &materials);
 #endif
-  void loadAllMaterials(UW::Materials &materials);
+  void loadAllMaterials(Engine::Core::Materials &materials);
 
 #ifndef PRODUCTION
-  void saveAllLights(UW::Lights &lights);
+  void saveAllLights(Engine::Core::Lights &lights);
 #endif
-  void loadAllLights(UW::Lights &lights);
+  void loadAllLights(Engine::Core::Lights &lights);
 
 #ifndef PRODUCTION
   void saveMesh(const std::string& name, const CW::Renderer::Mesh& mesh);
@@ -112,4 +112,4 @@ public:
   void loadAll();
 
 };
-}; // namespace UW
+}; // namespace Engine

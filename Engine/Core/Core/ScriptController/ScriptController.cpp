@@ -16,7 +16,7 @@ CMRC_DECLARE(ScriptShared);
 
 
 
-void UW::GameObjectScriptRecord::initSharedFolder() {
+void Engine::Core::Script::GameObjectScriptRecord::initSharedFolder() {
 #ifndef PRODUCTION
   auto efs = cmrc::ScriptShared::get_filesystem();
   std::filesystem::path dest_folder = Engine::Config::SCRIPTS_SRC_FOLDER;
@@ -54,7 +54,7 @@ void UW::GameObjectScriptRecord::initSharedFolder() {
 
 
 
-UW::GameObjectScriptRecord::GameObjectScriptRecord(const std::string &path)
+Engine::Core::Script::GameObjectScriptRecord::GameObjectScriptRecord(const std::string &path)
   : path(path), 
     cpp_file(Engine::Config::SCRIPTS_SRC_FOLDER + path + ".cpp"),
 #if defined(_WIN32) || defined(_WIN64)
@@ -69,7 +69,7 @@ UW::GameObjectScriptRecord::GameObjectScriptRecord(const std::string &path)
 
 
 
-UW::GameObjectScriptRecord::~GameObjectScriptRecord(){
+Engine::Core::Script::GameObjectScriptRecord::~GameObjectScriptRecord(){
   Engine::Utils::Logger::get().info("Script Controller", "Script Destroying");
   removeModule();
   Engine::Utils::Logger::get().info("Script Controller", "Script Destroyed");
@@ -77,7 +77,7 @@ UW::GameObjectScriptRecord::~GameObjectScriptRecord(){
 
 
 
-UW::GameObjectScriptRecord::GameObjectScriptRecord(const GameObjectScriptRecord& other)
+Engine::Core::Script::GameObjectScriptRecord::GameObjectScriptRecord(const GameObjectScriptRecord& other)
   : path(other.path), cpp_file(other.cpp_file), so_file(other.so_file), log_observe_lock(other.log_observe_lock) {
   script_handler = nullptr;
   script = nullptr;
@@ -86,7 +86,7 @@ UW::GameObjectScriptRecord::GameObjectScriptRecord(const GameObjectScriptRecord&
 
 
 
-UW::GameObjectScriptRecord& UW::GameObjectScriptRecord::operator=(const GameObjectScriptRecord& other) {
+Engine::Core::Script::GameObjectScriptRecord& Engine::Core::Script::GameObjectScriptRecord::operator=(const GameObjectScriptRecord& other) {
   if (this != &other) {
     removeModule();
     path = other.path;
@@ -102,7 +102,7 @@ UW::GameObjectScriptRecord& UW::GameObjectScriptRecord::operator=(const GameObje
 
 
 
-UW::GameObjectScriptRecord::GameObjectScriptRecord(GameObjectScriptRecord&& other) noexcept
+Engine::Core::Script::GameObjectScriptRecord::GameObjectScriptRecord(GameObjectScriptRecord&& other) noexcept
   : path(std::move(other.path)), cpp_file(std::move(other.cpp_file)),
     so_file(std::move(other.so_file)), log_observe_lock(other.log_observe_lock),
     script_handler(other.script_handler), script(other.script) {
@@ -113,7 +113,7 @@ UW::GameObjectScriptRecord::GameObjectScriptRecord(GameObjectScriptRecord&& othe
 
 
 
-UW::GameObjectScriptRecord& UW::GameObjectScriptRecord::operator=(GameObjectScriptRecord&& other) noexcept {
+Engine::Core::Script::GameObjectScriptRecord& Engine::Core::Script::GameObjectScriptRecord::operator=(GameObjectScriptRecord&& other) noexcept {
   if (this != &other) {
     removeModule();
     path = std::move(other.path);
@@ -132,13 +132,13 @@ UW::GameObjectScriptRecord& UW::GameObjectScriptRecord::operator=(GameObjectScri
 
 
 
-void UW::GameObjectScriptRecord::syncPointer(Engine::ScriptShared::GameObjectData* data) {
+void Engine::Core::Script::GameObjectScriptRecord::syncPointer(Engine::ScriptShared::GameObjectData* data) {
   if (script) script->game_object_data = data;
 };
 
 
 
-void UW::GameObjectScriptRecord::observe(Engine::ScriptShared::GameObjectData *data){
+void Engine::Core::Script::GameObjectScriptRecord::observe(Engine::ScriptShared::GameObjectData *data){
 #ifndef PRODUCTION
   if(compiling) {
     checkLastWrite();
@@ -156,12 +156,12 @@ void UW::GameObjectScriptRecord::observe(Engine::ScriptShared::GameObjectData *d
 
 
 
-void UW::GameObjectScriptRecord::onLoad(Engine::ScriptShared::GameObjectData* data) {
+void Engine::Core::Script::GameObjectScriptRecord::onLoad(Engine::ScriptShared::GameObjectData* data) {
   if(script){
     script->game_object_data = data;
     script->glob_res = &Engine::ScriptShared::GlobResource::get();
     script->logger = static_cast<Engine::ScriptShared::ILogger*>(&Engine::Utils::Logger::get());
-    script->object_manager = static_cast<Engine::ScriptShared::IObjectManager*>(&UW::ObjectManager::get());
+    script->object_manager = static_cast<Engine::ScriptShared::IObjectManager*>(&Engine::ObjectManager::get());
 
 #ifndef PRODUCTION
 #ifdef SANDBOX_SCRIPTS
@@ -191,7 +191,7 @@ void UW::GameObjectScriptRecord::onLoad(Engine::ScriptShared::GameObjectData* da
 
 
 
-void UW::GameObjectScriptRecord::onUpdate(float delta_time) {
+void Engine::Core::Script::GameObjectScriptRecord::onUpdate(float delta_time) {
   if(!script_on) return;
 
   if(script){
@@ -224,7 +224,7 @@ void UW::GameObjectScriptRecord::onUpdate(float delta_time) {
 
 
 
-void UW::GameObjectScriptRecord::onFixedUpdate(float fixed_delta_time) {
+void Engine::Core::Script::GameObjectScriptRecord::onFixedUpdate(float fixed_delta_time) {
   if(!script_on) return;
 
   if(script){
@@ -257,7 +257,7 @@ void UW::GameObjectScriptRecord::onFixedUpdate(float fixed_delta_time) {
 
 
 
-void UW::GameObjectScriptRecord::onRender() {
+void Engine::Core::Script::GameObjectScriptRecord::onRender() {
   if(!script_on) return;
 
   if(script){
@@ -290,7 +290,7 @@ void UW::GameObjectScriptRecord::onRender() {
 
 
 
-void UW::GameObjectScriptRecord::onDestroy() {
+void Engine::Core::Script::GameObjectScriptRecord::onDestroy() {
   if(script){
 
 #ifndef PRODUCTION
@@ -321,13 +321,13 @@ void UW::GameObjectScriptRecord::onDestroy() {
 
 
 
-std::string UW::GameObjectScriptRecord::getPath() const {
+std::string Engine::Core::Script::GameObjectScriptRecord::getPath() const {
   return path;
 };
 
 
 
-int UW::GameObjectScriptRecord::loadModule() {
+int Engine::Core::Script::GameObjectScriptRecord::loadModule() {
   Engine::Utils::Logger::get().info("Script Controller", "Module loading");
 
   removeModule();
@@ -401,7 +401,7 @@ int UW::GameObjectScriptRecord::loadModule() {
 
 
 
-void UW::GameObjectScriptRecord::removeModule(){
+void Engine::Core::Script::GameObjectScriptRecord::removeModule(){
   Engine::Utils::Logger::get().info("Script Controller", "Module destroying");
 
 #ifdef PRODUCTION
@@ -469,7 +469,7 @@ void UW::GameObjectScriptRecord::removeModule(){
 
 
 
-bool UW::GameObjectScriptRecord::checkLastWrite(){
+bool Engine::Core::Script::GameObjectScriptRecord::checkLastWrite(){
 #ifndef PRODUCTION
   bool file_exist = std::filesystem::exists(cpp_file);
 
@@ -507,7 +507,7 @@ bool UW::GameObjectScriptRecord::checkLastWrite(){
 
 
 
-void UW::GameObjectScriptRecord::updateScript(Engine::ScriptShared::GameObjectData* data) {
+void Engine::Core::Script::GameObjectScriptRecord::updateScript(Engine::ScriptShared::GameObjectData* data) {
 #ifndef PRODUCTION
   Engine::Utils::Logger::get().info("Script Controller", "Script is Updating...");
 
@@ -538,9 +538,9 @@ void UW::GameObjectScriptRecord::updateScript(Engine::ScriptShared::GameObjectDa
 
 
 
-int UW::GameObjectScriptRecord::compile() {
+int Engine::Core::Script::GameObjectScriptRecord::compile() {
 #ifndef PRODUCTION
-  auto& resources = Resources::get();
+  auto& resources = Engine::Core::Resources::get();
 
   {
     std::lock_guard<std::mutex> lock(resources.compiler_mutex);
@@ -577,7 +577,7 @@ int UW::GameObjectScriptRecord::compile() {
 
         int status = compile_thread();
 
-        auto& res = Resources::get();
+        auto& res = Engine::Core::Resources::get();
         if (status == 0) {
           std::lock_guard<std::mutex> lock(res.compiler_mutex);
           res.scripts_last_time_write[this->path] = this->lastWriteTime;
@@ -595,7 +595,7 @@ int UW::GameObjectScriptRecord::compile() {
 
 
 
-int UW::GameObjectScriptRecord::compile_thread(){
+int Engine::Core::Script::GameObjectScriptRecord::compile_thread(){
 #ifndef PRODUCTION
   std::filesystem::path p(so_file);
   std::filesystem::path dir = p.parent_path();

@@ -5,24 +5,24 @@
 
 
 
-#include "UI_Log.h"
+#include "UI_Logs.h"
 
 #ifndef PRODUCTION
 
 
 
-UW::UI_Log::UI_Log(CW::Gui::Gui &gui)
+Engine::Editor::UI_Log::UI_Log(CW::Gui::Gui &gui)
   :gui(gui){};
 
 
 
-UW::UI_Log::~UI_Log(){
+Engine::Editor::UI_Log::~UI_Log(){
 };
 
 
 
-void UW::UI_Log::uiControl(){
-  if(guiSettings.logWindowOn){
+void Engine::Editor::UI_Log::uiControl(){
+  if(Engine::Editor::guiSettings.logWindowOn){
     Engine::Utils::Logger::get().info("UI", "Opening Log GUI");
     gui.addWindow("Log Gui", ui());
   }
@@ -34,7 +34,7 @@ void UW::UI_Log::uiControl(){
 
 
 
-void UW::UI_Log::guiLogs() {
+void Engine::Editor::UI_Log::guiLogs() {
   const auto& logs = Engine::Utils::Logger::get().getLogs();
   int totalItems = static_cast<int>(logs.size());
 
@@ -56,7 +56,7 @@ void UW::UI_Log::guiLogs() {
 
 
 
-std::function<void(CW::Renderer::iRenderer *window)> UW::UI_Log::ui(){
+std::function<void(CW::Renderer::iRenderer *window)> Engine::Editor::UI_Log::ui(){
   return [this](CW::Renderer::iRenderer *window){
     guiLogs();
   };

@@ -21,7 +21,7 @@
 
 
 
-namespace UW{
+namespace Engine::Editor{
 class UI_ScriptEditor{
 private:
   CW::Gui::Gui& gui;

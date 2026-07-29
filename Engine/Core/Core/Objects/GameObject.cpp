@@ -9,7 +9,7 @@
 
 
 
-void PatchScriptPointers(std::vector<UW::GameObjectScriptRecord>& scripts, Engine::ScriptShared::GameObjectData* new_data_ptr) {
+void PatchScriptPointers(std::vector<Engine::Core::Script::GameObjectScriptRecord>& scripts, Engine::ScriptShared::GameObjectData* new_data_ptr) {
   for (auto& record : scripts) {
     if (record.script) {
       record.script->game_object_data = new_data_ptr;
@@ -19,8 +19,8 @@ void PatchScriptPointers(std::vector<UW::GameObjectScriptRecord>& scripts, Engin
 
 
 
-UW::GameObject::GameObject(const std::string& name, const std::string& mesh, const std::string& shader, const std::vector<std::string>& materials, const std::vector<std::string>& textures, const std::vector<UW::GameObjectScriptRecord>& scripts, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
-  : scripts(scripts), mesh(mesh, &UW::Resources::get().meshes) {
+Engine::GameObject::GameObject(const std::string& name, const std::string& mesh, const std::string& shader, const std::vector<std::string>& materials, const std::vector<std::string>& textures, const std::vector<Engine::Core::Script::GameObjectScriptRecord>& scripts, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
+  : scripts(scripts), mesh(mesh, &Engine::Core::Resources::get().meshes) {
   Engine::Utils::Logger::get().info("GameObject", "GameObject Constructor Called!");
   game_object_data.name = name;
   game_object_data.mesh = mesh;
@@ -38,7 +38,7 @@ UW::GameObject::GameObject(const std::string& name, const std::string& mesh, con
 
 
 
-UW::GameObject::GameObject(const std::string& name, const GameObject& other){
+Engine::GameObject::GameObject(const std::string& name, const GameObject& other){
   Engine::Utils::Logger::get().info("GameObject", "GameObject Duplicating");
   
   for(const auto& script : other.scripts) scripts.emplace_back(script.getPath());
@@ -56,13 +56,13 @@ UW::GameObject::GameObject(const std::string& name, const GameObject& other){
 
 
 
-UW::GameObject::~GameObject(){
+Engine::GameObject::~GameObject(){
   onDestroy();
 };
 
 
 
-UW::GameObject::GameObject(const GameObject& other) 
+Engine::GameObject::GameObject(const GameObject& other) 
   : Object(other), uniform(other.uniform), scripts(other.scripts),
     mesh_last(other.mesh_last),
     game_object_data(other.game_object_data),
@@ -75,7 +75,7 @@ UW::GameObject::GameObject(const GameObject& other)
 
 
 
-UW::GameObject& UW::GameObject::operator=(const GameObject& other) {
+Engine::GameObject& Engine::GameObject::operator=(const GameObject& other) {
   if (this == &other) return *this;
   
   Object::operator=(other);
@@ -93,7 +93,7 @@ UW::GameObject& UW::GameObject::operator=(const GameObject& other) {
 
 
 
-UW::GameObject::GameObject(GameObject&& other) noexcept
+Engine::GameObject::GameObject(GameObject&& other) noexcept
   : Object(std::move(other)), uniform(std::move(other.uniform)), scripts(std::move(other.scripts)),
     mesh_last(std::move(other.mesh_last)),
     game_object_data(std::move(other.game_object_data)),
@@ -106,7 +106,7 @@ UW::GameObject::GameObject(GameObject&& other) noexcept
 
 
 
-UW::GameObject& UW::GameObject::operator=(GameObject&& other) noexcept {
+Engine::GameObject& Engine::GameObject::operator=(GameObject&& other) noexcept {
   if (this == &other) return *this;
 
   Object::operator=(std::move(other));
@@ -124,14 +124,14 @@ UW::GameObject& UW::GameObject::operator=(GameObject&& other) noexcept {
 
 
 
-void UW::GameObject::stopScript(unsigned int index){
+void Engine::GameObject::stopScript(unsigned int index){
   scripts[index].onDestroy();
   scripts[index].removeModule();
 };
 
 
 
-void UW::GameObject::startScript(unsigned int index){
+void Engine::GameObject::startScript(unsigned int index){
   scripts[index].loadModule();
   copy_game_object_data = game_object_data;
   scripts[index].onLoad(&copy_game_object_data);
@@ -139,21 +139,21 @@ void UW::GameObject::startScript(unsigned int index){
 
 
 
-void UW::GameObject::stopScripts(){
+void Engine::GameObject::stopScripts(){
   for(int i = 0; i < scripts.size(); i++)
     stopScript(i);
 };
 
 
 
-void UW::GameObject::startScripts(){
+void Engine::GameObject::startScripts(){
   for(int i = 0; i < scripts.size(); i++)
     startScript(i);
 };
 
 
 
-void UW::GameObject::onLoad(){
+void Engine::GameObject::onLoad(){
   for(auto& script : scripts) {
     script.loadModule();
     script.onLoad(&copy_game_object_data);
@@ -162,7 +162,7 @@ void UW::GameObject::onLoad(){
 
 
 
-void UW::GameObject::onDestroy(){
+void Engine::GameObject::onDestroy(){
   for(auto& script : scripts) {
     script.onDestroy();
     script.removeModule();
@@ -171,8 +171,8 @@ void UW::GameObject::onDestroy(){
 
 
 
-void UW::GameObject::onUpdate(float delta_time){
-  if(Resources::get().simulation_mode){
+void Engine::GameObject::onUpdate(float delta_time){
+  if(Engine::Core::Resources::get().simulation_mode){
     for(auto& script : scripts) {
       if(!script.script_on) continue;
       script.syncPointer(&copy_game_object_data);
@@ -183,8 +183,8 @@ void UW::GameObject::onUpdate(float delta_time){
 
 
 
-void UW::GameObject::onFixedUpdate(float fixed_delta_time){
-  if(Resources::get().simulation_mode){
+void Engine::GameObject::onFixedUpdate(float fixed_delta_time){
+  if(Engine::Core::Resources::get().simulation_mode){
     for(auto& script : scripts) {
       if(!script.script_on) continue;
       script.syncPointer(&copy_game_object_data);
@@ -196,7 +196,7 @@ void UW::GameObject::onFixedUpdate(float fixed_delta_time){
 
 
 
-void UW::GameObject::render(CW::Renderer::Renderer *renderer, Camera &culling_camera, Camera &render_camera, CW::Renderer::Uniform& shadows_uniform){
+void Engine::GameObject::render(CW::Renderer::Renderer *renderer, Camera &culling_camera, Camera &render_camera, CW::Renderer::Uniform& shadows_uniform){
   if(copy_game_object_data.mesh == "empty") return;
 
   if(scripts.size() == 0) copy_game_object_data = game_object_data;
@@ -213,7 +213,7 @@ void UW::GameObject::render(CW::Renderer::Renderer *renderer, Camera &culling_ca
   uniform["view"]->set<glm::mat4>(render_camera.view(renderer));
   
   uniform["cameraPosition"]->set<glm::vec3>(culling_camera.position);
-  uniform["lightCount"]->set<int>(Resources::get().lights.size());
+  uniform["lightCount"]->set<int>(Engine::Core::Resources::get().lights.size());
 
   glm::vec3 pivotOffset = glm::vec3(0.0f, 0.0f, 0.0f);
   glm::mat4 translationMat = glm::translate(glm::mat4(1.0f), copy_game_object_data.position);
@@ -231,7 +231,7 @@ void UW::GameObject::render(CW::Renderer::Renderer *renderer, Camera &culling_ca
     }, el.second);
   };
 
-  if(Resources::get().simulation_mode){
+  if(Engine::Core::Resources::get().simulation_mode){
     for(auto& script : scripts) {
       if(!script.script_on) continue;
       script.onRender();
@@ -253,21 +253,21 @@ void UW::GameObject::render(CW::Renderer::Renderer *renderer, Camera &culling_ca
     uniform["model"]->set<glm::mat4>(model);
 
     for(unsigned int i = 0; i < copy_game_object_data.textures.size(); i++){
-      Resources::get().getTexture(this->copy_game_object_data.textures[i]).bind(i);
+      Engine::Core::Resources::get().getTexture(this->copy_game_object_data.textures[i]).bind(i);
       uniform["texture" + std::to_string(i)]->set<int>(i);
     };
     
-    Resources::get().getShader(this->copy_game_object_data.shader).getUniforms().emplace_back(&shadows_uniform);
-    Resources::get().getShader(this->copy_game_object_data.shader).getUniforms().emplace_back(&uniform);
+    Engine::Core::Resources::get().getShader(this->copy_game_object_data.shader).getUniforms().emplace_back(&shadows_uniform);
+    Engine::Core::Resources::get().getShader(this->copy_game_object_data.shader).getUniforms().emplace_back(&uniform);
     
-    Resources::get().getShader(this->copy_game_object_data.shader).bind();
+    Engine::Core::Resources::get().getShader(this->copy_game_object_data.shader).bind();
     
     std::vector<int> translation;
     for(std::string el : copy_game_object_data.materials){
-      translation.emplace_back(Resources::get().materials.translate_material(el));
+      translation.emplace_back(Engine::Core::Resources::get().materials.translate_material(el));
     };
 
-    GLint loc = glGetUniformLocation(Resources::get().getShader(copy_game_object_data.shader).getShaderProgram(), "mat_translate");
+    GLint loc = glGetUniformLocation(Engine::Core::Resources::get().getShader(copy_game_object_data.shader).getShaderProgram(), "mat_translate");
     glUniform1iv(loc, translation.size(), translation.data());
     
     if(copy_game_object_data.gl_draw_patches)
@@ -275,12 +275,12 @@ void UW::GameObject::render(CW::Renderer::Renderer *renderer, Camera &culling_ca
     else
       mesh->render();
     
-    Resources::get().getShader(this->copy_game_object_data.shader).unbind();
+    Engine::Core::Resources::get().getShader(this->copy_game_object_data.shader).unbind();
 
     for(unsigned int i = 0; i < copy_game_object_data.textures.size(); i++) 
-      Resources::get().getTexture(this->copy_game_object_data.textures[i]).unbind();
+      Engine::Core::Resources::get().getTexture(this->copy_game_object_data.textures[i]).unbind();
 
-    Resources::get().getShader(this->copy_game_object_data.shader).getUniforms().clear();
+    Engine::Core::Resources::get().getShader(this->copy_game_object_data.shader).getUniforms().clear();
     
     if(copy_game_object_data.gl_depth_lequal)
       glDepthFunc(GL_LESS);
@@ -293,7 +293,7 @@ void UW::GameObject::render(CW::Renderer::Renderer *renderer, Camera &culling_ca
 
 
 
-bool UW::GameObject::isVisible(glm::mat4 culling_camera_transform, glm::mat4 model, const CW::Renderer::Mesh& mesh){
+bool Engine::GameObject::isVisible(glm::mat4 culling_camera_transform, glm::mat4 model, const CW::Renderer::Mesh& mesh){
   auto cullingBox = mesh.getCullingBox();
   glm::vec3 localMin = glm::vec3(cullingBox[0][0], cullingBox[0][1], cullingBox[0][2]); 
   glm::vec3 localMax = glm::vec3(cullingBox[1][0], cullingBox[1][1], cullingBox[1][2]);

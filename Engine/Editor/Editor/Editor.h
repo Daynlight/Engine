@@ -21,14 +21,14 @@
 
 
 
-namespace UW{
+namespace Engine::Editor{
 class Editor{
 private:
-  Core& core;
+  Engine::Core::Core& core;
   UI ui;
 
 public:
-  Editor(Core& core, float& fps, CW::Renderer::Framebuffer& viewport_fbo);
+  Editor(Engine::Core::Core& core, float& fps, CW::Renderer::Framebuffer& viewport_fbo);
   ~Editor();
   
   // Editor operations

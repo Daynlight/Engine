@@ -10,7 +10,7 @@
 
 
 
-UW::UI_ScriptEditor::UI_ScriptEditor(CW::Gui::Gui& gui, const std::string& name)
+Engine::Editor::UI_ScriptEditor::UI_ScriptEditor(CW::Gui::Gui& gui, const std::string& name)
   :gui(gui), script_name(name){
 
   Engine::Utils::Logger::get().info("UI_ScriptEditor", "Opened { " + script_name + " }");
@@ -23,7 +23,7 @@ UW::UI_ScriptEditor::UI_ScriptEditor(CW::Gui::Gui& gui, const std::string& name)
 
 
 
-UW::UI_ScriptEditor::~UI_ScriptEditor(){
+Engine::Editor::UI_ScriptEditor::~UI_ScriptEditor(){
   if (script_is_updated) {
     DataSerializer::get().saveScript(script_name, buffer);
     Engine::Utils::Logger::get().info("UI_ScriptEditor", "Force saved on close: { " + script_name + " }");
@@ -35,7 +35,7 @@ UW::UI_ScriptEditor::~UI_ScriptEditor(){
 
 
 
-void UW::UI_ScriptEditor::guiScriptLoad(const std::string& name){
+void Engine::Editor::UI_ScriptEditor::guiScriptLoad(const std::string& name){
   if(script_is_loaded) return;
 
   script_name = name;
@@ -53,7 +53,7 @@ void UW::UI_ScriptEditor::guiScriptLoad(const std::string& name){
 
 
 
-void UW::UI_ScriptEditor::guiScriptEditor(){
+void Engine::Editor::UI_ScriptEditor::guiScriptEditor(){
   float width = ImGui::GetContentRegionAvail().x;
   float height = ImGui::GetContentRegionAvail().y - 50.0f;
   
@@ -80,7 +80,7 @@ void UW::UI_ScriptEditor::guiScriptEditor(){
 
 
 
-inline std::function<void(CW::Renderer::iRenderer *window)> UW::UI_ScriptEditor::ScriptEditorGui(){
+inline std::function<void(CW::Renderer::iRenderer *window)> Engine::Editor::UI_ScriptEditor::ScriptEditorGui(){
   return [this](CW::Renderer::iRenderer *window){
     guiScriptLoad(script_name);
     guiScriptEditor();
@@ -89,7 +89,7 @@ inline std::function<void(CW::Renderer::iRenderer *window)> UW::UI_ScriptEditor:
 
 
 
-std::string UW::UI_ScriptEditor::getName(){
+std::string Engine::Editor::UI_ScriptEditor::getName(){
   return script_name;
 };
 

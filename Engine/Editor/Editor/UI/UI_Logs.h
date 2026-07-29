@@ -19,7 +19,7 @@
 
 
 
-namespace UW{
+namespace Engine::Editor{
 class UI_Log{
 private:
   CW::Gui::Gui& gui;

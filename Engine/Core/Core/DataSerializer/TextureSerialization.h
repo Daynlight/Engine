@@ -23,7 +23,7 @@
 
 
 
-namespace UW {
+namespace Engine {
 class TextureSerialization {
 public:
   TextureSerialization() = default;
@@ -36,4 +36,4 @@ public:
 
   void loadAll(std::unordered_map<std::string, CW::Renderer::Texture>& textures);
 };
-}; // namespace UW
+}; // namespace Engine

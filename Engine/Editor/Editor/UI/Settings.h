@@ -16,7 +16,7 @@
 
 
 
-namespace UW{
+namespace Engine::Editor{
 struct GuiSettings{
   bool infoWindowOn = false;
   bool logWindowOn = false;

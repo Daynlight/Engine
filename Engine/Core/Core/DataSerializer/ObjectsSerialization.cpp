@@ -18,7 +18,7 @@ CMRC_DECLARE(GameData);
 
 
 #ifndef PRODUCTION
-void UW::ObjectsSerialization::save(const UW::GameObject& object) {
+void Engine::ObjectsSerialization::save(const Engine::GameObject& object) {
   Engine::Utils::Logger::get().info("ObjectsSerialization", "Saving object: " + object.game_object_data.name);
   
   try {
@@ -36,7 +36,7 @@ void UW::ObjectsSerialization::save(const UW::GameObject& object) {
     return;
   };
 
-  UW::GameObjectRecord record;
+  Engine::GameObjectRecord record;
   record.name = object.game_object_data.name;
   record.mesh = object.game_object_data.mesh;
   record.shader = object.game_object_data.shader;
@@ -63,14 +63,14 @@ void UW::ObjectsSerialization::save(const UW::GameObject& object) {
 
 
 
-void UW::ObjectsSerialization::load(UW::GameObject& object) {
+void Engine::ObjectsSerialization::load(Engine::GameObject& object) {
 
 };
 
 
 
 #ifndef PRODUCTION
-void UW::ObjectsSerialization::saveAll(std::vector<UW::GameObject>& objects) {
+void Engine::ObjectsSerialization::saveAll(std::vector<Engine::GameObject>& objects) {
   Engine::Utils::Logger::get().info("ObjectsSerialization", "Saving all objects...");
   try {
     std::filesystem::path p(Engine::Config::GAME_DATA_FOLDER + Engine::Config::OBJECTS_FILENAME);
@@ -91,7 +91,7 @@ void UW::ObjectsSerialization::saveAll(std::vector<UW::GameObject>& objects) {
   outFile.write(reinterpret_cast<const char*>(&obj_size), sizeof(obj_size));
 
   for (const auto& object : objects) {
-    UW::GameObjectRecord record;
+    Engine::GameObjectRecord record;
     record.name = object.game_object_data.name;
     record.mesh = object.game_object_data.mesh;
     record.shader = object.game_object_data.shader;
@@ -120,7 +120,7 @@ void UW::ObjectsSerialization::saveAll(std::vector<UW::GameObject>& objects) {
 
 
 
-void UW::ObjectsSerialization::loadAll(std::vector<UW::GameObject>& objects) {
+void Engine::ObjectsSerialization::loadAll(std::vector<Engine::GameObject>& objects) {
   Engine::Utils::Logger::get().info("ObjectsSerialization", "Loading all objects...");
   try {
     std::string resourcePath = Engine::Config::GAME_DATA_FOLDER + Engine::Config::OBJECTS_FILENAME;
@@ -151,7 +151,7 @@ void UW::ObjectsSerialization::loadAll(std::vector<UW::GameObject>& objects) {
     inFile.read(reinterpret_cast<char*>(&objectCount), sizeof(objectCount));
 
     for (size_t i = 0; i < objectCount; ++i) {
-      UW::GameObjectRecord record;
+      Engine::GameObjectRecord record;
       if (inFile >> record) {
         GameObject object(record.name, record.mesh, record.shader);
         object.game_object_data.position = record.position;
@@ -188,7 +188,7 @@ void UW::ObjectsSerialization::loadAll(std::vector<UW::GameObject>& objects) {
 
 
 #ifndef PRODUCTION
-std::ostream& UW::operator<<(std::ostream& os, const UW::GameObjectRecord& record) {
+std::ostream& Engine::operator<<(std::ostream& os, const Engine::GameObjectRecord& record) {
   size_t name_sz = record.name.size();
   os.write(reinterpret_cast<const char*>(&name_sz), sizeof(name_sz));
   if (name_sz > 0) os.write(record.name.data(), name_sz);
@@ -301,7 +301,7 @@ std::ostream& UW::operator<<(std::ostream& os, const UW::GameObjectRecord& recor
 
 
 
-std::istream& UW::operator>>(std::istream& is, UW::GameObjectRecord& record) {
+std::istream& Engine::operator>>(std::istream& is, Engine::GameObjectRecord& record) {
   size_t name_sz = 0;
   if (!is.read(reinterpret_cast<char*>(&name_sz), sizeof(name_sz))) return is;
   record.name.resize(name_sz);

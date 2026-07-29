@@ -11,18 +11,18 @@
 
 
 
-UW::UI_Objects::UI_Objects(CW::Gui::Gui& gui, CW::Renderer::Renderer& window, UW::Scene& scene)
+Engine::Editor::UI_Objects::UI_Objects(CW::Gui::Gui& gui, CW::Renderer::Renderer& window, Engine::Core::Scene& scene)
   :gui(gui), window(window), scene(scene) {};
 
 
 
-UW::UI_Objects::~UI_Objects(){
+Engine::Editor::UI_Objects::~UI_Objects(){
 };
 
 
 
-void UW::UI_Objects::uiControl(){
-  if(guiSettings.objectExplorerWindowOn){
+void Engine::Editor::UI_Objects::uiControl(){
+  if(Engine::Editor::guiSettings.objectExplorerWindowOn){
     Engine::Utils::Logger::get().info("UI", "Opening Object Explorer GUI");
     gui.addWindow("Object Explorer", objectExplorerGui());
   }
@@ -31,7 +31,7 @@ void UW::UI_Objects::uiControl(){
     gui.deleteWindow("Object Explorer");
   };
 
-  if(guiSettings.objectEditorWindowOn){
+  if(Engine::Editor::guiSettings.objectEditorWindowOn){
     Engine::Utils::Logger::get().info("UI", "Opening Object Editor GUI");
     gui.addWindow("Object Editor", objectEditorGui());
   }
@@ -43,39 +43,39 @@ void UW::UI_Objects::uiControl(){
 
 
 
-void UW::UI_Objects::guiObjectList(){
+void Engine::Editor::UI_Objects::guiObjectList(){
   ImGui::SeparatorText("Object List");
 
-  for(unsigned int id = 0; id < UW::ObjectManager::get().objects.size(); id++){
-    if(UW::ObjectManager::get().objects[id].copy_game_object_data.hidden) continue;
+  for(unsigned int id = 0; id < Engine::ObjectManager::get().objects.size(); id++){
+    if(Engine::ObjectManager::get().objects[id].copy_game_object_data.hidden) continue;
 
-    std::string label = "- " + UW::ObjectManager::get().objects[id].game_object_data.name + "##(" + std::to_string(id) + ")";
+    std::string label = "- " + Engine::ObjectManager::get().objects[id].game_object_data.name + "##(" + std::to_string(id) + ")";
     if(ImGui::Button(label.c_str())) guiSettings.object_id = id;
     
     label = "Delete##" + std::to_string(id);
     ImGui::SameLine();
     if(ImGui::Button(label.c_str())) {
-      UW::ObjectManager::get().objects.erase(UW::ObjectManager::get().objects.begin() + id);
-      Engine::Utils::Logger::get().warn("UI", "Deleted Object { " + UW::ObjectManager::get().objects[id].game_object_data.name + " }");
+      Engine::ObjectManager::get().objects.erase(Engine::ObjectManager::get().objects.begin() + id);
+      Engine::Utils::Logger::get().warn("UI", "Deleted Object { " + Engine::ObjectManager::get().objects[id].game_object_data.name + " }");
     };
 
     label = "Duplicate##" + std::to_string(id);
     ImGui::SameLine();
     if(ImGui::Button(label.c_str())) {
-      UW::ObjectManager::get().objects.emplace_back(GameObject(UW::ObjectManager::get().objects[id].game_object_data.name + "_copy", UW::ObjectManager::get().objects[id]));
-      Engine::Utils::Logger::get().warn("UI", "Duplicated Object { " + UW::ObjectManager::get().objects[id].game_object_data.name + " }");
+      Engine::ObjectManager::get().objects.emplace_back(GameObject(Engine::ObjectManager::get().objects[id].game_object_data.name + "_copy", Engine::ObjectManager::get().objects[id]));
+      Engine::Utils::Logger::get().warn("UI", "Duplicated Object { " + Engine::ObjectManager::get().objects[id].game_object_data.name + " }");
     };
   };
 
   if(ImGui::Button("Add new")) {
-    UW::ObjectManager::get().objects.emplace_back(UW::GameObject("new object", "testing", "testing", {}, {}, {}, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f), glm::vec3(1.0f)));
+    Engine::ObjectManager::get().objects.emplace_back(Engine::GameObject("new object", "testing", "testing", {}, {}, {}, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f), glm::vec3(1.0f)));
     Engine::Utils::Logger::get().info("UI", "Added New Object { new object }");
   };
 };
 
 
 
-std::function<void(CW::Renderer::iRenderer *window)> UW::UI_Objects::objectExplorerGui(){
+std::function<void(CW::Renderer::iRenderer *window)> Engine::Editor::UI_Objects::objectExplorerGui(){
 return [this](CW::Renderer::iRenderer *window){
   guiObjectList();
 };
@@ -83,11 +83,11 @@ return [this](CW::Renderer::iRenderer *window){
 
 
 
-void UW::UI_Objects::guiObjectEditor(){
+void Engine::Editor::UI_Objects::guiObjectEditor(){
   ImGui::SeparatorText("Object Editor");
-  if(guiSettings.object_id >= UW::ObjectManager::get().objects.size()) return;
+  if(guiSettings.object_id >= Engine::ObjectManager::get().objects.size()) return;
   
-  UW::GameObject& object = UW::ObjectManager::get().objects[guiSettings.object_id];
+  Engine::GameObject& object = Engine::ObjectManager::get().objects[guiSettings.object_id];
 
   char name_buffer[Engine::Config::OBJECT_NAME_BUFFER_SIZE];
   memcpy(name_buffer, object.game_object_data.name.data(), object.game_object_data.name.size());
@@ -102,7 +102,7 @@ void UW::UI_Objects::guiObjectEditor(){
   memcpy(mesh_buffer, object.game_object_data.mesh.data(), object.game_object_data.mesh.size());
   mesh_buffer[object.game_object_data.mesh.size()] = '\0';
   if(ImGui::InputText("mesh", mesh_buffer, Engine::Config::OBJECT_NAME_BUFFER_SIZE)){
-    if(!Resources::get().meshes.exists(mesh_buffer)) return;
+    if(!Engine::Core::Resources::get().meshes.exists(mesh_buffer)) return;
     object.stopScripts();
     object.game_object_data.mesh = std::string(mesh_buffer + '\0');
     object.startScripts();
@@ -112,8 +112,8 @@ void UW::UI_Objects::guiObjectEditor(){
   memcpy(shader_buffer, object.game_object_data.shader.data(), object.game_object_data.shader.size());
   shader_buffer[object.game_object_data.shader.size()] = '\0';
   if(ImGui::InputText("shader", shader_buffer, Engine::Config::OBJECT_NAME_BUFFER_SIZE)){
-    auto its = Resources::get().shaders.find(shader_buffer);
-    if(its == Resources::get().shaders.end()) return;
+    auto its = Engine::Core::Resources::get().shaders.find(shader_buffer);
+    if(its == Engine::Core::Resources::get().shaders.end()) return;
     object.stopScripts();
     object.game_object_data.shader = std::string(shader_buffer + '\0');
     object.startScripts();
@@ -236,7 +236,7 @@ void UW::UI_Objects::guiObjectEditor(){
     material_buffer[object.game_object_data.materials[i].size()] = '\0';
     if(ImGui::InputText(label.c_str(), material_buffer, Engine::Config::OBJECT_NAME_BUFFER_SIZE)){
       object.stopScripts();
-      if(!Resources::get().materials.find(material_buffer)) return;
+      if(!Engine::Core::Resources::get().materials.find(material_buffer)) return;
       object.game_object_data.materials[i] = std::string(material_buffer + '\0');
       object.startScripts();
     };
@@ -275,7 +275,7 @@ void UW::UI_Objects::guiObjectEditor(){
     script_buffer[object.scripts[i].getPath().size()] = '\0';
     if(ImGui::InputText(label.c_str(), script_buffer, Engine::Config::OBJECT_NAME_BUFFER_SIZE)){
       object.stopScripts();
-      object.scripts[i] = UW::GameObjectScriptRecord(std::string(script_buffer + '\0'));
+      object.scripts[i] = Engine::Core::Script::GameObjectScriptRecord(std::string(script_buffer + '\0'));
       object.scripts[i].script_on = new_script_on;
       object.startScripts();
     }
@@ -292,7 +292,7 @@ void UW::UI_Objects::guiObjectEditor(){
   label = "Add script (" + std::to_string(object.scripts.size()) + ")";
   if(ImGui::Button(label.c_str())) {
     object.stopScripts();
-    object.scripts.emplace_back(GameObjectScriptRecord("new script"));
+    object.scripts.emplace_back(Engine::Core::Script::GameObjectScriptRecord("new script"));
     object.startScripts();
   };
 
@@ -597,7 +597,7 @@ void UW::UI_Objects::guiObjectEditor(){
 
 
 
-std::function<void(CW::Renderer::iRenderer *window)> UW::UI_Objects::objectEditorGui(){
+std::function<void(CW::Renderer::iRenderer *window)> Engine::Editor::UI_Objects::objectEditorGui(){
   return [this](CW::Renderer::iRenderer *window){
     guiObjectEditor();
   };

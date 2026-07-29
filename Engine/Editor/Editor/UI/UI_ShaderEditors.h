@@ -20,7 +20,7 @@
 
 
 
-namespace UW{
+namespace Engine::Editor{
 class UI_ShaderEditor{
 private:
   CW::Gui::Gui& gui;

@@ -10,7 +10,7 @@
 
 
 
-UW::UI_ShaderEditor::UI_ShaderEditor(CW::Gui::Gui& gui, const std::string& name, GLenum type)
+Engine::Editor::UI_ShaderEditor::UI_ShaderEditor(CW::Gui::Gui& gui, const std::string& name, GLenum type)
   :gui(gui), shader_name(name), shader_type(type){
 
   Engine::Utils::Logger::get().info("UI_ShaderEditor", "Opened { " + shader_name + " : " + Engine::Config::SHADER_TYPE_TO_NAME[shader_type] + " }");
@@ -19,24 +19,24 @@ UW::UI_ShaderEditor::UI_ShaderEditor(CW::Gui::Gui& gui, const std::string& name,
 
 
 
-UW::UI_ShaderEditor::~UI_ShaderEditor(){
+Engine::Editor::UI_ShaderEditor::~UI_ShaderEditor(){
   gui.deleteWindow("Shader Editor " + shader_name + " : " + Engine::Config::SHADER_TYPE_TO_NAME[shader_type]);
   Engine::Utils::Logger::get().info("UI_ShaderEditor", "Closed { " + shader_name + " : " + Engine::Config::SHADER_TYPE_TO_NAME[shader_type] + " }");
 };
 
 
 
-void UW::UI_ShaderEditor::guiShaderLoad(const std::string& name, GLenum type){
+void Engine::Editor::UI_ShaderEditor::guiShaderLoad(const std::string& name, GLenum type){
   if(shader_is_loaded) return;
 
   shader_name = name;
   shader_type = type;
   memset(buffer, '\0', Engine::Config::SHADER_EDITOR_BUFFER_SIZE);
   
-  auto it = Resources::get().shaders.find(name);
-  if(it == Resources::get().shaders.end()) return;
+  auto it = Engine::Core::Resources::get().shaders.find(name);
+  if(it == Engine::Core::Resources::get().shaders.end()) return;
 
-  const std::unordered_map<GLenum, CW::Renderer::ShaderData>& reg = Resources::get().getShader(name).getRegisterShader();
+  const std::unordered_map<GLenum, CW::Renderer::ShaderData>& reg = Engine::Core::Resources::get().getShader(name).getRegisterShader();
   auto ita = reg.find(type);
   if(ita == reg.end()) return;
 
@@ -50,7 +50,7 @@ void UW::UI_ShaderEditor::guiShaderLoad(const std::string& name, GLenum type){
 
 
 
-void UW::UI_ShaderEditor::guiShaderEditor(){
+void Engine::Editor::UI_ShaderEditor::guiShaderEditor(){
   float width = ImGui::GetContentRegionAvail().x;
   float height = ImGui::GetContentRegionAvail().y - 50.0f;
   
@@ -59,10 +59,10 @@ void UW::UI_ShaderEditor::guiShaderEditor(){
   
   ImGui::InputTextMultiline("##Shader Content", buffer, Engine::Config::SHADER_EDITOR_BUFFER_SIZE, ImVec2(width, height), ImGuiInputTextFlags_WordWrap);
 
-  auto it = Resources::get().shaders.find(shader_name);
-  if(it == Resources::get().shaders.end()) return;
+  auto it = Engine::Core::Resources::get().shaders.find(shader_name);
+  if(it == Engine::Core::Resources::get().shaders.end()) return;
   
-  auto& reg = Resources::get().getShader(shader_name).getRegisterShader();
+  auto& reg = Engine::Core::Resources::get().getShader(shader_name).getRegisterShader();
   auto it2 = reg.find(shader_type);
   if(it2 == reg.end()) return;
 
@@ -71,10 +71,10 @@ void UW::UI_ShaderEditor::guiShaderEditor(){
   if(shader_is_updated){
     shader_is_updated = false;
     
-    Resources::get().getShader(shader_name).destroy();
-    Resources::get().getShader(shader_name).removeShaders(shader_type);
-    Resources::get().getShader(shader_name).setShader(buffer, shader_type);
-    Resources::get().getShader(shader_name).compile();
+    Engine::Core::Resources::get().getShader(shader_name).destroy();
+    Engine::Core::Resources::get().getShader(shader_name).removeShaders(shader_type);
+    Engine::Core::Resources::get().getShader(shader_name).setShader(buffer, shader_type);
+    Engine::Core::Resources::get().getShader(shader_name).compile();
     DataSerializer::get().saveShaders(shader_name, shader_type);
 
     Engine::Utils::Logger::get().info("UI_ShaderEditor", "Saved { " + shader_name + " : " + Engine::Config::SHADER_TYPE_TO_NAME[shader_type] + " }");
@@ -83,7 +83,7 @@ void UW::UI_ShaderEditor::guiShaderEditor(){
 
 
 
-inline std::function<void(CW::Renderer::iRenderer *window)> UW::UI_ShaderEditor::shaderEditorGui(){
+inline std::function<void(CW::Renderer::iRenderer *window)> Engine::Editor::UI_ShaderEditor::shaderEditorGui(){
 return [this](CW::Renderer::iRenderer *window){
   guiShaderLoad(shader_name, shader_type);
   guiShaderEditor();
@@ -92,13 +92,13 @@ return [this](CW::Renderer::iRenderer *window){
 
 
 
-std::string UW::UI_ShaderEditor::getName(){
+std::string Engine::Editor::UI_ShaderEditor::getName(){
   return shader_name;
 };
 
 
 
-GLenum UW::UI_ShaderEditor::getType(){
+GLenum Engine::Editor::UI_ShaderEditor::getType(){
   return shader_type;
 };
 

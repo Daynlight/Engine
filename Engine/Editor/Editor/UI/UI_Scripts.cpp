@@ -11,7 +11,7 @@
 
 
 
-UW::UI_Scripts::UI_Scripts(CW::Gui::Gui& gui)
+Engine::Editor::UI_Scripts::UI_Scripts(CW::Gui::Gui& gui)
   :gui(gui){
 
   script_editors.reserve(20);
@@ -19,14 +19,14 @@ UW::UI_Scripts::UI_Scripts(CW::Gui::Gui& gui)
 
 
 
-UW::UI_Scripts::~UI_Scripts(){
+Engine::Editor::UI_Scripts::~UI_Scripts(){
 
 };
 
 
 
-void UW::UI_Scripts::uiControl(){
-  if(guiSettings.scriptsExplorerWindowOn){
+void Engine::Editor::UI_Scripts::uiControl(){
+  if(Engine::Editor::guiSettings.scriptsExplorerWindowOn){
     Engine::Utils::Logger::get().info("UI_Scripts", "Opening Script Explorer GUI");
     gui.addWindow("Script Explorer", scriptExplorerGui());
   }
@@ -38,22 +38,22 @@ void UW::UI_Scripts::uiControl(){
 
 
 
-void UW::UI_Scripts::loadScriptEditors(){
+void Engine::Editor::UI_Scripts::loadScriptEditors(){
   Engine::Utils::Logger::get().info("UI_Scripts", "Loading Scripts Editors");
 
   script_editors.clear();
   
-  for(std::string el : guiSettings.scripts_editors_reg){
+  for(std::string el : Engine::Editor::guiSettings.scripts_editors_reg){
     script_editors.emplace_back(std::make_unique<UI_ScriptEditor>(gui, el));
   };
 };
 
 
 
-void UW::UI_Scripts::saveScriptEditors(){
+void Engine::Editor::UI_Scripts::saveScriptEditors(){
   Engine::Utils::Logger::get().info("UI_Scripts", "Saving Scripts Editors");
 
-  guiSettings.scripts_editors_reg.clear();
+  Engine::Editor::guiSettings.scripts_editors_reg.clear();
   for(const auto& el : script_editors){
     if(el) guiSettings.scripts_editors_reg.emplace_back(el->getName());
   };
@@ -61,7 +61,7 @@ void UW::UI_Scripts::saveScriptEditors(){
 
 
 
-std::vector<std::string> UW::UI_Scripts::getAvailableScripts() {
+std::vector<std::string> Engine::Editor::UI_Scripts::getAvailableScripts() {
   std::vector<std::string> script_files;
   
   if (fs::exists(Engine::Config::SCRIPTS_FOLDER) && fs::is_directory(Engine::Config::SCRIPTS_FOLDER)) {
@@ -77,7 +77,7 @@ std::vector<std::string> UW::UI_Scripts::getAvailableScripts() {
 
 
 
-void UW::UI_Scripts::guiScriptList() {
+void Engine::Editor::UI_Scripts::guiScriptList() {
   ImGui::SeparatorText("Scripts List");
 
   auto available_scripts = getAvailableScripts();
@@ -112,7 +112,7 @@ void UW::UI_Scripts::guiScriptList() {
 
 
 
-inline std::function<void(CW::Renderer::iRenderer *window)> UW::UI_Scripts::scriptExplorerGui(){
+inline std::function<void(CW::Renderer::iRenderer *window)> Engine::Editor::UI_Scripts::scriptExplorerGui(){
   return [this](CW::Renderer::iRenderer *window){
     guiScriptList();
   };

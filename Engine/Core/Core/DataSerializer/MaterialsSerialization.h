@@ -20,7 +20,7 @@
 
 
 
-namespace UW {
+namespace Engine {
 struct MaterialsRecord {
   std::string name = "";
   glm::vec3 albedo = glm::vec3(1.0f);
@@ -42,14 +42,14 @@ public:
   ~MaterialsSerialization() = default;
 
 #ifndef PRODUCTION
-  void save(const UW::Material& material);
+  void save(const Engine::Core::Material& material);
 #endif
-  void load(UW::Material& material);
+  void load(Engine::Core::Material& material);
 
 #ifndef PRODUCTION
-  void saveAll(UW::Materials& materials);
+  void saveAll(Engine::Core::Materials& materials);
 #endif
-  void loadAll(UW::Materials& materials);
+  void loadAll(Engine::Core::Materials& materials);
 
 private:
 #ifndef PRODUCTION
@@ -57,4 +57,4 @@ private:
 #endif
   friend std::istream& operator>>(std::istream& is, MaterialsRecord& record);
 };
-}; // namespace UW
+}; // namespace Engine

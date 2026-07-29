@@ -23,7 +23,7 @@
 
 
 
-namespace UW {
+namespace Engine {
 class ShaderSerialization {
 public:
   ShaderSerialization() = default;
@@ -36,4 +36,4 @@ public:
 
   void loadAll(std::unordered_map<std::string, CW::Renderer::Shader>& shaders);
 };
-}; // namespace UW
+}; // namespace Engine

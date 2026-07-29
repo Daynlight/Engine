@@ -9,7 +9,7 @@
 
 
 
-UW::Editor::Editor(Core& core, float& fps, CW::Renderer::Framebuffer& viewport_fbo)
+Engine::Editor::Editor::Editor(Engine::Core::Core& core, float& fps, CW::Renderer::Framebuffer& viewport_fbo)
   :core(core), ui(core.window, fps, core.scene, viewport_fbo)
 {
   Engine::Utils::Logger::get().info("Editor", "Editor Initialized");
@@ -17,7 +17,7 @@ UW::Editor::Editor(Core& core, float& fps, CW::Renderer::Framebuffer& viewport_f
 
 
 
-UW::Editor::~Editor(){
+Engine::Editor::Editor::~Editor(){
   Engine::Utils::Logger::get().info("Editor", "Editor Destroyed");
 };
 
@@ -26,7 +26,7 @@ UW::Editor::~Editor(){
 // ===================================== //
 // ========== Editor Operations ========== //
 // ===================================== //
-void UW::Editor::onLoad(){
+void Engine::Editor::Editor::onLoad(){
   Engine::Utils::Logger::get().info("Editor", "Editor Loading");
   ui.onLoad();
   Engine::Utils::Logger::get().info("Editor", "Editor Loaded");
@@ -34,7 +34,7 @@ void UW::Editor::onLoad(){
 
 
 
-void UW::Editor::onDestroy() {
+void Engine::Editor::Editor::onDestroy() {
   Engine::Utils::Logger::get().info("Editor", "Destroying Editor");
   ui.onDestroy();
   Engine::Utils::Logger::get().info("Editor", "Editor Destroyed");
@@ -42,6 +42,6 @@ void UW::Editor::onDestroy() {
 
 
 
-void UW::Editor::render(){
+void Engine::Editor::Editor::render(){
   ui.render();
 };

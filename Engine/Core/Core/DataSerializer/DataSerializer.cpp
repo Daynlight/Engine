@@ -16,125 +16,125 @@ CMRC_DECLARE(GameData);
 
 
 
-UW::DataSerializer &UW::DataSerializer::get(){
+Engine::DataSerializer &Engine::DataSerializer::get(){
   static DataSerializer instance;
   return instance;
 };
 
 
 
-UW::DataSerializer::DataSerializer(){};
+Engine::DataSerializer::DataSerializer(){};
 
 
 
 #ifndef PRODUCTION
-void UW::DataSerializer::saveAllGlobResources() {
+void Engine::DataSerializer::saveAllGlobResources() {
   glob_serializer.saveAll();
 };
 #endif
 
 
 
-void UW::DataSerializer::loadAllGlobResources() {
+void Engine::DataSerializer::loadAllGlobResources() {
   glob_serializer.loadAll();
 };
 
 
 
 #ifndef PRODUCTION
-void UW::DataSerializer::saveAllObjects(std::vector<GameObject>& objects) {
+void Engine::DataSerializer::saveAllObjects(std::vector<GameObject>& objects) {
   objects_serializer.saveAll(objects);
 };
 #endif
 
 
 
-void UW::DataSerializer::loadAllObjects(std::vector<GameObject>& objects) {
+void Engine::DataSerializer::loadAllObjects(std::vector<GameObject>& objects) {
   objects_serializer.loadAll(objects);
 };
 
 
 
 #ifndef PRODUCTION
-void UW::DataSerializer::saveAllMaterials(UW::Materials &materials) {
+void Engine::DataSerializer::saveAllMaterials(Engine::Core::Materials &materials) {
   materials_serializer.saveAll(materials);
 };
 #endif
 
 
 
-void UW::DataSerializer::loadAllMaterials(UW::Materials &materials) {
+void Engine::DataSerializer::loadAllMaterials(Engine::Core::Materials &materials) {
   materials_serializer.loadAll(materials);
 };
 
 
 
 #ifndef PRODUCTION
-void UW::DataSerializer::saveAllLights(UW::Lights &lights) {
+void Engine::DataSerializer::saveAllLights(Engine::Core::Lights &lights) {
   lights_serializer.saveAll(lights);
 };
 #endif
 
 
 
-void UW::DataSerializer::loadAllLights(UW::Lights &lights) {
+void Engine::DataSerializer::loadAllLights(Engine::Core::Lights &lights) {
   lights_serializer.loadAll(lights);
 };
 
 
 
 #ifndef PRODUCTION
-void UW::DataSerializer::saveMesh(const std::string &name, const CW::Renderer::Mesh& mesh) {
+void Engine::DataSerializer::saveMesh(const std::string &name, const CW::Renderer::Mesh& mesh) {
   mesh_serializer.save(name, mesh);
 };
 #endif
 
 
 
-void UW::DataSerializer::loadMesh(const std::string& path_to_mesh, Engine::Utils::ResourceController<CW::Renderer::Mesh> &meshes) {
+void Engine::DataSerializer::loadMesh(const std::string& path_to_mesh, Engine::Utils::ResourceController<CW::Renderer::Mesh> &meshes) {
   mesh_serializer.load(path_to_mesh, meshes);
 };
 
 
 
 #ifndef PRODUCTION
-void UW::DataSerializer::saveAllMeshes(Engine::Utils::ResourceController<CW::Renderer::Mesh> &meshes) {
+void Engine::DataSerializer::saveAllMeshes(Engine::Utils::ResourceController<CW::Renderer::Mesh> &meshes) {
   mesh_serializer.saveAll(meshes);
 };
 #endif
 
 
 
-void UW::DataSerializer::loadAllMeshes(Engine::Utils::ResourceController<CW::Renderer::Mesh> &meshes) {
+void Engine::DataSerializer::loadAllMeshes(Engine::Utils::ResourceController<CW::Renderer::Mesh> &meshes) {
   mesh_serializer.loadAll(meshes);
 };
 
 
 
 #ifndef PRODUCTION
-void UW::DataSerializer::saveShaders(const std::string &shader_name, GLuint type){
-  std::string source = Resources::get().getShader(shader_name).getRegisterShader().at(type).getSource();
-  shader_serializer.save(shader_name, type, source, Resources::get().shaders);
+void Engine::DataSerializer::saveShaders(const std::string &shader_name, GLuint type){
+  std::string source = Engine::Core::Resources::get().getShader(shader_name).getRegisterShader().at(type).getSource();
+  shader_serializer.save(shader_name, type, source, Engine::Core::Resources::get().shaders);
 };
 #endif
 
 
 
-void UW::DataSerializer::loadShader(const std::string& shader_name){
-  shader_serializer.load(shader_name, Resources::get().shaders);
+void Engine::DataSerializer::loadShader(const std::string& shader_name){
+  shader_serializer.load(shader_name, Engine::Core::Resources::get().shaders);
 };
 
 
 
 #ifndef PRODUCTION
-void UW::DataSerializer::saveScript(const std::string &script_name, const std::string& source){
+void Engine::DataSerializer::saveScript(const std::string &script_name, const std::string& source){
   script_serializer.save(script_name, source);
 };
 #endif
 
 
 
-std::string UW::DataSerializer::loadScript(const std::string& script_name){
+std::string Engine::DataSerializer::loadScript(const std::string& script_name){
   #ifndef PRODUCTION
   return script_serializer.load(script_name);
   #endif
@@ -142,14 +142,14 @@ std::string UW::DataSerializer::loadScript(const std::string& script_name){
 
 
 
-void UW::DataSerializer::loadTexture(const std::string &texture_name){
-  return texture_serializer.load(texture_name, Resources::get().textures);
+void Engine::DataSerializer::loadTexture(const std::string &texture_name){
+  return texture_serializer.load(texture_name, Engine::Core::Resources::get().textures);
 };
 
 
 
 #ifndef PRODUCTION
-void UW::DataSerializer::backupGameData() {
+void Engine::DataSerializer::backupGameData() {
   Engine::Utils::Logger::get().info("DataSerializer", "Creating backup of GameData...");
 
   namespace fs = std::filesystem;
@@ -175,20 +175,20 @@ void UW::DataSerializer::backupGameData() {
 
 
 
-void UW::DataSerializer::saveAll() {
+void Engine::DataSerializer::saveAll() {
   Engine::Utils::Logger::get().info("DataSerializer", "Saving all game data...");
   glob_serializer.saveAll();
   objects_serializer.saveAll(ObjectManager::get().objects);
-  materials_serializer.saveAll(Resources::get().materials);
-  lights_serializer.saveAll(Resources::get().lights);
-  mesh_serializer.saveAll(Resources::get().meshes);
+  materials_serializer.saveAll(Engine::Core::Resources::get().materials);
+  lights_serializer.saveAll(Engine::Core::Resources::get().lights);
+  mesh_serializer.saveAll(Engine::Core::Resources::get().meshes);
   Engine::Utils::Logger::get().info("DataSerializer", "All game data has been saved");
 };
 #endif
 
 
 
-void UW::DataSerializer::loadAll() {
+void Engine::DataSerializer::loadAll() {
 #ifndef PRODUCTION
   Engine::Utils::Logger::get().info("DataSerializer", "Making Backup...");
   backupGameData();
@@ -197,11 +197,11 @@ void UW::DataSerializer::loadAll() {
 
   Engine::Utils::Logger::get().info("DataSerializer", "Loading all game data...");
   glob_serializer.loadAll();
-  mesh_serializer.loadAll(Resources::get().meshes);
-  lights_serializer.loadAll(Resources::get().lights);
-  materials_serializer.loadAll(Resources::get().materials);
+  mesh_serializer.loadAll(Engine::Core::Resources::get().meshes);
+  lights_serializer.loadAll(Engine::Core::Resources::get().lights);
+  materials_serializer.loadAll(Engine::Core::Resources::get().materials);
   objects_serializer.loadAll(ObjectManager::get().objects);
-  shader_serializer.loadAll(Resources::get().shaders);
-  texture_serializer.loadAll(Resources::get().textures);
+  shader_serializer.loadAll(Engine::Core::Resources::get().shaders);
+  texture_serializer.loadAll(Engine::Core::Resources::get().textures);
   Engine::Utils::Logger::get().info("DataSerializer", "All game data has been loaded");
 };

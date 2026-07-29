@@ -15,7 +15,7 @@ CMRC_DECLARE(GameData);
 
 
 #ifndef PRODUCTION
-void UW::ShaderSerialization::save(const std::string &shader_name, GLuint type, const std::string& source, std::unordered_map<std::string, CW::Renderer::Shader>& shaders){
+void Engine::ShaderSerialization::save(const std::string &shader_name, GLuint type, const std::string& source, std::unordered_map<std::string, CW::Renderer::Shader>& shaders){
   Engine::Utils::Logger::get().info("ShaderSerialization", "Saving shader: " + shader_name + " type=" + std::to_string(type));
   std::string local_path = Engine::Config::GAME_DATA_FOLDER + Engine::Config::ASSETS_FOLDER + Engine::Config::SHADERS_FOLDER + shader_name + "/" + Engine::Config::SHADER_TYPE_TO_NAME[type];
   
@@ -43,7 +43,7 @@ void UW::ShaderSerialization::save(const std::string &shader_name, GLuint type, 
 
 
 
-void UW::ShaderSerialization::load(const std::string& shader_name, std::unordered_map<std::string, CW::Renderer::Shader>& shaders){
+void Engine::ShaderSerialization::load(const std::string& shader_name, std::unordered_map<std::string, CW::Renderer::Shader>& shaders){
   Engine::Utils::Logger::get().info("ShaderSerialization", "Loading shader: " + shader_name);
   std::string local_path = Engine::Config::GAME_DATA_FOLDER + Engine::Config::ASSETS_FOLDER + Engine::Config::SHADERS_FOLDER + shader_name;
   CW::Renderer::Shader shader;
@@ -84,7 +84,7 @@ void UW::ShaderSerialization::load(const std::string& shader_name, std::unordere
 
 
 
-void UW::ShaderSerialization::loadAll(std::unordered_map<std::string, CW::Renderer::Shader>& shaders) {
+void Engine::ShaderSerialization::loadAll(std::unordered_map<std::string, CW::Renderer::Shader>& shaders) {
   Engine::Utils::Logger::get().info("ShaderSerialization", "Scanning and loading all shaders...");
   
   std::string root_path = Engine::Config::GAME_DATA_FOLDER + Engine::Config::ASSETS_FOLDER + Engine::Config::SHADERS_FOLDER;

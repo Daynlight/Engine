@@ -22,17 +22,19 @@
 
 
 
-namespace UW{
-class GameObjectScriptRecord;
+namespace Engine::Core::Script{ 
+  class GameObjectScriptRecord;
+};
 
 
 
+namespace Engine{
 class GameObject : public Object{
 private:
   CW::Renderer::Uniform uniform;
 
 public:
-  std::vector<UW::GameObjectScriptRecord> scripts;
+  std::vector<Engine::Core::Script::GameObjectScriptRecord> scripts;
 
   std::string mesh_last = "";
   Engine::Utils::Resource<CW::Renderer::Mesh> mesh;
@@ -41,7 +43,7 @@ public:
   Engine::ScriptShared::GameObjectData copy_game_object_data;
 
 public:
-  GameObject(const std::string& name, const std::string& mesh, const std::string& shader, const std::vector<std::string>& materials = {}, const std::vector<std::string>& textures = {}, const std::vector<UW::GameObjectScriptRecord>& scripts = {}, glm::vec3 position = glm::vec3(0.0f), glm::vec3 rotation = glm::vec3(0.0f), glm::vec3 scale = glm::vec3(1.0f));
+  GameObject(const std::string& name, const std::string& mesh, const std::string& shader, const std::vector<std::string>& materials = {}, const std::vector<std::string>& textures = {}, const std::vector<Engine::Core::Script::GameObjectScriptRecord>& scripts = {}, glm::vec3 position = glm::vec3(0.0f), glm::vec3 rotation = glm::vec3(0.0f), glm::vec3 scale = glm::vec3(1.0f));
   GameObject(const std::string& name, const GameObject& other);
   ~GameObject();
   GameObject(const GameObject& other);

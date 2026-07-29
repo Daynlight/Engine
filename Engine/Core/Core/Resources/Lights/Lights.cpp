@@ -9,25 +9,25 @@
 
 
 
-UW::Light::Light(glm::vec3 position, glm::vec3 color, float strength)
+Engine::Core::Light::Light(glm::vec3 position, glm::vec3 color, float strength)
   :position(position), color(color), strength(strength) {};
 
 
 
-UW::Lights::Lights(std::initializer_list<Light> lights)
+Engine::Core::Lights::Lights(std::initializer_list<Light> lights)
   : lights(lights) {
   compile();
 };
 
 
 
-UW::Lights::~Lights(){
+Engine::Core::Lights::~Lights(){
   destroy();
 };
 
 
 
-void UW::Lights::compile(){
+void Engine::Core::Lights::compile(){
   buffer.create();
   buffer.set<Light>(lights);
   is_compiled = true;
@@ -35,14 +35,14 @@ void UW::Lights::compile(){
 
 
 
-void UW::Lights::destroy(){
+void Engine::Core::Lights::destroy(){
   buffer.destroy();
   is_compiled = false;
 };
 
 
 
-void UW::Lights::bind(GLuint socket){
+void Engine::Core::Lights::bind(GLuint socket){
   if(!is_compiled) compile();
 
   buffer.bind(socket);
@@ -50,7 +50,7 @@ void UW::Lights::bind(GLuint socket){
 
 
 
-void UW::Lights::unbind(){
+void Engine::Core::Lights::unbind(){
   if(!is_compiled) return;
 
   buffer.unbind();
@@ -58,47 +58,47 @@ void UW::Lights::unbind(){
 
 
 
-UW::Light& UW::Lights::operator[](unsigned int index){
+Engine::Core::Light& Engine::Core::Lights::operator[](unsigned int index){
   is_compiled = false;
   return lights[index];
 };
 
 
 
-UW::Light UW::Lights::get(unsigned int index) const{
+Engine::Core::Light Engine::Core::Lights::get(unsigned int index) const{
   return lights[index];
 };
 
 
 
-void UW::Lights::clear(){
+void Engine::Core::Lights::clear(){
   is_compiled = false;
   lights.clear();
 };
 
 
 
-void UW::Lights::erase(unsigned int index){
+void Engine::Core::Lights::erase(unsigned int index){
   is_compiled = false;
   lights.erase(lights.begin() + index);
 };
 
 
 
-unsigned int UW::Lights::size() const {
+unsigned int Engine::Core::Lights::size() const {
   return lights.size();
 };
 
 
 
-void UW::Lights::emplace_back(Light light){
+void Engine::Core::Lights::emplace_back(Light light){
   is_compiled = false;
   lights.emplace_back(light);
 };
 
 
 
-void UW::Lights::emplace_back(std::initializer_list<Light> lights){
+void Engine::Core::Lights::emplace_back(std::initializer_list<Light> lights){
   is_compiled = false;
   for (Light el : lights) this->lights.emplace_back(el);
 };

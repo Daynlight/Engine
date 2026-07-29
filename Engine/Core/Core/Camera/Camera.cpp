@@ -9,7 +9,7 @@
 
 
 
-UW::Camera::Camera(CW::Renderer::Renderer* renderer, glm::vec3 position, glm::vec3 direction) 
+Engine::Camera::Camera(CW::Renderer::Renderer* renderer, glm::vec3 position, glm::vec3 direction) 
   : position(position) {
   if (glm::length(direction) > 0.0001f) {
     this->direction = glm::normalize(direction);
@@ -24,7 +24,7 @@ UW::Camera::Camera(CW::Renderer::Renderer* renderer, glm::vec3 position, glm::ve
 
 
 
-void UW::Camera::rotate(float xoffset, float yoffset, float zoffset) {
+void Engine::Camera::rotate(float xoffset, float yoffset, float zoffset) {
   glm::quat qPitch = glm::angleAxis(glm::radians(yoffset * sensitivity), glm::vec3(1.0f, 0.0f, 0.0f));
   glm::quat qYaw   = glm::angleAxis(glm::radians(-xoffset * sensitivity), glm::vec3(0.0f, 1.0f, 0.0f));
   glm::quat qRoll  = glm::angleAxis(glm::radians(zoffset), glm::vec3(0.0f, 0.0f, 1.0f));
@@ -36,27 +36,27 @@ void UW::Camera::rotate(float xoffset, float yoffset, float zoffset) {
 
 
 
-void UW::Camera::updateDirection() {
+void Engine::Camera::updateDirection() {
   direction = orientation * glm::vec3(0.0f, 0.0f, 1.0f);
   direction = glm::normalize(direction);
 };
 
 
 
-glm::mat4 UW::Camera::transformation(CW::Renderer::Renderer* renderer){
+glm::mat4 Engine::Camera::transformation(CW::Renderer::Renderer* renderer){
   return projection(renderer) * view(renderer);
 };
 
 
 
-glm::mat4 UW::Camera::view(CW::Renderer::Renderer* renderer){
+glm::mat4 Engine::Camera::view(CW::Renderer::Renderer* renderer){
   glm::vec3 dynamicUp = orientation * glm::vec3(0.0f, 1.0f, 0.0f);
   return glm::lookAt(position, position + direction, dynamicUp);
 };
 
 
 
-glm::mat4 UW::Camera::projection(CW::Renderer::Renderer* renderer) {
+glm::mat4 Engine::Camera::projection(CW::Renderer::Renderer* renderer) {
   float aspectRatio = renderer->getWindowData()->width / (float)renderer->getWindowData()->height;
 
   if (is_ortho) {
@@ -72,7 +72,7 @@ glm::mat4 UW::Camera::projection(CW::Renderer::Renderer* renderer) {
 
 
 
-void UW::Camera::event(CW::Renderer::Renderer* renderer) {
+void Engine::Camera::event(CW::Renderer::Renderer* renderer) {
   float dt = renderer->getWindowData()->delta_time;
 
   if (cursor_lock) renderer->setCursorOn(true);
@@ -141,12 +141,12 @@ void UW::Camera::event(CW::Renderer::Renderer* renderer) {
 
 
 
-void UW::Camera::setOrthographic(bool enable){
+void Engine::Camera::setOrthographic(bool enable){
   is_ortho = enable;
 };
 
 
 
-void UW::Camera::resetMouse(){
+void Engine::Camera::resetMouse(){
   mouse_is_active = false;
 };

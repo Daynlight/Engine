@@ -22,16 +22,16 @@
 
 
 
-namespace UW{
+namespace Engine::Editor{
 class UI_Objects{
 private:
   CW::Renderer::Renderer& window;
   CW::Gui::Gui& gui;
-  UW::Scene& scene;
+  Engine::Core::Scene& scene;
 
 
 public:
-  UI_Objects(CW::Gui::Gui& gui, CW::Renderer::Renderer& window, UW::Scene& scene);
+  UI_Objects(CW::Gui::Gui& gui, CW::Renderer::Renderer& window, Engine::Core::Scene& scene);
   ~UI_Objects();
   void uiControl();
 

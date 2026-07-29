@@ -28,7 +28,7 @@ namespace fs = std::filesystem;
 
 
 
-namespace UW{
+namespace Engine::Editor{
 class UI_Scripts{
 private:
   CW::Gui::Gui& gui;

@@ -9,7 +9,7 @@
 
 
 
-UW::Core::Core()
+Engine::Core::Core::Core()
   :scene(window)
 {
   Engine::Utils::Logger::get().info("Core", "Core Initialized");
@@ -17,13 +17,13 @@ UW::Core::Core()
 
 
 
-UW::Core::~Core(){
+Engine::Core::Core::~Core(){
   Engine::Utils::Logger::get().info("Core", "Core Destroyed");
 };
 
 
 
-bool UW::Core::isRunning(){
+bool Engine::Core::Core::isRunning(){
   return !window.getWindowData()->should_close;
 };
 
@@ -32,7 +32,7 @@ bool UW::Core::isRunning(){
 // ===================================== //
 // ========== Core Operations ========== //
 // ===================================== //
-void UW::Core::onLoad(){
+void Engine::Core::Core::onLoad(){
   Engine::Utils::Logger::get().info("Core", "Core Loading");
 
   DataSerializer::get().loadAll();
@@ -47,7 +47,7 @@ void UW::Core::onLoad(){
 
 
 
-void UW::Core::onDestroy() {
+void Engine::Core::Core::onDestroy() {
   Engine::Utils::Logger::get().info("Core", "Destroying Core");
 
 
@@ -59,7 +59,7 @@ void UW::Core::onDestroy() {
   scene.onDestroy();
   Engine::Utils::Logger::get().info("Core", "Scene Destroyed");
   
-  Resources::get().destroy();
+  Engine::Core::Resources::get().destroy();
   Engine::Utils::Logger::get().info("Core", "Resources Destroyed");
 
   Engine::Utils::Logger::get().info("Core", "Core Destroyed");
@@ -67,26 +67,26 @@ void UW::Core::onDestroy() {
 
 
 
-void UW::Core::render(){
+void Engine::Core::Core::render(){
   scene.render();
 };
 
 
 
-CW::Renderer::Framebuffer& UW::Core::get_fbo(){
+CW::Renderer::Framebuffer& Engine::Core::Core::get_fbo(){
   return scene.post_fbo;
 };
 
 
 
-void UW::Core::swapFrame(){
+void Engine::Core::Core::swapFrame(){
   window.windowEvents();
   window.swapBuffer();
 };
 
 
 
-void UW::Core::update(){
+void Engine::Core::Core::update(){
 #ifndef PRODUCTION
   swapCamera();
 #endif
@@ -96,7 +96,7 @@ void UW::Core::update(){
 
 
 
-void UW::Core::fixedUpdate(){
+void Engine::Core::Core::fixedUpdate(){
   fixed_update_time_acc += window.getWindowData()->delta_time;
 
   if(Engine::ScriptShared::GlobResource::get().FIXED_HZ > Engine::Config::MAX_FIXED_HZ) Engine::ScriptShared::GlobResource::get().FIXED_HZ = Engine::Config::MAX_FIXED_HZ;
@@ -122,7 +122,7 @@ void UW::Core::fixedUpdate(){
 // ============================= //
 // ========== Helpers ========== //
 // ============================= //
-void UW::Core::initWindow(){
+void Engine::Core::Core::initWindow(){
   Engine::Utils::Logger::get().info("Core", "Window Initialization");
 
   updateTitle();
@@ -137,7 +137,7 @@ void UW::Core::initWindow(){
 
 
 
-void UW::Core::updateTitle(){
+void Engine::Core::Core::updateTitle(){
   cached_title = Engine::ScriptShared::GlobResource::get().WINDOW_TITLE;
 
   window.setWindowTitle(cached_title);
@@ -146,7 +146,7 @@ void UW::Core::updateTitle(){
 
 
 
-void UW::Core::updateVsync(){
+void Engine::Core::Core::updateVsync(){
   cached_vsync = Engine::ScriptShared::GlobResource::get().VSYNC;
 
   window.setVsync(cached_vsync);
@@ -156,7 +156,7 @@ void UW::Core::updateVsync(){
 
 
 #ifndef PRODUCTION
-void UW::Core::swapCamera(){
+void Engine::Core::Core::swapCamera(){
   if(window.getInputData()->is_key_down(Engine::Config::SWAP_CAMERA_BTN) && camera_swap_cooldown_acc <= 0.0f) {
     scene.debug_camera_on = !scene.debug_camera_on;
     camera_swap_cooldown_acc = Engine::Config::CAMERA_SWAP_COOLDOWN;

@@ -15,7 +15,7 @@ CMRC_DECLARE(GameData);
 
 
 #ifndef PRODUCTION
-void UW::GlobResourceSerialization::saveAll() {
+void Engine::GlobResourceSerialization::saveAll() {
   Engine::Utils::Logger::get().info("GlobResourceSerialization", "Saving resources data");
   try {
     std::filesystem::path p(Engine::Config::GAME_DATA_FOLDER + Engine::Config::RESOURCES_FILENAME);
@@ -32,7 +32,7 @@ void UW::GlobResourceSerialization::saveAll() {
     return;
   };
 
-  UW::GlobResourceRecord record;
+  Engine::GlobResourceRecord record;
   record.window_title = Engine::ScriptShared::GlobResource::get().WINDOW_TITLE;
   record.Fixed_HZ = Engine::ScriptShared::GlobResource::get().FIXED_HZ;
   record.vsync = Engine::ScriptShared::GlobResource::get().VSYNC;
@@ -46,7 +46,7 @@ void UW::GlobResourceSerialization::saveAll() {
 
 
 
-void UW::GlobResourceSerialization::loadAll() {
+void Engine::GlobResourceSerialization::loadAll() {
   Engine::Utils::Logger::get().info("GlobResourceSerialization", "Loading all Resources...");
   try {
     std::string resourcePath = Engine::Config::GAME_DATA_FOLDER + Engine::Config::RESOURCES_FILENAME;
@@ -71,7 +71,7 @@ void UW::GlobResourceSerialization::loadAll() {
     std::stringstream inFile(dataStr);
 #endif
 
-    UW::GlobResourceRecord record;
+    Engine::GlobResourceRecord record;
     if (inFile >> record) {
       Engine::ScriptShared::GlobResource::get().WINDOW_TITLE = record.window_title;
       Engine::ScriptShared::GlobResource::get().FIXED_HZ = record.Fixed_HZ;
@@ -91,7 +91,7 @@ void UW::GlobResourceSerialization::loadAll() {
 
 
 #ifndef PRODUCTION
-std::ostream& UW::operator<<(std::ostream& os, const UW::GlobResourceRecord& record) {
+std::ostream& Engine::operator<<(std::ostream& os, const Engine::GlobResourceRecord& record) {
   uint32_t window_title_sz = static_cast<uint32_t>(record.window_title.size());
   os.write(reinterpret_cast<const char*>(&window_title_sz), sizeof(window_title_sz));
   if (window_title_sz > 0) os.write(record.window_title.data(), window_title_sz);
@@ -105,7 +105,7 @@ std::ostream& UW::operator<<(std::ostream& os, const UW::GlobResourceRecord& rec
 
 
 
-std::istream& UW::operator>>(std::istream& is, UW::GlobResourceRecord& record) {
+std::istream& Engine::operator>>(std::istream& is, Engine::GlobResourceRecord& record) {
   uint32_t window_title_sz = 0;
   if (!is.read(reinterpret_cast<char*>(&window_title_sz), sizeof(window_title_sz))) return is;
   record.window_title.resize(window_title_sz);

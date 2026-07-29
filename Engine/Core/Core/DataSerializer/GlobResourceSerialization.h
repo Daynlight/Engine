@@ -19,12 +19,12 @@
 
 
 
-namespace UW {
+namespace Engine {
 };
 
 
 
-namespace UW {
+namespace Engine {
 struct GlobResourceRecord {
   std::string window_title = "";
   float Fixed_HZ = 16;
@@ -52,4 +52,4 @@ private:
 #endif
   friend std::istream& operator>>(std::istream& is, GlobResourceSerialization& record);
 };
-}; // namespace UW
+}; // namespace Engine

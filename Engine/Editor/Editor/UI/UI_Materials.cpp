@@ -11,18 +11,18 @@
 
 
 
-UW::UI_Materials::UI_Materials(CW::Gui::Gui& gui)
+Engine::Editor::UI_Materials::UI_Materials(CW::Gui::Gui& gui)
   :gui(gui){};
 
 
 
-UW::UI_Materials::~UI_Materials(){
+Engine::Editor::UI_Materials::~UI_Materials(){
 };
 
 
 
-void UW::UI_Materials::uiControl(){
-  if(guiSettings.materialExplorerOn){
+void Engine::Editor::UI_Materials::uiControl(){
+  if(Engine::Editor::guiSettings.materialExplorerOn){
     Engine::Utils::Logger::get().info("UI", "Opening Materials Explorer GUI");
     gui.addWindow("Material Explorer", materialExplorerGui());
   }
@@ -31,7 +31,7 @@ void UW::UI_Materials::uiControl(){
     gui.deleteWindow("Material Explorer");
   };
   
-  if(guiSettings.materialEditorOn){
+  if(Engine::Editor::guiSettings.materialEditorOn){
     Engine::Utils::Logger::get().info("UI", "Opening Materials Editor GUI");
     gui.addWindow("Material Editor", materialEditorGui());
   }
@@ -43,32 +43,32 @@ void UW::UI_Materials::uiControl(){
 
 
 
-inline void UW::UI_Materials::guiMaterialList(){
+inline void Engine::Editor::UI_Materials::guiMaterialList(){
   ImGui::SeparatorText("Materials List");
 
-  for (std::pair<std::string, Material> el : Resources::get().materials.getMaterialReg()) {
+  for (std::pair<std::string, Engine::Core::Material> el : Engine::Core::Resources::get().materials.getMaterialReg()) {
     std::string button_label = "- " + el.first;
-    if (ImGui::Button(button_label.c_str())) guiSettings.material_name = el.first;
+    if (ImGui::Button(button_label.c_str())) Engine::Editor::guiSettings.material_name = el.first;
 
     button_label = "Delete ##" + el.first;
     ImGui::SameLine();
     if (ImGui::Button(button_label.c_str())) {
-      Resources::get().materials.erase(el.first);
+      Engine::Core::Resources::get().materials.erase(el.first);
       Engine::Utils::Logger::get().warn("UI", "Deleted Material { " + el.first + " }");
       break;
     };
   };
 
-  std::string button_label = "Add " + std::to_string(Resources::get().materials.size());
+  std::string button_label = "Add " + std::to_string(Engine::Core::Resources::get().materials.size());
   if (ImGui::Button(button_label.c_str())) {
-    Resources::get().materials.emplace_back("new material", UW::Material());
+    Engine::Core::Resources::get().materials.emplace_back("new material", Engine::Core::Material());
     Engine::Utils::Logger::get().info("UI", "Added new Material { new material }");
   };
 };
 
 
 
-inline std::function<void(CW::Renderer::iRenderer *window)> UW::UI_Materials::materialExplorerGui(){
+inline std::function<void(CW::Renderer::iRenderer *window)> Engine::Editor::UI_Materials::materialExplorerGui(){
 return [this](CW::Renderer::iRenderer *window){
   guiMaterialList();
 };
@@ -76,21 +76,21 @@ return [this](CW::Renderer::iRenderer *window){
 
 
 
-inline void UW::UI_Materials::guiMaterialParameters(){
+inline void Engine::Editor::UI_Materials::guiMaterialParameters(){
   ImGui::SeparatorText("Materials Parameters");
-  ImGui::Text("Material id: %s", guiSettings.material_name.c_str());
+  ImGui::Text("Material id: %s", Engine::Editor::guiSettings.material_name.c_str());
 
-  if(!Resources::get().materials.find(guiSettings.material_name)) return;
+  if(!Engine::Core::Resources::get().materials.find(guiSettings.material_name)) return;
 
-  Material temp_mat = Resources::get().materials.getMaterial(guiSettings.material_name);
+  Engine::Core::Material temp_mat = Engine::Core::Resources::get().materials.getMaterial(guiSettings.material_name);
 
   char name_buffer[Engine::Config::OBJECT_NAME_BUFFER_SIZE];
   memcpy(name_buffer, guiSettings.material_name.data(), guiSettings.material_name.size());
   name_buffer[guiSettings.material_name.size()] = '\0';
   if(ImGui::InputText("name", name_buffer, Engine::Config::OBJECT_NAME_BUFFER_SIZE)){
-    Resources::get().materials.erase(guiSettings.material_name);
+    Engine::Core::Resources::get().materials.erase(guiSettings.material_name);
     guiSettings.material_name = std::string(name_buffer + '\0');
-    Resources::get().materials.emplace_back(guiSettings.material_name, temp_mat);
+    Engine::Core::Resources::get().materials.emplace_back(guiSettings.material_name, temp_mat);
   };
   
   if(ImGui::ColorEdit3("Albedo: ", &temp_mat.albedo[0])) material_is_updated = true;
@@ -103,14 +103,14 @@ inline void UW::UI_Materials::guiMaterialParameters(){
   if(material_is_updated){
     Engine::Utils::Logger::get().info("UI", "Updating Material { " +  guiSettings.material_name + " }");
     material_is_updated = false;
-    Resources::get().materials[guiSettings.material_name] = temp_mat;
-    Resources::get().materials.compile();
+    Engine::Core::Resources::get().materials[guiSettings.material_name] = temp_mat;
+    Engine::Core::Resources::get().materials.compile();
   };
 };
 
 
 
-std::function<void(CW::Renderer::iRenderer *window)> UW::UI_Materials::materialEditorGui(){
+std::function<void(CW::Renderer::iRenderer *window)> Engine::Editor::UI_Materials::materialEditorGui(){
   return [this](CW::Renderer::iRenderer *window){
     guiMaterialParameters();
   };

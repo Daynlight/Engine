@@ -24,13 +24,13 @@
 
 
 
-namespace Engine{
+namespace Engine::App{
 class App{
 private:
-  UW::Core core;
+  Engine::Core::Core core;
   
 #ifndef PRODUCTION
-  UW::Editor editor;
+  Engine::Editor::Editor editor;
   float fps = 0.0f;
   float fps_acc = 0.0f;
   unsigned int fps_id = 0;

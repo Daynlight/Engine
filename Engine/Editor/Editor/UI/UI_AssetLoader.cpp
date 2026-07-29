@@ -11,21 +11,21 @@
 
 
 
-UW::UI_AssetLoader::UI_AssetLoader(CW::Gui::Gui& gui, UW::Scene& scene)
+Engine::Editor::UI_AssetLoader::UI_AssetLoader(CW::Gui::Gui& gui, Engine::Core::Scene& scene)
   : gui(gui), scene(scene) {
   Engine::Utils::Logger::get().info("UI_AssetLoader", "Initialized Asset Loader");
 };
 
 
 
-UW::UI_AssetLoader::~UI_AssetLoader() {
+Engine::Editor::UI_AssetLoader::~UI_AssetLoader() {
   clearTemporaryData();
 };
 
 
 
-void UW::UI_AssetLoader::uiControl(){
-  if(guiSettings.assetLoaderWindowOn){
+void Engine::Editor::UI_AssetLoader::uiControl(){
+  if(Engine::Editor::guiSettings.assetLoaderWindowOn){
     Engine::Utils::Logger::get().info("UI", "Opening Asset Loader GUI");
     gui.addWindow("Asset Loader", assetLoaderGui());
   } else {
@@ -35,7 +35,7 @@ void UW::UI_AssetLoader::uiControl(){
 
 
 
-void UW::UI_AssetLoader::clearTemporaryData() {
+void Engine::Editor::UI_AssetLoader::clearTemporaryData() {
   importer.FreeScene();
   current_scene = nullptr;
   temp_meshes.clear();
@@ -51,7 +51,7 @@ void UW::UI_AssetLoader::clearTemporaryData() {
 
 
 
-void UW::UI_AssetLoader::loadModelFromFile(const std::string& path) {
+void Engine::Editor::UI_AssetLoader::loadModelFromFile(const std::string& path) {
   clearTemporaryData();
 
   current_scene = importer.ReadFile(path, 
@@ -99,7 +99,7 @@ void UW::UI_AssetLoader::loadModelFromFile(const std::string& path) {
 
 
 
-void UW::UI_AssetLoader::guiAssetLoader() {
+void Engine::Editor::UI_AssetLoader::guiAssetLoader() {
   ImGui::SeparatorText("Load Model File");
 
   ImGui::InputText("File Path", file_path_buffer, sizeof(file_path_buffer));
@@ -208,7 +208,7 @@ void UW::UI_AssetLoader::guiAssetLoader() {
 
 
 
-void UW::UI_AssetLoader::finalizeImport() {
+void Engine::Editor::UI_AssetLoader::finalizeImport() {
   Engine::Utils::Logger::get().info("UI_AssetLoader", "Finalizing Separate Import...");
 
   std::vector<int> oldToNew = finalizeMaterials();
@@ -227,7 +227,7 @@ void UW::UI_AssetLoader::finalizeImport() {
 
     std::string assigned_mat_name = temp_materials[finalMatIdx].new_name;
 
-    UW::GameObject new_obj(
+    Engine::GameObject new_obj(
       final_mesh_name,
       final_mesh_name,
       Engine::Config::DEFAULT_SHADER,
@@ -239,7 +239,7 @@ void UW::UI_AssetLoader::finalizeImport() {
       glm::vec3(1.0f)
     );
 
-    UW::ObjectManager::get().objects.push_back(new_obj);
+    Engine::ObjectManager::get().objects.push_back(new_obj);
   };
 
   Engine::Utils::Logger::get().info("UI_AssetLoader", "Separate Import successful!");
@@ -248,7 +248,7 @@ void UW::UI_AssetLoader::finalizeImport() {
 
 
 
-void UW::UI_AssetLoader::finalizeImportMerged(const std::string& merged_name) {
+void Engine::Editor::UI_AssetLoader::finalizeImportMerged(const std::string& merged_name) {
   Engine::Utils::Logger::get().info("UI_AssetLoader", "Finalizing Merged Import...");
 
   std::vector<int> oldToNew = finalizeMaterials();
@@ -319,9 +319,9 @@ void UW::UI_AssetLoader::finalizeImportMerged(const std::string& merged_name) {
   temp_mesh.setData<int>(mat_ids, 1, 3);
   temp_mesh.addIndices(indices);
 
-  Resources::get().meshes.emplace_back(final_merged_name, std::move(temp_mesh));
+  Engine::Core::Resources::get().meshes.emplace_back(final_merged_name, std::move(temp_mesh));
 
-  UW::GameObject new_obj(
+  Engine::GameObject new_obj(
     final_merged_name,
     final_merged_name,
     Engine::Config::DEFAULT_SHADER,
@@ -333,7 +333,7 @@ void UW::UI_AssetLoader::finalizeImportMerged(const std::string& merged_name) {
     glm::vec3(1.0f)
   );
 
-  UW::ObjectManager::get().objects.push_back(new_obj);
+  Engine::ObjectManager::get().objects.push_back(new_obj);
 
   Engine::Utils::Logger::get().info("UI_AssetLoader", "Merged Import successful!");
   clearTemporaryData(); 
@@ -341,7 +341,7 @@ void UW::UI_AssetLoader::finalizeImportMerged(const std::string& merged_name) {
 
 
 
-std::vector<int> UW::UI_AssetLoader::finalizeMaterials(){
+std::vector<int> Engine::Editor::UI_AssetLoader::finalizeMaterials(){
   Engine::Utils::Logger::get().info("UI_AssetLoader", "Finalizing Materials...");
 
   std::vector<int> oldToNewMap(temp_materials.size(), -1);
@@ -351,7 +351,7 @@ std::vector<int> UW::UI_AssetLoader::finalizeMaterials(){
     if (!material_import_toggles[i]) continue;
 
     std::string final_mat_name = temp_materials[i].new_name;
-    UW::Material new_mat;
+    Engine::Core::Material new_mat;
     
     aiMaterial* material = current_scene->mMaterials[i];
     
@@ -383,7 +383,7 @@ std::vector<int> UW::UI_AssetLoader::finalizeMaterials(){
 #endif
     new_mat.ambient_occlusion = ambient_occlusion;
 
-    Resources::get().materials.emplace_back(final_mat_name, new_mat);
+    Engine::Core::Resources::get().materials.emplace_back(final_mat_name, new_mat);
     oldToNewMap[i] = newIndex;
     newIndex++;
   };
@@ -394,7 +394,7 @@ std::vector<int> UW::UI_AssetLoader::finalizeMaterials(){
 
 
 
-void UW::UI_AssetLoader::finalizeMesh(aiMesh* aMesh, const std::string& final_mesh_name, int custom_mat_id){
+void Engine::Editor::UI_AssetLoader::finalizeMesh(aiMesh* aMesh, const std::string& final_mesh_name, int custom_mat_id){
   std::vector<float> positions;
   std::vector<float> normals;
   std::vector<float> uvs;
@@ -447,12 +447,12 @@ void UW::UI_AssetLoader::finalizeMesh(aiMesh* aMesh, const std::string& final_me
   temp_mesh.setData<int>(mat_ids, 1, 3);
   temp_mesh.addIndices(indices);
 
-  Resources::get().meshes.emplace_back(final_mesh_name, std::move(temp_mesh));
+  Engine::Core::Resources::get().meshes.emplace_back(final_mesh_name, std::move(temp_mesh));
 };
 
 
 
-std::function<void(CW::Renderer::iRenderer *window)> UW::UI_AssetLoader::assetLoaderGui() {
+std::function<void(CW::Renderer::iRenderer *window)> Engine::Editor::UI_AssetLoader::assetLoaderGui() {
 return [this](CW::Renderer::iRenderer *window) {
   guiAssetLoader();
 };

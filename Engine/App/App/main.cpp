@@ -10,7 +10,7 @@
 
 
 int main(){
-  Engine::App app;
+  Engine::App::App app;
   
   while(app.isRunning()) app.run();
 

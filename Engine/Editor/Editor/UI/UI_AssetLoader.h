@@ -31,7 +31,7 @@
 
 
 
-namespace UW {
+namespace Engine::Editor {
 struct TempAssetData {
   std::string original_name;
   char new_name[Engine::Config::OBJECT_NAME_BUFFER_SIZE];
@@ -42,7 +42,7 @@ struct TempAssetData {
 class UI_AssetLoader {
 private:
   CW::Gui::Gui& gui;
-  UW::Scene& scene;
+  Engine::Core::Scene& scene;
 
   Assimp::Importer importer;
   const aiScene* current_scene = nullptr;
@@ -59,7 +59,7 @@ private:
   std::vector<TempAssetData> temp_materials;
 
 public:
-  UI_AssetLoader(CW::Gui::Gui& gui, UW::Scene& scene);
+  UI_AssetLoader(CW::Gui::Gui& gui, Engine::Core::Scene& scene);
   ~UI_AssetLoader();
 
   void uiControl();
@@ -74,6 +74,6 @@ private:
   void finalizeMesh(aiMesh* aMesh, const std::string& final_mesh_name, int custom_mat_id);
   void finalizeImportMerged(const std::string& final_merged_name);
 };
-}; // namespace UW
+}; // namespace Engine
 
 #endif

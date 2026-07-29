@@ -30,12 +30,13 @@
 #include "Utils/config.h"
 
 
+namespace Engine{
+  class GameObjectData;
+};
 
-namespace UW{
-class GameObjectData;
 
 
-
+namespace Engine::Core::Script{
 class GameObjectScriptRecord{
   std::filesystem::file_time_type lastWriteTime{};
   std::string path = "";

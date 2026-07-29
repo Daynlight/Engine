@@ -17,8 +17,8 @@
 
 
 
-namespace UW{
-class SCRIPT_NAME : public GameObjectScriptInterface {
+namespace Engine{
+class SCRIPT_NAME : public Engine::ScriptShared::GameObjectScriptInterface {
 private:
   std::deque<glm::vec3> path;
   int interpolate_points_size = 0;
@@ -118,7 +118,7 @@ public:
     child_object.emplace_back(new_child);
     object_manager->emplace_backObjectScript(new_child);
 
-    GameObjectData* child_data = object_manager->getGameObjectDataObjectScript(new_child);
+    Engine::ScriptShared::GameObjectData* child_data = object_manager->getGameObjectDataObjectScript(new_child);
     child_data->mesh = mesh;
     child_data->rotation = game_object_data->rotation;
     child_data->scale = game_object_data->scale;
@@ -193,15 +193,15 @@ public:
 
 #ifndef PRODUCTION
 
-extern "C" UW::GameObjectScriptInterface* SCRIPT_API GetScript() {
-  UW::SCRIPT_NAME* script = new UW::SCRIPT_NAME();
-  return (UW::GameObjectScriptInterface*)script;
+extern "C" Engine::ScriptShared::GameObjectScriptInterface* SCRIPT_API GetScript() {
+  Engine::SCRIPT_NAME* script = new Engine::SCRIPT_NAME();
+  return (Engine::ScriptShared::GameObjectScriptInterface*)script;
 };
 
 
 
-extern "C" void SCRIPT_API DeleteScript(UW::GameObjectScriptInterface* script) {
-  UW::SCRIPT_NAME* temp_script = (UW::SCRIPT_NAME*)script;
+extern "C" void SCRIPT_API DeleteScript(Engine::ScriptShared::GameObjectScriptInterface* script) {
+  Engine::SCRIPT_NAME* temp_script = (Engine::SCRIPT_NAME*)script;
   delete temp_script;
 };
 

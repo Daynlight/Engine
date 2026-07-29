@@ -15,7 +15,7 @@ CMRC_DECLARE(GameData);
 
 
 #ifndef PRODUCTION
-void UW::MeshSerialization::save(const std::string& name, const CW::Renderer::Mesh& mesh) {
+void Engine::MeshSerialization::save(const std::string& name, const CW::Renderer::Mesh& mesh) {
   Engine::Utils::Logger::get().info("MeshSerialization", "Saving mesh: " + name);
   std::string folder_path = Engine::Config::GAME_DATA_FOLDER + Engine::Config::ASSETS_FOLDER + Engine::Config::MESHES_FOLDER;
   std::string file_path = folder_path + name + Engine::Config::MESH_EXTENSION;
@@ -25,7 +25,7 @@ void UW::MeshSerialization::save(const std::string& name, const CW::Renderer::Me
   std::ofstream outFile(file_path, std::ios::binary);
   if (!outFile.is_open()) return;
 
-  UW::MeshRecord record;
+  Engine::MeshRecord record;
   record.name = name;
   record.indices = mesh.getIndices();
 
@@ -34,7 +34,7 @@ void UW::MeshSerialization::save(const std::string& name, const CW::Renderer::Me
   record.mesh_data.reserve(reg.size());
 
   for (const auto& [location, mesh_data_instance] : reg) {
-    UW::MeshRecord::MeshDataRecord e;
+    Engine::MeshRecord::MeshDataRecord e;
     e.key = location;
     e.dimension = mesh_data_instance.getDimension();
     e.size_of_element = mesh_data_instance.getSizeOfElement();
@@ -55,7 +55,7 @@ void UW::MeshSerialization::save(const std::string& name, const CW::Renderer::Me
 
 
 
-void UW::MeshSerialization::load(const std::string& path_to_mesh, Engine::Utils::ResourceController<CW::Renderer::Mesh>& meshes) {
+void Engine::MeshSerialization::load(const std::string& path_to_mesh, Engine::Utils::ResourceController<CW::Renderer::Mesh>& meshes) {
   Engine::Utils::Logger::get().info("MeshSerialization", "Loading mesh: " + path_to_mesh);
   try {
 #ifndef PRODUCTION
@@ -72,7 +72,7 @@ void UW::MeshSerialization::load(const std::string& path_to_mesh, Engine::Utils:
     std::stringstream inFile(data_str);
 #endif
 
-    UW::MeshRecord record;
+    Engine::MeshRecord record;
     if (!(inFile >> record)) return;
 
     CW::Renderer::Mesh engine_mesh;
@@ -105,7 +105,7 @@ void UW::MeshSerialization::load(const std::string& path_to_mesh, Engine::Utils:
 
 
 #ifndef PRODUCTION
-void UW::MeshSerialization::saveAll(Engine::Utils::ResourceController<CW::Renderer::Mesh>& meshes) {
+void Engine::MeshSerialization::saveAll(Engine::Utils::ResourceController<CW::Renderer::Mesh>& meshes) {
   Engine::Utils::Logger::get().info("MeshSerialization", "Saving all meshes...");
   
   std::vector<std::pair<std::string, unsigned int>> meshes_to_save;
@@ -122,7 +122,7 @@ void UW::MeshSerialization::saveAll(Engine::Utils::ResourceController<CW::Render
 
 
 
-void UW::MeshSerialization::loadAll(Engine::Utils::ResourceController<CW::Renderer::Mesh>& meshes) {
+void Engine::MeshSerialization::loadAll(Engine::Utils::ResourceController<CW::Renderer::Mesh>& meshes) {
   Engine::Utils::Logger::get().info("MeshSerialization", "Loading all meshes...");
   try {
     std::string meshes_root = Engine::Config::GAME_DATA_FOLDER + Engine::Config::ASSETS_FOLDER + Engine::Config::MESHES_FOLDER;
@@ -161,7 +161,7 @@ void UW::MeshSerialization::loadAll(Engine::Utils::ResourceController<CW::Render
 
 
 #ifndef PRODUCTION
-std::ostream& UW::operator<<(std::ostream& os, const UW::MeshRecord& record){
+std::ostream& Engine::operator<<(std::ostream& os, const Engine::MeshRecord& record){
   size_t name_size = record.name.size();
   os.write(reinterpret_cast<const char*>(&name_size), sizeof(name_size));
   if (name_size > 0) os.write(record.name.data(), name_size);
@@ -191,7 +191,7 @@ std::ostream& UW::operator<<(std::ostream& os, const UW::MeshRecord& record){
 
 
 
-std::istream& UW::operator>>(std::istream& is, UW::MeshRecord& record){
+std::istream& Engine::operator>>(std::istream& is, Engine::MeshRecord& record){
   size_t name_size = 0;
   if (!is.read(reinterpret_cast<char*>(&name_size), sizeof(name_size))) return is;
   

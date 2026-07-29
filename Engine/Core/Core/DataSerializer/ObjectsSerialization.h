@@ -19,13 +19,13 @@
 
 
 
-namespace UW {
+namespace Engine {
   class GameObject;
 };
 
 
 
-namespace UW {
+namespace Engine {
 struct GameObjectRecord {
   std::string name = "";
   std::string mesh = "";
@@ -56,14 +56,14 @@ public:
   ~ObjectsSerialization() = default;
 
 #ifndef PRODUCTION
-  void save(const UW::GameObject& object);
+  void save(const Engine::GameObject& object);
 #endif
-  void load(UW::GameObject& object);
+  void load(Engine::GameObject& object);
 
 #ifndef PRODUCTION
-  void saveAll(std::vector<UW::GameObject>& objects);
+  void saveAll(std::vector<Engine::GameObject>& objects);
 #endif
-  void loadAll(std::vector<UW::GameObject>& objects);
+  void loadAll(std::vector<Engine::GameObject>& objects);
 
 private:
 #ifndef PRODUCTION
@@ -71,4 +71,4 @@ private:
 #endif
   friend std::istream& operator>>(std::istream& is, GameObjectRecord& record);
 };
-}; // namespace UW
+}; // namespace Engine

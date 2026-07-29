@@ -19,7 +19,7 @@
 
 
 
-namespace UW{
+namespace Engine{
 class GameObject;
 
 
@@ -40,8 +40,8 @@ private:
   ~ObjectManager() = default;
 
 public:
-  std::vector<UW::GameObject> objects;
-  std::vector<UW::GameObject> script_objects;
+  std::vector<Engine::GameObject> objects;
+  std::vector<Engine::GameObject> script_objects;
 
   void emplace_back(const std::string& name);
   void erase(const std::string& name);
@@ -58,4 +58,4 @@ public:
   void saveRuntimeObjectScript(const std::string& object_name);
   
 };
-}; // namespace UW
+}; // namespace Engine

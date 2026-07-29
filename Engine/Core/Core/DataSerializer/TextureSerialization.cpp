@@ -19,7 +19,7 @@ namespace fs = std::filesystem;
 
 
 #ifndef PRODUCTION
-void UW::TextureSerialization::save(const std::string& texture_name, const CW::Renderer::Texture& source) {
+void Engine::TextureSerialization::save(const std::string& texture_name, const CW::Renderer::Texture& source) {
   // Engine::Utils::Logger::get().info("ScriptSerialization", "Saving script: " + Engine::Config::TEXTURES_FOLDER + texture_name);
   
   // std::string folder_path = Engine::Config::GAME_DATA_FOLDER + Engine::Config::TEXTURES_FOLDER;
@@ -46,7 +46,7 @@ void UW::TextureSerialization::save(const std::string& texture_name, const CW::R
 #endif
 
 
-void UW::TextureSerialization::load(const std::string& texture_name, std::unordered_map<std::string, CW::Renderer::Texture>& textures) {
+void Engine::TextureSerialization::load(const std::string& texture_name, std::unordered_map<std::string, CW::Renderer::Texture>& textures) {
   std::string file_path = Engine::Config::GAME_DATA_FOLDER + Engine::Config::ASSETS_FOLDER + Engine::Config::TEXTURES_FOLDER + texture_name;
 
   if (!fs::exists(file_path)) {
@@ -100,7 +100,7 @@ void UW::TextureSerialization::load(const std::string& texture_name, std::unorde
 
 
 
-void UW::TextureSerialization::loadAll(std::unordered_map<std::string, CW::Renderer::Texture>& textures){
+void Engine::TextureSerialization::loadAll(std::unordered_map<std::string, CW::Renderer::Texture>& textures){
   Engine::Utils::Logger::get().info("DataSerializer", "Scanning and loading all textures...");
 
   std::string root_path = Engine::Config::GAME_DATA_FOLDER + Engine::Config::ASSETS_FOLDER + Engine::Config::TEXTURES_FOLDER;

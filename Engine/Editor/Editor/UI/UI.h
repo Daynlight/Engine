@@ -29,7 +29,7 @@
 #include "UI/UI_AssetLoader.h"
 #include "UI/UI_ShaderEditors.h"
 #include "UI/UI_Info.h"
-#include "UI/UI_Log.h"
+#include "UI/UI_Logs.h"
 #include "UI/UI_Materials.h"
 #include "UI/UI_Objects.h"
 #include "UI/UI_Lights.h"
@@ -40,26 +40,26 @@
 
 
 
-namespace UW{
+namespace Engine::Editor{
 class UI{
 private:
   CW::Gui::Gui gui;
   CW::Renderer::Renderer& window;
 
-  UW::Scene& scene;
+  Engine::Core::Scene& scene;
 
-  UW::UI_AssetLoader asset_loader_ui;
-  UW::UI_Info info_ui;
-  UW::UI_Log log_ui;
-  UW::UI_Materials materials_ui;
-  UW::UI_Objects objects_ui;
-  UW::UI_Lights lights_ui;
-  UW::UI_Shaders shader_ui;
-  UW::UI_Scripts scripts_ui;
-  UW::UI_Viewport viewport_ui;
+  Engine::Editor::UI_AssetLoader asset_loader_ui;
+  Engine::Editor::UI_Info info_ui;
+  Engine::Editor::UI_Log log_ui;
+  Engine::Editor::UI_Materials materials_ui;
+  Engine::Editor::UI_Objects objects_ui;
+  Engine::Editor::UI_Lights lights_ui;
+  Engine::Editor::UI_Shaders shader_ui;
+  Engine::Editor::UI_Scripts scripts_ui;
+  Engine::Editor::UI_Viewport viewport_ui;
 
 public:
-  UI(CW::Renderer::Renderer &window, float &fps, UW::Scene& scene, CW::Renderer::Framebuffer& viewport_fbo);
+  UI(CW::Renderer::Renderer &window, float &fps, Engine::Core::Scene& scene, CW::Renderer::Framebuffer& viewport_fbo);
   ~UI();
   void onLoad();
   void render();

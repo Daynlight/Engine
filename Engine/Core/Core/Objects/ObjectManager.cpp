@@ -9,20 +9,20 @@
 
 
 
-UW::ObjectManager &UW::ObjectManager::get(){
+Engine::ObjectManager &Engine::ObjectManager::get(){
   static ObjectManager instance;
   return instance; 
 };
 
 
 
-void UW::ObjectManager::emplace_back(const std::string &name){
-  objects.emplace_back(UW::GameObject(name, "empty", "Default"));
+void Engine::ObjectManager::emplace_back(const std::string &name){
+  objects.emplace_back(Engine::GameObject(name, "empty", "Default"));
 };
 
 
 
-void UW::ObjectManager::erase(const std::string &name) {
+void Engine::ObjectManager::erase(const std::string &name) {
   for (auto it = objects.begin(); it != objects.end(); ) {
     if (it->game_object_data.name == name) {
       it->onDestroy();
@@ -38,7 +38,7 @@ void UW::ObjectManager::erase(const std::string &name) {
 
 
 
-Engine::ScriptShared::GameObjectData *UW::ObjectManager::getGameObjectData(const std::string &name){
+Engine::ScriptShared::GameObjectData *Engine::ObjectManager::getGameObjectData(const std::string &name){
   for(auto& object : objects)
     if(object.game_object_data.name == name)
       return &object.copy_game_object_data;
@@ -48,7 +48,7 @@ Engine::ScriptShared::GameObjectData *UW::ObjectManager::getGameObjectData(const
 
 
 
-void UW::ObjectManager::addScript(const std::string &object_name, const std::string &path){
+void Engine::ObjectManager::addScript(const std::string &object_name, const std::string &path){
   for (auto& obj : objects) {
     if (obj.game_object_data.name == object_name) {
       obj.scripts.emplace_back(path);
@@ -60,12 +60,12 @@ void UW::ObjectManager::addScript(const std::string &object_name, const std::str
 
 
 
-void UW::ObjectManager::removeScript(const std::string &object_name, const std::string &path) {
+void Engine::ObjectManager::removeScript(const std::string &object_name, const std::string &path) {
   for (auto& obj : objects) {
     if (obj.game_object_data.name == object_name) {
       obj.scripts.erase(
         std::remove_if(obj.scripts.begin(), obj.scripts.end(), 
-          [&](const GameObjectScriptRecord& record) {
+          [&](const Engine::Core::Script::GameObjectScriptRecord& record) {
             return record.getPath() == path;
           }), 
         obj.scripts.end()
@@ -78,7 +78,7 @@ void UW::ObjectManager::removeScript(const std::string &object_name, const std::
 
 
 
-void UW::ObjectManager::saveRuntime(const std::string& object_name){
+void Engine::ObjectManager::saveRuntime(const std::string& object_name){
   for (auto& obj : objects) {
     if (obj.game_object_data.name == object_name) {
       obj.game_object_data = obj.copy_game_object_data;
@@ -88,13 +88,13 @@ void UW::ObjectManager::saveRuntime(const std::string& object_name){
 
 
 
-void UW::ObjectManager::emplace_backObjectScript(const std::string &name){
-  script_objects.emplace_back(UW::GameObject(name, "empty", "Default"));
+void Engine::ObjectManager::emplace_backObjectScript(const std::string &name){
+  script_objects.emplace_back(Engine::GameObject(name, "empty", "Default"));
 };
 
 
 
-void UW::ObjectManager::eraseObjectScript(const std::string &name) {
+void Engine::ObjectManager::eraseObjectScript(const std::string &name) {
   for (auto it = script_objects.begin(); it != script_objects.end(); ) {
     if (it->game_object_data.name == name) {
       it->onDestroy();
@@ -110,7 +110,7 @@ void UW::ObjectManager::eraseObjectScript(const std::string &name) {
 
 
 
-Engine::ScriptShared::GameObjectData *UW::ObjectManager::getGameObjectDataObjectScript(const std::string &name){
+Engine::ScriptShared::GameObjectData *Engine::ObjectManager::getGameObjectDataObjectScript(const std::string &name){
   for(auto& object : script_objects)
     if(object.game_object_data.name == name)
       return &object.copy_game_object_data;
@@ -120,7 +120,7 @@ Engine::ScriptShared::GameObjectData *UW::ObjectManager::getGameObjectDataObject
 
 
 
-void UW::ObjectManager::addScriptObjectScript(const std::string &object_name, const std::string &path){
+void Engine::ObjectManager::addScriptObjectScript(const std::string &object_name, const std::string &path){
   for (auto& obj : script_objects) {
     if (obj.game_object_data.name == object_name) {
       obj.scripts.emplace_back(path);
@@ -132,12 +132,12 @@ void UW::ObjectManager::addScriptObjectScript(const std::string &object_name, co
 
 
 
-void UW::ObjectManager::removeScriptObjectScript(const std::string &object_name, const std::string &path) {
+void Engine::ObjectManager::removeScriptObjectScript(const std::string &object_name, const std::string &path) {
   for (auto& obj : script_objects) {
     if (obj.game_object_data.name == object_name) {
       obj.scripts.erase(
         std::remove_if(obj.scripts.begin(), obj.scripts.end(), 
-          [&](const GameObjectScriptRecord& record) {
+          [&](const Engine::Core::Script::GameObjectScriptRecord& record) {
             return record.getPath() == path;
           }), 
         obj.scripts.end()
@@ -150,7 +150,7 @@ void UW::ObjectManager::removeScriptObjectScript(const std::string &object_name,
 
 
 
-void UW::ObjectManager::saveRuntimeObjectScript(const std::string& object_name){
+void Engine::ObjectManager::saveRuntimeObjectScript(const std::string& object_name){
   for (auto& obj : script_objects) {
     if (obj.game_object_data.name == object_name) {
       obj.game_object_data = obj.copy_game_object_data;

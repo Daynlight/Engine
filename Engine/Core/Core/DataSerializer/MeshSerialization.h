@@ -29,7 +29,7 @@
 
 
 
-namespace UW {
+namespace Engine {
 struct MeshRecord {
   std::string name = "";
   struct MeshDataRecord {
@@ -72,4 +72,4 @@ private:
   friend std::istream& operator>>(std::istream& is, MeshRecord& record);
 };
 
-}; // namespace UW
+}; // namespace Engine

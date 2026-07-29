@@ -26,7 +26,7 @@ __attribute__((constructor)) void forceLinuxDiscreteGPU() {
 
 
 
-Engine::App::App()
+Engine::App::App::App()
 #ifndef PRODUCTION
   : viewport_fbo(core.window.getWindowData()->width, core.window.getWindowData()->height), editor(core, fps, viewport_fbo)
 #endif
@@ -38,7 +38,7 @@ Engine::App::App()
 
 
 
-Engine::App::~App(){
+Engine::App::App::~App(){
   Engine::Utils::Logger::get().info("App", "App Destroying");
   onDestroy();
   Engine::Utils::Logger::get().info("App", "App Destroyed");
@@ -46,13 +46,13 @@ Engine::App::~App(){
 
 
 
-bool Engine::App::isRunning(){
+bool Engine::App::App::isRunning(){
   return core.isRunning();
 };
 
 
 
-void Engine::App::run(){  
+void Engine::App::App::run(){  
   update();
   fixedUpdate();
   render();
@@ -63,7 +63,7 @@ void Engine::App::run(){
 // ===================================== //
 // ========== Core Operations ========== //
 // ===================================== //
-void Engine::App::onLoad(){
+void Engine::App::App::onLoad(){
   Engine::Utils::Logger::get().info("App", "App Loading");
 
 #ifndef PRODUCTION
@@ -78,7 +78,7 @@ void Engine::App::onLoad(){
 
 
 
-void Engine::App::onDestroy() {
+void Engine::App::App::onDestroy() {
   Engine::Utils::Logger::get().info("App", "Destroying App");
 
 
@@ -99,7 +99,7 @@ void Engine::App::onDestroy() {
 
 
 
-void Engine::App::render(){
+void Engine::App::App::render(){
   
 #ifndef PRODUCTION
   core.render();
@@ -119,7 +119,7 @@ void Engine::App::render(){
 
 
 
-void Engine::App::update(){
+void Engine::App::App::update(){
 #ifndef PRODUCTION
   updateFps();
 #endif
@@ -129,7 +129,7 @@ void Engine::App::update(){
 
 
 
-void Engine::App::fixedUpdate(){
+void Engine::App::App::fixedUpdate(){
 #ifndef PRODUCTION
   fixed_update_time_acc += core.window.getWindowData()->delta_time;
 
@@ -137,8 +137,8 @@ void Engine::App::fixedUpdate(){
   
   int max_steps = Engine::Config::MAX_FIXED_STEPS;
   while(fixed_update_time_acc >= fixed_time_step && max_steps-- > 0){
-    UW::guiSettings.window_width = core.window.getWindowData()->width;
-    UW::guiSettings.window_height = core.window.getWindowData()->height;
+    Engine::Editor::guiSettings.window_width = core.window.getWindowData()->width;
+    Engine::Editor::guiSettings.window_height = core.window.getWindowData()->height;
     
     fixed_update_time_acc -= fixed_time_step;
   };
@@ -152,7 +152,7 @@ void Engine::App::fixedUpdate(){
 
 
 #ifndef PRODUCTION
-void Engine::App::updateFps(){
+void Engine::App::App::updateFps(){
   if(fps_id > Engine::Config::FPS_SAMPLES){
     fps = fps_id / fps_acc;
     fps_acc = 0.0f;

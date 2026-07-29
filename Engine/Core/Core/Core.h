@@ -19,11 +19,11 @@
 
 
 
-namespace UW{
+namespace Engine::Core{
 class Core{
 public:
   CW::Renderer::Renderer window;
-  UW::Scene scene;
+  Engine::Core::Scene scene;
 
 private:
   std::string cached_title = "";

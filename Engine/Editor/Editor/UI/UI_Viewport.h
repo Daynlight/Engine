@@ -19,7 +19,7 @@
 
 
 
-namespace UW{
+namespace Engine::Editor{
 class UI_Viewport{
 private:
   CW::Gui::Gui& gui;

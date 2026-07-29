@@ -11,7 +11,7 @@
 
 
 
-UW::UI_Shaders::UI_Shaders(CW::Gui::Gui& gui)
+Engine::Editor::UI_Shaders::UI_Shaders(CW::Gui::Gui& gui)
   :gui(gui){
 
   shader_editors.reserve(20);
@@ -19,14 +19,14 @@ UW::UI_Shaders::UI_Shaders(CW::Gui::Gui& gui)
 
 
 
-UW::UI_Shaders::~UI_Shaders(){
+Engine::Editor::UI_Shaders::~UI_Shaders(){
 
 };
 
 
 
-void UW::UI_Shaders::uiControl(){
-  if(guiSettings.shaderExplorerWindowOn){
+void Engine::Editor::UI_Shaders::uiControl(){
+  if(Engine::Editor::guiSettings.shaderExplorerWindowOn){
     Engine::Utils::Logger::get().info("UI", "Opening Shader Explorer GUI");
     gui.addWindow("Shader Explorer", shaderExplorerGui());
   }
@@ -38,21 +38,21 @@ void UW::UI_Shaders::uiControl(){
 
 
 
-void UW::UI_Shaders::loadShaderEditors(){
+void Engine::Editor::UI_Shaders::loadShaderEditors(){
   Engine::Utils::Logger::get().info("UI", "Loading Shader Editors");
 
   shader_editors.clear();
   
-  for(std::pair<std::string, GLenum> el : guiSettings.shader_editors_reg){
+  for(std::pair<std::string, GLenum> el : Engine::Editor::guiSettings.shader_editors_reg){
     shader_editors.emplace_back(std::make_unique<UI_ShaderEditor>(gui, el.first, el.second));
   };
 };
 
 
-void UW::UI_Shaders::saveShaderEditors(){
+void Engine::Editor::UI_Shaders::saveShaderEditors(){
   Engine::Utils::Logger::get().info("UI", "Saving Shader Editors");
 
-  guiSettings.shader_editors_reg.clear();
+  Engine::Editor::guiSettings.shader_editors_reg.clear();
   for(const auto& el : shader_editors){
     guiSettings.shader_editors_reg.emplace_back(el->getName(), el->getType());
   };
@@ -60,15 +60,15 @@ void UW::UI_Shaders::saveShaderEditors(){
 
 
 
-void UW::UI_Shaders::guiShaderList(){
+void Engine::Editor::UI_Shaders::guiShaderList(){
   ImGui::SeparatorText("Shader List");
 
   if(ImGui::Button("reset")) {
     Engine::Utils::Logger::get().info("UI", "Refreshing Shaders");
-    Resources::get().shaders.clear();
+    Engine::Core::Resources::get().shaders.clear();
   };
 
-  for (const auto& [ key, values ] : Resources::get().shaders) {
+  for (const auto& [ key, values ] : Engine::Core::Resources::get().shaders) {
     if(ImGui::CollapsingHeader(key.c_str())){
       for (const auto& [key_s, values_s] : values.getRegisterShader()){
         std::string button_label = Engine::Config::SHADER_TYPE_TO_NAME[key_s] +  "##-" + key;
@@ -96,7 +96,7 @@ void UW::UI_Shaders::guiShaderList(){
   };
 };
 
-inline std::function<void(CW::Renderer::iRenderer *window)> UW::UI_Shaders::shaderExplorerGui(){
+inline std::function<void(CW::Renderer::iRenderer *window)> Engine::Editor::UI_Shaders::shaderExplorerGui(){
   return [this](CW::Renderer::iRenderer *window){
     guiShaderList();
   };

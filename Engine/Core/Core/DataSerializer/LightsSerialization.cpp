@@ -15,21 +15,21 @@ CMRC_DECLARE(GameData);
 
 
 #ifndef PRODUCTION
-void UW::LightsSerialization::save(const std::string& name, const UW::Light& light) {
+void Engine::LightsSerialization::save(const std::string& name, const Engine::Core::Light& light) {
 
 };
 #endif
 
 
 
-void UW::LightsSerialization::load(const std::string& name, UW::Light& light) {
+void Engine::LightsSerialization::load(const std::string& name, Engine::Core::Light& light) {
 
 };
 
 
 
 #ifndef PRODUCTION
-void UW::LightsSerialization::saveAll(UW::Lights& lights) {
+void Engine::LightsSerialization::saveAll(Engine::Core::Lights& lights) {
   Engine::Utils::Logger::get().info("LightsSerialization", "Saving all lights...");
   try {
     std::filesystem::path p(Engine::Config::GAME_DATA_FOLDER + Engine::Config::LIGHTS_FILENAME);
@@ -51,8 +51,8 @@ void UW::LightsSerialization::saveAll(UW::Lights& lights) {
   outFile.write(reinterpret_cast<const char*>(&size), sizeof(size));
 
   for(int i = 0; i < lights.size(); i++){
-    UW::Light light = lights.get(i);
-    UW::LightsRecord record;
+    Engine::Core::Light light = lights.get(i);
+    Engine::LightsRecord record;
       
     record.position = light.position;
     record.color = light.color;
@@ -68,7 +68,7 @@ void UW::LightsSerialization::saveAll(UW::Lights& lights) {
 
 
 
-void UW::LightsSerialization::loadAll(UW::Lights& lights) {
+void Engine::LightsSerialization::loadAll(Engine::Core::Lights& lights) {
   Engine::Utils::Logger::get().info("LightsSerialization", "Loading all lights...");
   try {
     std::string resourcePath = Engine::Config::GAME_DATA_FOLDER + Engine::Config::LIGHTS_FILENAME;
@@ -99,9 +99,9 @@ void UW::LightsSerialization::loadAll(UW::Lights& lights) {
     lights.clear();
 
     for (unsigned int i = 0; i < lightCount; ++i) {
-      UW::LightsRecord record;
+      Engine::LightsRecord record;
       if (inFile >> record) {
-        UW::Light light(record.position, record.color, record.strength);
+        Engine::Core::Light light(record.position, record.color, record.strength);
         lights.emplace_back(light);
       } else {
         Engine::Utils::Logger::get().erro("LightsSerialization", "File format corrupted at index " + std::to_string(i));
@@ -120,7 +120,7 @@ void UW::LightsSerialization::loadAll(UW::Lights& lights) {
 
 
 #ifndef PRODUCTION
-std::ostream& UW::operator<<(std::ostream& os, const UW::LightsRecord& record) {
+std::ostream& Engine::operator<<(std::ostream& os, const Engine::LightsRecord& record) {
   os.write(reinterpret_cast<const char*>(&record.position), sizeof(glm::vec3));
   os.write(reinterpret_cast<const char*>(&record.color), sizeof(glm::vec3));
   os.write(reinterpret_cast<const char*>(&record.strength), sizeof(float));
@@ -131,7 +131,7 @@ std::ostream& UW::operator<<(std::ostream& os, const UW::LightsRecord& record) {
 
 
 
-std::istream& UW::operator>>(std::istream& is, UW::LightsRecord& record) {
+std::istream& Engine::operator>>(std::istream& is, Engine::LightsRecord& record) {
   is.read(reinterpret_cast<char*>(&record.position), sizeof(glm::vec3));
   is.read(reinterpret_cast<char*>(&record.color), sizeof(glm::vec3));
   is.read(reinterpret_cast<char*>(&record.strength), sizeof(float));

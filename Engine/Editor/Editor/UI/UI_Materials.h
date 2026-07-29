@@ -18,7 +18,7 @@
 
 
 
-namespace UW{
+namespace Engine::Editor{
 class UI_Materials{
 private:
   CW::Gui::Gui& gui;
