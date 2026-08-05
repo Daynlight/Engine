@@ -95,7 +95,7 @@ void Engine::Editor::UI_Objects::guiObjectEditor(){
   if(ImGui::InputText("name", name_buffer, Engine::Config::OBJECT_NAME_BUFFER_SIZE)){
     object.stopScripts();
     object.game_object_data.name = std::string(name_buffer + '\0');
-    object.startScripts();
+    object.startScripts(scene);
   };
   
   char mesh_buffer[Engine::Config::OBJECT_NAME_BUFFER_SIZE];
@@ -105,7 +105,7 @@ void Engine::Editor::UI_Objects::guiObjectEditor(){
     if(!Engine::Core::Resources::get().meshes.exists(mesh_buffer)) return;
     object.stopScripts();
     object.game_object_data.mesh = std::string(mesh_buffer + '\0');
-    object.startScripts();
+    object.startScripts(scene);
   };
 
   char shader_buffer[Engine::Config::OBJECT_NAME_BUFFER_SIZE];
@@ -116,7 +116,7 @@ void Engine::Editor::UI_Objects::guiObjectEditor(){
     if(its == Engine::Core::Resources::get().shaders.end()) return;
     object.stopScripts();
     object.game_object_data.shader = std::string(shader_buffer + '\0');
-    object.startScripts();
+    object.startScripts(scene);
   };
 
 
@@ -124,77 +124,77 @@ void Engine::Editor::UI_Objects::guiObjectEditor(){
   if(ImGui::InputFloat3("position: ", &new_position[0])) {
     object.stopScripts();
     object.game_object_data.position = new_position;
-    object.startScripts();
+    object.startScripts(scene);
   };
 
   glm::vec3 position_offset = glm::vec3(0.0f);
   if(ImGui::SliderFloat3("position slider: ", &position_offset[0], -10.0f, 10.0f)){
     object.stopScripts();
     object.game_object_data.position += position_offset * window.getWindowData()->delta_time;
-    object.startScripts();
+    object.startScripts(scene);
   };
 
   glm::vec3 new_rotation = object.game_object_data.rotation;
   if(ImGui::InputFloat3("rotate: ", &new_rotation[0])){
     object.stopScripts();
     object.game_object_data.rotation = new_rotation;
-    object.startScripts();
+    object.startScripts(scene);
   };
 
   glm::vec3 rotate_offset = glm::vec3(0.0f);
   if(ImGui::SliderFloat3("rotate slider: ", &rotate_offset[0], -1.0f, 1.0f)){
     object.stopScripts();
     object.game_object_data.rotation += rotate_offset * window.getWindowData()->delta_time;
-    object.startScripts();
+    object.startScripts(scene);
   };
 
   glm::vec3 new_scale = object.game_object_data.scale;
   if(ImGui::InputFloat3("scale: ", &new_scale[0])){
     object.stopScripts();
     object.game_object_data.scale = new_scale;
-    object.startScripts();
+    object.startScripts(scene);
   };
 
   glm::vec3 scale_offset = glm::vec3(0.0f);
   if(ImGui::SliderFloat3("scale slider: ", &scale_offset[0], -100.0f, 100.0f)){
     object.stopScripts();
     object.game_object_data.scale += scale_offset * window.getWindowData()->delta_time;
-    object.startScripts();
+    object.startScripts(scene);
   };
 
   bool culling_on = object.game_object_data.culling_on;
   if(ImGui::Checkbox("Culling", &culling_on)){
     object.stopScripts();
     object.game_object_data.culling_on = culling_on;
-    object.startScripts();
+    object.startScripts(scene);
   };
 
   bool dont_write_to_depth_mask = object.game_object_data.dont_write_to_depth_mask;
   if(ImGui::Checkbox("DontWriteToDepth", &dont_write_to_depth_mask)){
     object.stopScripts();
     object.game_object_data.dont_write_to_depth_mask = dont_write_to_depth_mask;
-    object.startScripts();
+    object.startScripts(scene);
   };
 
   bool gl_depth_lequal = object.game_object_data.gl_depth_lequal;
   if(ImGui::Checkbox("DepthLEQ", &gl_depth_lequal)){
     object.stopScripts();
     object.game_object_data.gl_depth_lequal = gl_depth_lequal;
-    object.startScripts();
+    object.startScripts(scene);
   };
 
   bool gl_draw_patches = object.game_object_data.gl_draw_patches;
   if(ImGui::Checkbox("DrawPatches", &gl_draw_patches)){
     object.stopScripts();
     object.game_object_data.gl_draw_patches = gl_draw_patches;
-    object.startScripts();
+    object.startScripts(scene);
   };
 
   bool gl_blend = object.game_object_data.gl_blend;
   if(ImGui::Checkbox("Blend", &gl_blend)){
     object.stopScripts();
     object.game_object_data.gl_blend = gl_blend;
-    object.startScripts();
+    object.startScripts(scene);
   };
 
 
@@ -207,7 +207,7 @@ void Engine::Editor::UI_Objects::guiObjectEditor(){
     if(ImGui::InputText(label.c_str(), texture_buffer, Engine::Config::OBJECT_NAME_BUFFER_SIZE)){
       object.stopScripts();
       object.game_object_data.textures[i] = std::string(texture_buffer + '\0');
-      object.startScripts();
+      object.startScripts(scene);
     };
     
     ImGui::SameLine();
@@ -215,7 +215,7 @@ void Engine::Editor::UI_Objects::guiObjectEditor(){
     if(ImGui::Button(label.c_str())) {
       object.stopScripts();
       object.game_object_data.textures.erase(object.game_object_data.textures.begin() + i);
-      object.startScripts();
+      object.startScripts(scene);
     };
   };
 
@@ -223,7 +223,7 @@ void Engine::Editor::UI_Objects::guiObjectEditor(){
   if(ImGui::Button(label.c_str())) {
     object.stopScripts();
     object.game_object_data.textures.emplace_back("");
-    object.startScripts();
+    object.startScripts(scene);
   };
 
 
@@ -238,7 +238,7 @@ void Engine::Editor::UI_Objects::guiObjectEditor(){
       object.stopScripts();
       if(!Engine::Core::Resources::get().materials.find(material_buffer)) return;
       object.game_object_data.materials[i] = std::string(material_buffer + '\0');
-      object.startScripts();
+      object.startScripts(scene);
     };
     
     ImGui::SameLine();
@@ -246,7 +246,7 @@ void Engine::Editor::UI_Objects::guiObjectEditor(){
     if(ImGui::Button(label.c_str())) {
       object.stopScripts();
       object.game_object_data.materials.erase(object.game_object_data.materials.begin() + i);
-      object.startScripts();
+      object.startScripts(scene);
     }
   };
 
@@ -254,7 +254,7 @@ void Engine::Editor::UI_Objects::guiObjectEditor(){
   if(ImGui::Button(label.c_str())) {
     object.stopScripts();
     object.game_object_data.materials.emplace_back("new material");
-    object.startScripts();
+    object.startScripts(scene);
   };
 
 
@@ -264,7 +264,7 @@ void Engine::Editor::UI_Objects::guiObjectEditor(){
     if(ImGui::Checkbox(std::string("##ScriptOn(" + std::to_string(i) + ")").c_str(), &new_script_on)){
       object.stopScripts();
       object.scripts[i].script_on = new_script_on;
-      object.startScripts();
+      object.startScripts(scene);
     };
     
     ImGui::SameLine();
@@ -277,7 +277,7 @@ void Engine::Editor::UI_Objects::guiObjectEditor(){
       object.stopScripts();
       object.scripts[i] = Engine::Core::Script::GameObjectScriptRecord(std::string(script_buffer + '\0'));
       object.scripts[i].script_on = new_script_on;
-      object.startScripts();
+      object.startScripts(scene);
     }
     
     ImGui::SameLine();
@@ -285,7 +285,7 @@ void Engine::Editor::UI_Objects::guiObjectEditor(){
     if(ImGui::Button(label.c_str())) {
       object.stopScripts();
       object.scripts.erase(object.scripts.begin() + i);
-      object.startScripts();
+      object.startScripts(scene);
     };
   };
 
@@ -293,7 +293,7 @@ void Engine::Editor::UI_Objects::guiObjectEditor(){
   if(ImGui::Button(label.c_str())) {
     object.stopScripts();
     object.scripts.emplace_back(Engine::Core::Script::GameObjectScriptRecord("new script"));
-    object.startScripts();
+    object.startScripts(scene);
   };
 
 
@@ -335,14 +335,14 @@ void Engine::Editor::UI_Objects::guiObjectEditor(){
         case 4: param_value = glm::vec3(0.0f); break;
         case 5: param_value = std::string(""); break;
       }
-      object.startScripts();
+      object.startScripts(scene);
       ImGui::PopID();
       break;
     }
 
     ImGui::SameLine();
 
-    std::visit([&object](auto&& arg) {
+    std::visit([&object, this](auto&& arg) {
       using T = std::decay_t<decltype(arg)>;
       ImGui::SetNextItemWidth(150.0f);
       
@@ -351,7 +351,7 @@ void Engine::Editor::UI_Objects::guiObjectEditor(){
         if(ImGui::InputInt("##val", &new_arg)){
           object.stopScripts();
           arg = new_arg;
-          object.startScripts();
+          object.startScripts(scene);
         }
       }
       else if constexpr (std::is_same_v<T, float>) {
@@ -359,7 +359,7 @@ void Engine::Editor::UI_Objects::guiObjectEditor(){
         if(ImGui::DragFloat("##val", &new_arg, 0.05f)){
           object.stopScripts();
           arg = new_arg;
-          object.startScripts();
+          object.startScripts(scene);
         }
       }
       else if constexpr (std::is_same_v<T, bool>) {
@@ -367,7 +367,7 @@ void Engine::Editor::UI_Objects::guiObjectEditor(){
         if(ImGui::Checkbox("##val", &new_arg)){
           object.stopScripts();
           arg = new_arg;
-          object.startScripts();
+          object.startScripts(scene);
         }
       }
       else if constexpr (std::is_same_v<T, glm::vec2>) {
@@ -375,7 +375,7 @@ void Engine::Editor::UI_Objects::guiObjectEditor(){
         if(ImGui::DragFloat2("##val", &new_arg.x, 0.05f)){
           object.stopScripts();
           arg = new_arg;
-          object.startScripts();
+          object.startScripts(scene);
         }
       }
       else if constexpr (std::is_same_v<T, glm::vec3>) {
@@ -383,7 +383,7 @@ void Engine::Editor::UI_Objects::guiObjectEditor(){
         if(ImGui::DragFloat3("##val", &new_arg.x, 0.05f)){
           object.stopScripts();
           arg = new_arg;
-          object.startScripts();
+          object.startScripts(scene);
         }
       }
       else if constexpr (std::is_same_v<T, std::string>) {
@@ -393,7 +393,7 @@ void Engine::Editor::UI_Objects::guiObjectEditor(){
         if (ImGui::InputText("##val", str_buffer, sizeof(str_buffer))) {
           object.stopScripts();
           arg = std::string(str_buffer);
-          object.startScripts();
+          object.startScripts(scene);
         }
       }
     }, param_value);
@@ -409,7 +409,7 @@ void Engine::Editor::UI_Objects::guiObjectEditor(){
     if (delete_triggered) {
       object.stopScripts();
       it = params.erase(it);
-      object.startScripts();
+      object.startScripts(scene);
     } 
     else if (rename_triggered && std::string(name_buffer) != current_name && !std::string(name_buffer).empty()) {
       std::string new_key = name_buffer;
@@ -421,7 +421,7 @@ void Engine::Editor::UI_Objects::guiObjectEditor(){
       } else {
         ++it;
       }
-      object.startScripts();
+      object.startScripts(scene);
     } 
     else {
       ++it;
@@ -441,7 +441,7 @@ void Engine::Editor::UI_Objects::guiObjectEditor(){
     }
     
     params[unique_new_name] = 0;
-    object.startScripts();
+    object.startScripts(scene);
   }
 
 
@@ -484,7 +484,7 @@ void Engine::Editor::UI_Objects::guiObjectEditor(){
         case 4: uniform_value = glm::vec3(0.0f); break;
         case 5: uniform_value = std::string(""); break;
       }
-      object.startScripts();
+      object.startScripts(scene);
 
       ImGui::PopID();
       break;
@@ -492,7 +492,7 @@ void Engine::Editor::UI_Objects::guiObjectEditor(){
 
     ImGui::SameLine();
 
-    std::visit([&object](auto&& arg) {
+    std::visit([&object, this](auto&& arg) {
       using T = std::decay_t<decltype(arg)>;
       ImGui::SetNextItemWidth(150.0f);
       
@@ -501,7 +501,7 @@ void Engine::Editor::UI_Objects::guiObjectEditor(){
         if(ImGui::InputInt("##val", &new_arg)){
           object.stopScripts();
           arg = new_arg;
-          object.startScripts();
+          object.startScripts(scene);
         }
       }
       else if constexpr (std::is_same_v<T, float>) {
@@ -509,7 +509,7 @@ void Engine::Editor::UI_Objects::guiObjectEditor(){
         if(ImGui::DragFloat("##val", &new_arg, 0.05f)){
           object.stopScripts();
           arg = new_arg;
-          object.startScripts();
+          object.startScripts(scene);
         }
       }
       else if constexpr (std::is_same_v<T, bool>) {
@@ -517,7 +517,7 @@ void Engine::Editor::UI_Objects::guiObjectEditor(){
         if(ImGui::Checkbox("##val", &new_arg)){
           object.stopScripts();
           arg = new_arg;
-          object.startScripts();
+          object.startScripts(scene);
         }
       }
       else if constexpr (std::is_same_v<T, glm::vec2>) {
@@ -525,7 +525,7 @@ void Engine::Editor::UI_Objects::guiObjectEditor(){
         if(ImGui::DragFloat2("##val", &new_arg.x, 0.05f)){
           object.stopScripts();
           arg = new_arg;
-          object.startScripts();
+          object.startScripts(scene);
         }
       }
       else if constexpr (std::is_same_v<T, glm::vec3>) {
@@ -533,7 +533,7 @@ void Engine::Editor::UI_Objects::guiObjectEditor(){
         if(ImGui::DragFloat3("##val", &new_arg.x, 0.05f)){
           object.stopScripts();
           arg = new_arg;
-          object.startScripts();
+          object.startScripts(scene);
         }
       }
       else if constexpr (std::is_same_v<T, std::string>) {
@@ -543,7 +543,7 @@ void Engine::Editor::UI_Objects::guiObjectEditor(){
         if (ImGui::InputText("##val", str_buffer, sizeof(str_buffer))) {
           object.stopScripts();
           arg = std::string(str_buffer);
-          object.startScripts();
+          object.startScripts(scene);
         }
       }
     }, uniform_value);
@@ -559,7 +559,7 @@ void Engine::Editor::UI_Objects::guiObjectEditor(){
     if (delete_triggered) {
       object.stopScripts();
       it = uniforms.erase(it);
-      object.startScripts();
+      object.startScripts(scene);
     } 
     else if (rename_triggered && std::string(name_buffer) != current_name && !std::string(name_buffer).empty()) {
       std::string new_key = name_buffer;
@@ -571,7 +571,7 @@ void Engine::Editor::UI_Objects::guiObjectEditor(){
       } else {
         ++it;
       }
-      object.startScripts();
+      object.startScripts(scene);
     } 
     else {
       ++it;
@@ -591,7 +591,7 @@ void Engine::Editor::UI_Objects::guiObjectEditor(){
     }
     
     uniforms[unique_new_name] = 0;
-    object.startScripts();
+    object.startScripts(scene);
   }
 };
 

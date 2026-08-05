@@ -12,14 +12,20 @@
 
 
 
+namespace Engine::Core{
+  class Scene;
+};
+
+
+
 namespace Engine{
 class Object{
 public:
-  virtual void onLoad() = 0;
+  virtual void onLoad(Engine::Core::Scene& scene) = 0;
   virtual void onDestroy() = 0;
   virtual void onUpdate(float delta_time) = 0;
-  virtual void onFixedUpdate(float fixed_delta_time) = 0;
-  virtual void render(CW::Renderer::Renderer* renderer, Camera& culling_camera, Camera& render_camera, CW::Renderer::Uniform& shadows_uniform) = 0;
+  virtual void onFixedUpdate(float fixed_delta_time, Engine::Core::Scene& scene) = 0;
+  virtual void render(CW::Renderer::Renderer* renderer, ICamera& culling_camera, ICamera& render_camera, CW::Renderer::Uniform& shadows_uniform) = 0;
 
 };
 };

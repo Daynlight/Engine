@@ -15,6 +15,7 @@ set(src
   "Core/Core.cpp"
   "Core/Scene.cpp"
   "Core/Camera/Camera.cpp"
+  "Core/Camera/CameraController.cpp"
   "Core/Resources/Resources.cpp"
   "Core/Resources/Lights/Lights.cpp"
   "Core/Resources/Materials/Materials.cpp"

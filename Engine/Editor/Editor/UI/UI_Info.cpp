@@ -40,8 +40,9 @@ inline void Engine::Editor::UI_Info::guiInfo(){
   ImGui::Text("Current camera: %s", scene.debug_camera_on ? "Debug" : "Normal");
 
   ImGui::Text("Camera:");
-  ImGui::InputFloat3("Camera POS: [%f, %f, %f]", &scene.camera.position[0]);
-  ImGui::SliderFloat3("Camera DIR: [%f, %f, %f]", &scene.camera.direction[0], -1, 1);
+  ImGui::Text("Name: %s", scene.camera_controller.getActiveCameraName().c_str());
+  ImGui::InputFloat3("Camera POS: [%f, %f, %f]", &scene.camera_controller.getActiveCamera().getPosition()[0]);
+  ImGui::SliderFloat3("Camera DIR: [%f, %f, %f]", &scene.camera_controller.getActiveCamera().getDirection()[0], -1, 1);
 
   ImGui::Text("Debug Camera:");
   ImGui::InputFloat3("Debug POS: [%f, %f, %f]", &scene.debug_camera.position[0]);

@@ -11,6 +11,8 @@
 #include "GameObjectData.h"
 #include "IObjectManger.h"
 #include "GlobResource.h"
+#include "Camera.h"
+#include "CameraController.h"
 
 
 
@@ -33,6 +35,7 @@ public:
   GlobResource* glob_res = nullptr;
   ILogger* logger = nullptr;
   IObjectManager* object_manager = nullptr;
+  ICameraController* camera_controller = nullptr;
 
   virtual ~GameObjectScriptInterface() = default;
   

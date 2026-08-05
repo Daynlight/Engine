@@ -10,7 +10,7 @@
 
 
 Engine::Core::Scene::Scene(CW::Renderer::Renderer& window)
-  : window(window), light_camera(&window), fbo(1920, 1080), post_fbo(1920, 1080), shadows_fbo(1920 * 5, 1080 * 5), camera(&window), screen_quad("screen_quad", &Engine::Core::Resources::get().meshes)
+  : window(window), camera_controller(&window), light_camera(&window), fbo(1920, 1080), post_fbo(1920, 1080), shadows_fbo(1920 * 5, 1080 * 5), screen_quad("screen_quad", &Engine::Core::Resources::get().meshes)
 #ifndef PRODUCTION
   , debug_camera(&window)
 #endif
@@ -47,7 +47,7 @@ void Engine::Core::Scene::onLoad(){
   last_light_camera_pos = light_camera.position;
   light_camera.direction = glm::normalize(-Engine::Core::Resources::get().lights[0].position);
   last_light_camera_dir = light_camera.direction;
-  light_space_matrix = light_camera.transformation(&window);
+  light_space_matrix = light_camera.transformation();
   
   shadows_uniform_off["u_ShadowEnabled"]->set<int>(0);
   shadows_uniform_off["u_ShadowDepthTexture"]->set<int>(16);
@@ -58,14 +58,20 @@ void Engine::Core::Scene::onLoad(){
   Engine::Utils::Logger::get().info("Scene", "Shadows Camera and Uniform Initialized");
   
 
-  camera.position = {174.780f, 26.939f, -80.027f};
-  camera.direction = {-0.847f, -0.466f, -0.256f};
+  camera_controller.spawnCamera(
+    "Main", 
+    {174.780f, 26.939f, -80.027f}, 
+    {-0.847f, -0.466f, -0.256f}
+  );
+  camera_controller.setActiveCamera("Main");
+  
   Engine::Utils::Logger::get().info("Scene", "Main Camera Initialized");
 
 
 #ifndef PRODUCTION
   debug_camera.position = {453.198f, 250.233f, -26.842f};
   debug_camera.direction = {-0.668f, -0.734f, -0.122f};
+  debug_camera.default_movemement_on = true;
   Engine::Utils::Logger::get().info("Scene", "Debug Camera Initialized");
 #endif
     
@@ -77,7 +83,7 @@ void Engine::Core::Scene::onLoad(){
 
 
 void Engine::Core::Scene::onUpdate(float delta_time){
-  camera.event(&window);
+  camera_controller.getActiveCamera().event();
 
   unsigned int size = Engine::ObjectManager::get().objects.size();
   for(int i = 0; i < size; i++){
@@ -115,7 +121,7 @@ void Engine::Core::Scene::onFixedUpdate(float fixed_delta_time){
   
   unsigned int size = Engine::ObjectManager::get().objects.size();
   for(int i = 0; i < size; i++){
-    Engine::ObjectManager::get().objects[i].onFixedUpdate(fixed_delta_time);
+    Engine::ObjectManager::get().objects[i].onFixedUpdate(fixed_delta_time, (*this));
     if(size > Engine::ObjectManager::get().objects.size()){
       size = Engine::ObjectManager::get().objects.size();
       i--;
@@ -125,7 +131,7 @@ void Engine::Core::Scene::onFixedUpdate(float fixed_delta_time){
 
   size = Engine::ObjectManager::get().script_objects.size();
   for(int i = 0; i < size; i++){
-    Engine::ObjectManager::get().script_objects[i].onFixedUpdate(fixed_delta_time);
+    Engine::ObjectManager::get().script_objects[i].onFixedUpdate(fixed_delta_time, (*this));
     if(size > Engine::ObjectManager::get().script_objects.size()){
       size = Engine::ObjectManager::get().script_objects.size();
       i--;
@@ -183,7 +189,7 @@ void Engine::Core::Scene::compileShadows(){
     light_camera.direction = glm::normalize(-Engine::Core::Resources::get().lights[0].position);
     last_light_camera_dir = light_camera.direction;
     
-    light_space_matrix = light_camera.transformation(&window);
+    light_space_matrix = light_camera.transformation();
     shadows_uniform_off["u_LightSpaceMatrix"]->set<glm::mat4>(light_space_matrix);
     shadows_uniform_on["u_LightSpaceMatrix"]->set<glm::mat4>(light_space_matrix);
   };  
@@ -221,7 +227,7 @@ void Engine::Core::Scene::render(){
     renderFrame(debug_camera);
   else
 #endif
-    renderFrame(camera);
+    renderFrame(this->camera_controller.getActiveCamera());
 
   fbo.unbind();
 
@@ -247,14 +253,14 @@ void Engine::Core::Scene::render(){
 
 
 
-void Engine::Core::Scene::renderFrame(Engine::Camera& camera){
+void Engine::Core::Scene::renderFrame(Engine::ICamera& camera){
   window.beginFrame();
 
   glActiveTexture(GL_TEXTURE16);
   glBindTexture(GL_TEXTURE_2D, shadows_fbo.getDepthTexture());
 
-  for(Engine::GameObject& object : Engine::ObjectManager::get().objects) object.render(&window, this->camera, camera, shadows_uniform_on);
-  for(Engine::GameObject& object : Engine::ObjectManager::get().script_objects) object.render(&window, this->camera, camera, shadows_uniform_on);
+  for(Engine::GameObject& object : Engine::ObjectManager::get().objects) object.render(&window, this->camera_controller.getActiveCamera(), camera, shadows_uniform_on);
+  for(Engine::GameObject& object : Engine::ObjectManager::get().script_objects) object.render(&window, this->camera_controller.getActiveCamera(), camera, shadows_uniform_on);
 
   
   glActiveTexture(GL_TEXTURE16);
@@ -282,15 +288,15 @@ void Engine::Core::Scene::postProcessing(){
 
 #ifndef PRODUCTION
   if(debug_camera_on){
-    glm::mat4 invViewProj = glm::inverse(debug_camera.projection(&window) * debug_camera.view(&window));
+    glm::mat4 invViewProj = glm::inverse(debug_camera.projection() * debug_camera.view());
     post_uniform["u_InvViewProj"]->set<glm::mat4>(invViewProj);
     post_uniform["u_CamPos"]->set<glm::vec3>(debug_camera.position);
   }
   else{
 #endif
-    glm::mat4 invViewProj = glm::inverse(camera.projection(&window) * camera.view(&window));
+    glm::mat4 invViewProj = glm::inverse(camera_controller.getActiveCamera().projection() * camera_controller.getActiveCamera().view());
     post_uniform["u_InvViewProj"]->set<glm::mat4>(invViewProj);
-    post_uniform["u_CamPos"]->set<glm::vec3>(camera.position);
+    post_uniform["u_CamPos"]->set<glm::vec3>(camera_controller.getActiveCamera().getPosition());
 #ifndef PRODUCTION
   }
 #endif

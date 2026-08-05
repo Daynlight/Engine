@@ -9,8 +9,14 @@
 
 
 
+Engine::Camera::Camera(){
+  resetMouse();
+};
+
+
+
 Engine::Camera::Camera(CW::Renderer::Renderer* renderer, glm::vec3 position, glm::vec3 direction) 
-  : position(position) {
+  : renderer(renderer), position(position) {
   if (glm::length(direction) > 0.0001f) {
     this->direction = glm::normalize(direction);
     this->orientation = glm::quatLookAt(-this->direction, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -20,6 +26,29 @@ Engine::Camera::Camera(CW::Renderer::Renderer* renderer, glm::vec3 position, glm
   };
 
   resetMouse();
+};
+
+
+
+Engine::Camera& Engine::Camera::operator=(Camera &&second){
+  if (this != &second) {
+    renderer = second.renderer; 
+    second.renderer = nullptr;
+    
+    position = std::move(second.position);
+    is_ortho = second.is_ortho;
+    
+    if (glm::length(second.direction) > 0.0001f) {
+      this->direction = glm::normalize(second.direction);
+      this->orientation = glm::quatLookAt(-this->direction, glm::vec3(0.0f, 1.0f, 0.0f));
+    } else {
+      this->direction = glm::vec3(0.0f, 0.0f, 1.0f);
+      this->orientation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+    }
+  }
+
+  resetMouse();
+  return *this;
 };
 
 
@@ -43,20 +72,23 @@ void Engine::Camera::updateDirection() {
 
 
 
-glm::mat4 Engine::Camera::transformation(CW::Renderer::Renderer* renderer){
-  return projection(renderer) * view(renderer);
+glm::mat4 Engine::Camera::transformation(){
+  return projection() * view();
 };
 
 
 
-glm::mat4 Engine::Camera::view(CW::Renderer::Renderer* renderer){
+glm::mat4 Engine::Camera::view(){
   glm::vec3 dynamicUp = orientation * glm::vec3(0.0f, 1.0f, 0.0f);
   return glm::lookAt(position, position + direction, dynamicUp);
 };
 
 
 
-glm::mat4 Engine::Camera::projection(CW::Renderer::Renderer* renderer) {
+glm::mat4 Engine::Camera::projection() {
+  if (!renderer || !renderer->getWindowData()) 
+    return glm::mat4(1.0f); 
+
   float aspectRatio = renderer->getWindowData()->width / (float)renderer->getWindowData()->height;
 
   if (is_ortho) {
@@ -72,7 +104,9 @@ glm::mat4 Engine::Camera::projection(CW::Renderer::Renderer* renderer) {
 
 
 
-void Engine::Camera::event(CW::Renderer::Renderer* renderer) {
+void Engine::Camera::event() {
+  if(!default_movemement_on) return;
+
   float dt = renderer->getWindowData()->delta_time;
 
   if (cursor_lock) renderer->setCursorOn(true);
@@ -149,4 +183,25 @@ void Engine::Camera::setOrthographic(bool enable){
 
 void Engine::Camera::resetMouse(){
   mouse_is_active = false;
+};
+
+
+glm::vec3 Engine::Camera::getPosition(){
+  return position;
+};
+
+
+void Engine::Camera::setPosition(glm::vec3 position){
+  this->position = position;
+};
+
+
+glm::vec3 Engine::Camera::getDirection(){
+  return direction;
+};
+
+
+void Engine::Camera::setDirection(glm::vec3 direction){
+  this->direction = direction;
+  resetMouse();
 };

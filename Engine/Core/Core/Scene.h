@@ -10,7 +10,7 @@
 
 #include <vector>
 
-#include "Camera/Camera.h"
+#include "Camera/CameraController.h"
 #include "Objects/Object.h"
 #include "Objects/GameObject.h"
 #include "Objects/ObjectManager.h"
@@ -24,6 +24,7 @@ class Scene{
 public:
   CW::Renderer::Framebuffer post_fbo;
   CW::Renderer::Framebuffer fbo;
+  Engine::CameraController camera_controller;
 
 #ifndef PRODUCTION
 public:
@@ -32,7 +33,6 @@ private:
 #endif
   CW::Renderer::Renderer& window;
   CW::Renderer::Framebuffer shadows_fbo;
-  Engine::Camera camera;
   
 #ifndef PRODUCTION
   Engine::Camera debug_camera;
@@ -67,7 +67,7 @@ public:
 private:
   void postProcessing();
   void compileShadows();
-  void renderFrame(Engine::Camera& camera);
+  void renderFrame(Engine::ICamera& camera);
 
 };
 };

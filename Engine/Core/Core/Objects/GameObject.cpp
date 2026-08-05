@@ -33,7 +33,7 @@ Engine::GameObject::GameObject(const std::string& name, const std::string& mesh,
   copy_game_object_data = game_object_data;
   this->mesh.setName(copy_game_object_data.mesh);
 
-  onLoad();
+  // onLoad();
 };
 
 
@@ -51,7 +51,7 @@ Engine::GameObject::GameObject(const std::string& name, const GameObject& other)
 
   PatchScriptPointers(this->scripts, &this->copy_game_object_data);
   
-  onLoad();
+  // onLoad();
 };
 
 
@@ -131,10 +131,10 @@ void Engine::GameObject::stopScript(unsigned int index){
 
 
 
-void Engine::GameObject::startScript(unsigned int index){
+void Engine::GameObject::startScript(unsigned int index, Engine::Core::Scene& scene){
   scripts[index].loadModule();
   copy_game_object_data = game_object_data;
-  scripts[index].onLoad(&copy_game_object_data);
+  scripts[index].onLoad(&copy_game_object_data, scene);
 };
 
 
@@ -146,17 +146,17 @@ void Engine::GameObject::stopScripts(){
 
 
 
-void Engine::GameObject::startScripts(){
+void Engine::GameObject::startScripts(Engine::Core::Scene& scene){
   for(int i = 0; i < scripts.size(); i++)
-    startScript(i);
+    startScript(i, scene);
 };
 
 
 
-void Engine::GameObject::onLoad(){
+void Engine::GameObject::onLoad(Engine::Core::Scene& scene){
   for(auto& script : scripts) {
     script.loadModule();
-    script.onLoad(&copy_game_object_data);
+    script.onLoad(&copy_game_object_data, scene);
   };
 };
 
@@ -183,12 +183,12 @@ void Engine::GameObject::onUpdate(float delta_time){
 
 
 
-void Engine::GameObject::onFixedUpdate(float fixed_delta_time){
+void Engine::GameObject::onFixedUpdate(float fixed_delta_time, Engine::Core::Scene& scene){
   if(Engine::Core::Resources::get().simulation_mode){
     for(auto& script : scripts) {
       if(!script.script_on) continue;
       script.syncPointer(&copy_game_object_data);
-      script.observe(&copy_game_object_data);
+      script.observe(&copy_game_object_data, scene);
       script.onFixedUpdate(fixed_delta_time);
     };
   };
@@ -196,7 +196,7 @@ void Engine::GameObject::onFixedUpdate(float fixed_delta_time){
 
 
 
-void Engine::GameObject::render(CW::Renderer::Renderer *renderer, Camera &culling_camera, Camera &render_camera, CW::Renderer::Uniform& shadows_uniform){
+void Engine::GameObject::render(CW::Renderer::Renderer *renderer, ICamera &culling_camera, ICamera &render_camera, CW::Renderer::Uniform& shadows_uniform){
   if(copy_game_object_data.mesh == "empty") return;
 
   if(scripts.size() == 0) copy_game_object_data = game_object_data;
@@ -209,10 +209,10 @@ void Engine::GameObject::render(CW::Renderer::Renderer *renderer, Camera &cullin
   CW::Renderer::Mesh* mesh = this->mesh.get();
   if(!mesh) return;
 
-  uniform["projection"]->set<glm::mat4>(render_camera.projection(renderer));
-  uniform["view"]->set<glm::mat4>(render_camera.view(renderer));
+  uniform["projection"]->set<glm::mat4>(render_camera.projection());
+  uniform["view"]->set<glm::mat4>(render_camera.view());
   
-  uniform["cameraPosition"]->set<glm::vec3>(culling_camera.position);
+  uniform["cameraPosition"]->set<glm::vec3>(culling_camera.getPosition());
   uniform["lightCount"]->set<int>(Engine::Core::Resources::get().lights.size());
 
   glm::vec3 pivotOffset = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -238,7 +238,7 @@ void Engine::GameObject::render(CW::Renderer::Renderer *renderer, Camera &cullin
     };
   };
 
-  if(!copy_game_object_data.culling_on || isVisible(culling_camera.transformation(renderer), model, *mesh)){
+  if(!copy_game_object_data.culling_on || isVisible(culling_camera.transformation(), model, *mesh)){
     if(copy_game_object_data.gl_depth_lequal)
       glDepthFunc(GL_LEQUAL);
     if(copy_game_object_data.dont_write_to_depth_mask)

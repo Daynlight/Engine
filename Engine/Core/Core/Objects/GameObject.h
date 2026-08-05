@@ -22,6 +22,11 @@
 
 
 
+namespace Engine::Core{
+  class Scene;
+};
+
+
 namespace Engine::Core::Script{ 
   class GameObjectScriptRecord;
 };
@@ -52,15 +57,15 @@ public:
   GameObject& operator=(GameObject&& other) noexcept;
   
   void stopScript(unsigned int index);
-  void startScript(unsigned int index);
+  void startScript(unsigned int index, Engine::Core::Scene& scene);
   void stopScripts();
-  void startScripts();
+  void startScripts(Engine::Core::Scene& scene);
 
-  void onLoad() override;
+  void onLoad(Engine::Core::Scene& scene) override;
   void onDestroy() override;
   void onUpdate(float delta_time) override;
-  void onFixedUpdate(float fixed_delta_time) override;
-  void render(CW::Renderer::Renderer* renderer, Camera& culling_camera, Camera& render_camera, CW::Renderer::Uniform& shadows_uniform) override;
+  void onFixedUpdate(float fixed_delta_time, Engine::Core::Scene& scene) override;
+  void render(CW::Renderer::Renderer* renderer, ICamera& culling_camera, ICamera& render_camera, CW::Renderer::Uniform& shadows_uniform) override;
 
   bool isVisible(glm::mat4 culling_camera_transform, glm::mat4 model, const CW::Renderer::Mesh& mesh);
 

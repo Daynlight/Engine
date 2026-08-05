@@ -25,6 +25,7 @@
 
 #include "ScriptShared/GameObjectScriptInterface.h"
 
+#include "Scene.h"
 #include "Utils/Logger.h"
 #include "Objects/ObjectManager.h"
 #include "Utils/config.h"
@@ -65,9 +66,9 @@ public:
   GameObjectScriptRecord& operator=(GameObjectScriptRecord&& other) noexcept;
   void syncPointer(Engine::ScriptShared::GameObjectData* data);
 
-  void observe(Engine::ScriptShared::GameObjectData* data);
+  void observe(Engine::ScriptShared::GameObjectData* data, Engine::Core::Scene& scene);
   
-  void onLoad(Engine::ScriptShared::GameObjectData* data);
+  void onLoad(Engine::ScriptShared::GameObjectData* data, Engine::Core::Scene& scene);
   void onUpdate(float delta_time);
   void onFixedUpdate(float fixed_delta_time);
   void onRender();
@@ -81,7 +82,7 @@ public:
 private:
   void initSharedFolder();
   bool checkLastWrite();
-  void updateScript(Engine::ScriptShared::GameObjectData* data);
+  void updateScript(Engine::ScriptShared::GameObjectData* data, Engine::Core::Scene& scene);
 
   int compile();
   int compile_thread();

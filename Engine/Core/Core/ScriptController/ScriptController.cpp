@@ -138,30 +138,31 @@ void Engine::Core::Script::GameObjectScriptRecord::syncPointer(Engine::ScriptSha
 
 
 
-void Engine::Core::Script::GameObjectScriptRecord::observe(Engine::ScriptShared::GameObjectData *data){
+void Engine::Core::Script::GameObjectScriptRecord::observe(Engine::ScriptShared::GameObjectData *data, Engine::Core::Scene& scene){
 #ifndef PRODUCTION
   if(compiling) {
     checkLastWrite();
-    updateScript(data);
+    updateScript(data, scene);
     return;
   };
 
-  if(checkLastWrite()) updateScript(data);
+  if(checkLastWrite()) updateScript(data, scene);
 #else
   if(!module_initialized) 
     if(!loadModule()) 
-      onLoad(data);
+      onLoad(data, scene);
 #endif
 };
 
 
 
-void Engine::Core::Script::GameObjectScriptRecord::onLoad(Engine::ScriptShared::GameObjectData* data) {
+void Engine::Core::Script::GameObjectScriptRecord::onLoad(Engine::ScriptShared::GameObjectData* data, Engine::Core::Scene& scene) {
   if(script){
     script->game_object_data = data;
     script->glob_res = &Engine::ScriptShared::GlobResource::get();
     script->logger = static_cast<Engine::ScriptShared::ILogger*>(&Engine::Utils::Logger::get());
     script->object_manager = static_cast<Engine::ScriptShared::IObjectManager*>(&Engine::ObjectManager::get());
+    script->camera_controller = static_cast<Engine::ICameraController*>(&scene.camera_controller);
 
 #ifndef PRODUCTION
 #ifdef SANDBOX_SCRIPTS
@@ -507,7 +508,7 @@ bool Engine::Core::Script::GameObjectScriptRecord::checkLastWrite(){
 
 
 
-void Engine::Core::Script::GameObjectScriptRecord::updateScript(Engine::ScriptShared::GameObjectData* data) {
+void Engine::Core::Script::GameObjectScriptRecord::updateScript(Engine::ScriptShared::GameObjectData* data, Engine::Core::Scene& scene) {
 #ifndef PRODUCTION
   Engine::Utils::Logger::get().info("Script Controller", "Script is Updating...");
 
@@ -516,7 +517,7 @@ void Engine::Core::Script::GameObjectScriptRecord::updateScript(Engine::ScriptSh
   int compile_state = compile();
   if(compile_state == 0) {
     if(!loadModule()) 
-      onLoad(data);
+      onLoad(data, scene);
     else{
       Engine::Utils::Logger::get().info("Script Controller", "loadModule failed");
       return;
