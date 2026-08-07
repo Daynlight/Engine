@@ -58,12 +58,15 @@ Engine::Core::Script::GameObjectScriptRecord::GameObjectScriptRecord(const std::
   : path(path), 
     cpp_file(Engine::Config::SCRIPTS_SRC_FOLDER + path + ".cpp"),
 #if defined(_WIN32) || defined(_WIN64)
-    so_file(Engine::Config::SCRIPTS_DLL_FOLDER + path + ".dll")
+    so_file(Engine::Config::TEMP_BIN_FOLDER + Engine::Config::SCRIPTS_DLL_FOLDER + path + ".dll")
 #else
-    so_file(Engine::Config::SCRIPTS_DLL_FOLDER + path + ".so")
+    so_file(Engine::Config::TEMP_BIN_FOLDER + Engine::Config::SCRIPTS_DLL_FOLDER + path + ".so")
 #endif 
 {
   Engine::Utils::Logger::get().info("Script Controller", "Script Initialized");
+  
+  if(!std::filesystem::exists(Engine::Config::TEMP_BIN_FOLDER)) std::filesystem::create_directories(Engine::Config::TEMP_BIN_FOLDER);
+  
   initSharedFolder();
 };
 

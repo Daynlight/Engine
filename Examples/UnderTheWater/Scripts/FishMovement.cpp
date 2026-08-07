@@ -214,20 +214,4 @@ public:
 
 
 
-#ifndef PRODUCTION
-
-extern "C" Engine::ScriptShared::GameObjectScriptInterface* SCRIPT_API GetScript() {
-  Engine::SCRIPT_NAME* script = new Engine::SCRIPT_NAME();
-  return (Engine::ScriptShared::GameObjectScriptInterface*)script;
-};
-
-extern "C" void SCRIPT_API DeleteScript(Engine::ScriptShared::GameObjectScriptInterface* script) {
-  Engine::SCRIPT_NAME* temp_script = (Engine::SCRIPT_NAME*)script;
-  delete temp_script;
-};
-
-#else
-
 REGISTER_SCRIPT(SCRIPT_FILE_NAME, SCRIPT_NAME)
-
-#endif

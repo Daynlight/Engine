@@ -108,7 +108,7 @@ const std::vector<Engine::Utils::Log>& Engine::Utils::Logger::getLogs() const no
 
 
 void Engine::Utils::Logger::checkAndTrimLog() noexcept {
-  std::ifstream infile(Engine::Config::LOG_FILE_PATH);
+  std::ifstream infile(Engine::Config::TEMP_BIN_FOLDER + Engine::Config::LOG_FILE_PATH);
   if (!infile.is_open()) return;
 
   std::vector<std::string> lines;
@@ -119,7 +119,7 @@ void Engine::Utils::Logger::checkAndTrimLog() noexcept {
   infile.close();
 
   if (lines.size() >= Engine::Config::LOGS_MAX_LINES) {
-    std::ofstream outfile(Engine::Config::LOG_FILE_PATH, std::ios::trunc);
+    std::ofstream outfile(Engine::Config::TEMP_BIN_FOLDER + Engine::Config::LOG_FILE_PATH, std::ios::trunc);
     if (outfile.is_open()) {
       size_t start_index = lines.size() - Engine::Config::LOGS_TARGET_TRIM_LINES;
       for (size_t i = start_index; i < lines.size(); ++i) {
@@ -133,8 +133,8 @@ void Engine::Utils::Logger::checkAndTrimLog() noexcept {
 
 
 void Engine::Utils::Logger::calculateInitialLineCount() noexcept {
-  if (!std::filesystem::exists(Engine::Config::LOG_FILE_PATH)) return;
-  std::ifstream infile(Engine::Config::LOG_FILE_PATH);
+  if (!std::filesystem::exists(Engine::Config::TEMP_BIN_FOLDER + Engine::Config::LOG_FILE_PATH)) return;
+  std::ifstream infile(Engine::Config::TEMP_BIN_FOLDER + Engine::Config::LOG_FILE_PATH);
   std::string line;
   while (std::getline(infile, line)) {
     current_lines++;
@@ -144,7 +144,7 @@ void Engine::Utils::Logger::calculateInitialLineCount() noexcept {
 
 
 void Engine::Utils::Logger::log_to_file(Log log) noexcept {
-  std::ofstream log_file(Engine::Config::LOG_FILE_PATH, std::ios::app);
+  std::ofstream log_file(Engine::Config::TEMP_BIN_FOLDER + Engine::Config::LOG_FILE_PATH, std::ios::app);
   if (log_file.is_open()) {
     log_file << log.getText() << "\n";
     current_lines++;

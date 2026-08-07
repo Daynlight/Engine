@@ -63,7 +63,13 @@ void Engine::Editor::UI::onDestroy() {
 // ========================= //
 void Engine::Editor::UI::uiLoad(){
   configControl();
+  static std::string path_to_ini = Engine::Config::TEMP_BIN_FOLDER + ImGui::GetIO().IniFilename;
+  
+  if(!std::filesystem::exists(Engine::Config::TEMP_BIN_FOLDER)) std::filesystem::create_directories(Engine::Config::TEMP_BIN_FOLDER);
+
+  ImGui::GetIO().IniFilename = path_to_ini.c_str();
   ImGui::LoadIniSettingsFromDisk(ImGui::GetIO().IniFilename);
+
   Engine::Utils::Logger::get().info("UI", "Loading UI Data from disck");
 
   Engine::Core::Resources::get().simulation_mode = Engine::Editor::guiSettings.simulation_mode;
@@ -274,7 +280,10 @@ void Engine::Editor::UI::buildProject(){
   #ifndef PRODUCTION
   Engine::Utils::Logger::get().info("UI", "Building ...");
   
-  std::filesystem::path dest_folder = Engine::Config::COMPILATION_FOLDER;
+  std::filesystem::path dest_folder = Engine::Config::TEMP_BIN_FOLDER + Engine::Config::COMPILATION_FOLDER;
+
+  if(!std::filesystem::exists(Engine::Config::TEMP_BIN_FOLDER)) std::filesystem::create_directories(Engine::Config::TEMP_BIN_FOLDER);
+
   std::string build_dir = (dest_folder / "build-prod").string();
   
   // clean stage

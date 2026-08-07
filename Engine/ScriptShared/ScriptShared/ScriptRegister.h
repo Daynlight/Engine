@@ -57,7 +57,7 @@ public:
       struct ScriptRegisterer_##ScriptClassName { \
         ScriptRegisterer_##ScriptClassName() { \
           Engine::ScriptShared::ScriptRegistry::get().registerScript(RegKey, []() -> Engine::ScriptShared::GameObjectScriptInterface* { \
-            return new Engine::ScriptShared::ScriptClassName(); \
+            return new Engine::ScriptClassName(); \
           }); \
         } \
       }; \
@@ -66,5 +66,16 @@ public:
 
   #define REGISTER_SCRIPT(RegKey, ScriptClassName) REGISTER_SCRIPT_INTERNAL(RegKey, ScriptClassName)
 #else
-  #define REGISTER_SCRIPT(RegKey, ScriptClassName) printf("NO Reg: %s\n", ScriptClassName.c_str());
+  #define REGISTER_SCRIPT(RegKey, ScriptClassName) \
+    extern "C" Engine::ScriptShared::GameObjectScriptInterface* SCRIPT_API GetScript() { \
+      Engine::ScriptClassName* script = new Engine::ScriptClassName(); \
+      return (Engine::ScriptShared::GameObjectScriptInterface*)script; \
+    }; \
+       \
+       \
+       \
+    extern "C" void SCRIPT_API DeleteScript(Engine::ScriptShared::GameObjectScriptInterface* script) { \
+      Engine::ScriptClassName* temp_script = (Engine::ScriptClassName*)script; \
+      delete temp_script; \
+    };
 #endif

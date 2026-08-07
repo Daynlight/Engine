@@ -79,6 +79,7 @@ namespace Engine::Config{
   inline const std::string SCRIPTS_SRC_FOLDER = "Scripts/";
   inline const std::string COMPILATION_FOLDER = "compile_temp/";
   inline const std::string SCRIPTS_DLL_FOLDER = "Scripts_DLL/";
+  inline const std::string TEMP_BIN_FOLDER = "Engine_Bin/";
   inline const std::string RESOURCES_FILENAME = "Resources.res";
   inline const std::string LOG_FILE_PATH = "editor.log";
   inline const size_t LOGS_MAX_LINES = 10000;
