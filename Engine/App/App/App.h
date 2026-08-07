@@ -28,6 +28,7 @@ namespace Engine::App{
 class App{
 private:
   Engine::Core::Core core;
+  CW::Renderer::Framebuffer viewport_fbo;
   
 #ifndef PRODUCTION
   Engine::Editor::Editor editor;
@@ -38,9 +39,8 @@ private:
   float total_fps_acc = 0.0f;
   unsigned int total_fps_id = 0;
 
-  CW::Renderer::Framebuffer viewport_fbo;
-#endif
-
+  #endif
+  
   float fixed_update_time_acc = 0.0f;
 
 public:

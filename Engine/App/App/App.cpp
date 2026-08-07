@@ -27,8 +27,9 @@ __attribute__((constructor)) void forceLinuxDiscreteGPU() {
 
 
 Engine::App::App::App()
+  : viewport_fbo(core.window.getWindowData()->width, core.window.getWindowData()->height)
 #ifndef PRODUCTION
-  : viewport_fbo(core.window.getWindowData()->width, core.window.getWindowData()->height), editor(core, fps, viewport_fbo)
+  , editor(core, fps, viewport_fbo)
 #endif
 {
   Engine::Utils::Logger::get().info("App", "App Initialization");
@@ -100,20 +101,18 @@ void Engine::App::App::onDestroy() {
 
 
 void Engine::App::App::render(){
-  
-#ifndef PRODUCTION
   core.render();
   viewport_fbo = core.get_fbo();
 
+#ifndef PRODUCTION
   core.window.beginFrame();
   glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
   editor.render();
+#else
+  viewport_fbo.blitToScreen(core.window.getWindowData()->width, core.window.getWindowData()->height);
+#endif
 
   core.swapFrame();
-#else
-  core.render();
-  core.swapFrame();
-#endif
 };
 
 
