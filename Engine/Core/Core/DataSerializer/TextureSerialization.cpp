@@ -49,6 +49,7 @@ void Engine::TextureSerialization::save(const std::string& texture_name, const C
 void Engine::TextureSerialization::load(const std::string& texture_name, std::unordered_map<std::string, CW::Renderer::Texture>& textures) {
   std::string file_path = Engine::Config::GAME_DATA_FOLDER + Engine::Config::ASSETS_FOLDER + Engine::Config::TEXTURES_FOLDER + texture_name;
 
+#ifndef PRODUCTION
   if (!fs::exists(file_path)) {
     Engine::Utils::Logger::get().warn("TextureSerialization", "Texture file not found: " + file_path);
     return;
@@ -60,25 +61,12 @@ void Engine::TextureSerialization::load(const std::string& texture_name, std::un
     return;
   };
 
-#ifndef PRODUCTION
-  if (std::filesystem::exists(file_path) && !std::filesystem::is_directory(file_path)) {
+  if (!std::filesystem::is_directory(file_path)) {
     CW::Renderer::TextureLoader loader = CW::Renderer::TextureLoader(file_path);
-    // std::ifstream file(file_path, std::ios::binary | std::ios::ate);
-    // if (file.is_open()) {
-    //   std::streamsize size = file.tellg();
-    //   file.seekg(0, std::ios::beg);
 
-    //   std::vector<unsigned char> buffer(size);
-    //   if (file.read(reinterpret_cast<char*>(buffer.data()), size)) {
-    //     loader = CW::Renderer::TextureLoader(buffer.data(), size);
-
-        textures.emplace(texture_name, CW::Renderer::Texture()).first;
-        textures[texture_name].compile(loader.data);
-    //   };
-    // } else {
-    //   Engine::Utils::Logger::get().erro("Resources", "Failed to open texture file: " + file_path);
-    };
-  // };
+    textures.emplace(texture_name, CW::Renderer::Texture()).first;
+    textures[texture_name].compile(loader.data);
+  }
 #else
   try {
     auto fs = cmrc::GameData::get_filesystem();
@@ -91,7 +79,9 @@ void Engine::TextureSerialization::load(const std::string& texture_name, std::un
 
       textures.emplace(texture_name, CW::Renderer::Texture()).first;
       textures[texture_name].compile(loader.data);
-    };
+    } else {
+      Engine::Utils::Logger::get().warn("TextureSerialization", "Texture file not found in CMRC: " + file_path);
+    }
   } catch (const std::exception& e) {
     Engine::Utils::Logger::get().warn("Resources", "[getTexture] CMRC Exception: " + std::string(e.what()));
   };
