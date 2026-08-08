@@ -19,7 +19,7 @@
 namespace Engine{
 class SCRIPT_NAME : public Engine::ScriptShared::GameObjectScriptInterface {
 private:
-  std::string base_name = "Under The Water";
+  std::string base_name = "Farm";
   unsigned int samples = 0;
   float acc_time = 0.0f;
 

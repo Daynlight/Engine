@@ -74,7 +74,12 @@ void Engine::Core::Core::render(){
 
 
 CW::Renderer::Framebuffer& Engine::Core::Core::get_fbo(){
+#ifndef PRODUCTION
+  if(scene.post_processing_on) return scene.post_fbo;
+  else return scene.fbo; 
+#else
   return scene.post_fbo;
+#endif
 };
 
 

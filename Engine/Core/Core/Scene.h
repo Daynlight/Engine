@@ -37,11 +37,15 @@ private:
 #ifndef PRODUCTION
   Engine::Camera debug_camera;
   bool debug_camera_on = Engine::Config::DEFAULT_DEBUG_CAMERA_ON;
-  bool post_processing_on = Engine::Config::DEFAULT_POST_PROCESSING_ON;
   bool shadows_on = Engine::Config::DEFAULT_SHADOWS_ON;
   
   float save_acc = 0.0f;
-  #endif
+
+public:
+  bool post_processing_on = Engine::Config::DEFAULT_POST_PROCESSING_ON;
+
+private:
+#endif
   
   Engine::Camera light_camera;
   CW::Renderer::Uniform shadows_uniform_on;

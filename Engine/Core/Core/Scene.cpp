@@ -244,9 +244,7 @@ void Engine::Core::Scene::render(){
   // #endif
   
 #ifndef PRODUCTION
-  if(!post_processing_on)
-    post_fbo = fbo;
-  else
+  if(post_processing_on)
 #endif
     postProcessing();
 };
@@ -275,6 +273,10 @@ void Engine::Core::Scene::postProcessing(){
 
   post_fbo.bind();
 
+  window.beginFrame(); 
+
+  glDisable(GL_DEPTH_TEST); 
+
   std::string shader_name = "PostProcessing";
 
   glActiveTexture(GL_TEXTURE0);
@@ -284,7 +286,6 @@ void Engine::Core::Scene::postProcessing(){
   glActiveTexture(GL_TEXTURE1);
   glBindTexture(GL_TEXTURE_2D, fbo.getDepthTexture());
   post_uniform["u_SceneDepthTexture"]->set<int>(1);
-
 
 #ifndef PRODUCTION
   if(debug_camera_on){
@@ -301,7 +302,6 @@ void Engine::Core::Scene::postProcessing(){
   }
 #endif
 
-
   Engine::Core::Resources::get().getShader(shader_name).getUniforms().emplace_back(&post_uniform);
   Engine::Core::Resources::get().getShader(shader_name).bind();
   
@@ -310,9 +310,10 @@ void Engine::Core::Scene::postProcessing(){
   Engine::Core::Resources::get().getShader(shader_name).unbind();
   Engine::Core::Resources::get().getShader(shader_name).getUniforms().clear();
 
-
   glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, 0);
   glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, 0);
+
+  glEnable(GL_DEPTH_TEST); 
 
   post_fbo.unbind();
 };
