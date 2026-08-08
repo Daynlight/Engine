@@ -19,15 +19,11 @@ uniform mat4 model;
 void main(){
   vec3 scaledPos = vec3(aPos.x * sizes.x, aPos.y * sizes.y, aPos.z);
   vec4 worldPos = model * vec4(scaledPos, 1.0);
+
   FragPosLightSpace = u_LightSpaceMatrix * worldPos;
   vec4 pos = projection * view * worldPos;
-
-  if (window_size.y > 0.0) {
-    float aspectRatio = window_size.x / window_size.y;
-    pos.x /= aspectRatio;
-  }
   
-  FragPosition = pos.xyz;
+  FragPosition = worldPos.xyz;
   TexCoords = uvs;
 
   gl_Position = pos;

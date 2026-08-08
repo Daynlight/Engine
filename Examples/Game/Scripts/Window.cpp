@@ -45,10 +45,7 @@ public:
   };
   
   void OnFixedUpdate(float fixed_delta_time){
-    Engine::ICamera& camera = camera_controller->getActiveCamera();
-    glm::vec3 ps = camera.getPosition();
-    ps += glm::vec3(0.0, 1.0, 0.0) * fixed_delta_time;
-    camera.setPosition(ps);
+    
   };
   
   void OnRender(){

@@ -64,7 +64,7 @@ public:
     
     game_object_data->position += move_vector;
     
-    logger->warn(SCRIPT_FILE_NAME, std::to_string(move_vector.x) + ", " + std::to_string(move_vector.y));
+    // logger->warn(SCRIPT_FILE_NAME, std::to_string(move_vector.x) + ", " + std::to_string(move_vector.y));
   };
 
   void cameraTracking(){
