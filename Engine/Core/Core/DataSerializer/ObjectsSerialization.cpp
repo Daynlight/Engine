@@ -52,6 +52,7 @@ void Engine::ObjectsSerialization::save(const Engine::GameObject& object) {
   record.gl_depth_lequal = object.game_object_data.gl_depth_lequal;
   record.gl_draw_patches = object.game_object_data.gl_draw_patches;
   record.gl_blend = object.game_object_data.gl_blend;
+  record.gl_nearest = object.game_object_data.gl_nearest;
   for(auto script : object.scripts) record.scripts.emplace_back(std::pair<std::string, bool>(script.getPath(), script.script_on));
 
   outFile << record;
@@ -107,6 +108,7 @@ void Engine::ObjectsSerialization::saveAll(std::vector<Engine::GameObject>& obje
     record.gl_depth_lequal = object.game_object_data.gl_depth_lequal;
     record.gl_draw_patches = object.game_object_data.gl_draw_patches;
     record.gl_blend = object.game_object_data.gl_blend;
+    record.gl_nearest = object.game_object_data.gl_nearest;
     for(auto script : object.scripts) record.scripts.emplace_back(std::pair<std::string, bool>(script.getPath(), script.script_on));
 
     outFile << record;
@@ -162,6 +164,7 @@ void Engine::ObjectsSerialization::loadAll(std::vector<Engine::GameObject>& obje
         object.game_object_data.gl_depth_lequal = record.gl_depth_lequal;
         object.game_object_data.gl_draw_patches = record.gl_draw_patches;
         object.game_object_data.gl_blend = record.gl_blend;
+        object.game_object_data.gl_nearest = record.gl_nearest;
         object.game_object_data.textures = std::move(record.textures);
         object.game_object_data.materials = std::move(record.materials);
         object.game_object_data.parameters = std::move(record.parameters);
@@ -209,6 +212,7 @@ std::ostream& Engine::operator<<(std::ostream& os, const Engine::GameObjectRecor
   os.write(reinterpret_cast<const char*>(&record.gl_depth_lequal), sizeof(bool));
   os.write(reinterpret_cast<const char*>(&record.gl_draw_patches), sizeof(bool));
   os.write(reinterpret_cast<const char*>(&record.gl_blend), sizeof(bool));
+  os.write(reinterpret_cast<const char*>(&record.gl_nearest), sizeof(bool));
 
   size_t tex_count = record.textures.size();
   os.write(reinterpret_cast<const char*>(&tex_count), sizeof(tex_count));
@@ -325,6 +329,7 @@ std::istream& Engine::operator>>(std::istream& is, Engine::GameObjectRecord& rec
   is.read(reinterpret_cast<char*>(&record.gl_depth_lequal), sizeof(bool));
   is.read(reinterpret_cast<char*>(&record.gl_draw_patches), sizeof(bool));
   is.read(reinterpret_cast<char*>(&record.gl_blend), sizeof(bool));
+  is.read(reinterpret_cast<char*>(&record.gl_nearest), sizeof(bool));
 
   size_t tex_count = 0;
   is.read(reinterpret_cast<char*>(&tex_count), sizeof(tex_count));

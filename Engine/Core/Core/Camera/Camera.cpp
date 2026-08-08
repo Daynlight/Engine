@@ -202,6 +202,13 @@ glm::vec3 Engine::Camera::getDirection(){
 
 
 void Engine::Camera::setDirection(glm::vec3 direction){
-  this->direction = direction;
+  if (glm::length(direction) > 0.0001f) {
+    this->direction = glm::normalize(direction);
+    this->orientation = glm::quatLookAt(-this->direction, glm::vec3(0.0f, 1.0f, 0.0f));
+  } else {
+    this->direction = glm::vec3(0.0f, 0.0f, 1.0f);
+    this->orientation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+  };
+  
   resetMouse();
 };

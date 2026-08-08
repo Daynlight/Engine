@@ -214,6 +214,7 @@ void Engine::GameObject::render(CW::Renderer::Renderer *renderer, ICamera &culli
   
   uniform["cameraPosition"]->set<glm::vec3>(culling_camera.getPosition());
   uniform["lightCount"]->set<int>(Engine::Core::Resources::get().lights.size());
+  uniform["window_size"]->set<glm::vec2>({renderer->getWindowData()->width, renderer->getWindowData()->height});
 
   glm::vec3 pivotOffset = glm::vec3(0.0f, 0.0f, 0.0f);
   glm::mat4 translationMat = glm::translate(glm::mat4(1.0f), copy_game_object_data.position);
@@ -270,10 +271,30 @@ void Engine::GameObject::render(CW::Renderer::Renderer *renderer, ICamera &culli
     GLint loc = glGetUniformLocation(Engine::Core::Resources::get().getShader(copy_game_object_data.shader).getShaderProgram(), "mat_translate");
     glUniform1iv(loc, translation.size(), translation.data());
     
+    if(this->copy_game_object_data.gl_nearest){
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    }
+    else{
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    };
+
     if(copy_game_object_data.gl_draw_patches)
       mesh->render(GL_PATCHES);
     else
       mesh->render();
+
+    if(this->copy_game_object_data.gl_nearest){
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    };
     
     Engine::Core::Resources::get().getShader(this->copy_game_object_data.shader).unbind();
 

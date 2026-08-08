@@ -46,6 +46,7 @@ struct GameObjectData{
   bool gl_depth_lequal = false;
   bool gl_draw_patches = false;
   bool gl_blend = false;
+  bool gl_nearest = false;
 
   std::unordered_map<std::string, GameObjectParameterType> parameters;
   std::unordered_map<std::string, GameObjectParameterType> uniforms;

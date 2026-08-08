@@ -197,6 +197,13 @@ void Engine::Editor::UI_Objects::guiObjectEditor(){
     object.startScripts(scene);
   };
 
+  bool gl_nearest = object.game_object_data.gl_nearest;
+  if(ImGui::Checkbox("Nearest", &gl_nearest)){
+    object.stopScripts();
+    object.game_object_data.gl_nearest = gl_nearest;
+    object.startScripts(scene);
+  };
+
 
   ImGui::SeparatorText("Textures: ");
   for(int i = 0; i < object.game_object_data.textures.size(); i++){
