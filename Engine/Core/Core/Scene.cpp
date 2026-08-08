@@ -257,8 +257,8 @@ void Engine::Core::Scene::renderFrame(Engine::ICamera& camera){
   glActiveTexture(GL_TEXTURE16);
   glBindTexture(GL_TEXTURE_2D, shadows_fbo.getDepthTexture());
 
-  for(Engine::GameObject& object : Engine::ObjectManager::get().objects) object.render(&window, this->camera_controller.getActiveCamera(), camera, shadows_uniform_on);
   for(Engine::GameObject& object : Engine::ObjectManager::get().script_objects) object.render(&window, this->camera_controller.getActiveCamera(), camera, shadows_uniform_on);
+  for(Engine::GameObject& object : Engine::ObjectManager::get().objects) object.render(&window, this->camera_controller.getActiveCamera(), camera, shadows_uniform_on);
 
   
   glActiveTexture(GL_TEXTURE16);
