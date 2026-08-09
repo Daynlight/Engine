@@ -36,6 +36,7 @@ public:
   virtual void event() = 0;
   virtual void resetMouse() = 0;
   virtual void setOrthographic(bool enable) = 0;
+  virtual void setFov(float fov) = 0;
 
 };
 };

@@ -92,7 +92,7 @@ glm::mat4 Engine::Camera::projection() {
   float aspectRatio = renderer->getWindowData()->width / (float)renderer->getWindowData()->height;
 
   if (is_ortho) {
-    float orthoSize = Engine::Config::CAMERA_ORTHO_SIZE; 
+    float orthoSize = fov; 
     float halfWidth = (orthoSize * aspectRatio) * 0.5f;
     float halfHeight = orthoSize * 0.5f;
 
@@ -212,3 +212,9 @@ void Engine::Camera::setDirection(glm::vec3 direction){
   
   resetMouse();
 };
+
+
+
+void Engine::Camera::setFov(float fov){
+  this->fov = fov;
+}

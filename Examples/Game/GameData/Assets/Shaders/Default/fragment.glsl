@@ -31,7 +31,6 @@ void main() {
     if (u_HasNormalMap == 1) {
       vec3 normal = texture(texture1, TexCoords).rgb * 2.0 - 1.0;
       normal.x *= -1.0;
-      normal.y *= -1.0;
       normal = normalize(normal);
 
       for (int i = 0; i < lightCount; ++i) {
@@ -39,7 +38,7 @@ void main() {
 
         vec3 toLight = lightPos - FragPosition;
         
-        toLight.x *= -1.0; 
+        toLight.x *= -1.0;
 
         float distance = length(toLight);
         if (distance == 0.0) distance = 0.0001;
@@ -59,4 +58,5 @@ void main() {
 
   FragColor = vec4(result, albedo.a);
 }
+
 

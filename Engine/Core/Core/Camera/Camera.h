@@ -61,6 +61,7 @@ public:
   void resetMouse();
   void event();
   void setOrthographic(bool enable);
+  void setFov(float fov);
 
 };
 };

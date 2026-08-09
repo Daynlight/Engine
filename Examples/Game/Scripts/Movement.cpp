@@ -85,11 +85,12 @@ public:
       };
     };
 
-    position.z = zoom;
+    position.z = 10.0f;
     camera.setPosition(position);
     
+    camera.setFov(zoom);
     camera.setDirection(glm::vec3(0.0f, 0.0f, -1.0f));
-    camera.setOrthographic(false);
+    camera.setOrthographic(true);
   };
 };
 };
