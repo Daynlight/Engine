@@ -63,9 +63,11 @@ Engine::Core::Camera::Camera(const Camera &second) noexcept
 
 
 Engine::Core::Camera &Engine::Core::Camera::operator=(const Camera &second) noexcept {
-  if (!renderer || !renderer->getWindowData()) {
+  if (!second.renderer || !second.renderer->getWindowData()) {
     Engine::Utils::Logger::get().warn("Engine::Core::Camera::operator=(const Camera &second)", "renderer is nullptr");
   };
+
+  if (this == &second) return *this;
 
   renderer = second.renderer;
   setPosition(second.position);
@@ -114,9 +116,11 @@ Engine::Core::Camera::Camera(Camera &&second) noexcept
 
 
 Engine::Core::Camera& Engine::Core::Camera::operator=(Camera &&second) noexcept {
-  if (!renderer || !renderer->getWindowData()) {
+  if (!second.renderer || !second.renderer->getWindowData()) {
     Engine::Utils::Logger::get().warn("Engine::Core::Camera::operator=(Camera &&second)", "renderer is nullptr");
   };
+
+  if (this == &second) return *this;
 
   renderer = std::move(second.renderer);
   setPosition(std::move(second.position));
@@ -187,7 +191,7 @@ glm::mat4 Engine::Core::Camera::projection_projection() const noexcept {
   };
 
   float aspectRatio = renderer->getWindowData()->width / (float)renderer->getWindowData()->height;
-  return glm::perspective(glm::radians(Engine::Config::CAMERA_FOV), aspectRatio, Engine::Config::CAMERA_NEAR_PLANE, Engine::Config::CAMERA_FAR_PLANE);
+  return glm::perspective(glm::radians(fov), aspectRatio, Engine::Config::CAMERA_NEAR_PLANE, Engine::Config::CAMERA_FAR_PLANE);
 };
 
 

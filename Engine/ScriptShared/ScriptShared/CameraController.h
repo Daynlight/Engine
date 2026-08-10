@@ -23,13 +23,14 @@
 namespace Engine::ScriptShared {
 class ICameraController {
 public:
+  virtual void setActiveCamera(const std::string& name) noexcept = 0;
+  virtual std::string getActiveCameraName() const noexcept = 0;
   virtual Engine::ScriptShared::ICamera& getActiveCamera() = 0;
+  
+  virtual void spawnCamera(const std::string& name, glm::vec3 position = {0.0f, 0.0f, 0.0f}, glm::vec3 direction = {0.0f, 0.0f, 1.0f}) noexcept = 0;
+  virtual void deleteCamera(const std::string& name) noexcept = 0;
+
   virtual Engine::ScriptShared::ICamera& getCamera(const std::string& name) = 0;
-
-  virtual void setActiveCamera(const std::string& name) = 0;
-  virtual void spawnCamera(const std::string& name, glm::vec3 position = {0.0f, 0.0f, 0.0f}, glm::vec3 direction = {0.0f, 0.0f, 1.0f}) = 0;
-  virtual void deleteCamera(const std::string& name) = 0;
-
-  virtual std::string getActiveCameraName() = 0;
+  virtual bool cameraExists(const std::string& name) const noexcept = 0;
 };
 };

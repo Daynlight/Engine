@@ -73,7 +73,7 @@ public:
   };
 
   void cameraTracking(){
-    Engine::ICamera& camera = camera_controller->getActiveCamera();
+    Engine::ScriptShared::ICamera& camera = camera_controller->getActiveCamera();
     
     glm::vec3 position = game_object_data->position;
 
@@ -82,7 +82,7 @@ public:
     
     camera.setOrthoSize(zoom);
     camera.setDirection(glm::vec3(0.0f, 0.0f, -1.0f));
-    camera.setCameraMode(Engine::CameraMode::ORTHOGONAL);
+    camera.setCameraMode(Engine::ScriptShared::CameraMode::ORTHOGONAL);
   };
 };
 };
