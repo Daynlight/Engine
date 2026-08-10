@@ -390,6 +390,11 @@ Production is designed to create one executable with no additional files require
 <details open>
 <summary> 🌟 Iteration 8 🌟 </summary>
 
+- [x] Camera full quaternions.
+- [ ] Camera Tests.
+
+- [ ] Minimized Script Shared.
+- [ ] One entry for engine.
 - [ ] Entity, Component, System.
 - [ ] Tests.
 - [ ] Unit Tests.

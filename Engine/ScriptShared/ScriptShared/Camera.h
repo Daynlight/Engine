@@ -19,24 +19,44 @@
 
 
 namespace Engine {
+enum CameraMode{
+  PERSPECTIVE = 0,
+  ORTHOGONAL = 1
+};
+
+
+
 class ICamera {
 public:
-  virtual void rotate(float xoffset, float yoffset, float zoffset) = 0;
-  virtual void updateDirection() = 0;
+  virtual glm::mat4 transformation() const noexcept = 0;
+  virtual glm::mat4 view() const noexcept = 0;
+  virtual glm::mat4 projection() const noexcept = 0;
   
-  virtual glm::mat4 transformation() = 0;
-  virtual glm::mat4 projection() = 0;
-  virtual glm::mat4 view() = 0;
+  virtual glm::vec3 getPosition() const noexcept = 0;
+  virtual void setPosition(glm::vec3 position) noexcept = 0;
+  virtual glm::vec3 getDirection() const noexcept = 0;
+  virtual void setDirection(glm::vec3 direction) noexcept = 0;
   
-  virtual glm::vec3 getPosition() = 0;
-  virtual void setPosition(glm::vec3 position) = 0;
-  virtual glm::vec3 getDirection() = 0;
-  virtual void setDirection(glm::vec3 direction) = 0;
+  virtual float getFov() const noexcept = 0;
+  virtual void setFov(float fov) noexcept = 0;
+  virtual float getOrthoSize() const noexcept = 0;
+  virtual void setOrthoSize(float size) noexcept = 0;
   
-  virtual void event() = 0;
+  virtual Engine::CameraMode getCameraMode() const noexcept = 0;
+  virtual void setCameraMode(Engine::CameraMode mode) noexcept = 0;
+  
+  virtual bool getDefaultMovement() const noexcept = 0;
+  virtual void setDefaultMovement(bool state) noexcept = 0;
+
+  virtual float getVelocity() const noexcept = 0;
+  virtual void setVelocity(float velocity) noexcept = 0;
+  virtual float getSensitivity() const noexcept = 0;
+  virtual void setSensitivity(float sensitivity) noexcept = 0;
+  virtual bool getMouseActive() const noexcept = 0;
+  virtual void setMouseActive(bool active) noexcept = 0;
+
+  virtual void event(float delta_time) = 0;
   virtual void resetMouse() = 0;
-  virtual void setOrthographic(bool enable) = 0;
-  virtual void setFov(float fov) = 0;
 
 };
 };

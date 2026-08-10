@@ -40,13 +40,13 @@ void Engine::Core::Scene::onLoad(){
   Engine::Utils::Logger::get().info("Scene", "PostProcessing Uniforms Initialized");
   
 
-  light_camera.setOrthographic(true);
-  light_camera.fov = 110.0f;
-  last_light_camera_fov = light_camera.fov; 
-  light_camera.position = Engine::Core::Resources::get().lights[0].position;
-  last_light_camera_pos = light_camera.position;
-  light_camera.direction = glm::normalize(-Engine::Core::Resources::get().lights[0].position);
-  last_light_camera_dir = light_camera.direction;
+  light_camera.setCameraMode(Engine::CameraMode::PERSPECTIVE);
+  light_camera.setFov(110.0f);
+  last_light_camera_fov = light_camera.getFov(); 
+  light_camera.setPosition(Engine::Core::Resources::get().lights[0].position);
+  last_light_camera_pos = light_camera.getPosition();
+  light_camera.setDirection(glm::normalize(-Engine::Core::Resources::get().lights[0].position));
+  last_light_camera_dir = light_camera.getDirection();
   light_space_matrix = light_camera.transformation();
   
   shadows_uniform_off["u_ShadowEnabled"]->set<int>(0);
@@ -69,9 +69,9 @@ void Engine::Core::Scene::onLoad(){
 
 
 #ifndef PRODUCTION
-  debug_camera.position = {453.198f, 250.233f, -26.842f};
-  debug_camera.direction = {-0.668f, -0.734f, -0.122f};
-  debug_camera.default_movemement_on = true;
+  debug_camera.setPosition({453.198f, 250.233f, -26.842f});
+  debug_camera.setDirection({-0.668f, -0.734f, -0.122f});
+  debug_camera.setDefaultMovement(true);
   Engine::Utils::Logger::get().info("Scene", "Debug Camera Initialized");
 #endif
     
@@ -83,7 +83,7 @@ void Engine::Core::Scene::onLoad(){
 
 
 void Engine::Core::Scene::onUpdate(float delta_time){
-  camera_controller.getActiveCamera().event();
+  camera_controller.getActiveCamera().event(delta_time);
 
   unsigned int size = Engine::ObjectManager::get().objects.size();
   for(int i = 0; i < size; i++){
@@ -179,15 +179,15 @@ void Engine::Core::Scene::onDestroy() {
 void Engine::Core::Scene::compileShadows(){
   shadows_fbo.bind();
   
-  if(last_light_camera_pos != light_camera.position){
-    light_camera.fov = 110.0f;
-    last_light_camera_fov = light_camera.fov;
+  if(last_light_camera_pos != light_camera.getPosition()){
+    light_camera.setFov(110.0f);
+    last_light_camera_fov = light_camera.getFov();
 
-    light_camera.position = Engine::Core::Resources::get().lights[0].position;
-    last_light_camera_pos = light_camera.position;
+    light_camera.setPosition(Engine::Core::Resources::get().lights[0].position);
+    last_light_camera_pos = light_camera.getPosition();
     
-    light_camera.direction = glm::normalize(-Engine::Core::Resources::get().lights[0].position);
-    last_light_camera_dir = light_camera.direction;
+    light_camera.setDirection(glm::normalize(-Engine::Core::Resources::get().lights[0].position));
+    last_light_camera_dir = light_camera.getDirection();
     
     light_space_matrix = light_camera.transformation();
     shadows_uniform_off["u_LightSpaceMatrix"]->set<glm::mat4>(light_space_matrix);
@@ -291,7 +291,7 @@ void Engine::Core::Scene::postProcessing(){
   if(debug_camera_on){
     glm::mat4 invViewProj = glm::inverse(debug_camera.projection() * debug_camera.view());
     post_uniform["u_InvViewProj"]->set<glm::mat4>(invViewProj);
-    post_uniform["u_CamPos"]->set<glm::vec3>(debug_camera.position);
+    post_uniform["u_CamPos"]->set<glm::vec3>(debug_camera.getPosition());
   }
   else{
 #endif

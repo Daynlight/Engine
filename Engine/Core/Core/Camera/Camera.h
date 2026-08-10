@@ -15,21 +15,37 @@
 #include "ScriptShared/Camera.h"
 
 #include "Utils/config.h"
+#include "Utils/Logger.h"
 
 
 
 namespace Engine {
 class Camera : public ICamera {
-public:
+//////// ============================================ ////////
+//////// ================== Struct ================== ////////
+//////// ============================================ ////////
+//// ============== ////
+//// ==== Core ==== ////
+//// ============== ////
+private:
+  CW::Renderer::Renderer* renderer;
   glm::vec3 position = {0.0f, 0.0f, 0.0f};
   glm::vec3 direction = {0.0f, 0.0f, 1.0f};
-  float fov = Engine::Config::CAMERA_FOV;
-  bool default_movemement_on = false;
-  CW::Renderer::Renderer* renderer;
-  
-private:
   glm::quat orientation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f); 
-  bool is_ortho = false;
+
+//// ==================== ////
+//// ==== Projection ==== ////
+//// ==================== ////
+private:  
+  Engine::CameraMode mode = Engine::CameraMode::PERSPECTIVE;
+  float fov = Engine::Config::CAMERA_FOV;
+  float ortho_size = Engine::Config::CAMERA_ORTHO_SIZE;
+  
+//// ================== ////
+//// ==== Movement ==== ////
+//// ================== ////
+private:  
+  bool default_movemement_on = false;
 
   float sensitivity = Engine::Config::CAMERA_SENSITIVITY;
   float velocity = Engine::Config::CAMERA_DEFAULT_VELOCITY;
@@ -41,27 +57,77 @@ private:
   float cursor_visible_lock = 0.0f;
   bool cursor_lock = true;
 
+
+
+//////// =============================================== ////////
+//////// ================== Functions ================== ////////
+//////// =============================================== ////////
+//// ====================== ////
+//// ==== Constructors ==== ////
+//// ====================== ////
 public:
-  Camera();
-  Camera(CW::Renderer::Renderer* renderer, glm::vec3 position = {0.0f, 0.0f, 0.0f}, glm::vec3 direction = {0.0f, 0.0f, 1.0f});
-  Engine::Camera& operator=(Camera&& second);
+//// core
+  Camera() noexcept;
+  ~Camera() noexcept;
+  Camera(CW::Renderer::Renderer* renderer, glm::vec3 position = {0.0f, 0.0f, 0.0f}, glm::vec3 direction = {0.0f, 0.0f, 1.0f}) noexcept;
+//// copy
+  Camera(const Camera& second) noexcept;
+  Engine::Camera& operator=(const Camera& second) noexcept;
+//// move
+  Camera(Camera&& second) noexcept;
+  Engine::Camera& operator=(Camera&& second) noexcept;
 
-  void rotate(float xoffset, float yoffset, float zoffset);
-  void updateDirection();
+//// ==================== ////
+//// ==== Projection ==== ////
+//// ==================== ////
+public:
+  glm::mat4 transformation() const noexcept;
+  glm::mat4 view() const noexcept;
+  glm::mat4 projection() const noexcept;
+  
+private:
+  glm::mat4 projection_projection() const noexcept;
+  glm::mat4 orthogonal_projection() const noexcept;
 
-  glm::mat4 transformation();
-  glm::mat4 projection();
-  glm::mat4 view();
+//// ========================= ////
+//// ==== Setters/Getters ==== ////
+//// ========================= ////
+public:
+  glm::vec3 getPosition() const noexcept;
+  void setPosition(glm::vec3 position) noexcept;
+  glm::vec3 getDirection() const noexcept;
+  void setDirection(glm::vec3 direction) noexcept;
   
-  glm::vec3 getPosition();
-  void setPosition(glm::vec3 position);
-  glm::vec3 getDirection();
-  void setDirection(glm::vec3 direction);
+  float getFov() const noexcept;
+  void setFov(float fov) noexcept;
+  float getOrthoSize() const noexcept;
+  void setOrthoSize(float size) noexcept;
   
+  Engine::CameraMode getCameraMode() const noexcept;
+  void setCameraMode(Engine::CameraMode mode) noexcept;
+  
+  bool getDefaultMovement() const noexcept;
+  void setDefaultMovement(bool state) noexcept;
+
+  float getVelocity() const noexcept;
+  void setVelocity(float velocity) noexcept;
+  float getSensitivity() const noexcept;
+  void setSensitivity(float sensitivity) noexcept;
+  bool getMouseActive() const noexcept;
+  void setMouseActive(bool active) noexcept;
+
+//// ================== ////
+//// ==== Movement ==== ////
+//// ================== ////
+public:
+  void event(float delta_time);
   void resetMouse();
-  void event();
-  void setOrthographic(bool enable);
-  void setFov(float fov);
+
+private:
+  void cursorControl(float delta_time) noexcept;
+  void velocityButtons(float delta_time) noexcept;
+  void movementButtons(float delta_time, float& target_bank) noexcept;
+  void rotationButtons(float delta_time, float& target_bank) noexcept;
 
 };
 };

@@ -45,8 +45,14 @@ inline void Engine::Editor::UI_Info::guiInfo(){
   ImGui::SliderFloat3("Camera DIR: [%f, %f, %f]", &scene.camera_controller.getActiveCamera().getDirection()[0], -1, 1);
 
   ImGui::Text("Debug Camera:");
-  ImGui::InputFloat3("Debug POS: [%f, %f, %f]", &scene.debug_camera.position[0]);
-  ImGui::SliderFloat3("Debug DIR: [%f, %f, %f]", &scene.debug_camera.direction[0], -1, 1);
+  glm::vec3 debug_cam_pos = scene.debug_camera.getPosition();
+  glm::vec3 debug_cam_dir = scene.debug_camera.getDirection();
+
+  ImGui::InputFloat3("Debug POS: [%f, %f, %f]", &debug_cam_pos[0]);
+  ImGui::SliderFloat3("Debug DIR: [%f, %f, %f]", &debug_cam_dir[0], -1, 1);
+  
+  scene.debug_camera.setPosition(debug_cam_pos);
+  scene.debug_camera.setDirection(debug_cam_dir);
 
   if(ImGui::Checkbox("Mesh mode", &Engine::Editor::guiSettings.mesh_mode_on)) mesh_mode_is_updated = false;
   if(!mesh_mode_is_updated){
