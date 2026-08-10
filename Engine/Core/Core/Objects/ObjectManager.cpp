@@ -17,7 +17,7 @@ Engine::ObjectManager &Engine::ObjectManager::get(){
 
 
 void Engine::ObjectManager::emplace_back(const std::string &name){
-  objects.emplace_back(Engine::GameObject(name, "empty", "Default"));
+  objects.emplace_back(Engine::Core::GameObject(name, "empty", "Default"));
 };
 
 
@@ -89,7 +89,7 @@ void Engine::ObjectManager::saveRuntime(const std::string& object_name){
 
 
 void Engine::ObjectManager::emplace_backObjectScript(const std::string &name){
-  script_objects.emplace_back(Engine::GameObject(name, "empty", "Default"));
+  script_objects.emplace_back(Engine::Core::GameObject(name, "empty", "Default"));
 };
 
 

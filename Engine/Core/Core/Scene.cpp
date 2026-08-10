@@ -40,7 +40,7 @@ void Engine::Core::Scene::onLoad(){
   Engine::Utils::Logger::get().info("Scene", "PostProcessing Uniforms Initialized");
   
 
-  light_camera.setCameraMode(Engine::CameraMode::PERSPECTIVE);
+  light_camera.setCameraMode(Engine::ScriptShared::CameraMode::PERSPECTIVE);
   light_camera.setFov(110.0f);
   last_light_camera_fov = light_camera.getFov(); 
   light_camera.setPosition(Engine::Core::Resources::get().lights[0].position);
@@ -196,8 +196,8 @@ void Engine::Core::Scene::compileShadows(){
 
   window.beginFrame();
 
-  for(Engine::GameObject& object : Engine::ObjectManager::get().objects) object.render(&window, light_camera, light_camera, shadows_uniform_off);
-  for(Engine::GameObject& object : Engine::ObjectManager::get().script_objects) object.render(&window, light_camera, light_camera, shadows_uniform_off);
+  for(Engine::Core::GameObject& object : Engine::ObjectManager::get().objects) object.render(&window, light_camera, light_camera, shadows_uniform_off);
+  for(Engine::Core::GameObject& object : Engine::ObjectManager::get().script_objects) object.render(&window, light_camera, light_camera, shadows_uniform_off);
 
   shadows_fbo.unbind();
 };
@@ -251,14 +251,14 @@ void Engine::Core::Scene::render(){
 
 
 
-void Engine::Core::Scene::renderFrame(Engine::ICamera& camera){
+void Engine::Core::Scene::renderFrame(Engine::ScriptShared::ICamera& camera){
   window.beginFrame();
 
   glActiveTexture(GL_TEXTURE16);
   glBindTexture(GL_TEXTURE_2D, shadows_fbo.getDepthTexture());
 
-  for(Engine::GameObject& object : Engine::ObjectManager::get().script_objects) object.render(&window, this->camera_controller.getActiveCamera(), camera, shadows_uniform_on);
-  for(Engine::GameObject& object : Engine::ObjectManager::get().objects) object.render(&window, this->camera_controller.getActiveCamera(), camera, shadows_uniform_on);
+  for(Engine::Core::GameObject& object : Engine::ObjectManager::get().script_objects) object.render(&window, this->camera_controller.getActiveCamera(), camera, shadows_uniform_on);
+  for(Engine::Core::GameObject& object : Engine::ObjectManager::get().objects) object.render(&window, this->camera_controller.getActiveCamera(), camera, shadows_uniform_on);
 
   
   glActiveTexture(GL_TEXTURE16);

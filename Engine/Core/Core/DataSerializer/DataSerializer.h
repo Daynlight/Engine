@@ -65,9 +65,9 @@ public:
   void loadAllGlobResources();
 
 #ifndef PRODUCTION
-  void saveAllObjects(std::vector<GameObject>& objects);
+  void saveAllObjects(std::vector<Engine::Core::GameObject>& objects);
 #endif
-  void loadAllObjects(std::vector<GameObject>& objects);
+  void loadAllObjects(std::vector<Engine::Core::GameObject>& objects);
 
 #ifndef PRODUCTION
   void saveAllMaterials(Engine::Core::Materials &materials);

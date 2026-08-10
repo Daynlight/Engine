@@ -227,7 +227,7 @@ void Engine::Editor::UI_AssetLoader::finalizeImport() {
 
     std::string assigned_mat_name = temp_materials[finalMatIdx].new_name;
 
-    Engine::GameObject new_obj(
+    Engine::Core::GameObject new_obj(
       final_mesh_name,
       final_mesh_name,
       Engine::Config::DEFAULT_SHADER,
@@ -321,7 +321,7 @@ void Engine::Editor::UI_AssetLoader::finalizeImportMerged(const std::string& mer
 
   Engine::Core::Resources::get().meshes.emplace_back(final_merged_name, std::move(temp_mesh));
 
-  Engine::GameObject new_obj(
+  Engine::Core::GameObject new_obj(
     final_merged_name,
     final_merged_name,
     Engine::Config::DEFAULT_SHADER,

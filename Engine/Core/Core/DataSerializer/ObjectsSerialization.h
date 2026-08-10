@@ -19,7 +19,7 @@
 
 
 
-namespace Engine {
+namespace Engine::Core {
   class GameObject;
 };
 
@@ -57,14 +57,14 @@ public:
   ~ObjectsSerialization() = default;
 
 #ifndef PRODUCTION
-  void save(const Engine::GameObject& object);
+  void save(const Engine::Core::GameObject& object);
 #endif
-  void load(Engine::GameObject& object);
+  void load(Engine::Core::GameObject& object);
 
 #ifndef PRODUCTION
-  void saveAll(std::vector<Engine::GameObject>& objects);
+  void saveAll(std::vector<Engine::Core::GameObject>& objects);
 #endif
-  void loadAll(std::vector<Engine::GameObject>& objects);
+  void loadAll(std::vector<Engine::Core::GameObject>& objects);
 
 private:
 #ifndef PRODUCTION

@@ -62,13 +62,13 @@ void Engine::Editor::UI_Objects::guiObjectList(){
     label = "Duplicate##" + std::to_string(id);
     ImGui::SameLine();
     if(ImGui::Button(label.c_str())) {
-      Engine::ObjectManager::get().objects.emplace_back(GameObject(Engine::ObjectManager::get().objects[id].game_object_data.name + "_copy", Engine::ObjectManager::get().objects[id]));
+      Engine::ObjectManager::get().objects.emplace_back(Engine::Core::GameObject(Engine::ObjectManager::get().objects[id].game_object_data.name + "_copy", Engine::ObjectManager::get().objects[id]));
       Engine::Utils::Logger::get().warn("UI", "Duplicated Object { " + Engine::ObjectManager::get().objects[id].game_object_data.name + " }");
     };
   };
 
   if(ImGui::Button("Add new")) {
-    Engine::ObjectManager::get().objects.emplace_back(Engine::GameObject("new object", "testing", "testing", {}, {}, {}, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f), glm::vec3(1.0f)));
+    Engine::ObjectManager::get().objects.emplace_back(Engine::Core::GameObject("new object", "testing", "testing", {}, {}, {}, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f), glm::vec3(1.0f)));
     Engine::Utils::Logger::get().info("UI", "Added New Object { new object }");
   };
 };
@@ -87,7 +87,7 @@ void Engine::Editor::UI_Objects::guiObjectEditor(){
   ImGui::SeparatorText("Object Editor");
   if(guiSettings.object_id >= Engine::ObjectManager::get().objects.size()) return;
   
-  Engine::GameObject& object = Engine::ObjectManager::get().objects[guiSettings.object_id];
+  Engine::Core::GameObject& object = Engine::ObjectManager::get().objects[guiSettings.object_id];
 
   char name_buffer[Engine::Config::OBJECT_NAME_BUFFER_SIZE];
   memcpy(name_buffer, object.game_object_data.name.data(), object.game_object_data.name.size());

@@ -33,8 +33,8 @@ namespace Engine::Core::Script{
 
 
 
-namespace Engine{
-class GameObject : public Object{
+namespace Engine::Core{
+class GameObject : public Engine::Core::Object{
 private:
   CW::Renderer::Uniform uniform;
 
@@ -65,7 +65,7 @@ public:
   void onDestroy() override;
   void onUpdate(float delta_time) override;
   void onFixedUpdate(float fixed_delta_time, Engine::Core::Scene& scene) override;
-  void render(CW::Renderer::Renderer* renderer, ICamera& culling_camera, ICamera& render_camera, CW::Renderer::Uniform& shadows_uniform) override;
+  void render(CW::Renderer::Renderer* renderer, Engine::ScriptShared::ICamera& culling_camera, Engine::ScriptShared::ICamera& render_camera, CW::Renderer::Uniform& shadows_uniform) override;
 
   bool isVisible(glm::mat4 culling_camera_transform, glm::mat4 model, const CW::Renderer::Mesh& mesh);
 

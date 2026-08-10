@@ -19,12 +19,11 @@
 namespace Engine{
 class SCRIPT_NAME : public Engine::ScriptShared::GameObjectScriptInterface {
 private:
+  std::vector<std::string> child_object;
 
 public:
   ~SCRIPT_NAME() = default;
 
-  std::vector<std::string> child_object;
-  
   void OnLoad(){
     logger->info(SCRIPT_FILE_NAME, "Loaded");
     for(int i = 0; i < 20; i++){

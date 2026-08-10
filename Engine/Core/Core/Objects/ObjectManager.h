@@ -19,11 +19,12 @@
 
 
 
+namespace Engine::Core{
+  class GameObject;
+};
+
+
 namespace Engine{
-class GameObject;
-
-
-
 class ObjectManager : public Engine::ScriptShared::IObjectManager{
 private:
 
@@ -40,8 +41,8 @@ private:
   ~ObjectManager() = default;
 
 public:
-  std::vector<Engine::GameObject> objects;
-  std::vector<Engine::GameObject> script_objects;
+  std::vector<Engine::Core::GameObject> objects;
+  std::vector<Engine::Core::GameObject> script_objects;
 
   void emplace_back(const std::string& name);
   void erase(const std::string& name);

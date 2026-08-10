@@ -65,8 +65,9 @@ Engine::Core::Script::GameObjectScriptRecord::GameObjectScriptRecord(const std::
 {
   Engine::Utils::Logger::get().info("Script Controller", "Script Initialized");
   
+#ifndef PRODUCTION
   if(!std::filesystem::exists(Engine::Config::TEMP_BIN_FOLDER)) std::filesystem::create_directories(Engine::Config::TEMP_BIN_FOLDER);
-  
+#endif
   initSharedFolder();
 };
 
@@ -165,7 +166,7 @@ void Engine::Core::Script::GameObjectScriptRecord::onLoad(Engine::ScriptShared::
     script->glob_res = &Engine::ScriptShared::GlobResource::get();
     script->logger = static_cast<Engine::ScriptShared::ILogger*>(&Engine::Utils::Logger::get());
     script->object_manager = static_cast<Engine::ScriptShared::IObjectManager*>(&Engine::ObjectManager::get());
-    script->camera_controller = static_cast<Engine::ICameraController*>(&scene.camera_controller);
+    script->camera_controller = static_cast<Engine::ScriptShared::ICameraController*>(&scene.camera_controller);
 
 #ifndef PRODUCTION
 #ifdef SANDBOX_SCRIPTS

@@ -13,22 +13,22 @@
 //// ==== Constructors ==== ////
 //// ====================== ////
 //// core
-Engine::Camera::Camera() noexcept {
+Engine::Core::Camera::Camera() noexcept {
   if (!renderer || !renderer->getWindowData()) {
-    Engine::Utils::Logger::get().warn("Engine::Camera::Camera()", "renderer is nullptr");
+    Engine::Utils::Logger::get().warn("Engine::Core::Camera::Camera()", "renderer is nullptr");
   };
 };
 
 
 
-Engine::Camera::~Camera() noexcept {};
+Engine::Core::Camera::~Camera() noexcept {};
 
 
 
-Engine::Camera::Camera(CW::Renderer::Renderer* renderer, glm::vec3 position, glm::vec3 direction) noexcept
+Engine::Core::Camera::Camera(CW::Renderer::Renderer* renderer, glm::vec3 position, glm::vec3 direction) noexcept
   : renderer(renderer) {
   if (!renderer || !renderer->getWindowData()) {
-    Engine::Utils::Logger::get().warn("Engine::Camera::Camera(CW::Renderer::Renderer* renderer, glm::vec3 position, glm::vec3 direction)", "renderer is nullptr");
+    Engine::Utils::Logger::get().warn("Engine::Core::Camera::Camera(CW::Renderer::Renderer* renderer, glm::vec3 position, glm::vec3 direction)", "renderer is nullptr");
   };
 
   setPosition(position);
@@ -38,7 +38,7 @@ Engine::Camera::Camera(CW::Renderer::Renderer* renderer, glm::vec3 position, glm
 
 
 //// copy
-Engine::Camera::Camera(const Camera &second) noexcept
+Engine::Core::Camera::Camera(const Camera &second) noexcept
   :renderer(second.renderer),
    position(second.position),
    direction(second.direction),
@@ -56,15 +56,15 @@ Engine::Camera::Camera(const Camera &second) noexcept
    cursor_lock(second.cursor_lock) 
 {
   if (!renderer || !renderer->getWindowData()) {
-    Engine::Utils::Logger::get().warn("Engine::Camera::Camera(const Camera &second)", "renderer is nullptr");
+    Engine::Utils::Logger::get().warn("Engine::Core::Camera::Camera(const Camera &second)", "renderer is nullptr");
   };
 };
 
 
 
-Engine::Camera &Engine::Camera::operator=(const Camera &second) noexcept {
+Engine::Core::Camera &Engine::Core::Camera::operator=(const Camera &second) noexcept {
   if (!renderer || !renderer->getWindowData()) {
-    Engine::Utils::Logger::get().warn("Engine::Camera::operator=(const Camera &second)", "renderer is nullptr");
+    Engine::Utils::Logger::get().warn("Engine::Core::Camera::operator=(const Camera &second)", "renderer is nullptr");
   };
 
   renderer = second.renderer;
@@ -89,7 +89,7 @@ Engine::Camera &Engine::Camera::operator=(const Camera &second) noexcept {
 
 
 //// move
-Engine::Camera::Camera(Camera &&second) noexcept   
+Engine::Core::Camera::Camera(Camera &&second) noexcept   
   :renderer(std::move(second.renderer)),
    position(std::move(second.position)),
    direction(std::move(second.direction)),
@@ -107,15 +107,15 @@ Engine::Camera::Camera(Camera &&second) noexcept
    cursor_lock(std::move(second.cursor_lock)) 
 {
   if (!renderer || !renderer->getWindowData()) {
-    Engine::Utils::Logger::get().warn("Engine::Camera::Camera(Camera &&second)", "renderer is nullptr");
+    Engine::Utils::Logger::get().warn("Engine::Core::Camera::Camera(Camera &&second)", "renderer is nullptr");
   };
 };
 
 
 
-Engine::Camera& Engine::Camera::operator=(Camera &&second) noexcept {
+Engine::Core::Camera& Engine::Core::Camera::operator=(Camera &&second) noexcept {
   if (!renderer || !renderer->getWindowData()) {
-    Engine::Utils::Logger::get().warn("Engine::Camera::operator=(Camera &&second)", "renderer is nullptr");
+    Engine::Utils::Logger::get().warn("Engine::Core::Camera::operator=(Camera &&second)", "renderer is nullptr");
   };
 
   renderer = std::move(second.renderer);
@@ -142,9 +142,9 @@ Engine::Camera& Engine::Camera::operator=(Camera &&second) noexcept {
 //// ==================== ////
 //// ==== Projection ==== ////
 //// ==================== ////
-glm::mat4 Engine::Camera::transformation() const noexcept {
+glm::mat4 Engine::Core::Camera::transformation() const noexcept {
   if (!renderer || !renderer->getWindowData()) {
-    Engine::Utils::Logger::get().warn("Engine::Camera::transformation()", "renderer is nullptr {returning mat4(1.0f)}");
+    Engine::Utils::Logger::get().warn("Engine::Core::Camera::transformation()", "renderer is nullptr {returning mat4(1.0f)}");
     return glm::mat4(1.0f); 
   };
 
@@ -153,9 +153,9 @@ glm::mat4 Engine::Camera::transformation() const noexcept {
 
 
 
-glm::mat4 Engine::Camera::view() const noexcept {
+glm::mat4 Engine::Core::Camera::view() const noexcept {
   if (!renderer || !renderer->getWindowData()) {
-    Engine::Utils::Logger::get().warn("Engine::Camera::view()", "renderer is nullptr {returning mat4(1.0f)}");
+    Engine::Utils::Logger::get().warn("Engine::Core::Camera::view()", "renderer is nullptr {returning mat4(1.0f)}");
     return glm::mat4(1.0f); 
   };
 
@@ -165,13 +165,13 @@ glm::mat4 Engine::Camera::view() const noexcept {
 
 
 
-glm::mat4 Engine::Camera::projection() const noexcept {
+glm::mat4 Engine::Core::Camera::projection() const noexcept {
   if (!renderer || !renderer->getWindowData()) {
-    Engine::Utils::Logger::get().warn("Engine::Camera::projection()", "renderer is nullptr {returning mat4(1.0f)}");
+    Engine::Utils::Logger::get().warn("Engine::Core::Camera::projection()", "renderer is nullptr {returning mat4(1.0f)}");
     return glm::mat4(1.0f); 
   };
 
-  if (mode == Engine::CameraMode::ORTHOGONAL) {
+  if (mode == Engine::ScriptShared::CameraMode::ORTHOGONAL) {
     return orthogonal_projection();
   } else {
     return projection_projection();
@@ -180,9 +180,9 @@ glm::mat4 Engine::Camera::projection() const noexcept {
 
 
 
-glm::mat4 Engine::Camera::projection_projection() const noexcept {
+glm::mat4 Engine::Core::Camera::projection_projection() const noexcept {
   if (!renderer || !renderer->getWindowData()) {
-    Engine::Utils::Logger::get().warn("Engine::Camera::projection_projection()", "renderer is nullptr {returning mat4(1.0f)}");
+    Engine::Utils::Logger::get().warn("Engine::Core::Camera::projection_projection()", "renderer is nullptr {returning mat4(1.0f)}");
     return glm::mat4(1.0f); 
   };
 
@@ -192,9 +192,9 @@ glm::mat4 Engine::Camera::projection_projection() const noexcept {
 
 
 
-glm::mat4 Engine::Camera::orthogonal_projection() const noexcept {
+glm::mat4 Engine::Core::Camera::orthogonal_projection() const noexcept {
   if (!renderer || !renderer->getWindowData()) {
-    Engine::Utils::Logger::get().warn("Engine::Camera::orthogonal_projection()", "renderer is nullptr {returning mat4(1.0f)}");
+    Engine::Utils::Logger::get().warn("Engine::Core::Camera::orthogonal_projection()", "renderer is nullptr {returning mat4(1.0f)}");
     return glm::mat4(1.0f); 
   };
 
@@ -209,25 +209,25 @@ glm::mat4 Engine::Camera::orthogonal_projection() const noexcept {
 //// ========================= ////
 //// ==== Setters/Getters ==== ////
 //// ========================= ////
-glm::vec3 Engine::Camera::getPosition() const noexcept {
+glm::vec3 Engine::Core::Camera::getPosition() const noexcept {
   return position;
 };
 
 
 
-void Engine::Camera::setPosition(glm::vec3 position) noexcept {
+void Engine::Core::Camera::setPosition(glm::vec3 position) noexcept {
   this->position = position;
 };
 
 
 
-glm::vec3 Engine::Camera::getDirection() const noexcept {
+glm::vec3 Engine::Core::Camera::getDirection() const noexcept {
   return direction;
 };
 
 
 
-void Engine::Camera::setDirection(glm::vec3 direction) noexcept {
+void Engine::Core::Camera::setDirection(glm::vec3 direction) noexcept {
   if (glm::length(direction) > Engine::Config::EPS) {
     this->direction = glm::normalize(direction);
     this->orientation = glm::quatLookAt(-this->direction, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -241,89 +241,89 @@ void Engine::Camera::setDirection(glm::vec3 direction) noexcept {
 
 
 
-float Engine::Camera::getFov() const noexcept {
+float Engine::Core::Camera::getFov() const noexcept {
   return fov;
 };
 
 
 
-void Engine::Camera::setFov(float fov) noexcept {
+void Engine::Core::Camera::setFov(float fov) noexcept {
   this->fov = fov;
   if(fov <= Engine::Config::EPS) this->fov = 0.0f;
 };
 
 
 
-float Engine::Camera::getOrthoSize() const noexcept {
+float Engine::Core::Camera::getOrthoSize() const noexcept {
   return ortho_size;
 };
 
 
 
-void Engine::Camera::setOrthoSize(float size) noexcept {
+void Engine::Core::Camera::setOrthoSize(float size) noexcept {
   this->ortho_size = size;
   if(size <= Engine::Config::EPS) this->ortho_size = 0.0f;
 };
 
 
 
-Engine::CameraMode Engine::Camera::getCameraMode() const noexcept {
+Engine::ScriptShared::CameraMode Engine::Core::Camera::getCameraMode() const noexcept {
   return mode;
 };
 
 
 
-void Engine::Camera::setCameraMode(Engine::CameraMode mode) noexcept {
+void Engine::Core::Camera::setCameraMode(Engine::ScriptShared::CameraMode mode) noexcept {
   this->mode = mode;
 };
 
 
 
-bool Engine::Camera::getDefaultMovement() const noexcept {
+bool Engine::Core::Camera::getDefaultMovement() const noexcept {
   return default_movemement_on;
 };
 
 
 
-void Engine::Camera::setDefaultMovement(bool state) noexcept {
+void Engine::Core::Camera::setDefaultMovement(bool state) noexcept {
   default_movemement_on = state;
 };
 
 
 
-float Engine::Camera::getVelocity() const noexcept {
+float Engine::Core::Camera::getVelocity() const noexcept {
   return velocity;
 };
 
 
 
-void Engine::Camera::setVelocity(float velocity) noexcept {
+void Engine::Core::Camera::setVelocity(float velocity) noexcept {
   this->velocity = velocity;
   if(velocity <= Engine::Config::EPS) this->velocity = 0.0f;
 };
 
 
 
-float Engine::Camera::getSensitivity() const noexcept {
+float Engine::Core::Camera::getSensitivity() const noexcept {
   return sensitivity;
 };
 
 
 
-void Engine::Camera::setSensitivity(float sensitivity) noexcept {
+void Engine::Core::Camera::setSensitivity(float sensitivity) noexcept {
   this->sensitivity = sensitivity;
   if(sensitivity <= Engine::Config::EPS) this->sensitivity = 0.0f;
 };
 
 
 
-bool Engine::Camera::getMouseActive() const noexcept{
+bool Engine::Core::Camera::getMouseActive() const noexcept{
   return mouse_is_active;
 };
 
 
 
-void Engine::Camera::setMouseActive(bool active) noexcept{
+void Engine::Core::Camera::setMouseActive(bool active) noexcept{
   mouse_is_active = active;
 };
 
@@ -332,7 +332,7 @@ void Engine::Camera::setMouseActive(bool active) noexcept{
 //// ================== ////
 //// ==== Movement ==== ////
 //// ================== ////
-void Engine::Camera::event(float delta_time) {
+void Engine::Core::Camera::event(float delta_time) {
   if(!default_movemement_on) return;
 
   cursorControl(delta_time);
@@ -348,15 +348,15 @@ void Engine::Camera::event(float delta_time) {
 
 
 
-void Engine::Camera::resetMouse(){
+void Engine::Core::Camera::resetMouse(){
   mouse_is_active = false;
 };
 
 
 
-void Engine::Camera::cursorControl(float delta_time) noexcept {
+void Engine::Core::Camera::cursorControl(float delta_time) noexcept {
   if (!renderer || !renderer->getWindowData()) {
-    Engine::Utils::Logger::get().warn("Engine::Camera::cursorControl()", "renderer is nullptr skiping");
+    Engine::Utils::Logger::get().warn("Engine::Core::Camera::cursorControl()", "renderer is nullptr skiping");
     return;
   };
 
@@ -375,9 +375,9 @@ void Engine::Camera::cursorControl(float delta_time) noexcept {
 
 
 
-void Engine::Camera::velocityButtons(float delta_time) noexcept {
+void Engine::Core::Camera::velocityButtons(float delta_time) noexcept {
   if (!renderer || !renderer->getWindowData()) {
-    Engine::Utils::Logger::get().warn("Engine::Camera::velocityButtons()", "renderer is nullptr skiping");
+    Engine::Utils::Logger::get().warn("Engine::Core::Camera::velocityButtons()", "renderer is nullptr skiping");
     return;
   };
 
@@ -388,9 +388,9 @@ void Engine::Camera::velocityButtons(float delta_time) noexcept {
 
 
 
-void Engine::Camera::movementButtons(float delta_time, float& target_bank) noexcept {
+void Engine::Core::Camera::movementButtons(float delta_time, float& target_bank) noexcept {
   if (!renderer || !renderer->getWindowData()) {
-    Engine::Utils::Logger::get().warn("Engine::Camera::movementButtons()", "renderer is nullptr skiping");
+    Engine::Utils::Logger::get().warn("Engine::Core::Camera::movementButtons()", "renderer is nullptr skiping");
     return;
   };
 
@@ -412,9 +412,9 @@ void Engine::Camera::movementButtons(float delta_time, float& target_bank) noexc
 
 
 
-void Engine::Camera::rotationButtons(float delta_time, float& target_bank_input) noexcept {
+void Engine::Core::Camera::rotationButtons(float delta_time, float& target_bank_input) noexcept {
   if (!renderer || !renderer->getWindowData()) {
-    Engine::Utils::Logger::get().warn("Engine::Camera::rotationButtons()", "renderer is nullptr skiping");
+    Engine::Utils::Logger::get().warn("Engine::Core::Camera::rotationButtons()", "renderer is nullptr skiping");
     return;
   };
 

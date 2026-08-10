@@ -19,18 +19,18 @@
 
 
 
-namespace Engine {
-class CameraController : public ICameraController{
+namespace Engine::Core {
+class CameraController : public Engine::ScriptShared::ICameraController{
 private:
-  std::unordered_map<std::string, Engine::Camera> cameras;
+  std::unordered_map<std::string, Engine::Core::Camera> cameras;
   CW::Renderer::Renderer* renderer;
   std::string active_camera = "";
 
 public:
   CameraController(CW::Renderer::Renderer* renderer);
   
-  Engine::ICamera& getActiveCamera();
-  Engine::ICamera& getCamera(const std::string& name);
+  Engine::ScriptShared::ICamera& getActiveCamera();
+  Engine::ScriptShared::ICamera& getCamera(const std::string& name);
 
   void setActiveCamera(const std::string& name);
   void spawnCamera(const std::string& name, glm::vec3 position = {0.0f, 0.0f, 0.0f}, glm::vec3 direction = {0.0f, 0.0f, 1.0f});

@@ -18,7 +18,7 @@
 
 
 
-namespace Engine {
+namespace Engine::ScriptShared{
 enum CameraMode{
   PERSPECTIVE = 0,
   ORTHOGONAL = 1
@@ -42,8 +42,8 @@ public:
   virtual float getOrthoSize() const noexcept = 0;
   virtual void setOrthoSize(float size) noexcept = 0;
   
-  virtual Engine::CameraMode getCameraMode() const noexcept = 0;
-  virtual void setCameraMode(Engine::CameraMode mode) noexcept = 0;
+  virtual Engine::ScriptShared::CameraMode getCameraMode() const noexcept = 0;
+  virtual void setCameraMode(Engine::ScriptShared::CameraMode mode) noexcept = 0;
   
   virtual bool getDefaultMovement() const noexcept = 0;
   virtual void setDefaultMovement(bool state) noexcept = 0;

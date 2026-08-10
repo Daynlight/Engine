@@ -24,7 +24,7 @@ class Scene{
 public:
   CW::Renderer::Framebuffer post_fbo;
   CW::Renderer::Framebuffer fbo;
-  Engine::CameraController camera_controller;
+  Engine::Core::CameraController camera_controller;
 
 #ifndef PRODUCTION
 public:
@@ -35,7 +35,7 @@ private:
   CW::Renderer::Framebuffer shadows_fbo;
   
 #ifndef PRODUCTION
-  Engine::Camera debug_camera;
+  Engine::Core::Camera debug_camera;
   bool debug_camera_on = Engine::Config::DEFAULT_DEBUG_CAMERA_ON;
   bool shadows_on = Engine::Config::DEFAULT_SHADOWS_ON;
   
@@ -47,7 +47,7 @@ public:
 private:
 #endif
   
-  Engine::Camera light_camera;
+  Engine::Core::Camera light_camera;
   CW::Renderer::Uniform shadows_uniform_on;
   CW::Renderer::Uniform shadows_uniform_off;
   glm::mat4 light_space_matrix;
@@ -71,7 +71,7 @@ public:
 private:
   void postProcessing();
   void compileShadows();
-  void renderFrame(Engine::ICamera& camera);
+  void renderFrame(Engine::ScriptShared::ICamera& camera);
 
 };
 };

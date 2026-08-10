@@ -9,37 +9,37 @@
 
 
 
-Engine::CameraController::CameraController(CW::Renderer::Renderer *renderer)
+Engine::Core::CameraController::CameraController(CW::Renderer::Renderer *renderer)
   :renderer(renderer){};
 
 
-Engine::ICamera &Engine::CameraController::getActiveCamera() {
+Engine::ScriptShared::ICamera &Engine::Core::CameraController::getActiveCamera() {
   // [TODO] No Camera
   return cameras[active_camera];
 };
 
 
-Engine::ICamera &Engine::CameraController::getCamera(const std::string &name){
+Engine::ScriptShared::ICamera &Engine::Core::CameraController::getCamera(const std::string &name){
   // [TODO] No Camera
   return cameras[name];
 };
 
 
-void Engine::CameraController::setActiveCamera(const std::string &name){
+void Engine::Core::CameraController::setActiveCamera(const std::string &name){
   active_camera = name;
 };
 
 
-void Engine::CameraController::spawnCamera(const std::string &name, glm::vec3 position, glm::vec3 direction){
-  cameras[name] = std::move(Engine::Camera(renderer, position, direction));
+void Engine::Core::CameraController::spawnCamera(const std::string &name, glm::vec3 position, glm::vec3 direction){
+  cameras[name] = std::move(Engine::Core::Camera(renderer, position, direction));
 };
 
 
-void Engine::CameraController::deleteCamera(const std::string &name){
+void Engine::Core::CameraController::deleteCamera(const std::string &name){
   cameras.erase(name);
 };
 
 
-std::string Engine::CameraController::getActiveCameraName(){
+std::string Engine::Core::CameraController::getActiveCameraName(){
   return active_camera;
 };

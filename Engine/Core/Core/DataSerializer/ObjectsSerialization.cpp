@@ -18,7 +18,7 @@ CMRC_DECLARE(GameData);
 
 
 #ifndef PRODUCTION
-void Engine::ObjectsSerialization::save(const Engine::GameObject& object) {
+void Engine::ObjectsSerialization::save(const Engine::Core::GameObject& object) {
   Engine::Utils::Logger::get().info("ObjectsSerialization", "Saving object: " + object.game_object_data.name);
   
   try {
@@ -64,14 +64,14 @@ void Engine::ObjectsSerialization::save(const Engine::GameObject& object) {
 
 
 
-void Engine::ObjectsSerialization::load(Engine::GameObject& object) {
+void Engine::ObjectsSerialization::load(Engine::Core::GameObject& object) {
 
 };
 
 
 
 #ifndef PRODUCTION
-void Engine::ObjectsSerialization::saveAll(std::vector<Engine::GameObject>& objects) {
+void Engine::ObjectsSerialization::saveAll(std::vector<Engine::Core::GameObject>& objects) {
   Engine::Utils::Logger::get().info("ObjectsSerialization", "Saving all objects...");
   try {
     std::filesystem::path p(Engine::Config::GAME_DATA_FOLDER + Engine::Config::OBJECTS_FILENAME);
@@ -122,7 +122,7 @@ void Engine::ObjectsSerialization::saveAll(std::vector<Engine::GameObject>& obje
 
 
 
-void Engine::ObjectsSerialization::loadAll(std::vector<Engine::GameObject>& objects) {
+void Engine::ObjectsSerialization::loadAll(std::vector<Engine::Core::GameObject>& objects) {
   Engine::Utils::Logger::get().info("ObjectsSerialization", "Loading all objects...");
   try {
     std::string resourcePath = Engine::Config::GAME_DATA_FOLDER + Engine::Config::OBJECTS_FILENAME;
@@ -155,7 +155,7 @@ void Engine::ObjectsSerialization::loadAll(std::vector<Engine::GameObject>& obje
     for (size_t i = 0; i < objectCount; ++i) {
       Engine::GameObjectRecord record;
       if (inFile >> record) {
-        GameObject object(record.name, record.mesh, record.shader);
+        Engine::Core::GameObject object(record.name, record.mesh, record.shader);
         object.game_object_data.position = record.position;
         object.game_object_data.rotation = record.rotation;
         object.game_object_data.scale = record.scale;

@@ -19,8 +19,8 @@
 
 
 
-namespace Engine {
-class Camera : public ICamera {
+namespace Engine::Core {
+class Camera : public Engine::ScriptShared::ICamera {
 //////// ============================================ ////////
 //////// ================== Struct ================== ////////
 //////// ============================================ ////////
@@ -37,7 +37,7 @@ private:
 //// ==== Projection ==== ////
 //// ==================== ////
 private:  
-  Engine::CameraMode mode = Engine::CameraMode::PERSPECTIVE;
+  Engine::ScriptShared::CameraMode mode = Engine::ScriptShared::CameraMode::PERSPECTIVE;
   float fov = Engine::Config::CAMERA_FOV;
   float ortho_size = Engine::Config::CAMERA_ORTHO_SIZE;
   
@@ -72,10 +72,10 @@ public:
   Camera(CW::Renderer::Renderer* renderer, glm::vec3 position = {0.0f, 0.0f, 0.0f}, glm::vec3 direction = {0.0f, 0.0f, 1.0f}) noexcept;
 //// copy
   Camera(const Camera& second) noexcept;
-  Engine::Camera& operator=(const Camera& second) noexcept;
+  Engine::Core::Camera& operator=(const Camera& second) noexcept;
 //// move
   Camera(Camera&& second) noexcept;
-  Engine::Camera& operator=(Camera&& second) noexcept;
+  Engine::Core::Camera& operator=(Camera&& second) noexcept;
 
 //// ==================== ////
 //// ==== Projection ==== ////
@@ -103,8 +103,8 @@ public:
   float getOrthoSize() const noexcept;
   void setOrthoSize(float size) noexcept;
   
-  Engine::CameraMode getCameraMode() const noexcept;
-  void setCameraMode(Engine::CameraMode mode) noexcept;
+  Engine::ScriptShared::CameraMode getCameraMode() const noexcept;
+  void setCameraMode(Engine::ScriptShared::CameraMode mode) noexcept;
   
   bool getDefaultMovement() const noexcept;
   void setDefaultMovement(bool state) noexcept;

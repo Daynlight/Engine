@@ -19,7 +19,7 @@ void PatchScriptPointers(std::vector<Engine::Core::Script::GameObjectScriptRecor
 
 
 
-Engine::GameObject::GameObject(const std::string& name, const std::string& mesh, const std::string& shader, const std::vector<std::string>& materials, const std::vector<std::string>& textures, const std::vector<Engine::Core::Script::GameObjectScriptRecord>& scripts, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
+Engine::Core::GameObject::GameObject(const std::string& name, const std::string& mesh, const std::string& shader, const std::vector<std::string>& materials, const std::vector<std::string>& textures, const std::vector<Engine::Core::Script::GameObjectScriptRecord>& scripts, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
   : scripts(scripts), mesh(mesh, &Engine::Core::Resources::get().meshes) {
   Engine::Utils::Logger::get().info("GameObject", "GameObject Constructor Called!");
   game_object_data.name = name;
@@ -38,7 +38,7 @@ Engine::GameObject::GameObject(const std::string& name, const std::string& mesh,
 
 
 
-Engine::GameObject::GameObject(const std::string& name, const GameObject& other){
+Engine::Core::GameObject::GameObject(const std::string& name, const GameObject& other){
   Engine::Utils::Logger::get().info("GameObject", "GameObject Duplicating");
   
   for(const auto& script : other.scripts) scripts.emplace_back(script.getPath());
@@ -56,13 +56,13 @@ Engine::GameObject::GameObject(const std::string& name, const GameObject& other)
 
 
 
-Engine::GameObject::~GameObject(){
+Engine::Core::GameObject::~GameObject(){
   onDestroy();
 };
 
 
 
-Engine::GameObject::GameObject(const GameObject& other) 
+Engine::Core::GameObject::GameObject(const GameObject& other) 
   : Object(other), uniform(other.uniform), scripts(other.scripts),
     mesh_last(other.mesh_last),
     game_object_data(other.game_object_data),
@@ -75,7 +75,7 @@ Engine::GameObject::GameObject(const GameObject& other)
 
 
 
-Engine::GameObject& Engine::GameObject::operator=(const GameObject& other) {
+Engine::Core::GameObject& Engine::Core::GameObject::operator=(const GameObject& other) {
   if (this == &other) return *this;
   
   Object::operator=(other);
@@ -93,7 +93,7 @@ Engine::GameObject& Engine::GameObject::operator=(const GameObject& other) {
 
 
 
-Engine::GameObject::GameObject(GameObject&& other) noexcept
+Engine::Core::GameObject::GameObject(GameObject&& other) noexcept
   : Object(std::move(other)), uniform(std::move(other.uniform)), scripts(std::move(other.scripts)),
     mesh_last(std::move(other.mesh_last)),
     game_object_data(std::move(other.game_object_data)),
@@ -106,7 +106,7 @@ Engine::GameObject::GameObject(GameObject&& other) noexcept
 
 
 
-Engine::GameObject& Engine::GameObject::operator=(GameObject&& other) noexcept {
+Engine::Core::GameObject& Engine::Core::GameObject::operator=(GameObject&& other) noexcept {
   if (this == &other) return *this;
 
   Object::operator=(std::move(other));
@@ -124,14 +124,14 @@ Engine::GameObject& Engine::GameObject::operator=(GameObject&& other) noexcept {
 
 
 
-void Engine::GameObject::stopScript(unsigned int index){
+void Engine::Core::GameObject::stopScript(unsigned int index){
   scripts[index].onDestroy();
   scripts[index].removeModule();
 };
 
 
 
-void Engine::GameObject::startScript(unsigned int index, Engine::Core::Scene& scene){
+void Engine::Core::GameObject::startScript(unsigned int index, Engine::Core::Scene& scene){
   scripts[index].loadModule();
   copy_game_object_data = game_object_data;
   scripts[index].onLoad(&copy_game_object_data, scene);
@@ -139,21 +139,21 @@ void Engine::GameObject::startScript(unsigned int index, Engine::Core::Scene& sc
 
 
 
-void Engine::GameObject::stopScripts(){
+void Engine::Core::GameObject::stopScripts(){
   for(int i = 0; i < scripts.size(); i++)
     stopScript(i);
 };
 
 
 
-void Engine::GameObject::startScripts(Engine::Core::Scene& scene){
+void Engine::Core::GameObject::startScripts(Engine::Core::Scene& scene){
   for(int i = 0; i < scripts.size(); i++)
     startScript(i, scene);
 };
 
 
 
-void Engine::GameObject::onLoad(Engine::Core::Scene& scene){
+void Engine::Core::GameObject::onLoad(Engine::Core::Scene& scene){
   for(auto& script : scripts) {
     script.loadModule();
     script.onLoad(&copy_game_object_data, scene);
@@ -162,7 +162,7 @@ void Engine::GameObject::onLoad(Engine::Core::Scene& scene){
 
 
 
-void Engine::GameObject::onDestroy(){
+void Engine::Core::GameObject::onDestroy(){
   for(auto& script : scripts) {
     script.onDestroy();
     script.removeModule();
@@ -171,7 +171,7 @@ void Engine::GameObject::onDestroy(){
 
 
 
-void Engine::GameObject::onUpdate(float delta_time){
+void Engine::Core::GameObject::onUpdate(float delta_time){
   if(Engine::Core::Resources::get().simulation_mode){
     for(auto& script : scripts) {
       if(!script.script_on) continue;
@@ -183,7 +183,7 @@ void Engine::GameObject::onUpdate(float delta_time){
 
 
 
-void Engine::GameObject::onFixedUpdate(float fixed_delta_time, Engine::Core::Scene& scene){
+void Engine::Core::GameObject::onFixedUpdate(float fixed_delta_time, Engine::Core::Scene& scene){
   if(Engine::Core::Resources::get().simulation_mode){
     for(auto& script : scripts) {
       if(!script.script_on) continue;
@@ -196,7 +196,7 @@ void Engine::GameObject::onFixedUpdate(float fixed_delta_time, Engine::Core::Sce
 
 
 
-void Engine::GameObject::render(CW::Renderer::Renderer *renderer, ICamera &culling_camera, ICamera &render_camera, CW::Renderer::Uniform& shadows_uniform){
+void Engine::Core::GameObject::render(CW::Renderer::Renderer *renderer, Engine::ScriptShared::ICamera &culling_camera, Engine::ScriptShared::ICamera &render_camera, CW::Renderer::Uniform& shadows_uniform){
   if(copy_game_object_data.mesh == "empty") return;
 
   if(scripts.size() == 0) copy_game_object_data = game_object_data;
@@ -310,7 +310,7 @@ void Engine::GameObject::render(CW::Renderer::Renderer *renderer, ICamera &culli
 
 
 
-bool Engine::GameObject::isVisible(glm::mat4 culling_camera_transform, glm::mat4 model, const CW::Renderer::Mesh& mesh){
+bool Engine::Core::GameObject::isVisible(glm::mat4 culling_camera_transform, glm::mat4 model, const CW::Renderer::Mesh& mesh){
   auto cullingBox = mesh.getCullingBox();
   glm::vec3 localMin = glm::vec3(cullingBox[0][0], cullingBox[0][1], cullingBox[0][2]); 
   glm::vec3 localMax = glm::vec3(cullingBox[1][0], cullingBox[1][1], cullingBox[1][2]);

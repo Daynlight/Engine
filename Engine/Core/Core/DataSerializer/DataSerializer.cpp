@@ -42,14 +42,14 @@ void Engine::DataSerializer::loadAllGlobResources() {
 
 
 #ifndef PRODUCTION
-void Engine::DataSerializer::saveAllObjects(std::vector<GameObject>& objects) {
+void Engine::DataSerializer::saveAllObjects(std::vector<Engine::Core::GameObject>& objects) {
   objects_serializer.saveAll(objects);
 };
 #endif
 
 
 
-void Engine::DataSerializer::loadAllObjects(std::vector<GameObject>& objects) {
+void Engine::DataSerializer::loadAllObjects(std::vector<Engine::Core::GameObject>& objects) {
   objects_serializer.loadAll(objects);
 };
 
