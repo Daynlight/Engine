@@ -20,12 +20,31 @@
 
 class MockRenderer : public CW::Renderer::Renderer {
 public:
-  MockRenderer(bool windowless = false) {};
+  MockRenderer() : CW::Renderer::Renderer(false) {}
 
   MOCK_METHOD(const CW::Renderer::WindowData*, getWindowData, (), (override));
   MOCK_METHOD(const CW::Renderer::InputData*, getInputData, (), (override));
+  // MOCK_METHOD(void, setKeyboardBind, (const std::string& action, char key), (override));
+
+  MOCK_METHOD(void, createWindow, (), (override));
+  // MOCK_METHOD(void, windowLessRenderer, (), (override));
+  MOCK_METHOD(APIWindow*, getWindow, (), (override));
+  MOCK_METHOD(void, createRenderer, (), (override));
+
   MOCK_METHOD(void, beginFrame, (), (override));
   MOCK_METHOD(void, swapBuffer, (), (override));
+  MOCK_METHOD(void, windowEvents, (), (override));
+
+  MOCK_METHOD(void, setWindowMode, (CW::Renderer::WindowMode mode), (override));
+  MOCK_METHOD(void, setWindowTitle, (const std::string& title), (override));
+  MOCK_METHOD(void, setIcon, (const std::string& path), (override));
+  MOCK_METHOD(void, setVsync, (bool vsync), (override));
+  MOCK_METHOD(void, minimize, (bool minimize), (override));
+  MOCK_METHOD(void, maximize, (bool maximize), (override));
+  MOCK_METHOD(void, setPosition, (int x, int y), (override));
+  MOCK_METHOD(void, setSize, (int width, int height), (override));
+  MOCK_METHOD(void, setCursorVisibility, (bool visible), (override));
+  MOCK_METHOD(void, setCursorOn, (bool on), (override));
   MOCK_METHOD(void, close, (), (override));
 };
 
