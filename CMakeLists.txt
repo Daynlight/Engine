@@ -22,6 +22,7 @@ execute_process(
 
 add_subdirectory(vendor/CWindow)
 add_subdirectory(vendor/cmrc)
+add_subdirectory(vendor/googletest vendor/googletest EXCLUDE_FROM_ALL)
 
 
 set(ENGINE_ZIP "${CMAKE_BINARY_DIR}/engine_data.zip")
@@ -58,6 +59,9 @@ cmrc_add_resource_library(GameData ${GameDataSet})
 file(GLOB_RECURSE PROD_SCRIPTS CONFIGURE_DEPENDS "Scripts/*.cpp")
 
 add_subdirectory(Engine)
+
+enable_testing()
+add_subdirectory(Tests)
 
 
 install(TARGETS Engine
