@@ -29,7 +29,7 @@ public:
   MOCK_METHOD(void, createWindow, (), (override));
   // MOCK_METHOD(void, windowLessRenderer, (), (override));
   MOCK_METHOD(APIWindow*, getWindow, (), (override));
-  MOCK_METHOD(void, createRenderer, (), (override));
+  void createRenderer() override {};
 
   MOCK_METHOD(void, beginFrame, (), (override));
   MOCK_METHOD(void, swapBuffer, (), (override));
