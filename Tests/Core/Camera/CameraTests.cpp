@@ -20,7 +20,7 @@
 
 class MockRenderer : public CW::Renderer::Renderer {
 public:
-  MockRenderer() : CW::Renderer::Renderer(false) {}
+  MockRenderer() {}
 
   MOCK_METHOD(const CW::Renderer::WindowData*, getWindowData, (), (override));
   MOCK_METHOD(const CW::Renderer::InputData*, getInputData, (), (override));
