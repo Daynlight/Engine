@@ -3,6 +3,8 @@
 # Licensed under the GNU General, Version 3.0.
 # See LICENSE file for details.
 
+
+
 name: Tests via CMake + GTests
 
 on:
@@ -39,6 +41,9 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y \
+          xvfb \
+          mesa-utils \
+          libgl1-mesa-dri \
           libwayland-dev \
           wayland-protocols \
           extra-cmake-modules \
