@@ -22,30 +22,30 @@ class MockRenderer : public CW::Renderer::Renderer {
 public:
   MockRenderer() {}
 
-  MOCK_METHOD(const CW::Renderer::WindowData*, getWindowData, (), (override));
-  MOCK_METHOD(const CW::Renderer::InputData*, getInputData, (), (override));
-  // MOCK_METHOD(void, setKeyboardBind, (const std::string& action, char key), (override));
+  const CW::Renderer::WindowData* getWindowData() override { return nullptr; };
+  const CW::Renderer::InputData* getInputData() override { return nullptr; };
+  // void setKeyboardBind(const std::string& action, char key) override {};
 
-  MOCK_METHOD(void, createWindow, (), (override));
-  // MOCK_METHOD(void, windowLessRenderer, (), (override));
-  MOCK_METHOD(APIWindow*, getWindow, (), (override));
+  // void windowLessRenderer() override {};
+  void createWindow() override {};
+  APIWindow* getWindow() override { return nullptr; };
   void createRenderer() override {};
 
-  MOCK_METHOD(void, beginFrame, (), (override));
-  MOCK_METHOD(void, swapBuffer, (), (override));
-  MOCK_METHOD(void, windowEvents, (), (override));
+  void beginFrame() override {};
+  void swapBuffer() override {};
+  void windowEvents() override {};
 
-  MOCK_METHOD(void, setWindowMode, (CW::Renderer::WindowMode mode), (override));
-  MOCK_METHOD(void, setWindowTitle, (const std::string& title), (override));
-  MOCK_METHOD(void, setIcon, (const std::string& path), (override));
-  MOCK_METHOD(void, setVsync, (bool vsync), (override));
-  MOCK_METHOD(void, minimize, (bool minimize), (override));
-  MOCK_METHOD(void, maximize, (bool maximize), (override));
-  MOCK_METHOD(void, setPosition, (int x, int y), (override));
-  MOCK_METHOD(void, setSize, (int width, int height), (override));
-  MOCK_METHOD(void, setCursorVisibility, (bool visible), (override));
-  MOCK_METHOD(void, setCursorOn, (bool on), (override));
-  MOCK_METHOD(void, close, (), (override));
+  void setWindowMode(CW::Renderer::WindowMode mode) override { };
+  void setWindowTitle(const std::string& title) override { };
+  void setIcon(const std::string& path) override { };
+  void setVsync(bool vsync) override { };
+  void minimize(bool minimize) override { };
+  void maximize(bool maximize) override { };
+  void setPosition(int x, int y) override { };
+  void setSize(int width, int height) override { };
+  void setCursorVisibility(bool visible) override { };
+  void setCursorOn(bool on) override { };
+  void close() override { };
 };
 
 
