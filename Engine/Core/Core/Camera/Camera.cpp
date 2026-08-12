@@ -70,15 +70,14 @@ Engine::Core::Camera &Engine::Core::Camera::operator=(const Camera &second) noex
   if (this == &second) return *this;
 
   renderer = second.renderer;
-  setPosition(second.position);
-  setDirection(second.direction);
-  setCameraMode(second.mode);
-  setFov(second.fov);
-  setOrthoSize(second.ortho_size);
-  setDefaultMovement(second.default_movemement_on);
-  setSensitivity(second.sensitivity);
-  setVelocity(second.velocity);
-
+  position = second.position;
+  direction = second.direction;
+  mode = second.mode;
+  fov = second.fov;
+  ortho_size = second.ortho_size;
+  default_movemement_on = second.default_movemement_on;
+  sensitivity = second.sensitivity;
+  velocity = second.velocity;
   lastMouseX = second.lastMouseX;
   lastMouseY = second.lastMouseY;
   mouse_is_active = false;
@@ -123,15 +122,14 @@ Engine::Core::Camera& Engine::Core::Camera::operator=(Camera &&second) noexcept 
   if (this == &second) return *this;
 
   renderer = std::move(second.renderer);
-  setPosition(std::move(second.position));
-  setDirection(std::move(second.direction));
-  setCameraMode(std::move(second.mode));
-  setFov(std::move(second.fov));
-  setOrthoSize(std::move(second.ortho_size));
-  setDefaultMovement(std::move(second.default_movemement_on));
-  setSensitivity(std::move(second.sensitivity));
-  setVelocity(std::move(second.velocity));
-
+  position = std::move(second.position);
+  direction = std::move(second.direction);
+  mode = std::move(second.mode);
+  fov = std::move(second.fov);
+  ortho_size = std::move(second.ortho_size);
+  default_movemement_on = std::move(second.default_movemement_on);
+  sensitivity = std::move(second.sensitivity);
+  velocity = std::move(second.velocity);
   lastMouseX = std::move(second.lastMouseX);
   lastMouseY = std::move(second.lastMouseY);
   mouse_is_active = false;
