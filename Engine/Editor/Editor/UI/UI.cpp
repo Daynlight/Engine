@@ -301,13 +301,16 @@ void Engine::Editor::UI::buildProject(){
         return;
       };
 
+      std::string zip_str = system_zip_path.string();
+      std::string dest_str = dest_folder.string();
+
       const char* unzip_args[] = {
         "unzip",
         "-o",
         "-q",
-        system_zip_path.c_str(),
+        zip_str.c_str(),
         "-d",
-        dest_folder.c_str(),
+        dest_str.c_str(),
         nullptr
       };
 
