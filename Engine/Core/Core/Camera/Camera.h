@@ -38,8 +38,26 @@ private:
 //// ==================== ////
 private:  
   Engine::ScriptShared::CameraMode mode = Engine::ScriptShared::CameraMode::PERSPECTIVE;
+  
+  bool transform_mat_ready = false;
+  glm::mat4 transform_mat = glm::mat4(1.0f);
+  
+  bool view_mat_ready = false;
+  glm::mat4 view_mat = glm::mat4(1.0f);
+
+  float last_aspect_ratio_perspective = -1.0f;
   float fov = Engine::Config::CAMERA_FOV;
+  float perspective_near_plane = Engine::Config::CAMERA_NEAR_PLANE;
+  float perspective_far_plane = Engine::Config::CAMERA_FAR_PLANE;
+  bool perspective_mat_ready = false;
+  glm::mat4 perspective_mat = glm::mat4(1.0f);
+
+  float last_aspect_ratio_orthogonal = -1.0f;
   float ortho_size = Engine::Config::CAMERA_ORTHO_SIZE;
+  float orthogonal_near_plane = Engine::Config::CAMERA_ORTHO_NEAR_PLANE;
+  float orthogonal_far_plane = Engine::Config::CAMERA_ORTHO_FAR_PLANE;
+  bool orthogonal_mat_ready = false;
+  glm::mat4 orthogonal_mat = glm::mat4(1.0f);
   
 //// ================== ////
 //// ==== Movement ==== ////
@@ -81,13 +99,13 @@ public:
 //// ==== Projection ==== ////
 //// ==================== ////
 public:
-  glm::mat4 transformation() const noexcept;
-  glm::mat4 view() const noexcept;
-  glm::mat4 projection() const noexcept;
+  glm::mat4 transformation() noexcept;
+  glm::mat4 view() noexcept;
+  glm::mat4 projection() noexcept;
   
 private:
-  glm::mat4 projection_projection() const noexcept;
-  glm::mat4 orthogonal_projection() const noexcept;
+  glm::mat4 perspective_projection() noexcept;
+  glm::mat4 orthogonal_projection() noexcept;
 
 //// ========================= ////
 //// ==== Setters/Getters ==== ////
@@ -102,6 +120,18 @@ public:
   void setFov(float fov) noexcept;
   float getOrthoSize() const noexcept;
   void setOrthoSize(float size) noexcept;
+  float getNearPlane() const noexcept;
+  void setNearPlane(float near) noexcept;
+  float getFarPlane() const noexcept;
+  void setFarPlane(float far) noexcept;
+  float getNearPerspectivePlane() const noexcept;
+  void setNearPerspectivePlane(float near) noexcept;
+  float getFarPerspectivePlane() const noexcept;
+  void setFarPerspectivePlane(float far) noexcept;
+  float getNearOrthogonalPlane() const noexcept;
+  void setNearOrthogonalPlane(float near) noexcept;
+  float getFarOrthogonalPlane() const noexcept;
+  void setFarOrthogonalPlane(float far) noexcept;
   
   Engine::ScriptShared::CameraMode getCameraMode() const noexcept;
   void setCameraMode(Engine::ScriptShared::CameraMode mode) noexcept;

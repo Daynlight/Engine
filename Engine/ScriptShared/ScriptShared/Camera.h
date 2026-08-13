@@ -28,9 +28,9 @@ enum CameraMode{
 
 class ICamera {
 public:
-  virtual glm::mat4 transformation() const noexcept = 0;
-  virtual glm::mat4 view() const noexcept = 0;
-  virtual glm::mat4 projection() const noexcept = 0;
+  virtual glm::mat4 transformation() noexcept = 0;
+  virtual glm::mat4 view() noexcept = 0;
+  virtual glm::mat4 projection() noexcept = 0;
   
   virtual glm::vec3 getPosition() const noexcept = 0;
   virtual void setPosition(glm::vec3 position) noexcept = 0;
@@ -41,6 +41,19 @@ public:
   virtual void setFov(float fov) noexcept = 0;
   virtual float getOrthoSize() const noexcept = 0;
   virtual void setOrthoSize(float size) noexcept = 0;
+  virtual float getNearPlane() const noexcept = 0;
+  virtual void setNearPlane(float near) noexcept = 0;
+  virtual float getFarPlane() const noexcept = 0;
+  virtual void setFarPlane(float far) noexcept = 0;
+  virtual float getNearPerspectivePlane() const noexcept = 0;
+  virtual void setNearPerspectivePlane(float near) noexcept = 0;
+  virtual float getFarPerspectivePlane() const noexcept = 0;
+  virtual void setFarPerspectivePlane(float far) noexcept = 0;
+  virtual float getNearOrthogonalPlane() const noexcept = 0;
+  virtual void setNearOrthogonalPlane(float near) noexcept = 0;
+  virtual float getFarOrthogonalPlane() const noexcept = 0;
+  virtual void setFarOrthogonalPlane(float far) noexcept = 0;
+  
   
   virtual Engine::ScriptShared::CameraMode getCameraMode() const noexcept = 0;
   virtual void setCameraMode(Engine::ScriptShared::CameraMode mode) noexcept = 0;

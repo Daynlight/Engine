@@ -8,6 +8,10 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
+#define GLM_ENABLE_EXPERIMENTAL
+#include "../vendor/glm/glm/gtx/euler_angles.hpp"
+#include "../vendor/glm/glm/gtx/quaternion.hpp"
+
 #define private public
 #define protected public
 
@@ -113,19 +117,33 @@ TEST(CameraCopyConstructor, HandlesInitialization){
 
   Engine::Core::Camera init_camera(&renderer, init_pos, init_dir);
 
-  Engine::Core::Camera construct_move_camera(init_camera);
+  Engine::Core::Camera construct_copy_camera(init_camera);
   
-  EXPECT_NE(construct_move_camera.renderer, nullptr);
-  EXPECT_EQ(init_camera.position, construct_move_camera.position);
-  EXPECT_EQ(init_camera.direction, construct_move_camera.direction);
-  EXPECT_EQ(init_camera.orientation, construct_move_camera.orientation);
-  EXPECT_EQ(init_camera.fov, construct_move_camera.fov);
-  EXPECT_EQ(init_camera.ortho_size, construct_move_camera.ortho_size);
-  EXPECT_EQ(init_camera.default_movemement_on, construct_move_camera.default_movemement_on);
-  EXPECT_EQ(init_camera.sensitivity, construct_move_camera.sensitivity);
-  EXPECT_EQ(init_camera.velocity, construct_move_camera.velocity);
-  EXPECT_EQ(init_camera.mouse_is_active, construct_move_camera.mouse_is_active);
-  EXPECT_EQ(init_camera.cursor_lock, construct_move_camera.cursor_lock);
+  EXPECT_NE(construct_copy_camera.renderer, nullptr);
+  EXPECT_EQ(init_camera.position, construct_copy_camera.position);
+  EXPECT_EQ(init_camera.direction, construct_copy_camera.direction);
+  EXPECT_EQ(init_camera.orientation, construct_copy_camera.orientation);
+  EXPECT_EQ(init_camera.fov, construct_copy_camera.fov);
+  EXPECT_EQ(init_camera.ortho_size, construct_copy_camera.ortho_size);
+  EXPECT_EQ(init_camera.transform_mat_ready, construct_copy_camera.transform_mat_ready);
+  EXPECT_EQ(init_camera.transform_mat, construct_copy_camera.transform_mat);
+  EXPECT_EQ(init_camera.view_mat_ready, construct_copy_camera.view_mat_ready);
+  EXPECT_EQ(init_camera.view_mat, construct_copy_camera.view_mat);
+  EXPECT_EQ(init_camera.last_aspect_ratio_orthogonal, construct_copy_camera.last_aspect_ratio_orthogonal);
+  EXPECT_EQ(init_camera.last_aspect_ratio_perspective, construct_copy_camera.last_aspect_ratio_perspective);
+  EXPECT_EQ(init_camera.perspective_near_plane, construct_copy_camera.perspective_near_plane);
+  EXPECT_EQ(init_camera.orthogonal_near_plane, construct_copy_camera.orthogonal_near_plane);
+  EXPECT_EQ(init_camera.perspective_far_plane, construct_copy_camera.perspective_far_plane);
+  EXPECT_EQ(init_camera.orthogonal_far_plane, construct_copy_camera.orthogonal_far_plane);
+  EXPECT_EQ(init_camera.perspective_mat_ready, construct_copy_camera.perspective_mat_ready);
+  EXPECT_EQ(init_camera.orthogonal_mat_ready, construct_copy_camera.orthogonal_mat_ready);
+  EXPECT_EQ(init_camera.perspective_mat, construct_copy_camera.perspective_mat);
+  EXPECT_EQ(init_camera.orthogonal_mat, construct_copy_camera.orthogonal_mat);
+  EXPECT_EQ(init_camera.default_movemement_on, construct_copy_camera.default_movemement_on);
+  EXPECT_EQ(init_camera.sensitivity, construct_copy_camera.sensitivity);
+  EXPECT_EQ(init_camera.velocity, construct_copy_camera.velocity);
+  EXPECT_EQ(init_camera.mouse_is_active, construct_copy_camera.mouse_is_active);
+  EXPECT_EQ(init_camera.cursor_lock, construct_copy_camera.cursor_lock);
 
   Engine::Core::Camera construct_copy_assign_camera = init_camera;
   
@@ -135,6 +153,20 @@ TEST(CameraCopyConstructor, HandlesInitialization){
   EXPECT_EQ(init_camera.orientation, construct_copy_assign_camera.orientation);
   EXPECT_EQ(init_camera.fov, construct_copy_assign_camera.fov);
   EXPECT_EQ(init_camera.ortho_size, construct_copy_assign_camera.ortho_size);
+  EXPECT_EQ(init_camera.transform_mat_ready, construct_copy_assign_camera.transform_mat_ready);
+  EXPECT_EQ(init_camera.transform_mat, construct_copy_assign_camera.transform_mat);
+  EXPECT_EQ(init_camera.view_mat_ready, construct_copy_assign_camera.view_mat_ready);
+  EXPECT_EQ(init_camera.view_mat, construct_copy_assign_camera.view_mat);
+  EXPECT_EQ(init_camera.last_aspect_ratio_orthogonal, construct_copy_assign_camera.last_aspect_ratio_orthogonal);
+  EXPECT_EQ(init_camera.last_aspect_ratio_perspective, construct_copy_assign_camera.last_aspect_ratio_perspective);
+  EXPECT_EQ(init_camera.perspective_near_plane, construct_copy_assign_camera.perspective_near_plane);
+  EXPECT_EQ(init_camera.orthogonal_near_plane, construct_copy_assign_camera.orthogonal_near_plane);
+  EXPECT_EQ(init_camera.perspective_far_plane, construct_copy_assign_camera.perspective_far_plane);
+  EXPECT_EQ(init_camera.orthogonal_far_plane, construct_copy_assign_camera.orthogonal_far_plane);
+  EXPECT_EQ(init_camera.perspective_mat_ready, construct_copy_assign_camera.perspective_mat_ready);
+  EXPECT_EQ(init_camera.orthogonal_mat_ready, construct_copy_assign_camera.orthogonal_mat_ready);
+  EXPECT_EQ(init_camera.perspective_mat, construct_copy_assign_camera.perspective_mat);
+  EXPECT_EQ(init_camera.orthogonal_mat, construct_copy_assign_camera.orthogonal_mat);
   EXPECT_EQ(init_camera.default_movemement_on, construct_copy_assign_camera.default_movemement_on);
   EXPECT_EQ(init_camera.sensitivity, construct_copy_assign_camera.sensitivity);
   EXPECT_EQ(init_camera.velocity, construct_copy_assign_camera.velocity);
@@ -153,6 +185,20 @@ TEST(CameraCopyConstructor, HandlesInitialization){
   EXPECT_EQ(init_camera.orientation, construct_copy_self_camera.orientation);
   EXPECT_EQ(init_camera.fov, construct_copy_self_camera.fov);
   EXPECT_EQ(init_camera.ortho_size, construct_copy_self_camera.ortho_size);
+  EXPECT_EQ(init_camera.transform_mat_ready, construct_copy_self_camera.transform_mat_ready);
+  EXPECT_EQ(init_camera.transform_mat, construct_copy_self_camera.transform_mat);
+  EXPECT_EQ(init_camera.view_mat_ready, construct_copy_self_camera.view_mat_ready);
+  EXPECT_EQ(init_camera.view_mat, construct_copy_self_camera.view_mat);
+  EXPECT_EQ(init_camera.last_aspect_ratio_orthogonal, construct_copy_self_camera.last_aspect_ratio_orthogonal);
+  EXPECT_EQ(init_camera.last_aspect_ratio_perspective, construct_copy_self_camera.last_aspect_ratio_perspective);
+  EXPECT_EQ(init_camera.perspective_near_plane, construct_copy_self_camera.perspective_near_plane);
+  EXPECT_EQ(init_camera.orthogonal_near_plane, construct_copy_self_camera.orthogonal_near_plane);
+  EXPECT_EQ(init_camera.perspective_far_plane, construct_copy_self_camera.perspective_far_plane);
+  EXPECT_EQ(init_camera.orthogonal_far_plane, construct_copy_self_camera.orthogonal_far_plane);
+  EXPECT_EQ(init_camera.perspective_mat_ready, construct_copy_self_camera.perspective_mat_ready);
+  EXPECT_EQ(init_camera.orthogonal_mat_ready, construct_copy_self_camera.orthogonal_mat_ready);
+  EXPECT_EQ(init_camera.perspective_mat, construct_copy_self_camera.perspective_mat);
+  EXPECT_EQ(init_camera.orthogonal_mat, construct_copy_self_camera.orthogonal_mat);
   EXPECT_EQ(init_camera.default_movemement_on, construct_copy_self_camera.default_movemement_on);
   EXPECT_EQ(init_camera.sensitivity, construct_copy_self_camera.sensitivity);
   EXPECT_EQ(init_camera.velocity, construct_copy_self_camera.velocity);
@@ -177,6 +223,20 @@ TEST(CameraMoveConstructor, HandlesInitialization){
   EXPECT_EQ(init_org_camera.orientation, construct_move_camera.orientation);
   EXPECT_EQ(init_org_camera.fov, construct_move_camera.fov);
   EXPECT_EQ(init_org_camera.ortho_size, construct_move_camera.ortho_size);
+  EXPECT_EQ(init_org_camera.transform_mat_ready, construct_move_camera.transform_mat_ready);
+  EXPECT_EQ(init_org_camera.transform_mat, construct_move_camera.transform_mat);
+  EXPECT_EQ(init_org_camera.view_mat_ready, construct_move_camera.view_mat_ready);
+  EXPECT_EQ(init_org_camera.view_mat, construct_move_camera.view_mat);
+  EXPECT_EQ(init_org_camera.last_aspect_ratio_orthogonal, construct_move_camera.last_aspect_ratio_orthogonal);
+  EXPECT_EQ(init_org_camera.last_aspect_ratio_perspective, construct_move_camera.last_aspect_ratio_perspective);
+  EXPECT_EQ(init_org_camera.perspective_near_plane, construct_move_camera.perspective_near_plane);
+  EXPECT_EQ(init_org_camera.orthogonal_near_plane, construct_move_camera.orthogonal_near_plane);
+  EXPECT_EQ(init_org_camera.perspective_far_plane, construct_move_camera.perspective_far_plane);
+  EXPECT_EQ(init_org_camera.orthogonal_far_plane, construct_move_camera.orthogonal_far_plane);
+  EXPECT_EQ(init_org_camera.perspective_mat_ready, construct_move_camera.perspective_mat_ready);
+  EXPECT_EQ(init_org_camera.orthogonal_mat_ready, construct_move_camera.orthogonal_mat_ready);
+  EXPECT_EQ(init_org_camera.perspective_mat, construct_move_camera.perspective_mat);
+  EXPECT_EQ(init_org_camera.orthogonal_mat, construct_move_camera.orthogonal_mat);
   EXPECT_EQ(init_org_camera.default_movemement_on, construct_move_camera.default_movemement_on);
   EXPECT_EQ(init_org_camera.sensitivity, construct_move_camera.sensitivity);
   EXPECT_EQ(init_org_camera.velocity, construct_move_camera.velocity);
@@ -193,6 +253,20 @@ TEST(CameraMoveConstructor, HandlesInitialization){
   EXPECT_EQ(init_org_camera.orientation, construct_move_assign_camera.orientation);
   EXPECT_EQ(init_org_camera.fov, construct_move_assign_camera.fov);
   EXPECT_EQ(init_org_camera.ortho_size, construct_move_assign_camera.ortho_size);
+  EXPECT_EQ(init_org_camera.transform_mat_ready, construct_move_assign_camera.transform_mat_ready);
+  EXPECT_EQ(init_org_camera.transform_mat, construct_move_assign_camera.transform_mat);
+  EXPECT_EQ(init_org_camera.view_mat_ready, construct_move_assign_camera.view_mat_ready);
+  EXPECT_EQ(init_org_camera.view_mat, construct_move_assign_camera.view_mat);
+  EXPECT_EQ(init_org_camera.last_aspect_ratio_orthogonal, construct_move_assign_camera.last_aspect_ratio_orthogonal);
+  EXPECT_EQ(init_org_camera.last_aspect_ratio_perspective, construct_move_assign_camera.last_aspect_ratio_perspective);
+  EXPECT_EQ(init_org_camera.perspective_near_plane, construct_move_assign_camera.perspective_near_plane);
+  EXPECT_EQ(init_org_camera.orthogonal_near_plane, construct_move_assign_camera.orthogonal_near_plane);
+  EXPECT_EQ(init_org_camera.perspective_far_plane, construct_move_assign_camera.perspective_far_plane);
+  EXPECT_EQ(init_org_camera.orthogonal_far_plane, construct_move_assign_camera.orthogonal_far_plane);
+  EXPECT_EQ(init_org_camera.perspective_mat_ready, construct_move_assign_camera.perspective_mat_ready);
+  EXPECT_EQ(init_org_camera.orthogonal_mat_ready, construct_move_assign_camera.orthogonal_mat_ready);
+  EXPECT_EQ(init_org_camera.perspective_mat, construct_move_assign_camera.perspective_mat);
+  EXPECT_EQ(init_org_camera.orthogonal_mat, construct_move_assign_camera.orthogonal_mat);
   EXPECT_EQ(init_org_camera.default_movemement_on, construct_move_assign_camera.default_movemement_on);
   EXPECT_EQ(init_org_camera.sensitivity, construct_move_assign_camera.sensitivity);
   EXPECT_EQ(init_org_camera.velocity, construct_move_assign_camera.velocity);
@@ -213,6 +287,20 @@ TEST(CameraMoveConstructor, HandlesInitialization){
   EXPECT_EQ(init_org_camera.orientation, construct_move_self_camera.orientation);
   EXPECT_EQ(init_org_camera.fov, construct_move_self_camera.fov);
   EXPECT_EQ(init_org_camera.ortho_size, construct_move_self_camera.ortho_size);
+  EXPECT_EQ(init_org_camera.transform_mat_ready, construct_move_self_camera.transform_mat_ready);
+  EXPECT_EQ(init_org_camera.transform_mat, construct_move_self_camera.transform_mat);
+  EXPECT_EQ(init_org_camera.view_mat_ready, construct_move_self_camera.view_mat_ready);
+  EXPECT_EQ(init_org_camera.view_mat, construct_move_self_camera.view_mat);
+  EXPECT_EQ(init_org_camera.last_aspect_ratio_orthogonal, construct_move_self_camera.last_aspect_ratio_orthogonal);
+  EXPECT_EQ(init_org_camera.last_aspect_ratio_perspective, construct_move_self_camera.last_aspect_ratio_perspective);
+  EXPECT_EQ(init_org_camera.perspective_near_plane, construct_move_self_camera.perspective_near_plane);
+  EXPECT_EQ(init_org_camera.orthogonal_near_plane, construct_move_self_camera.orthogonal_near_plane);
+  EXPECT_EQ(init_org_camera.perspective_far_plane, construct_move_self_camera.perspective_far_plane);
+  EXPECT_EQ(init_org_camera.orthogonal_far_plane, construct_move_self_camera.orthogonal_far_plane);
+  EXPECT_EQ(init_org_camera.perspective_mat_ready, construct_move_self_camera.perspective_mat_ready);
+  EXPECT_EQ(init_org_camera.orthogonal_mat_ready, construct_move_self_camera.orthogonal_mat_ready);
+  EXPECT_EQ(init_org_camera.perspective_mat, construct_move_self_camera.perspective_mat);
+  EXPECT_EQ(init_org_camera.orthogonal_mat, construct_move_self_camera.orthogonal_mat);
   EXPECT_EQ(init_org_camera.default_movemement_on, construct_move_self_camera.default_movemement_on);
   EXPECT_EQ(init_org_camera.sensitivity, construct_move_self_camera.sensitivity);
   EXPECT_EQ(init_org_camera.velocity, construct_move_self_camera.velocity);
@@ -225,3 +313,182 @@ TEST(CameraMoveConstructor, HandlesInitialization){
 //// ==================== ////
 //// ==== Projection ==== ////
 //// ==================== ////
+TEST(CameraPerspectiveProjection, HandlesInitialization){
+  Mock::Renderer renderer;
+  glm::vec3 init_pos = {0.0f, 0.0f, 0.0f};
+  glm::vec3 init_dir = {0.0f, 0.0f, 1.0f};
+  float init_fov = 60.0f;
+  float init_near_plane = Engine::Config::CAMERA_NEAR_PLANE;
+  float init_far_plane = Engine::Config::CAMERA_FAR_PLANE;
+
+  
+  Engine::Core::Camera camera(&renderer, init_pos, init_dir);
+  camera.setFov(init_fov);
+  camera.setNearPlane(init_near_plane);
+  camera.setFarPlane(init_far_plane);
+  
+  float aspectRatio = renderer.getWindowData()->width / (float)renderer.getWindowData()->height;
+  glm::mat4 expected_mat = glm::perspective(glm::radians(init_fov), aspectRatio, init_near_plane, init_far_plane);
+  
+  glm::vec4 testing_point1 = glm::vec4(-3.0f, 2.0f, -10.0f, 1.0f); 
+  glm::vec4 transformed_point1 = camera.perspective_projection() * testing_point1;
+  glm::vec4 expected1 = expected_mat * testing_point1;
+  
+  EXPECT_NEAR(transformed_point1.w, 10.0f, 0.001f);
+  EXPECT_NEAR(transformed_point1.x, expected1.x, 0.001f);
+  EXPECT_NEAR(transformed_point1.y, expected1.y, 0.001f);
+  EXPECT_NEAR(transformed_point1.z, expected1.z, 0.001f);
+
+  glm::vec3 ndc1 = glm::vec3(transformed_point1) / transformed_point1.w;
+  
+  EXPECT_GE(ndc1.x, -1.0f);
+  EXPECT_LE(ndc1.x, 1.0f);
+  EXPECT_GE(ndc1.y, -1.0f);
+  EXPECT_LE(ndc1.y, 1.0f);
+  EXPECT_GE(ndc1.z, -1.0f);
+  EXPECT_LE(ndc1.z, 1.0f);
+
+  glm::vec4 testing_point2 = {2.0f, 12.0f, -25.0f, 1.0f}; 
+  glm::vec4 transformed_point2 = camera.perspective_projection() * testing_point2;
+  glm::vec4 expected2 = expected_mat * testing_point2;
+  
+  EXPECT_NEAR(transformed_point2.w, 25.0f, 0.001f);
+  EXPECT_NEAR(transformed_point2.x, expected2.x, 0.001f);
+  EXPECT_NEAR(transformed_point2.y, expected2.y, 0.001f);
+  EXPECT_NEAR(transformed_point2.z, expected2.z, 0.001f);
+
+  glm::vec3 ndc2 = glm::vec3(transformed_point2) / transformed_point2.w;
+  
+  EXPECT_GE(ndc2.x, -1.0f);
+  EXPECT_LE(ndc2.x, 1.0f);
+  EXPECT_GE(ndc2.y, -1.0f);
+  EXPECT_LE(ndc2.y, 1.0f);
+  EXPECT_GE(ndc2.z, -1.0f);
+  EXPECT_LE(ndc2.z, 1.0f);
+
+  float new_fov = 65.0f;
+  camera.setFov(new_fov);
+  glm::vec4 testing_point = {2.0f, 12.0f, -25.0f, 1.0f}; 
+  glm::vec4 transformed_point = camera.perspective_projection() * testing_point;
+  expected_mat = glm::perspective(glm::radians(new_fov), aspectRatio, init_near_plane, init_far_plane);
+  glm::vec4 expected = expected_mat * testing_point;
+  
+  EXPECT_NEAR(transformed_point.w, 25.0f, 0.001f);
+  EXPECT_NEAR(transformed_point.x, expected.x, 0.001f);
+  EXPECT_NEAR(transformed_point.y, expected.y, 0.001f);
+  EXPECT_NEAR(transformed_point.z, expected.z, 0.001f);
+
+  glm::vec3 ndc = glm::vec3(transformed_point) / transformed_point.w;
+  
+  EXPECT_GE(ndc.x, -1.0f);
+  EXPECT_LE(ndc.x, 1.0f);
+  EXPECT_GE(ndc.y, -1.0f);
+  EXPECT_LE(ndc.y, 1.0f);
+  EXPECT_GE(ndc.z, -1.0f);
+  EXPECT_LE(ndc.z, 1.0f);
+
+  float new_near = 0.5f;
+  camera.setNearPerspectivePlane(new_near);
+  testing_point = {2.0f, 12.0f, -25.0f, 1.0f}; 
+  transformed_point = camera.perspective_projection() * testing_point;
+  expected_mat = glm::perspective(glm::radians(new_fov), aspectRatio, new_near, init_far_plane);
+  expected = expected_mat * testing_point;
+  
+  EXPECT_NEAR(transformed_point.w, 25.0f, 0.001f);
+  EXPECT_NEAR(transformed_point.x, expected.x, 0.001f);
+  EXPECT_NEAR(transformed_point.y, expected.y, 0.001f);
+  EXPECT_NEAR(transformed_point.z, expected.z, 0.001f);
+
+  ndc = glm::vec3(transformed_point) / transformed_point.w;
+  
+  EXPECT_GE(ndc.x, -1.0f);
+  EXPECT_LE(ndc.x, 1.0f);
+  EXPECT_GE(ndc.y, -1.0f);
+  EXPECT_LE(ndc.y, 1.0f);
+  EXPECT_GE(ndc.z, -1.0f);
+  EXPECT_LE(ndc.z, 1.0f);
+
+  new_near = 0.001f;
+  camera.setNearPlane(new_near);
+  testing_point = {2.0f, 12.0f, -25.0f, 1.0f}; 
+  transformed_point = camera.perspective_projection() * testing_point;
+  expected_mat = glm::perspective(glm::radians(new_fov), aspectRatio, new_near, init_far_plane);
+  expected = expected_mat * testing_point;
+  
+  EXPECT_NEAR(transformed_point.w, 25.0f, 0.001f);
+  EXPECT_NEAR(transformed_point.x, expected.x, 0.001f);
+  EXPECT_NEAR(transformed_point.y, expected.y, 0.001f);
+  EXPECT_NEAR(transformed_point.z, expected.z, 0.001f);
+
+  ndc = glm::vec3(transformed_point) / transformed_point.w;
+  
+  EXPECT_GE(ndc.x, -1.0f);
+  EXPECT_LE(ndc.x, 1.0f);
+  EXPECT_GE(ndc.y, -1.0f);
+  EXPECT_LE(ndc.y, 1.0f);
+  EXPECT_GE(ndc.z, -1.0f);
+  EXPECT_LE(ndc.z, 1.0f);
+
+  float new_far = 200.0f;
+  camera.setFarPerspectivePlane(new_far);
+  testing_point = {2.0f, 12.0f, -25.0f, 1.0f}; 
+  transformed_point = camera.perspective_projection() * testing_point;
+  expected_mat = glm::perspective(glm::radians(new_fov), aspectRatio, new_near, new_far);
+  expected = expected_mat * testing_point;
+  
+  EXPECT_NEAR(transformed_point.w, 25.0f, 0.001f);
+  EXPECT_NEAR(transformed_point.x, expected.x, 0.001f);
+  EXPECT_NEAR(transformed_point.y, expected.y, 0.001f);
+  EXPECT_NEAR(transformed_point.z, expected.z, 0.001f);
+
+  ndc = glm::vec3(transformed_point) / transformed_point.w;
+  
+  EXPECT_GE(ndc.x, -1.0f);
+  EXPECT_LE(ndc.x, 1.0f);
+  EXPECT_GE(ndc.y, -1.0f);
+  EXPECT_LE(ndc.y, 1.0f);
+  EXPECT_GE(ndc.z, -1.0f);
+  EXPECT_LE(ndc.z, 1.0f);
+
+  new_far = 2000.0f;
+  camera.setFarPlane(new_far);
+  testing_point = {2.0f, 12.0f, -25.0f, 1.0f}; 
+  transformed_point = camera.perspective_projection() * testing_point;
+  expected_mat = glm::perspective(glm::radians(new_fov), aspectRatio, new_near, new_far);
+  expected = expected_mat * testing_point;
+  
+  EXPECT_NEAR(transformed_point.w, 25.0f, 0.001f);
+  EXPECT_NEAR(transformed_point.x, expected.x, 0.001f);
+  EXPECT_NEAR(transformed_point.y, expected.y, 0.001f);
+  EXPECT_NEAR(transformed_point.z, expected.z, 0.001f);
+
+  ndc = glm::vec3(transformed_point) / transformed_point.w;
+  
+  EXPECT_GE(ndc.x, -1.0f);
+  EXPECT_LE(ndc.x, 1.0f);
+  EXPECT_GE(ndc.y, -1.0f);
+  EXPECT_LE(ndc.y, 1.0f);
+  EXPECT_GE(ndc.z, -1.0f);
+  EXPECT_LE(ndc.z, 1.0f);
+
+  renderer.setSize(200, 300);
+  aspectRatio = renderer.getWindowData()->width / (float)renderer.getWindowData()->height;
+  testing_point = {2.0f, 12.0f, -25.0f, 1.0f}; 
+  transformed_point = camera.perspective_projection() * testing_point;
+  expected_mat = glm::perspective(glm::radians(new_fov), aspectRatio, new_near, new_far);
+  expected = expected_mat * testing_point;
+  
+  EXPECT_NEAR(transformed_point.w, 25.0f, 0.001f);
+  EXPECT_NEAR(transformed_point.x, expected.x, 0.001f);
+  EXPECT_NEAR(transformed_point.y, expected.y, 0.001f);
+  EXPECT_NEAR(transformed_point.z, expected.z, 0.001f);
+
+  ndc = glm::vec3(transformed_point) / transformed_point.w;
+  
+  EXPECT_GE(ndc.x, -1.0f);
+  EXPECT_LE(ndc.x, 1.0f);
+  EXPECT_GE(ndc.y, -1.0f);
+  EXPECT_LE(ndc.y, 1.0f);
+  EXPECT_GE(ndc.z, -1.0f);
+  EXPECT_LE(ndc.z, 1.0f);
+};

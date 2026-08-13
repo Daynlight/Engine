@@ -109,5 +109,6 @@ namespace Engine::Config{
   inline constexpr float CAMERA_NEAR_PLANE = 0.1f;
   inline constexpr float CAMERA_FAR_PLANE = 1200.0f;
   inline constexpr float CAMERA_ORTHO_FAR_PLANE = 1200.0f;
+  inline constexpr float CAMERA_ORTHO_NEAR_PLANE = 0.1f;
   inline constexpr float CAMERA_ORTHO_SIZE = 1000.0f;
 };

@@ -46,6 +46,20 @@ Engine::Core::Camera::Camera(const Camera &second) noexcept
    mode(second.mode),
    fov(second.fov),
    ortho_size(second.ortho_size),
+   transform_mat_ready(second.transform_mat_ready),
+   transform_mat(second.transform_mat),
+   view_mat_ready(second.view_mat_ready),
+   view_mat(second.view_mat),
+   last_aspect_ratio_orthogonal(second.last_aspect_ratio_orthogonal),
+   last_aspect_ratio_perspective(second.last_aspect_ratio_perspective),
+   perspective_near_plane(second.perspective_near_plane),
+   orthogonal_near_plane(second.orthogonal_near_plane),
+   perspective_far_plane(second.perspective_far_plane),
+   orthogonal_far_plane(second.orthogonal_far_plane),
+   perspective_mat_ready(second.perspective_mat_ready),
+   orthogonal_mat_ready(second.orthogonal_mat_ready),
+   perspective_mat(second.perspective_mat),
+   orthogonal_mat(second.orthogonal_mat),
    default_movemement_on(second.default_movemement_on),
    sensitivity(second.sensitivity),
    velocity(second.velocity),
@@ -75,6 +89,20 @@ Engine::Core::Camera &Engine::Core::Camera::operator=(const Camera &second) noex
   mode = second.mode;
   fov = second.fov;
   ortho_size = second.ortho_size;
+  transform_mat_ready = second.transform_mat_ready;
+  transform_mat = second.transform_mat;
+  view_mat_ready = second.view_mat_ready;
+  view_mat = second.view_mat;
+  last_aspect_ratio_orthogonal = second.last_aspect_ratio_orthogonal;
+  last_aspect_ratio_perspective = second.last_aspect_ratio_perspective;
+  perspective_near_plane = second.perspective_near_plane;
+  orthogonal_near_plane = second.orthogonal_near_plane;
+  perspective_far_plane = second.perspective_far_plane;
+  orthogonal_far_plane = second.orthogonal_far_plane;
+  perspective_mat_ready = second.perspective_mat_ready;
+  orthogonal_mat_ready = second.orthogonal_mat_ready;
+  perspective_mat = second.perspective_mat;
+  orthogonal_mat = second.orthogonal_mat;
   default_movemement_on = second.default_movemement_on;
   sensitivity = second.sensitivity;
   velocity = second.velocity;
@@ -98,6 +126,20 @@ Engine::Core::Camera::Camera(Camera &&second) noexcept
    mode(std::move(second.mode)),
    fov(std::move(second.fov)),
    ortho_size(std::move(second.ortho_size)),
+   transform_mat_ready(std::move(second.transform_mat_ready)),
+   transform_mat(std::move(second.transform_mat)),
+   view_mat_ready(std::move(second.view_mat_ready)),
+   view_mat(std::move(second.view_mat)),
+   last_aspect_ratio_orthogonal(std::move(second.last_aspect_ratio_orthogonal)),
+   last_aspect_ratio_perspective(std::move(second.last_aspect_ratio_perspective)),
+   perspective_near_plane(std::move(second.perspective_near_plane)),
+   orthogonal_near_plane(std::move(second.orthogonal_near_plane)),
+   perspective_far_plane(std::move(second.perspective_far_plane)),
+   orthogonal_far_plane(std::move(second.orthogonal_far_plane)),
+   perspective_mat_ready(std::move(second.perspective_mat_ready)),
+   orthogonal_mat_ready(std::move(second.orthogonal_mat_ready)),
+   perspective_mat(std::move(second.perspective_mat)),
+   orthogonal_mat(std::move(second.orthogonal_mat)),
    default_movemement_on(std::move(second.default_movemement_on)),
    sensitivity(std::move(second.sensitivity)),
    velocity(std::move(second.velocity)),
@@ -127,6 +169,20 @@ Engine::Core::Camera& Engine::Core::Camera::operator=(Camera &&second) noexcept 
   mode = std::move(second.mode);
   fov = std::move(second.fov);
   ortho_size = std::move(second.ortho_size);
+  transform_mat_ready = std::move(second.transform_mat_ready);
+  transform_mat = std::move(second.transform_mat);
+  view_mat_ready = std::move(second.view_mat_ready);
+  view_mat = std::move(second.view_mat);
+  last_aspect_ratio_orthogonal = std::move(second.last_aspect_ratio_orthogonal);
+  last_aspect_ratio_perspective = std::move(second.last_aspect_ratio_perspective);
+  perspective_near_plane = std::move(second.perspective_near_plane);
+  orthogonal_near_plane = std::move(second.orthogonal_near_plane);
+  perspective_far_plane = std::move(second.perspective_far_plane);
+  orthogonal_far_plane = std::move(second.orthogonal_far_plane);
+  perspective_mat_ready = std::move(second.perspective_mat_ready);
+  orthogonal_mat_ready = std::move(second.orthogonal_mat_ready);
+  perspective_mat = std::move(second.perspective_mat);
+  orthogonal_mat = std::move(second.orthogonal_mat);
   default_movemement_on = std::move(second.default_movemement_on);
   sensitivity = std::move(second.sensitivity);
   velocity = std::move(second.velocity);
@@ -144,30 +200,50 @@ Engine::Core::Camera& Engine::Core::Camera::operator=(Camera &&second) noexcept 
 //// ==================== ////
 //// ==== Projection ==== ////
 //// ==================== ////
-glm::mat4 Engine::Core::Camera::transformation() const noexcept {
+glm::mat4 Engine::Core::Camera::transformation() noexcept {
+  view();
+  projection();
+
   if (!renderer || !renderer->getWindowData()) {
     Engine::Utils::Logger::get().warn("Engine::Core::Camera::transformation()", "renderer is nullptr {returning mat4(1.0f)}");
+    if(transform_mat_ready) return transform_mat;
     return glm::mat4(1.0f); 
   };
+  
 
-  return projection() * view();
+  if(!transform_mat_ready){
+    if(mode == Engine::ScriptShared::CameraMode::ORTHOGONAL) 
+      transform_mat = orthogonal_mat * view_mat;
+    else 
+      transform_mat = perspective_mat * view_mat;
+    transform_mat_ready = true;
+  };
+  
+  return transform_mat;
 };
 
 
 
-glm::mat4 Engine::Core::Camera::view() const noexcept {
+glm::mat4 Engine::Core::Camera::view() noexcept {
   if (!renderer || !renderer->getWindowData()) {
     Engine::Utils::Logger::get().warn("Engine::Core::Camera::view()", "renderer is nullptr {returning mat4(1.0f)}");
+    if(view_mat_ready) return view_mat; 
     return glm::mat4(1.0f); 
   };
 
-  glm::vec3 dynamicUp = orientation * glm::vec3(0.0f, 1.0f, 0.0f);
-  return glm::lookAt(position, position + direction, dynamicUp);
+  if(!view_mat_ready){
+    glm::vec3 dynamicUp = orientation * glm::vec3(0.0f, 1.0f, 0.0f);
+    view_mat = glm::lookAt(position, position + direction, dynamicUp);
+    view_mat_ready = true;
+    transform_mat_ready = false;
+  };
+
+  return view_mat;
 };
 
 
 
-glm::mat4 Engine::Core::Camera::projection() const noexcept {
+glm::mat4 Engine::Core::Camera::projection() noexcept {
   if (!renderer || !renderer->getWindowData()) {
     Engine::Utils::Logger::get().warn("Engine::Core::Camera::projection()", "renderer is nullptr {returning mat4(1.0f)}");
     return glm::mat4(1.0f); 
@@ -176,34 +252,50 @@ glm::mat4 Engine::Core::Camera::projection() const noexcept {
   if (mode == Engine::ScriptShared::CameraMode::ORTHOGONAL) {
     return orthogonal_projection();
   } else {
-    return projection_projection();
+    return perspective_projection();
   };
 };
 
 
 
-glm::mat4 Engine::Core::Camera::projection_projection() const noexcept {
+glm::mat4 Engine::Core::Camera::perspective_projection() noexcept {
   if (!renderer || !renderer->getWindowData()) {
-    Engine::Utils::Logger::get().warn("Engine::Core::Camera::projection_projection()", "renderer is nullptr {returning mat4(1.0f)}");
+    Engine::Utils::Logger::get().warn("Engine::Core::Camera::perspective_projection()", "renderer is nullptr {returning mat4(1.0f)}");
+    if(perspective_mat_ready) return perspective_mat; 
     return glm::mat4(1.0f); 
   };
 
-  float aspectRatio = renderer->getWindowData()->width / (float)renderer->getWindowData()->height;
-  return glm::perspective(glm::radians(fov), aspectRatio, Engine::Config::CAMERA_NEAR_PLANE, Engine::Config::CAMERA_FAR_PLANE);
+  float aspect_ratio = renderer->getWindowData()->width / (float)renderer->getWindowData()->height;
+  if(!perspective_mat_ready || std::abs(last_aspect_ratio_perspective - aspect_ratio) > Engine::Config::EPS){
+    last_aspect_ratio_perspective = aspect_ratio;
+    perspective_mat = glm::perspective(glm::radians(fov), aspect_ratio, perspective_near_plane, perspective_far_plane);
+    perspective_mat_ready = true;
+    transform_mat_ready = false;
+  };
+  
+  return perspective_mat;
 };
 
 
 
-glm::mat4 Engine::Core::Camera::orthogonal_projection() const noexcept {
+glm::mat4 Engine::Core::Camera::orthogonal_projection() noexcept {
   if (!renderer || !renderer->getWindowData()) {
     Engine::Utils::Logger::get().warn("Engine::Core::Camera::orthogonal_projection()", "renderer is nullptr {returning mat4(1.0f)}");
+    if(orthogonal_mat_ready) return orthogonal_mat;
     return glm::mat4(1.0f); 
   };
 
-  float aspectRatio = renderer->getWindowData()->width / (float)renderer->getWindowData()->height; 
-  float halfWidth = (ortho_size * aspectRatio) * 0.5f;
-  float halfHeight = ortho_size * 0.5f;
-  return glm::ortho(-halfWidth, halfWidth, -halfHeight, halfHeight, Engine::Config::CAMERA_NEAR_PLANE, Engine::Config::CAMERA_ORTHO_FAR_PLANE);  
+  float aspect_ratio = renderer->getWindowData()->width / (float)renderer->getWindowData()->height; 
+  if(!orthogonal_mat_ready || std::abs(last_aspect_ratio_orthogonal - aspect_ratio) > Engine::Config::EPS){
+    last_aspect_ratio_orthogonal = aspect_ratio;
+    float half_width = (ortho_size * aspect_ratio) * 0.5f;
+    float half_height = ortho_size * 0.5f;
+    orthogonal_mat = glm::ortho(-half_width, half_width, -half_height, half_height, orthogonal_near_plane, orthogonal_far_plane);  
+    orthogonal_mat_ready = true;
+    transform_mat_ready = false;
+  };
+
+  return orthogonal_mat;
 };
 
 
@@ -218,6 +310,9 @@ glm::vec3 Engine::Core::Camera::getPosition() const noexcept {
 
 
 void Engine::Core::Camera::setPosition(glm::vec3 position) noexcept {
+  view_mat_ready = false;
+  transform_mat_ready = false;
+  
   this->position = position;
 };
 
@@ -230,6 +325,9 @@ glm::vec3 Engine::Core::Camera::getDirection() const noexcept {
 
 
 void Engine::Core::Camera::setDirection(glm::vec3 direction) noexcept {
+  view_mat_ready = false;
+  transform_mat_ready = false;
+
   if (glm::length(direction) > Engine::Config::EPS) {
     this->direction = glm::normalize(direction);
     this->orientation = glm::quatLookAt(-this->direction, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -250,6 +348,8 @@ float Engine::Core::Camera::getFov() const noexcept {
 
 
 void Engine::Core::Camera::setFov(float fov) noexcept {
+  perspective_mat_ready = false;
+  transform_mat_ready = false;
   this->fov = fov;
   if(fov <= Engine::Config::EPS) this->fov = 0.0f;
 };
@@ -263,8 +363,102 @@ float Engine::Core::Camera::getOrthoSize() const noexcept {
 
 
 void Engine::Core::Camera::setOrthoSize(float size) noexcept {
+  orthogonal_mat_ready = false;
+  transform_mat_ready = false;
   this->ortho_size = size;
   if(size <= Engine::Config::EPS) this->ortho_size = 0.0f;
+};
+
+
+
+float Engine::Core::Camera::getNearPlane() const noexcept{
+  if(mode == Engine::ScriptShared::CameraMode::ORTHOGONAL)
+    return getNearOrthogonalPlane();
+  return getNearPerspectivePlane();
+};
+
+
+
+void Engine::Core::Camera::setNearPlane(float near) noexcept{
+  if(mode == Engine::ScriptShared::CameraMode::ORTHOGONAL)
+    setNearOrthogonalPlane(near);
+  else setNearPerspectivePlane(near);
+};
+
+
+
+float Engine::Core::Camera::getFarPlane() const noexcept{
+  if(mode == Engine::ScriptShared::CameraMode::ORTHOGONAL)
+    return getFarOrthogonalPlane();
+  return getFarPerspectivePlane();
+};
+
+
+
+void Engine::Core::Camera::setFarPlane(float far) noexcept {
+  if(mode == Engine::ScriptShared::CameraMode::ORTHOGONAL)
+    setFarOrthogonalPlane(far);
+  else setFarPerspectivePlane(far);
+};
+
+
+
+float Engine::Core::Camera::getNearPerspectivePlane() const noexcept {
+  return perspective_near_plane;
+};
+
+
+
+void Engine::Core::Camera::setNearPerspectivePlane(float near) noexcept {
+  perspective_mat_ready = false;
+  transform_mat_ready = false;
+  perspective_near_plane = near;
+  if(perspective_near_plane <= Engine::Config::EPS) this->perspective_near_plane = 0.0f;
+};
+
+
+
+float Engine::Core::Camera::getFarPerspectivePlane() const noexcept {
+  return perspective_far_plane;
+};
+
+
+
+void Engine::Core::Camera::setFarPerspectivePlane(float far) noexcept {
+  perspective_mat_ready = false;
+  transform_mat_ready = false;
+  perspective_far_plane = far;
+  if(perspective_far_plane <= Engine::Config::EPS) this->perspective_far_plane = 0.0f;
+};
+
+
+
+float Engine::Core::Camera::getNearOrthogonalPlane() const noexcept {
+  return orthogonal_near_plane;
+};
+
+
+
+void Engine::Core::Camera::setNearOrthogonalPlane(float near) noexcept {
+  orthogonal_mat_ready = false;
+  transform_mat_ready = false;
+  orthogonal_near_plane = near;
+  if(orthogonal_near_plane <= Engine::Config::EPS) this->orthogonal_near_plane = 0.0f;
+};
+
+
+
+float Engine::Core::Camera::getFarOrthogonalPlane() const noexcept {
+  return orthogonal_far_plane;
+};
+
+
+
+void Engine::Core::Camera::setFarOrthogonalPlane(float far) noexcept {
+  orthogonal_mat_ready = false;
+  transform_mat_ready = false;
+  orthogonal_far_plane = far;
+  if(orthogonal_far_plane <= Engine::Config::EPS) this->orthogonal_far_plane = 0.0f;
 };
 
 
@@ -276,6 +470,7 @@ Engine::ScriptShared::CameraMode Engine::Core::Camera::getCameraMode() const noe
 
 
 void Engine::Core::Camera::setCameraMode(Engine::ScriptShared::CameraMode mode) noexcept {
+  transform_mat_ready = false;
   this->mode = mode;
 };
 
@@ -410,6 +605,9 @@ void Engine::Core::Camera::movementButtons(float delta_time, float& target_bank)
     position += right * velocity * delta_time;
     target_bank += Engine::Config::CAMERA_TILT_ACCELERATION;
   };
+  
+  view_mat_ready = false;
+  transform_mat_ready = false;
 };
 
 
@@ -461,4 +659,7 @@ void Engine::Core::Camera::rotationButtons(float delta_time, float& target_bank_
   orientation = glm::normalize(orientation);
 
   direction = orientation * glm::vec3(0.0f, 0.0f, 1.0f);
+
+  view_mat_ready = false;
+  transform_mat_ready = false;
 };
