@@ -30,5 +30,5 @@ set(src
 add_library(Editor STATIC ${src})
 target_link_libraries(Editor CWindow UtilsDev)
 target_include_directories(Editor PUBLIC "Editor/" "../Core/Core" "../ScriptShared")
-target_compile_definitions(Editor PRIVATE ENGINE_DATA_ZIP="${ENGINE_ZIP_DEST}")
+target_compile_definitions(Editor PRIVATE ENGINE_SRC_DEST="${ENGINE_SRC_DEST}")
 target_compile_definitions(Editor PRIVATE GENERATOR="${CMAKE_GENERATOR}")

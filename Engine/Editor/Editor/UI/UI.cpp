@@ -280,58 +280,19 @@ void Engine::Editor::UI::buildProject(){
   #ifndef PRODUCTION
   Engine::Utils::Logger::get().info("UI", "Building ...");
   
-  std::filesystem::path dest_folder = Engine::Config::TEMP_BIN_FOLDER + Engine::Config::COMPILATION_FOLDER;
-
+  std::filesystem::path dest_folder = Engine::Config::TEMP_BIN_FOLDER;
   if(!std::filesystem::exists(Engine::Config::TEMP_BIN_FOLDER)) std::filesystem::create_directories(Engine::Config::TEMP_BIN_FOLDER);
 
   std::string build_dir = (dest_folder / "build-prod").string();
+  if(!std::filesystem::exists(build_dir)) std::filesystem::create_directories(build_dir);
+
   
   // clean stage
   if(std::filesystem::exists(dest_folder)){
     std::filesystem::remove_all(dest_folder / Engine::Config::GAME_DATA_FOLDER);
     std::filesystem::remove_all(dest_folder / Engine::Config::SCRIPTS_SRC_FOLDER);
   }
-  else{
-    // engine unzip
-    try {
-      std::filesystem::path system_zip_path = std::filesystem::path(ENGINE_DATA_ZIP);
-
-      if (!std::filesystem::exists(system_zip_path)) {
-        Engine::Utils::Logger::get().erro("UI", "System ZIP file not found at: " + system_zip_path.string());
-        return;
-      };
-
-      const char* unzip_args[] = {
-        "unzip",
-        "-o",
-        "-q",
-        system_zip_path.c_str(),
-        "-d",
-        dest_folder.c_str(),
-        nullptr
-      };
-
-      pid_t unzip_pid = fork();
-      if (unzip_pid == 0) {
-        execvp("unzip", const_cast<char* const*>(unzip_args));
-        Engine::Utils::Logger::get().erro("UI", "Failed to exec unzip for extraction");
-        _exit(-1);
-      } else if (unzip_pid > 0) {
-        int status = 0;
-        waitpid(unzip_pid, &status, 0);
-        if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) {
-          Engine::Utils::Logger::get().erro("UI", "Failed to extract engine_data.zip!");
-          return;
-        };
-      };
-      
-      Engine::Utils::Logger::get().info("UI", "Engine data successfully extracted from ZIP.");
-    } catch (const std::exception& e) {
-      Engine::Utils::Logger::get().erro("UI", std::string("CMRC Zip extraction failed: ") + e.what());
-      return;
-    };
-  };
-
+  
   // copying game data
   std::filesystem::copy(
     Engine::Config::GAME_DATA_FOLDER,
@@ -346,13 +307,14 @@ void Engine::Editor::UI::buildProject(){
     std::filesystem::copy_options::recursive |
     std::filesystem::copy_options::overwrite_existing
   );
-
+  
   // compilation stage
+  std::filesystem::path engine_src_dir = std::filesystem::path(ENGINE_SRC_DEST);
   std::string generator = GENERATOR;
   const char* config[] = {
     "cmake",
     "-S",
-    dest_folder.c_str(), 
+    engine_src_dir.c_str(), 
     "-B",
     build_dir.c_str(),
     "-G", 

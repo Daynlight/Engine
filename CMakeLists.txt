@@ -25,31 +25,33 @@ add_subdirectory(vendor/cmrc)
 add_subdirectory(vendor/googletest vendor/googletest EXCLUDE_FROM_ALL)
 
 
-set(ENGINE_ZIP "${CMAKE_BINARY_DIR}/engine_data.zip")
+set(ENGINE_SRC "${CMAKE_BINARY_DIR}/Engine")
 if(DEFINED ENV{XDG_DATA_HOME})
-  set(ENGINE_ZIP_DIR "$ENV{XDG_DATA_HOME}/Engine")
+  set(ENGINE_SRC_DIR "$ENV{XDG_DATA_HOME}/Engine")
 else()
-  set(ENGINE_ZIP_DIR "$ENV{HOME}/.local/share/Engine")
+  set(ENGINE_SRC_DIR "$ENV{HOME}/.local/share/Engine")
 endif()
-file(MAKE_DIRECTORY "${ENGINE_ZIP_DIR}")
-set(ENGINE_ZIP_DEST "${ENGINE_ZIP_DIR}/engine_data.zip")
 
-file(GLOB_RECURSE EngineSet CONFIGURE_DEPENDS "Engine/**" "CMakeLists.txt" "vendor/**")
-list(FILTER EngineSet EXCLUDE REGEX ".*/Examples/.*")
-list(FILTER EngineSet EXCLUDE REGEX ".*engine_data\\.zip$")
+set(ENGINE_SRC_DEST "${ENGINE_SRC_DIR}/Engine")
+
+file(GLOB_RECURSE EngineDataSet CONFIGURE_DEPENDS "Engine/**" "CMakeLists.txt" "vendor/**")
+list(FILTER EngineDataSet EXCLUDE REGEX ".*/Examples/.*")
 
 if(NOT PRODUCTION)
-  file(ARCHIVE_CREATE
-    OUTPUT "${ENGINE_ZIP}"
-    PATHS ${EngineSet}
-    FORMAT zip
-  )
-
-  execute_process(
-    COMMAND ${CMAKE_COMMAND} -E copy "${ENGINE_ZIP}" "${ENGINE_ZIP_DEST}"
-    RESULT_VARIABLE copy_result
-    COMMAND_ECHO STDOUT
-  )
+  file(REMOVE_RECURSE "${ENGINE_SRC_DEST}")
+  
+  foreach(file_path IN LISTS EngineDataSet)
+    file(RELATIVE_PATH rel_path "${CMAKE_CURRENT_SOURCE_DIR}" "${file_path}")
+    
+    set(dest_file "${ENGINE_SRC_DEST}/${rel_path}")
+    get_filename_component(dest_dir "${dest_file}" DIRECTORY)
+    
+    file(MAKE_DIRECTORY "${dest_dir}")
+    execute_process(
+      COMMAND ${CMAKE_COMMAND} -E copy "${file_path}" "${dest_file}"
+      RESULT_VARIABLE copy_result
+    )
+  endforeach()
 endif()
   
 
