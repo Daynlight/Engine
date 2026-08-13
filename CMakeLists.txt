@@ -34,24 +34,20 @@ endif()
 
 set(ENGINE_SRC_DEST "${ENGINE_SRC_DIR}/Engine")
 
-file(GLOB_RECURSE EngineDataSet CONFIGURE_DEPENDS "Engine/**" "CMakeLists.txt" "vendor/**")
-list(FILTER EngineDataSet EXCLUDE REGEX ".*/Examples/.*")
-
 if(NOT PRODUCTION)
   file(REMOVE_RECURSE "${ENGINE_SRC_DEST}")
-  
-  foreach(file_path IN LISTS EngineDataSet)
-    file(RELATIVE_PATH rel_path "${CMAKE_CURRENT_SOURCE_DIR}" "${file_path}")
-    
-    set(dest_file "${ENGINE_SRC_DEST}/${rel_path}")
-    get_filename_component(dest_dir "${dest_file}" DIRECTORY)
-    
-    file(MAKE_DIRECTORY "${dest_dir}")
-    execute_process(
-      COMMAND ${CMAKE_COMMAND} -E copy "${file_path}" "${dest_file}"
-      RESULT_VARIABLE copy_result
-    )
-  endforeach()
+  file(MAKE_DIRECTORY "${ENGINE_SRC_DEST}")
+
+  file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/Engine"
+       DESTINATION "${ENGINE_SRC_DEST}"
+       PATTERN "Examples" EXCLUDE)
+
+  file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/vendor"
+       DESTINATION "${ENGINE_SRC_DEST}"
+       PATTERN "Examples" EXCLUDE)
+
+  file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt"
+       DESTINATION "${ENGINE_SRC_DEST}")
 endif()
   
 

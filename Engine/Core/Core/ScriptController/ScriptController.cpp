@@ -17,39 +17,39 @@ CMRC_DECLARE(ScriptShared);
 
 
 void Engine::Core::Script::GameObjectScriptRecord::initSharedFolder() {
-#ifndef PRODUCTION
-  auto efs = cmrc::ScriptShared::get_filesystem();
-  std::filesystem::path dest_folder = Engine::Config::SCRIPTS_SRC_FOLDER;
+// #ifndef PRODUCTION
+//   auto efs = cmrc::ScriptShared::get_filesystem();
+//   std::filesystem::path dest_folder = Engine::Config::SCRIPTS_SRC_FOLDER;
 
-  auto extract_dir = [&](auto& self, const std::string& virtual_path, const std::filesystem::path& physical_path) -> void { 
-    if (!std::filesystem::exists(physical_path)) std::filesystem::create_directories(physical_path);
+//   auto extract_dir = [&](auto& self, const std::string& virtual_path, const std::filesystem::path& physical_path) -> void { 
+//     if (!std::filesystem::exists(physical_path)) std::filesystem::create_directories(physical_path);
 
-    for (auto&& entry : efs.iterate_directory(virtual_path)) {
-      std::string current_v_path = virtual_path.empty() ? entry.filename() : virtual_path + "/" + entry.filename();
-      std::filesystem::path current_p_path = physical_path / entry.filename();
-      if(std::filesystem::exists(current_p_path)) continue;
+//     for (auto&& entry : efs.iterate_directory(virtual_path)) {
+//       std::string current_v_path = virtual_path.empty() ? entry.filename() : virtual_path + "/" + entry.filename();
+//       std::filesystem::path current_p_path = physical_path / entry.filename();
+//       if(std::filesystem::exists(current_p_path)) continue;
 
-      if (entry.is_directory()) self(self, current_v_path, current_p_path);
-      else if (entry.is_file()) {
-        auto file = efs.open(current_v_path);
-        bool should_write = true;
+//       if (entry.is_directory()) self(self, current_v_path, current_p_path);
+//       else if (entry.is_file()) {
+//         auto file = efs.open(current_v_path);
+//         bool should_write = true;
 
-        if (std::filesystem::exists(current_p_path) && std::filesystem::file_size(current_p_path) == file.size()) should_write = false; 
+//         if (std::filesystem::exists(current_p_path) && std::filesystem::file_size(current_p_path) == file.size()) should_write = false; 
 
-        if (should_write) {
-          std::ofstream out(current_p_path, std::ios::binary);
-          if (out) out.write(file.begin(), file.size());
-          else Engine::Utils::Logger::get().erro("Script Controller", "Failed to write extracted file: " + current_p_path.string());
-        };
-      };
-    };
-  };
+//         if (should_write) {
+//           std::ofstream out(current_p_path, std::ios::binary);
+//           if (out) out.write(file.begin(), file.size());
+//           else Engine::Utils::Logger::get().erro("Script Controller", "Failed to write extracted file: " + current_p_path.string());
+//         };
+//       };
+//     };
+//   };
 
-  extract_dir(extract_dir, "", dest_folder);
-  Engine::Utils::Logger::get().info("Script Controller", "Shared folder successfully initialized from cmrc.");
-#else
-  Engine::Utils::Logger::get().info("Script Controller", "In PRODUCTION mode: cmrc extraction skipped.");
-#endif
+//   extract_dir(extract_dir, "", dest_folder);
+//   Engine::Utils::Logger::get().info("Script Controller", "Shared folder successfully initialized from cmrc.");
+// #else
+//   Engine::Utils::Logger::get().info("Script Controller", "In PRODUCTION mode: cmrc extraction skipped.");
+// #endif
 };
 
 
@@ -68,7 +68,7 @@ Engine::Core::Script::GameObjectScriptRecord::GameObjectScriptRecord(const std::
 #ifndef PRODUCTION
   if(!std::filesystem::exists(Engine::Config::TEMP_BIN_FOLDER)) std::filesystem::create_directories(Engine::Config::TEMP_BIN_FOLDER);
 #endif
-  initSharedFolder();
+  // initSharedFolder();
 };
 
 
@@ -644,11 +644,13 @@ int Engine::Core::Script::GameObjectScriptRecord::compile_thread(){
   return -1;
 
 #else
+  std::string engine_include_dir = ENGINE_SRC_DEST;
   const char* command = compiler.c_str();
   const char* argv[] = {
     compiler.c_str(),
     "-rdynamic",
     "-shared", 
+    "-I", engine_include_dir.c_str(),
     "-fPIC",
     "-o", so.c_str(), 
     cpp.c_str(), 

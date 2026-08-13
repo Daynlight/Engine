@@ -9,7 +9,7 @@
 #define SCRIPT_FILE_NAME "Window"
 #define BUILDING_SCRIPT_DLL
 
-#include "ScriptShared/ScriptShared/GameObjectScriptInterface.h"
+#include "Engine/ScriptShared/ScriptShared/GameObjectScriptInterface.h"
 #include <cstdio>
 #include <math.h>
 #include <deque>
