@@ -492,3 +492,256 @@ TEST(CameraPerspectiveProjection, HandlesInitialization){
   EXPECT_GE(ndc.z, -1.0f);
   EXPECT_LE(ndc.z, 1.0f);
 };
+
+TEST(CameraOrthogonalProjection, HandlesInitialization){
+  Mock::Renderer renderer;
+  glm::vec3 init_pos = {0.0f, 0.0f, 0.0f};
+  glm::vec3 init_dir = {0.0f, 0.0f, 1.0f};
+  float init_ortho_size = 60.0f;
+  float init_near_plane = Engine::Config::CAMERA_ORTHO_NEAR_PLANE;
+  float init_far_plane = Engine::Config::CAMERA_ORTHO_FAR_PLANE;
+
+  
+  Engine::Core::Camera camera(&renderer, init_pos, init_dir);
+  camera.setCameraMode(Engine::ScriptShared::CameraMode::ORTHOGONAL);
+  camera.setOrthoSize(init_ortho_size);
+  camera.setNearPlane(init_near_plane);
+  camera.setFarPlane(init_far_plane);
+  
+  float aspectRatio = renderer.getWindowData()->width / (float)renderer.getWindowData()->height;
+  float half_width = (init_ortho_size * aspectRatio) * 0.5f;
+  float half_height = init_ortho_size * 0.5f;
+  glm::mat4 expected_mat = glm::ortho(-half_width, half_width, -half_height, half_height, init_near_plane, init_far_plane);
+    
+  glm::vec4 testing_point1 = glm::vec4(-3.0f, 2.0f, -10.0f, 1.0f); 
+  glm::vec4 transformed_point1 = camera.orthogonal_projection() * testing_point1;
+  glm::vec4 expected1 = expected_mat * testing_point1;
+  
+  EXPECT_NEAR(transformed_point1.w, 1.0f, 0.001f);
+  EXPECT_NEAR(transformed_point1.x, expected1.x, 0.001f);
+  EXPECT_NEAR(transformed_point1.y, expected1.y, 0.001f);
+  EXPECT_NEAR(transformed_point1.z, expected1.z, 0.001f);
+
+  glm::vec3 ndc1 = glm::vec3(transformed_point1) / transformed_point1.w;
+  
+  EXPECT_GE(ndc1.x, -1.0f);
+  EXPECT_LE(ndc1.x, 1.0f);
+  EXPECT_GE(ndc1.y, -1.0f);
+  EXPECT_LE(ndc1.y, 1.0f);
+  EXPECT_GE(ndc1.z, -1.0f);
+  EXPECT_LE(ndc1.z, 1.0f);
+
+  glm::vec4 testing_point2 = {2.0f, 12.0f, -25.0f, 1.0f}; 
+  glm::vec4 transformed_point2 = camera.orthogonal_projection() * testing_point2;
+  glm::vec4 expected2 = expected_mat * testing_point2;
+  
+  EXPECT_NEAR(transformed_point2.w, 1.0f, 0.001f);
+  EXPECT_NEAR(transformed_point2.x, expected2.x, 0.001f);
+  EXPECT_NEAR(transformed_point2.y, expected2.y, 0.001f);
+  EXPECT_NEAR(transformed_point2.z, expected2.z, 0.001f);
+
+  glm::vec3 ndc2 = glm::vec3(transformed_point2) / transformed_point2.w;
+  
+  EXPECT_GE(ndc2.x, -1.0f);
+  EXPECT_LE(ndc2.x, 1.0f);
+  EXPECT_GE(ndc2.y, -1.0f);
+  EXPECT_LE(ndc2.y, 1.0f);
+  EXPECT_GE(ndc2.z, -1.0f);
+  EXPECT_LE(ndc2.z, 1.0f);
+
+  float new_ortho_size = 65.0f;
+  camera.setOrthoSize(new_ortho_size);
+  aspectRatio = renderer.getWindowData()->width / (float)renderer.getWindowData()->height;
+  half_width = (new_ortho_size * aspectRatio) * 0.5f;
+  half_height = new_ortho_size * 0.5f; 
+  glm::vec4 testing_point = {2.0f, 12.0f, -25.0f, 1.0f}; 
+  glm::vec4 transformed_point = camera.orthogonal_projection() * testing_point;
+  expected_mat = glm::ortho(-half_width, half_width, -half_height, half_height, init_near_plane, init_far_plane);
+  glm::vec4 expected = expected_mat * testing_point;
+  
+  EXPECT_NEAR(transformed_point.w, 1.0f, 0.001f);
+  EXPECT_NEAR(transformed_point.x, expected.x, 0.001f);
+  EXPECT_NEAR(transformed_point.y, expected.y, 0.001f);
+  EXPECT_NEAR(transformed_point.z, expected.z, 0.001f);
+
+  glm::vec3 ndc = glm::vec3(transformed_point) / transformed_point.w;
+  
+  EXPECT_GE(ndc.x, -1.0f);
+  EXPECT_LE(ndc.x, 1.0f);
+  EXPECT_GE(ndc.y, -1.0f);
+  EXPECT_LE(ndc.y, 1.0f);
+  EXPECT_GE(ndc.z, -1.0f);
+  EXPECT_LE(ndc.z, 1.0f);
+
+  float new_near = 0.5f;
+  camera.setNearOrthogonalPlane(new_near);
+  testing_point = {2.0f, 12.0f, -25.0f, 1.0f}; 
+  transformed_point = camera.orthogonal_projection() * testing_point;
+  expected_mat = glm::ortho(-half_width, half_width, -half_height, half_height, new_near, init_far_plane);
+  expected = expected_mat * testing_point;
+  
+  EXPECT_NEAR(transformed_point.w, 1.0f, 0.001f);
+  EXPECT_NEAR(transformed_point.x, expected.x, 0.001f);
+  EXPECT_NEAR(transformed_point.y, expected.y, 0.001f);
+  EXPECT_NEAR(transformed_point.z, expected.z, 0.001f);
+
+  ndc = glm::vec3(transformed_point) / transformed_point.w;
+  
+  EXPECT_GE(ndc.x, -1.0f);
+  EXPECT_LE(ndc.x, 1.0f);
+  EXPECT_GE(ndc.y, -1.0f);
+  EXPECT_LE(ndc.y, 1.0f);
+  EXPECT_GE(ndc.z, -1.0f);
+  EXPECT_LE(ndc.z, 1.0f);
+
+  new_near = 0.001f;
+  camera.setNearPlane(new_near);
+  testing_point = {2.0f, 12.0f, -25.0f, 1.0f}; 
+  transformed_point = camera.orthogonal_projection() * testing_point;
+  expected_mat = glm::ortho(-half_width, half_width, -half_height, half_height,  new_near, init_far_plane);
+  expected = expected_mat * testing_point;
+  
+  EXPECT_NEAR(transformed_point.w, 1.0f, 0.001f);
+  EXPECT_NEAR(transformed_point.x, expected.x, 0.001f);
+  EXPECT_NEAR(transformed_point.y, expected.y, 0.001f);
+  EXPECT_NEAR(transformed_point.z, expected.z, 0.001f);
+
+  ndc = glm::vec3(transformed_point) / transformed_point.w;
+  
+  EXPECT_GE(ndc.x, -1.0f);
+  EXPECT_LE(ndc.x, 1.0f);
+  EXPECT_GE(ndc.y, -1.0f);
+  EXPECT_LE(ndc.y, 1.0f);
+  EXPECT_GE(ndc.z, -1.0f);
+  EXPECT_LE(ndc.z, 1.0f);
+
+  float new_far = 200.0f;
+  camera.setFarOrthogonalPlane(new_far);
+  testing_point = {2.0f, 12.0f, -25.0f, 1.0f}; 
+  transformed_point = camera.orthogonal_projection() * testing_point;
+  expected_mat = glm::ortho(-half_width, half_width, -half_height, half_height, new_near, new_far);
+  expected = expected_mat * testing_point;
+  
+  EXPECT_NEAR(transformed_point.w, 1.0f, 0.001f);
+  EXPECT_NEAR(transformed_point.x, expected.x, 0.001f);
+  EXPECT_NEAR(transformed_point.y, expected.y, 0.001f);
+  EXPECT_NEAR(transformed_point.z, expected.z, 0.001f);
+
+  ndc = glm::vec3(transformed_point) / transformed_point.w;
+  
+  EXPECT_GE(ndc.x, -1.0f);
+  EXPECT_LE(ndc.x, 1.0f);
+  EXPECT_GE(ndc.y, -1.0f);
+  EXPECT_LE(ndc.y, 1.0f);
+  EXPECT_GE(ndc.z, -1.0f);
+  EXPECT_LE(ndc.z, 1.0f);
+
+  new_far = 2000.0f;
+  camera.setFarPlane(new_far);
+  testing_point = {2.0f, 12.0f, -25.0f, 1.0f}; 
+  transformed_point = camera.orthogonal_projection() * testing_point;
+  expected_mat = glm::ortho(-half_width, half_width, -half_height, half_height, new_near, new_far);
+  expected = expected_mat * testing_point;
+  
+  EXPECT_NEAR(transformed_point.w, 1.0f, 0.001f);
+  EXPECT_NEAR(transformed_point.x, expected.x, 0.001f);
+  EXPECT_NEAR(transformed_point.y, expected.y, 0.001f);
+  EXPECT_NEAR(transformed_point.z, expected.z, 0.001f);
+
+  ndc = glm::vec3(transformed_point) / transformed_point.w;
+  
+  EXPECT_GE(ndc.x, -1.0f);
+  EXPECT_LE(ndc.x, 1.0f);
+  EXPECT_GE(ndc.y, -1.0f);
+  EXPECT_LE(ndc.y, 1.0f);
+  EXPECT_GE(ndc.z, -1.0f);
+  EXPECT_LE(ndc.z, 1.0f);
+
+  renderer.setSize(200, 300);
+  aspectRatio = renderer.getWindowData()->width / (float)renderer.getWindowData()->height;
+  half_width = (new_ortho_size * aspectRatio) * 0.5f;
+  half_height = new_ortho_size * 0.5f;
+  testing_point = {2.0f, 12.0f, -25.0f, 1.0f}; 
+  transformed_point = camera.orthogonal_projection() * testing_point;
+  expected_mat = glm::ortho(-half_width, half_width, -half_height, half_height, new_near, new_far);
+  expected = expected_mat * testing_point;
+  
+  EXPECT_NEAR(transformed_point.w, 1.0f, 0.001f);
+  EXPECT_NEAR(transformed_point.x, expected.x, 0.001f);
+  EXPECT_NEAR(transformed_point.y, expected.y, 0.001f);
+  EXPECT_NEAR(transformed_point.z, expected.z, 0.001f);
+
+  ndc = glm::vec3(transformed_point) / transformed_point.w;
+  
+  EXPECT_GE(ndc.x, -1.0f);
+  EXPECT_LE(ndc.x, 1.0f);
+  EXPECT_GE(ndc.y, -1.0f);
+  EXPECT_LE(ndc.y, 1.0f);
+  EXPECT_GE(ndc.z, -1.0f);
+  EXPECT_LE(ndc.z, 1.0f);
+};
+
+TEST(CameraProjection, HandlesInitialization){
+  Mock::Renderer renderer;
+  glm::vec3 init_pos = glm::vec3(0.0f, 0.0f, 0.0f);
+  glm::vec3 init_dir = glm::vec3(0.0f, 0.0f, 1.0f);
+
+  float init_ortho_size = 60.0f;
+  float init_ortho_near_plane = Engine::Config::CAMERA_ORTHO_NEAR_PLANE;
+  float init_ortho_far_plane = Engine::Config::CAMERA_ORTHO_FAR_PLANE;
+  float init_fov = 60.0f;
+  float init_perspective_near_plane = Engine::Config::CAMERA_NEAR_PLANE;
+  float init_perspective_far_plane = Engine::Config::CAMERA_FAR_PLANE;
+
+  Engine::Core::Camera camera(&renderer, init_pos, init_dir);
+  camera.setOrthoSize(init_ortho_size);
+  camera.setNearOrthogonalPlane(init_ortho_near_plane);
+  camera.setFarOrthogonalPlane(init_ortho_far_plane);
+  camera.setFov(init_fov);
+  camera.setNearPerspectivePlane(init_perspective_near_plane);
+  camera.setFarPerspectivePlane(init_perspective_far_plane);
+
+  float aspectRatio = renderer.getWindowData()->width / (float)renderer.getWindowData()->height;
+  float half_width = (init_ortho_size * aspectRatio) * 0.5f;
+  float half_height = init_ortho_size * 0.5f;
+  glm::mat4 expected_orthogonal_mat = glm::ortho(-half_width, half_width, -half_height, half_height, init_ortho_near_plane, init_ortho_far_plane);
+  glm::mat4 expected_perspective_mat = glm::perspective(glm::radians(init_fov), aspectRatio, init_perspective_near_plane, init_perspective_far_plane);
+  
+  camera.setCameraMode(Engine::ScriptShared::CameraMode::ORTHOGONAL);
+  glm::vec4 testing_point = {2.0f, 12.0f, -25.0f, 1.0f}; 
+  glm::vec4 transformed_point = camera.projection() * testing_point;
+  glm::vec4 expected = expected_orthogonal_mat * testing_point;
+  
+  EXPECT_NEAR(transformed_point.w, 1.0f, 0.001f);
+  EXPECT_NEAR(transformed_point.x, expected.x, 0.001f);
+  EXPECT_NEAR(transformed_point.y, expected.y, 0.001f);
+  EXPECT_NEAR(transformed_point.z, expected.z, 0.001f);
+
+  glm::vec3 ndc = glm::vec3(transformed_point) / transformed_point.w;
+  
+  EXPECT_GE(ndc.x, -1.0f);
+  EXPECT_LE(ndc.x, 1.0f);
+  EXPECT_GE(ndc.y, -1.0f);
+  EXPECT_LE(ndc.y, 1.0f);
+  EXPECT_GE(ndc.z, -1.0f);
+  EXPECT_LE(ndc.z, 1.0f);
+
+  camera.setCameraMode(Engine::ScriptShared::CameraMode::PERSPECTIVE);
+  testing_point = {2.0f, 12.0f, -25.0f, 1.0f}; 
+  transformed_point = camera.projection() * testing_point;
+  expected = expected_perspective_mat * testing_point;
+  
+  EXPECT_NEAR(transformed_point.w, 25.0f, 0.001f);
+  EXPECT_NEAR(transformed_point.x, expected.x, 0.001f);
+  EXPECT_NEAR(transformed_point.y, expected.y, 0.001f);
+  EXPECT_NEAR(transformed_point.z, expected.z, 0.001f);
+
+  ndc = glm::vec3(transformed_point) / transformed_point.w;
+  
+  EXPECT_GE(ndc.x, -1.0f);
+  EXPECT_LE(ndc.x, 1.0f);
+  EXPECT_GE(ndc.y, -1.0f);
+  EXPECT_LE(ndc.y, 1.0f);
+  EXPECT_GE(ndc.z, -1.0f);
+  EXPECT_LE(ndc.z, 1.0f);
+};
