@@ -745,3 +745,323 @@ TEST(CameraProjection, HandlesInitialization){
   EXPECT_GE(ndc.z, -1.0f);
   EXPECT_LE(ndc.z, 1.0f);
 };
+
+TEST(CameraView, HandlesInitialization){
+  Mock::Renderer renderer;
+  glm::vec3 init_pos = {0.0f, 0.0f, 0.0f};
+  glm::vec3 init_dir = {0.0f, 0.0f, 1.0f};
+
+  Engine::Core::Camera camera(&renderer, init_pos, init_dir);
+  
+  glm::vec4 testing_point = glm::vec4(2.0f, 0.0f, 1.0f, 1.0f);
+  glm::quat orient = glm::quatLookAt(-init_dir, glm::vec3(0.0f, 1.0f, 0.0f));
+  glm::vec3 dynamicUp = orient * glm::vec3(0.0f, 1.0f, 0.0f);
+  glm::mat4 expected_mat = glm::lookAt(init_pos, init_pos + init_dir, dynamicUp);
+  glm::vec4 expected = expected_mat * testing_point;
+
+  EXPECT_EQ(expected, camera.view() * testing_point);
+
+  testing_point = glm::vec4(22.0f, -14.0f, 32.0f, 1.0f);
+  orient = glm::quatLookAt(-init_dir, glm::vec3(0.0f, 1.0f, 0.0f));
+  dynamicUp = orient * glm::vec3(0.0f, 1.0f, 0.0f);
+  expected_mat = glm::lookAt(init_pos, init_pos + init_dir, dynamicUp);
+  expected = expected_mat * testing_point;
+
+  EXPECT_EQ(expected, camera.view() * testing_point);
+
+  glm::vec3 new_dir = {0.25f, 0.45f, 1.0f};
+  camera.setDirection(new_dir);
+  testing_point = glm::vec4(2.0f, 0.0f, 1.0f, 1.0f);
+  orient = glm::quatLookAt(-new_dir, glm::vec3(0.0f, 1.0f, 0.0f));
+  dynamicUp = orient * glm::vec3(0.0f, 1.0f, 0.0f);
+  expected_mat = glm::lookAt(init_pos, init_pos + new_dir, dynamicUp);
+  expected = expected_mat * testing_point;
+
+  EXPECT_NEAR(expected.x, (camera.view() * testing_point).x, 0.0001f);
+  EXPECT_NEAR(expected.y, (camera.view() * testing_point).y, 0.0001f);
+  EXPECT_NEAR(expected.z, (camera.view() * testing_point).z, 0.0001f);
+  EXPECT_NEAR(expected.w, (camera.view() * testing_point).w, 0.0001f);
+
+  testing_point = glm::vec4(22.0f, -14.0f, 32.0f, 1.0f);
+  orient = glm::quatLookAt(-new_dir, glm::vec3(0.0f, 1.0f, 0.0f));
+  dynamicUp = orient * glm::vec3(0.0f, 1.0f, 0.0f);
+  expected_mat = glm::lookAt(init_pos, init_pos + new_dir, dynamicUp);
+  expected = expected_mat * testing_point;
+
+  EXPECT_NEAR(expected.x, (camera.view() * testing_point).x, 0.0001f);
+  EXPECT_NEAR(expected.y, (camera.view() * testing_point).y, 0.0001f);
+  EXPECT_NEAR(expected.z, (camera.view() * testing_point).z, 0.0001f);
+  EXPECT_NEAR(expected.w, (camera.view() * testing_point).w, 0.0001f);
+
+  glm::vec3 new_pos = {20.0f, 1.45f, -25.0f};
+  camera.setPosition(new_pos);
+  testing_point = glm::vec4(2.0f, 0.0f, 1.0f, 1.0f);
+  orient = glm::quatLookAt(-new_dir, glm::vec3(0.0f, 1.0f, 0.0f));
+  dynamicUp = orient * glm::vec3(0.0f, 1.0f, 0.0f);
+  expected_mat = glm::lookAt(new_pos, new_pos + new_dir, dynamicUp);
+  expected = expected_mat * testing_point;
+
+  EXPECT_NEAR(expected.x, (camera.view() * testing_point).x, 0.0001f);
+  EXPECT_NEAR(expected.y, (camera.view() * testing_point).y, 0.0001f);
+  EXPECT_NEAR(expected.z, (camera.view() * testing_point).z, 0.0001f);
+  EXPECT_NEAR(expected.w, (camera.view() * testing_point).w, 0.0001f);
+
+  testing_point = glm::vec4(22.0f, -14.0f, 32.0f, 1.0f);
+  orient = glm::quatLookAt(-new_dir, glm::vec3(0.0f, 1.0f, 0.0f));
+  dynamicUp = orient * glm::vec3(0.0f, 1.0f, 0.0f);
+  expected_mat = glm::lookAt(new_pos, new_pos + new_dir, dynamicUp);
+  expected = expected_mat * testing_point;
+  
+  EXPECT_NEAR(expected.x, (camera.view() * testing_point).x, 0.0001f);
+  EXPECT_NEAR(expected.y, (camera.view() * testing_point).y, 0.0001f);
+  EXPECT_NEAR(expected.z, (camera.view() * testing_point).z, 0.0001f);
+  EXPECT_NEAR(expected.w, (camera.view() * testing_point).w, 0.0001f);
+
+  float target_blank = 0.0f;
+  camera.movementButtons(0.0f, target_blank);
+  EXPECT_EQ(camera.view_mat_ready, false);
+  
+  camera.view();
+  EXPECT_EQ(camera.view_mat_ready, true);
+  
+  camera.rotationButtons(0.0f, target_blank);
+  EXPECT_EQ(camera.view_mat_ready, false);
+};
+
+TEST(CameraTransformation, HandlesInitialization){
+  Mock::Renderer renderer;
+  glm::vec3 init_pos = {0.0f, 0.0f, 0.0f};
+  glm::vec3 init_dir = {0.0f, 0.0f, 1.0f};
+  float init_ortho_size = 60.0f;
+  float init_fov = 60.0f;
+  float init_perspective_near_plane = 0.01f; 
+  float init_perspective_far_plane = 1000.0f;
+  float init_orthogonal_near_plane = 0.01f; 
+  float init_orthogonal_far_plane = 1000.0f;
+
+  Engine::Core::Camera camera(&renderer, init_pos, init_dir);
+  camera.setFov(init_fov);
+  camera.setOrthoSize(init_ortho_size);
+  camera.setNearPerspectivePlane(init_perspective_near_plane);
+  camera.setFarPerspectivePlane(init_perspective_far_plane);
+  camera.setNearOrthogonalPlane(init_orthogonal_near_plane);
+  camera.setFarOrthogonalPlane(init_orthogonal_far_plane);
+
+  float aspectRatio = renderer.getWindowData()->width / (float)renderer.getWindowData()->height;
+  glm::vec4 testing_point = glm::vec4(2.0f, 0.0f, 1.0f, 1.0f);
+  glm::quat orient = glm::quatLookAt(-init_dir, glm::vec3(0.0f, 1.0f, 0.0f));
+  glm::vec3 dynamicUp = orient * glm::vec3(0.0f, 1.0f, 0.0f);
+  glm::mat4 expected_view_mat = glm::lookAt(init_pos, init_pos + init_dir, dynamicUp);
+  glm::mat4 expected_perspective_mat = glm::perspective(glm::radians(init_fov), aspectRatio, init_perspective_near_plane, init_perspective_far_plane);
+  glm::vec4 expected = expected_perspective_mat * expected_view_mat * testing_point;
+  
+  EXPECT_EQ(expected, camera.transformation() * testing_point);
+
+  camera.setPosition({0.0f, 1.0f, 1.0f});
+  EXPECT_EQ(camera.transform_mat_ready, false);
+
+  camera.transformation();
+  EXPECT_EQ(camera.transform_mat_ready, true);
+
+  camera.setDirection({0.0f, 1.0f, 1.0f});
+  EXPECT_EQ(camera.transform_mat_ready, false);
+
+  camera.transformation();
+  EXPECT_EQ(camera.transform_mat_ready, true);
+
+  camera.setCameraMode(Engine::ScriptShared::CameraMode::PERSPECTIVE);
+  EXPECT_EQ(camera.transform_mat_ready, false);
+
+  camera.transformation();
+  EXPECT_EQ(camera.transform_mat_ready, true);
+
+  camera.setFov(20.0f);
+  EXPECT_EQ(camera.transform_mat_ready, false);
+
+  camera.transformation();
+  EXPECT_EQ(camera.transform_mat_ready, true);
+
+  camera.setCameraMode(Engine::ScriptShared::CameraMode::ORTHOGONAL);
+  EXPECT_EQ(camera.transform_mat_ready, false);
+
+  camera.transformation();
+  EXPECT_EQ(camera.transform_mat_ready, true);
+
+  camera.setFov(20.0f);
+  EXPECT_EQ(camera.transform_mat_ready, false);
+
+  camera.transformation();
+  EXPECT_EQ(camera.transform_mat_ready, true);
+
+  camera.setOrthoSize(20.0f);
+  EXPECT_EQ(camera.transform_mat_ready, false);
+
+  camera.transformation();
+  EXPECT_EQ(camera.transform_mat_ready, true);
+
+  camera.setNearPerspectivePlane(0.1f);
+  EXPECT_EQ(camera.transform_mat_ready, false);
+
+  camera.transformation();
+  EXPECT_EQ(camera.transform_mat_ready, true);
+
+  camera.setNearOrthogonalPlane(0.1f);
+  EXPECT_EQ(camera.transform_mat_ready, false);
+
+  camera.transformation();
+  EXPECT_EQ(camera.transform_mat_ready, true);
+
+  camera.setFarPerspectivePlane(100.0f);
+  EXPECT_EQ(camera.transform_mat_ready, false);
+
+  camera.transformation();
+  EXPECT_EQ(camera.transform_mat_ready, true);
+
+  camera.setFarOrthogonalPlane(200.0f);
+  EXPECT_EQ(camera.transform_mat_ready, false);
+
+  camera.transformation();
+  EXPECT_EQ(camera.transform_mat_ready, true);
+
+  float target_blank = 0.0f;
+  camera.movementButtons(0.0f, target_blank);
+  EXPECT_EQ(camera.transform_mat_ready, false);
+
+  camera.transformation();
+  EXPECT_EQ(camera.transform_mat_ready, true);
+
+  camera.rotationButtons(0.0f, target_blank);
+  EXPECT_EQ(camera.transform_mat_ready, false);
+};
+
+
+
+//// ========================= ////
+//// ==== Setters/Getters ==== ////
+//// ========================= ////
+TEST(CameraPositionDirectionSettersGetters, HandlesPositionAndDirection) {
+  Mock::Renderer renderer;
+  Engine::Core::Camera camera(&renderer, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -1.0f));
+
+  glm::vec3 newPos(10.0f, -5.0f, 3.14f);
+  camera.setPosition(newPos);
+  
+  EXPECT_FLOAT_EQ(camera.getPosition().x, newPos.x);
+  EXPECT_FLOAT_EQ(camera.getPosition().y, newPos.y);
+  EXPECT_FLOAT_EQ(camera.getPosition().z, newPos.z);
+
+  glm::vec3 newDir(1.0f, 1.0f, 0.0f);
+  camera.setDirection(newDir);
+  glm::vec3 expectedDir = glm::normalize(newDir);
+  
+  EXPECT_NEAR(camera.getDirection().x, expectedDir.x, 0.001f);
+  EXPECT_NEAR(camera.getDirection().y, expectedDir.y, 0.001f);
+  EXPECT_NEAR(camera.getDirection().z, expectedDir.z, 0.001f);
+
+  camera.setDirection(glm::vec3(0.0f, 0.0f, 0.0f));
+  
+  EXPECT_NEAR(camera.getDirection().x, 0.0f, 0.001f);
+  EXPECT_NEAR(camera.getDirection().y, 0.0f, 0.001f);
+  EXPECT_NEAR(camera.getDirection().z, 1.0f, 0.001f);
+};
+
+TEST(CameraParametersSettersGetters, HandlesProjectionPropertiesAndClamping) {
+  Mock::Renderer renderer;
+  Engine::Core::Camera camera(&renderer, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -1.0f));
+
+  camera.setFov(90.0f);
+  EXPECT_FLOAT_EQ(camera.getFov(), 90.0f);
+  camera.setFov(-10.0f);
+  EXPECT_FLOAT_EQ(camera.getFov(), 0.0f);
+
+  camera.setOrthoSize(25.0f);
+  EXPECT_FLOAT_EQ(camera.getOrthoSize(), 25.0f);
+  camera.setOrthoSize(0.0f);
+  EXPECT_FLOAT_EQ(camera.getOrthoSize(), 0.0f);
+
+  camera.setNearPerspectivePlane(0.1f);
+  EXPECT_FLOAT_EQ(camera.getNearPerspectivePlane(), 0.1f);
+  camera.setNearPerspectivePlane(-1.0f);
+  EXPECT_FLOAT_EQ(camera.getNearPerspectivePlane(), 0.0f);
+
+  camera.setFarPerspectivePlane(1000.0f);
+  EXPECT_FLOAT_EQ(camera.getFarPerspectivePlane(), 1000.0f);
+  camera.setFarPerspectivePlane(0.0f);
+  EXPECT_FLOAT_EQ(camera.getFarPerspectivePlane(), 0.0f);
+
+  camera.setNearOrthogonalPlane(1.0f);
+  EXPECT_FLOAT_EQ(camera.getNearOrthogonalPlane(), 1.0f);
+  camera.setNearOrthogonalPlane(-5.0f);
+  EXPECT_FLOAT_EQ(camera.getNearOrthogonalPlane(), 0.0f);
+
+  camera.setFarOrthogonalPlane(500.0f);
+  EXPECT_FLOAT_EQ(camera.getFarOrthogonalPlane(), 500.0f);
+  camera.setFarOrthogonalPlane(-100.0f);
+  EXPECT_FLOAT_EQ(camera.getFarOrthogonalPlane(), 0.0f);
+};
+
+TEST(CameraProjectionSettersGetters, HandlesModeSpecificPlanes) {
+  Mock::Renderer renderer;
+  Engine::Core::Camera camera(&renderer, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -1.0f));
+
+  camera.setNearPerspectivePlane(0.1f);
+  camera.setFarPerspectivePlane(100.0f);
+  camera.setNearOrthogonalPlane(1.0f);
+  camera.setFarOrthogonalPlane(200.0f);
+
+  camera.setCameraMode(Engine::ScriptShared::CameraMode::PERSPECTIVE);
+  EXPECT_EQ(camera.getCameraMode(), Engine::ScriptShared::CameraMode::PERSPECTIVE);
+  EXPECT_FLOAT_EQ(camera.getNearPlane(), 0.1f);
+  EXPECT_FLOAT_EQ(camera.getFarPlane(), 100.0f);
+
+  camera.setNearPlane(0.5f);
+  camera.setFarPlane(150.0f);
+  EXPECT_FLOAT_EQ(camera.getNearPerspectivePlane(), 0.5f);
+  EXPECT_FLOAT_EQ(camera.getFarPerspectivePlane(), 150.0f);
+  
+  EXPECT_FLOAT_EQ(camera.getNearOrthogonalPlane(), 1.0f);
+
+  camera.setCameraMode(Engine::ScriptShared::CameraMode::ORTHOGONAL);
+  EXPECT_EQ(camera.getCameraMode(), Engine::ScriptShared::CameraMode::ORTHOGONAL);
+  EXPECT_FLOAT_EQ(camera.getNearPlane(), 1.0f);
+  EXPECT_FLOAT_EQ(camera.getFarPlane(), 200.0f);
+
+  camera.setNearPlane(2.0f);
+  camera.setFarPlane(250.0f);
+  EXPECT_FLOAT_EQ(camera.getNearOrthogonalPlane(), 2.0f);
+  EXPECT_FLOAT_EQ(camera.getFarOrthogonalPlane(), 250.0f);
+  
+  EXPECT_FLOAT_EQ(camera.getNearPerspectivePlane(), 0.5f);
+};
+
+TEST(CameraMovementSettersGetters, HandlesMovementAndInputFlags) {
+  Mock::Renderer renderer;
+  Engine::Core::Camera camera(&renderer, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -1.0f));
+
+  camera.setDefaultMovement(true);
+  EXPECT_TRUE(camera.getDefaultMovement());
+  camera.setDefaultMovement(false);
+  EXPECT_FALSE(camera.getDefaultMovement());
+
+  camera.setMouseActive(true);
+  EXPECT_TRUE(camera.getMouseActive());
+  camera.setMouseActive(false);
+  EXPECT_FALSE(camera.getMouseActive());
+
+  camera.setVelocity(5.5f);
+  EXPECT_FLOAT_EQ(camera.getVelocity(), 5.5f);
+  camera.setVelocity(-2.0f);
+  EXPECT_FLOAT_EQ(camera.getVelocity(), 0.0f);
+
+  camera.setSensitivity(0.8f);
+  EXPECT_FLOAT_EQ(camera.getSensitivity(), 0.8f);
+  camera.setSensitivity(0.0f);
+  EXPECT_FLOAT_EQ(camera.getSensitivity(), 0.0f);
+};
+
+
+
+//// ================== ////
+//// ==== Movement ==== ////
+//// ================== ////
+// Skiped requires MOCKS

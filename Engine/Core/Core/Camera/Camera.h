@@ -159,5 +159,8 @@ private:
   void movementButtons(float delta_time, float& target_bank) noexcept;
   void rotationButtons(float delta_time, float& target_bank) noexcept;
 
+  // [TODO]
+  // render
+  // culling
 };
 };
