@@ -47,14 +47,23 @@ public:
 
 
 
+  float height(){
+    glm::vec3 position = game_object_data->position;
+    Engine::ScriptShared::GameObjectData* collider = object_manager->getGameObjectData("Stairs");
+    
+    if(collider == nullptr) return 0.0f;
+    if(std::abs(position.x - collider->position.x) < 1.0f
+      && std::abs(position.y * 2.0f - collider->position.y) < 1.0f)
+      return 5.0f;
+    return 0.0f;
+  };
+
   void movement(float delta_time){
     glm::vec3 delta_movement = glm::vec3(0.0f);
     bool shift_pressed = glob_res->input_data->is_key_down("LSHIFT");
 
     float target_zoom = shift_pressed ? DEFAULT_SPRINT_ZOOM : DEFAULT_ZOOM;
     zoom += (target_zoom - zoom) * DEFAULT_ZOOM_ACCELERATION * delta_time;
-    
-
 
     if(glob_res->input_data->is_key_down("W")) delta_movement.y += 1;
     if(glob_res->input_data->is_key_down("S")) delta_movement.y -= 1;
@@ -80,7 +89,7 @@ public:
     position.z = 10.0f;
     camera.setPosition(position);
     
-    camera.setOrthoSize(zoom);
+    camera.setOrthoSize(zoom + height());
     camera.setDirection(glm::vec3(0.0f, 0.0f, -1.0f));
     camera.setCameraMode(Engine::ScriptShared::CameraMode::ORTHOGONAL);
   };

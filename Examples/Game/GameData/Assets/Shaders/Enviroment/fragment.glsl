@@ -33,7 +33,7 @@ vec2 hash22(vec2 p) {
 }
 
 void main() {
-  vec2 globalUV = TexCoords + v_cameraPos.xy / atlasSizes;
+  vec2 globalUV = TexCoords + v_cameraPos.xy / (atlasSizes * 2.0f);
 
   vec2 cellID = floor(globalUV);
   vec2 localUV = fract(globalUV);
@@ -79,6 +79,7 @@ void main() {
 
   FragColor = vec4(result, albedo.a);
 }
+
 
 
 
