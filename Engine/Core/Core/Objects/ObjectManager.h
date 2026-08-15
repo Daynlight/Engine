@@ -1,0 +1,62 @@
+// Engine
+// Copyright 2026 Daynlight
+// Licensed under the GNU General, Version 3.0.
+// See LICENSE file for details.
+
+
+
+#pragma once
+#include "Renderer.h"
+
+#include <vector>
+#include <algorithm>
+
+#include "Utils/config.h"
+#include "DataSerializer/DataSerializer.h"
+#include "Objects/Object.h"
+#include "Objects/GameObject.h"
+#include "ScriptShared/IObjectManger.h"
+
+
+
+namespace Engine::Core{
+  class GameObject;
+};
+
+
+namespace Engine{
+class ObjectManager : public Engine::ScriptShared::IObjectManager{
+private:
+
+public:
+  static ObjectManager& get();
+
+  ObjectManager(const ObjectManager&) = delete;
+  ObjectManager& operator=(const ObjectManager&) = delete;
+  ObjectManager(ObjectManager&&) = delete;
+  ObjectManager& operator=(ObjectManager&&) = delete;
+
+private:
+  ObjectManager() = default;
+  ~ObjectManager() = default;
+
+public:
+  std::vector<Engine::Core::GameObject> objects;
+  std::vector<Engine::Core::GameObject> script_objects;
+
+  void emplace_back(const std::string& name);
+  void erase(const std::string& name);
+  Engine::ScriptShared::GameObjectData* getGameObjectData(const std::string& name);
+  void addScript(const std::string& object_name, const std::string& path);
+  void removeScript(const std::string& object_name, const std::string& path);
+  void saveRuntime(const std::string& object_name);
+
+  void emplace_backObjectScript(const std::string& name);
+  void eraseObjectScript(const std::string& name);
+  Engine::ScriptShared::GameObjectData* getGameObjectDataObjectScript(const std::string& name);
+  void addScriptObjectScript(const std::string& object_name, const std::string& path);
+  void removeScriptObjectScript(const std::string& object_name, const std::string& path);
+  void saveRuntimeObjectScript(const std::string& object_name);
+  
+};
+}; // namespace Engine

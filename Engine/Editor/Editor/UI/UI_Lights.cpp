@@ -1,0 +1,80 @@
+// Engine
+// Copyright 2026 Daynlight
+// Licensed under the GNU General, Version 3.0.
+// See LICENSE file for details.
+
+
+
+#include "UI_Lights.h"
+
+#ifndef PRODUCTION
+
+
+
+Engine::Editor::UI_Lights::UI_Lights(CW::Gui::Gui& gui)
+  :gui(gui){};
+
+
+
+Engine::Editor::UI_Lights::~UI_Lights(){
+};
+
+
+
+void Engine::Editor::UI_Lights::uiControl(){
+  if(Engine::Editor::guiSettings.lightsExplorerOn){
+    Engine::Utils::Logger::get().info("UI", "Opening Lights Explorer GUI");
+    gui.addWindow("Lights Editor", ui());
+  }
+  else{
+    Engine::Utils::Logger::get().info("UI", "Closing Lights Explorer GUI");
+    gui.deleteWindow("Lights Editor");
+  };
+};
+
+
+
+void Engine::Editor::UI_Lights::guiLights(){
+  ImGui::SeparatorText("Lights");
+  bool lights_updated = false;
+
+  for(unsigned int i = 0; i < Engine::Core::Resources::get().lights.size(); i++){
+    Engine::Core::Light& light = Engine::Core::Resources::get().lights[i];
+    std::string label = "light: (" + std::to_string(i) + ")"; 
+    ImGui::Text(label.c_str());
+    if(ImGui::InputFloat3(("position: [%f, %f, %f] ##" + std::to_string(i)).c_str(), &light.position[0])) lights_updated = true;
+    if(ImGui::ColorEdit3(("color:  ##" + std::to_string(i)).c_str(), &light.color[0])) lights_updated = true;
+    if(ImGui::InputFloat(("strength: %f ##" + std::to_string(i)).c_str(), &light.strength)) lights_updated = true;
+
+    std::string delete_light_label = "Delete ##(" + std::to_string(i) + ")";
+    if(ImGui::Button(delete_light_label.c_str())) {
+      Engine::Core::Resources::get().lights.erase(i);
+      Engine::Utils::Logger::get().info("UI", "Deleted Light at {" + std::to_string(i) + "}");
+      lights_updated = true;
+    };
+
+    ImGui::Separator();
+  };
+
+  std::string add_light_label = "Add Light ##(" + std::to_string(Engine::Core::Resources::get().lights.size()) + ")";
+  if(ImGui::Button(add_light_label.c_str())) {
+    Engine::Core::Resources::get().lights.emplace_back(Engine::Core::Light({0, 0, 0}, {1, 1, 1}, 1));
+    Engine::Utils::Logger::get().info("UI", "Added Light at {" + std::to_string(Engine::Core::Resources::get().lights.size()) + "}");
+    lights_updated = true;
+  };
+
+  if(lights_updated){
+    DataSerializer::get().saveAllLights(Engine::Core::Resources::get().lights);
+    Engine::Utils::Logger::get().info("UI", "Lights saved");
+  };
+};
+
+
+
+std::function<void(CW::Renderer::iRenderer *window)> Engine::Editor::UI_Lights::ui(){
+  return [this](CW::Renderer::iRenderer *window){
+    guiLights();
+  };
+};
+
+#endif

@@ -1,0 +1,237 @@
+// Engine
+// Copyright 2026 Daynlight
+// Licensed under the GNU General, Version 3.0.
+// See LICENSE file for details.
+
+
+
+#include "Resources.h"
+#include "DataSerializer/DataSerializer.h"
+
+#ifdef PRODUCTION
+#include <cmrc/cmrc.hpp>
+CMRC_DECLARE(GameData);
+#endif
+
+
+
+Engine::Core::Resources& Engine::Core::Resources::get(){
+  static Engine::Core::Resources instance; 
+  return instance;
+};
+
+
+
+Engine::Core::Resources::Resources(){
+  initMeshes();
+  initLights();
+};
+
+
+
+Engine::Core::Resources::~Resources(){
+  destroy();
+};
+
+
+
+void Engine::Core::Resources::destroy(){
+  meshes.clear();
+  textures.clear();
+  shaders.clear();
+  materials.destroy();
+  lights.destroy();
+  lights.clear();
+};
+
+
+
+CW::Renderer::Texture &Engine::Core::Resources::getTexture(const std::string &path_to_asset){
+  auto it = textures.find(path_to_asset);
+  if (it != textures.end()) return it->second;
+
+  DataSerializer::get().loadTexture(path_to_asset);
+
+  auto ita = textures.find(path_to_asset);
+  if (ita != textures.end()) return ita->second;
+
+  return textures[Engine::Config::DEFAULT_TEXTURE]; 
+};
+
+
+
+CW::Renderer::Shader &Engine::Core::Resources::getShader(const std::string &path_to_asset){
+  auto it = shaders.find(path_to_asset);
+  
+  if (it != shaders.end()) {
+    return it->second;
+  }
+
+  DataSerializer::get().loadShader(path_to_asset);
+  
+  auto ita = shaders.find(path_to_asset);
+  
+  if (ita != shaders.end()) {
+    return ita->second;
+  };
+  
+  return shaders[Engine::Config::DEFAULT_SHADER];
+};
+
+
+
+void Engine::Core::Resources::initMeshes(){
+  // ============================= //
+  // ========== Empty ============ //
+  // ============================= //
+  std::vector<float> empty_vertices = {
+    1.0f, 1.0f, 1.0f,
+    1.0f, 1.0f, 1.0f,
+    1.0f, 1.0f, 1.0f
+  };
+
+  std::vector<unsigned int> empty_indices = {0, 1, 2};
+
+  CW::Renderer::Mesh empty_quad;
+  empty_quad.addVertices(empty_vertices, 3, 0);
+  empty_quad.addIndices(empty_indices);
+  meshes.emplace_back("empty", std::move(empty_quad));
+
+
+  // ======================= //
+  // ======= Terrain ======= //
+  // ======================= //
+  std::vector<float> vertices = {
+    -1.0f, 0.0f, 1.0f,
+    -1.0f, 0.0f, -1.0f,
+    1.0f, 0.0f, -1.0f,
+    1.0f, 0.0f, 1.0f
+  };
+
+  CW::Renderer::Mesh terrain_mesh;
+  terrain_mesh.addVertices(vertices, 3);
+  terrain_mesh.addIndices({0,1,2,3});
+  meshes.emplace_back("terrain_chunk", std::move(terrain_mesh));
+
+
+
+  // =================================== //
+  // ========== Screen Quad ============ //
+  // =================================== //
+  std::vector<float> quad_vertices = {
+    -1.0f,  1.0f, 0.0f,
+    -1.0f, -1.0f, 0.0f,
+    1.0f, -1.0f, 0.0f,
+    1.0f,  1.0f, 0.0f
+  };
+
+  std::vector<float> quad_uvs = {
+    0.0f, 1.0f,
+    0.0f, 0.0f,
+    1.0f, 0.0f,
+    1.0f, 1.0f
+  };
+
+  std::vector<unsigned int> quad_indices = {
+    0, 1, 2,
+    0, 2, 3 
+  };
+
+  CW::Renderer::Mesh screen_quad;
+  screen_quad.addVertices(quad_vertices, 3, 0);
+  screen_quad.setData<float>(quad_uvs, 2, 1);
+  screen_quad.addIndices(quad_indices);
+  meshes.emplace_back("screen_quad", std::move(screen_quad));
+
+
+  
+  // ====================== //
+  // ======= SkyBox ======= //
+  // ====================== //
+  vertices = {         
+    -1.0f, -1.0f,  1.0f,
+    1.0f, -1.0f,  1.0f,
+    1.0f,  1.0f,  1.0f,
+    -1.0f,  1.0f,  1.0f,
+    -1.0f, -1.0f, -1.0f,
+    1.0f, -1.0f, -1.0f,
+    1.0f,  1.0f, -1.0f,
+    -1.0f,  1.0f, -1.0f
+  };
+  std::vector<unsigned int> indices = {
+    0, 1, 2, 2, 3, 0,
+    1, 5, 6, 6, 2, 1,
+    5, 4, 7, 7, 6, 5,
+    4, 0, 3, 3, 7, 4,
+    4, 5, 1, 1, 0, 4,
+    3, 2, 6, 6, 7, 3
+  };
+
+  CW::Renderer::Mesh sky_box_mesh;
+  sky_box_mesh.addVertices(vertices, 3, 0);
+  sky_box_mesh.addIndices(indices);
+  meshes.emplace_back("sky_box", std::move(sky_box_mesh));
+
+
+
+  // ============================ //
+  // ======= Testing Cube ======= //
+  // ============================ //
+  vertices = {         
+    -1.0f, -1.0f,  1.0f,
+    1.0f, -1.0f,  1.0f,
+    1.0f,  1.0f,  1.0f,
+    -1.0f,  1.0f,  1.0f,
+    -1.0f, -1.0f, -1.0f,
+    1.0f, -1.0f, -1.0f,
+    1.0f,  1.0f, -1.0f,
+    -1.0f,  1.0f, -1.0f
+  };
+  indices = {
+    0, 1, 2, 2, 3, 0,
+    1, 5, 6, 6, 2, 1,
+    5, 4, 7, 7, 6, 5,
+    4, 0, 3, 3, 7, 4,
+    4, 5, 1, 1, 0, 4,
+    3, 2, 6, 6, 7, 3
+  };
+  std::vector<GLfloat> normals = {
+    0.0f, 0.0f, 0.0f,
+    0.0f, 1.0f, 0.0f,
+    1.0f, 0.0f, 0.0f,
+    1.0f, 1.0f, 0.0f,
+    0.0f, 0.0f, 0.0f,
+    0.0f, 1.0f, 0.0f,
+    1.0f, 0.0f, 0.0f,
+    1.0f, 1.0f, 0.0f,
+  };
+  std::vector<GLfloat> uvs = {
+    0.0f, 0.0f,
+    0.0f, 1.0f,
+    1.0f, 0.0f,
+    1.0f, 1.0f,
+    0.0f, 0.0f,
+    0.0f, 1.0f,
+    1.0f, 0.0f,
+    1.0f, 1.0f,
+  };
+  std::vector<GLint> mat_id = {
+    0, 0, 0, 0, 1, 1, 1, 1
+  };
+  CW::Renderer::Mesh default_mesh;
+  default_mesh.addVertices(vertices, 3, 0);
+  default_mesh.setData<GLfloat>(normals, 3, 1);
+  default_mesh.setData<GLfloat>(uvs, 2, 2);
+  default_mesh.setData<GLint>(mat_id, 1, 3);
+  default_mesh.addIndices(indices);
+  meshes.emplace_back(Engine::Config::DEFAULT_MESH, std::move(default_mesh));
+
+};
+
+
+
+void Engine::Core::Resources::initLights(){
+  Engine::Core::Light light(glm::vec3(0, 1000, 0), glm::vec3(1.0f, 1.0f,1.0f), 2.0f);
+  lights.emplace_back({light});
+  lights.compile();
+};

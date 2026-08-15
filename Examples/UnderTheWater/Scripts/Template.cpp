@@ -1,4 +1,4 @@
-// Help me I'am Under The Water
+// Engine
 // Copyright 2026 Daynlight
 // Licensed under the GNU General, Version 3.0.
 // See LICENSE file for details.
@@ -16,8 +16,8 @@
 
 
 
-namespace UW{
-class SCRIPT_NAME : public GameObjectScriptInterface {
+namespace Engine{
+class SCRIPT_NAME : public Engine::ScriptShared::GameObjectScriptInterface {
 private:
 
 public:
@@ -44,23 +44,4 @@ public:
 
 
 
-#ifndef PRODUCTION
-
-extern "C" UW::GameObjectScriptInterface* SCRIPT_API GetScript() {
-  UW::SCRIPT_NAME* script = new UW::SCRIPT_NAME();
-  return (UW::GameObjectScriptInterface*)script;
-};
-
-
-
-extern "C" void SCRIPT_API DeleteScript(UW::GameObjectScriptInterface* script) {
-  UW::SCRIPT_NAME* temp_script = (UW::SCRIPT_NAME*)script;
-  delete temp_script;
-};
-
-#else
-
 REGISTER_SCRIPT(SCRIPT_FILE_NAME, SCRIPT_NAME)
-
-#endif
-

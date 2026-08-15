@@ -1,0 +1,49 @@
+// Engine
+// Copyright 2026 Daynlight
+// Licensed under the GNU General, Version 3.0.
+// See LICENSE file for details.
+
+
+
+#pragma once
+#include "ILogger.h"
+#include "ScriptRegister.h"
+#include "GameObjectData.h"
+#include "IObjectManger.h"
+#include "GlobResource.h"
+#include "Camera.h"
+#include "CameraController.h"
+
+
+
+#if !defined(PRODUCTION) && (defined(_WIN32) || defined(_WIN64))
+  #ifdef BUILDING_SCRIPT_DLL
+    #define SCRIPT_API __declspec(dllexport)
+  #else
+    #define SCRIPT_API __declspec(dllimport)
+  #endif
+#else
+  #define SCRIPT_API 
+#endif
+
+
+
+namespace Engine::ScriptShared{
+class GameObjectScriptInterface {
+public:
+  GameObjectData* game_object_data = nullptr;
+  GlobResource* glob_res = nullptr;
+  ILogger* logger = nullptr;
+  IObjectManager* object_manager = nullptr;
+  ICameraController* camera_controller = nullptr;
+
+  virtual ~GameObjectScriptInterface() = default;
+  
+  virtual void OnLoad() = 0;
+  virtual void OnUpdate(float delta_time) = 0;
+  virtual void OnFixedUpdate(float fixed_delta_time) = 0;
+  virtual void OnRender() = 0;
+  virtual void OnDestroy() = 0;
+
+};
+};

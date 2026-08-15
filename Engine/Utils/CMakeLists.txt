@@ -1,0 +1,26 @@
+# Engine
+# Copyright 2026 Daynlight
+# Licensed under the GNU General, Version 3.0.
+# See LICENSE file for details.
+
+
+
+cmake_minimum_required(VERSION 3.15)
+
+project(Utils LANGUAGES CXX C)
+project(UtilsDev LANGUAGES CXX C)
+
+
+set(src
+  "Utils/Logger.cpp"
+)
+
+
+add_library(Utils STATIC ${src})
+target_link_libraries(Utils CWindow)
+target_include_directories(Utils PUBLIC "." "../ScriptShared")
+target_compile_definitions(Utils PRIVATE PRODUCTION)
+
+add_library(UtilsDev STATIC ${src})
+target_link_libraries(UtilsDev CWindow)
+target_include_directories(UtilsDev PUBLIC "." "../ScriptShared")

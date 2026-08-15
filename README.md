@@ -9,25 +9,9 @@
 
 
 ## Demos
-
-<table cellspacing="15" cellpadding="0" style="width: 100%; border: none;">
-  <tr>
-    <td width="50%">
-      <img width="100%" src="./docs/Prod.gif">
-    </td>
-    <td width="50%">
-      <img width="100%" src="./docs/Editor.gif">
-    </td>
-  </tr>
-  <tr>
-    <td width="50%">
-      <img width="100%" src="./docs/Movement.gif">
-    </td>
-    <td width="50%">
-      <img width="100%" src="./docs/SDF.gif">
-    </td>
-  </tr>
-</table>
+<img width="100%" src="./docs/Engine.png">
+<img width="100%" src="./docs/Editor.gif">
+<img width="100%" src="./docs/Prod.gif">
 
 
 
@@ -52,15 +36,6 @@ Game Engine with editor and production. Build on top of my library [**CWindow**]
   - [GameObject](#gameobject)
   - [UI](#ui-1)
   - [Script Controller and ScriptShared](#script-controller-and-scriptshared)
-- [Tasks Presentation](#tasks-presentation)
-  - [Normal mapping](#normal-mapping)
-  - [PBR](#pbr)
-  - [Quaternion camera](#quaternion-camera)
-  - [Shadow mapping](#shadow-mapping)
-  - [Parallel Transport Frames](#parallel-transport-frames)
-  - [Underwater skybox](#underwater-skybox)
-  - [**A09** Ray-marched SDF object](#a09-ray-marched-sdf-object)
-  - [**B07** Heightmap-based seabed mesh](#b07-heightmap-based-seabed-mesh)
 - [Writing scripts](#writing-scripts)
 - [Supported Platforms](#supported-platforms)
 - [Prerequisites](#prerequisites)
@@ -117,7 +92,7 @@ All in **Editor** mode. **Production** have turn off ui.
 
 
 ## Compiling End Product
-Use cmake command with ```PRODUCTION``` FLAG
+Use ```Build BTN``` or cmake command with ```PRODUCTION``` FLAG
 
 ```bash
 mkdir -p build-prod
@@ -125,7 +100,7 @@ cd build-prod
 cmake -B . -DPRODUCTION=ON -DCMAKE_BUILD_TYPE=Release ..
 cmake --build .
 cd ..
-./build-prod/bin/UnderTheWater
+./build-prod/bin/App
 ```
 
 
@@ -137,7 +112,7 @@ We use **cmake** for ease of build with **git submodules** for git packages.
 ### [DataSerializer](UnderTheWater/DataSerializer/) {SINGLETON}
 Focuses only on reading and saving. For loading data uses ```cmrc``` that **bakes** assets into executable. Data are stored in ```binary``` format for faster access and avoiding parsing. Everything that is baked via ```cmrc``` is save in [GameData](GameData/) folder. In editor we skips ```cmrc``` and use normal ```fstreams``` for faster editing.
 
-* **Meshes**: Faster to read then **Assimp**. Saved as multiple files each for one  mesh in [Assets/Meshes](GameData/Assets//Meshes/) folder each with ```.msh``` extension. On load we search for file in this directory with ```.msh``` extension. Loaded to [```Resources```](UnderTheWater/Resources/) saved in ```UW::Meshes``` that controls versioning and allows avoiding ```unordered_map``` for editor.
+* **Meshes**: Faster to read then **Assimp**. Saved as multiple files each for one  mesh in [Assets/Meshes](GameData/Assets//Meshes/) folder each with ```.msh``` extension. On load we search for file in this directory with ```.msh``` extension. Loaded to [```Resources```](UnderTheWater/Resources/) saved in ```Engine::Meshes``` that controls versioning and allows avoiding ```unordered_map``` for editor.
 * **Shaders**: Accessible via ```Resources```. Saved as multiple files in [Assets/Shaders](GameData/Assets/Shaders/) folders **each folder is one compiled shader** with ```.glsl``` extension. List of allowed script types is in [config.h](UnderTheWater/config.h).
 * **Scripts**: In DataSerializer saves and loads ```.cpp``` script to ```UI``` editor. Logic of ```hot-reloading``` and compiling to ```PRODUCTION``` is in [ScriptController](UnderTheWater/ScriptController/) and [ScriptShared](UnderTheWater/ScriptShared/).
 * **Lights**: World static lights loaded to ```Resources``` and compile as ```SSBO```. Single file [```Lights.lit```](GameData/Lights.lit).
@@ -188,32 +163,6 @@ Editor mode provides easy interface to [```editing/writing/adding/deleting, ...`
 
 #### PRODUCTION MODE
 Production is designed to create one executable with no additional files requirement. All Assets in [GameData](GameData/) is baked via ```cmrc```. Scripts are compiled and register to main exec soo we don't need ```any dll's```. In Production mode we turn off [```script compilation```, ```ui```, ```debug camera```, ```saving in DataSerializer```].
-
-
-
-## Tasks Presentation
-### Normal mapping 
-<img width="100%" src="./docs/Normals.png">
-
-### PBR 
-<img width="100%" src="./docs/PBR.gif">
-
-### Quaternion camera
-<img width="100%" src="./docs/QuaterionCamera.gif">
-
-### Shadow mapping
-<img width="100%" src="./docs/Shadows.gif">
-
-### Parallel Transport Frames
-
-### Underwater skybox
-<img width="100%" src="./docs/Skybox.gif">
-
-### **A09** Ray-marched SDF object
-<img width="100%" src="./docs/SDF.gif">
-
-### **B07** Heightmap-based seabed mesh
-<img width="100%" src="./docs/Terrain.gif">
 
 
 
@@ -363,14 +312,58 @@ Production is designed to create one executable with no additional files require
 - [x] Scripts on windows.
 </details> 
 
-<details open>
-<summary>🌟Iteration 7🌟</summary>
+<details>
+<summary> Iteration 7 (26.07.2026) </summary>
 
-- [ ] Game data backup.
-- [ ] Move terrain, water, skybox to object_register vector.
-- [ ] Shaders uniform parameters ui.
-- [ ] Add Texture Serializer.
-- [ ] Last Time Write sync.
+- [x] Shaders uniform parameters ui.
+- [x] Skybox as GameObject.
+- [x] Terrain as GameObject.
+- [x] Terrain fix materials.
+- [x] Rm Terrain_on btn.
+- [x] Water as GameObject.
+- [x] Game data backup.
+- [x] Add Texture Serializer.
+- [x] Separated register for script objects.
+- [x] Multi project structure.
+- [x] Separate Project for Add and Dev.
+- [x] Src in App Dev.
+- [x] Build/Run btn.
+- [x] Installer.
+</details> 
+
+<details open>
+<summary> 🌟 Iteration 8 🌟 </summary>
+
+- [x] Viewport ui.
+- [x] Production BTN.
+- [x] Camera full quaternions.
+- [x] Minimized Script Shared.
+- [ ] Move Rendering to Camera with FBO.
+- [ ] Camera Culling check.
+- [ ] Camera Tests.
+- [ ] CameraController Refactor.
+- [ ] CameraController Tests.
+- [ ] One Unified Scene Class.
+- [ ] Scene Save.
+- [ ] SceneController.
+- [ ] Access to SceneController and Scene via Scripts.
+- [ ] Scene Tests.
+- [ ] SceneController Tests.
+- [ ] Docs Camera and CameraController.
+- [ ] Docs Scene and SceneController.
+</details> 
+
+<details>
+<summary> Iteration 9 </summary>
+
+- [ ] Entity, Component, System.
+- [ ] ScriptController.
+- [ ] ScriptController Dependency graf.
+- [ ] ScriptController Tests.
+- [ ] Offset fixed update.
+- [ ] Threads for fixed update.
+
+- [ ] Fix Issues:
 - [ ] Fix pre_size size error.
 ```bash
 corrupted size vs. prev_size while consolidating
@@ -388,24 +381,19 @@ terminate called after throwing an instance of 'std::length_error'
   what():  basic_string::_M_create
 Aborted (core dumped)
 ```
-- [ ] Window Data Serialization move in different file then ```imgui.ini```.
-- [ ] Simpler glm in script shared.
-- [ ] Clean up.
-- [ ] Viewport ui.
-- [ ] Rule of 5.
-- [ ] Debug Camera and Game Camera. Game Camera as game object specified in GlobConf. 
-- [ ] Production optimization.
-- [ ] Optimization for Compile version (avoid maps).
-- [ ] Docs.
 </details>
 
 <details>
 <summary> Planed in Future </summary>
 
-- [ ] Multiple Scenes.
+- [ ] Last Time Write sync.
+- [ ] Window Size in GlobResources.
+- [ ] Script Data Serializer.
+- [ ] Camera as GameObject.
+- [ ] Editor Camera.
+- [ ] GameObject components system.
 - [ ] Viewport mode for editing and gameplay.
 - [ ] Optimization for Production.
-- [ ] Production BTN.
 - [ ] Full access to render engine from scripts.
 - [ ] Components base GameObjects.
 - [ ] UI Module for games.

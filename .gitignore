@@ -42,6 +42,7 @@
 build/
 Build/
 build-*/
+build_*/
 
 # CMake generated files
 CMakeFiles/
@@ -73,6 +74,11 @@ bin/
 build/
 *.ini
 
-temp*
+*temp*
+Examples/**/App
 Scripts_DLL/
 **/Scripts/ScriptShared/
+.GameData_back/
+/GameData/
+/Scripts/
+Engine_Bin/

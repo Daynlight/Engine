@@ -1,0 +1,11 @@
+[submodule "vendor/CWindow"]
+	path = vendor/CWindow
+	url = https://github.com/Daynlight/CWindow.git
+	branch = engine
+[submodule "vendor/cmrc"]
+	path = vendor/cmrc
+	url = https://github.com/vector-of-bool/cmrc.git
+	branch = master
+[submodule "vendor/googletest"]
+	path = vendor/googletest
+	url = https://github.com/google/googletest.git

@@ -1,0 +1,75 @@
+// Engine
+// Copyright 2026 Daynlight
+// Licensed under the GNU General, Version 3.0.
+// See LICENSE file for details.
+
+
+
+#pragma once
+#include "Renderer.h"
+
+#include <string>
+#include <fstream>
+#include <sstream>
+#include <filesystem>
+#include <vector>
+
+#include "Utils/Logger.h"
+#include "ScriptShared/GameObjectData.h"
+
+
+
+namespace Engine::Core {
+  class GameObject;
+};
+
+
+
+namespace Engine {
+struct GameObjectRecord {
+  std::string name = "";
+  std::string mesh = "";
+  std::string shader = "";
+  glm::vec3 position = glm::vec3(0.0f);
+  glm::vec3 rotation = glm::vec3(0.0f);
+  glm::vec3 scale = glm::vec3(1.0f);
+  std::vector<std::string> textures;
+  std::vector<std::string> materials;
+  std::vector<std::pair<std::string, bool>> scripts;
+  std::unordered_map<std::string, Engine::ScriptShared::GameObjectParameterType> parameters;
+  std::unordered_map<std::string, Engine::ScriptShared::GameObjectParameterType> uniforms;
+  bool culling_on = true;
+  bool dont_write_to_depth_mask = false;
+  bool gl_depth_lequal = false;
+  bool gl_draw_patches = false;
+  bool gl_blend = false;
+  bool gl_nearest = false;
+
+  friend std::ostream& operator<<(std::ostream& os, const GameObjectRecord& record);
+  friend std::istream& operator>>(std::istream& is, GameObjectRecord& record);
+};
+
+
+
+class ObjectsSerialization {
+public:
+  ObjectsSerialization() = default;
+  ~ObjectsSerialization() = default;
+
+#ifndef PRODUCTION
+  void save(const Engine::Core::GameObject& object);
+#endif
+  void load(Engine::Core::GameObject& object);
+
+#ifndef PRODUCTION
+  void saveAll(std::vector<Engine::Core::GameObject>& objects);
+#endif
+  void loadAll(std::vector<Engine::Core::GameObject>& objects);
+
+private:
+#ifndef PRODUCTION
+  friend std::ostream& operator<<(std::ostream& os, const GameObjectRecord& record);
+#endif
+  friend std::istream& operator>>(std::istream& is, GameObjectRecord& record);
+};
+}; // namespace Engine

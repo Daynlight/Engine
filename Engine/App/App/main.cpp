@@ -1,0 +1,18 @@
+// Engine
+// Copyright 2026 Daynlight
+// Licensed under the GNU General, Version 3.0.
+// See LICENSE file for details.
+
+
+
+#include "App.h"
+
+
+
+int main(){
+  Engine::App::App app;
+  
+  while(app.isRunning()) app.run();
+
+  return 0;
+};
