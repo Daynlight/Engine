@@ -9,30 +9,9 @@
 
 
 ## Demos
-
-<table cellspacing="15" cellpadding="0" style="width: 100%; border: none;">
-  <tr>
-    <td width="100%">
-      <img width="100%" src="./docs/Engine.png">
-    </td>
-  </tr>
-  <tr>
-    <td width="50%">
-      <img width="100%" src="./docs/Prod.gif">
-    </td>
-    <td width="50%">
-      <img width="100%" src="./docs/Editor.gif">
-    </td>
-  </tr>
-  <tr>
-    <td width="50%">
-      <img width="100%" src="./docs/Movement.gif">
-    </td>
-    <td width="50%">
-      <img width="100%" src="./docs/SDF.gif">
-    </td>
-  </tr>
-</table>
+<img width="100%" src="./docs/Engine.png">
+<img width="100%" src="./docs/Editor.gif">
+<img width="100%" src="./docs/Prod.gif">
 
 
 
@@ -57,15 +36,6 @@ Game Engine with editor and production. Build on top of my library [**CWindow**]
   - [GameObject](#gameobject)
   - [UI](#ui-1)
   - [Script Controller and ScriptShared](#script-controller-and-scriptshared)
-- [Tasks Presentation](#tasks-presentation)
-  - [Normal mapping](#normal-mapping)
-  - [PBR](#pbr)
-  - [Quaternion camera](#quaternion-camera)
-  - [Shadow mapping](#shadow-mapping)
-  - [Parallel Transport Frames](#parallel-transport-frames)
-  - [Underwater skybox](#underwater-skybox)
-  - [**A09** Ray-marched SDF object](#a09-ray-marched-sdf-object)
-  - [**B07** Heightmap-based seabed mesh](#b07-heightmap-based-seabed-mesh)
 - [Writing scripts](#writing-scripts)
 - [Supported Platforms](#supported-platforms)
 - [Prerequisites](#prerequisites)
@@ -122,7 +92,7 @@ All in **Editor** mode. **Production** have turn off ui.
 
 
 ## Compiling End Product
-Use cmake command with ```PRODUCTION``` FLAG
+Use ```Build BTN``` or cmake command with ```PRODUCTION``` FLAG
 
 ```bash
 mkdir -p build-prod
@@ -193,32 +163,6 @@ Editor mode provides easy interface to [```editing/writing/adding/deleting, ...`
 
 #### PRODUCTION MODE
 Production is designed to create one executable with no additional files requirement. All Assets in [GameData](GameData/) is baked via ```cmrc```. Scripts are compiled and register to main exec soo we don't need ```any dll's```. In Production mode we turn off [```script compilation```, ```ui```, ```debug camera```, ```saving in DataSerializer```].
-
-
-
-## Tasks Presentation
-### Normal mapping 
-<img width="100%" src="./docs/Normals.png">
-
-### PBR 
-<img width="100%" src="./docs/PBR.gif">
-
-### Quaternion camera
-<img width="100%" src="./docs/QuaterionCamera.gif">
-
-### Shadow mapping
-<img width="100%" src="./docs/Shadows.gif">
-
-### Parallel Transport Frames
-
-### Underwater skybox
-<img width="100%" src="./docs/Skybox.gif">
-
-### **A09** Ray-marched SDF object
-<img width="100%" src="./docs/SDF.gif">
-
-### **B07** Heightmap-based seabed mesh
-<img width="100%" src="./docs/Terrain.gif">
 
 
 
