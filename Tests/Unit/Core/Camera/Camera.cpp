@@ -16,6 +16,7 @@
 #define protected public
 
 #include "Core/Camera/Camera.h"
+#include "Core/Objects/GameObject.h"
 
 #undef private
 #undef protected
@@ -61,6 +62,20 @@ public:
 
 
 //// ==================== ////
+//// ====== Helpers ===== ////
+//// ==================== ////
+bool cmp_fbo(CW::Renderer::Framebuffer& first, CW::Renderer::Framebuffer& second){
+  if(first.fboID != second.fboID) return false;
+  if(first.colorTextureID != second.colorTextureID) return false;
+  if(first.depthTextureID != second.depthTextureID) return false;
+  if(first.width != second.width) return false;
+  if(first.height != second.height) return false;
+  return true;
+};
+
+
+
+//// ==================== ////
 //// === Constructors === ////
 //// ==================== ////
 TEST(CameraDefaultConstructors, HandlesInitialization) {
@@ -71,6 +86,9 @@ TEST(CameraDefaultConstructors, HandlesInitialization) {
   EXPECT_GE(camera.ortho_size, 0);
   EXPECT_GE(camera.sensitivity, 0);
   EXPECT_GE(camera.velocity, 0);
+  EXPECT_EQ(camera.getFbo().fboID, 0);
+  EXPECT_EQ(camera.getFbo().colorTextureID, 0);
+  EXPECT_EQ(camera.getFbo().depthTextureID, 0);
 };
 
 TEST(CameraDefaultConstructorsWithNullptr, HandlesInitialization) {
@@ -83,6 +101,9 @@ TEST(CameraDefaultConstructorsWithNullptr, HandlesInitialization) {
   EXPECT_GE(camera.ortho_size, 0);
   EXPECT_GE(camera.sensitivity, 0);
   EXPECT_GE(camera.velocity, 0);
+  EXPECT_EQ(camera.getFbo().fboID, 0);
+  EXPECT_EQ(camera.getFbo().colorTextureID, 0);
+  EXPECT_EQ(camera.getFbo().depthTextureID, 0);
 };
 
 TEST(CameraDefaultParamConstructors, HandlesInitialization) {
@@ -139,6 +160,10 @@ TEST(CameraCopyConstructor, HandlesInitialization){
   EXPECT_EQ(init_camera.orthogonal_mat_ready, construct_copy_camera.orthogonal_mat_ready);
   EXPECT_EQ(init_camera.perspective_mat, construct_copy_camera.perspective_mat);
   EXPECT_EQ(init_camera.orthogonal_mat, construct_copy_camera.orthogonal_mat);
+  EXPECT_TRUE(cmp_fbo(init_camera.fbo, construct_copy_camera.fbo));
+  EXPECT_EQ(init_camera.fbo_size, construct_copy_camera.fbo_size);
+  EXPECT_EQ(init_camera.track_window_size, construct_copy_camera.track_window_size);
+  EXPECT_EQ(init_camera.fbo_size_ready, construct_copy_camera.fbo_size_ready);
   EXPECT_EQ(init_camera.default_movemement_on, construct_copy_camera.default_movemement_on);
   EXPECT_EQ(init_camera.sensitivity, construct_copy_camera.sensitivity);
   EXPECT_EQ(init_camera.velocity, construct_copy_camera.velocity);
@@ -167,6 +192,10 @@ TEST(CameraCopyConstructor, HandlesInitialization){
   EXPECT_EQ(init_camera.orthogonal_mat_ready, construct_copy_assign_camera.orthogonal_mat_ready);
   EXPECT_EQ(init_camera.perspective_mat, construct_copy_assign_camera.perspective_mat);
   EXPECT_EQ(init_camera.orthogonal_mat, construct_copy_assign_camera.orthogonal_mat);
+  EXPECT_TRUE(cmp_fbo(init_camera.fbo, construct_copy_assign_camera.fbo));
+  EXPECT_EQ(init_camera.fbo_size, construct_copy_assign_camera.fbo_size);
+  EXPECT_EQ(init_camera.track_window_size, construct_copy_assign_camera.track_window_size);
+  EXPECT_EQ(init_camera.fbo_size_ready, construct_copy_assign_camera.fbo_size_ready);
   EXPECT_EQ(init_camera.default_movemement_on, construct_copy_assign_camera.default_movemement_on);
   EXPECT_EQ(init_camera.sensitivity, construct_copy_assign_camera.sensitivity);
   EXPECT_EQ(init_camera.velocity, construct_copy_assign_camera.velocity);
@@ -199,6 +228,10 @@ TEST(CameraCopyConstructor, HandlesInitialization){
   EXPECT_EQ(init_camera.orthogonal_mat_ready, construct_copy_self_camera.orthogonal_mat_ready);
   EXPECT_EQ(init_camera.perspective_mat, construct_copy_self_camera.perspective_mat);
   EXPECT_EQ(init_camera.orthogonal_mat, construct_copy_self_camera.orthogonal_mat);
+  EXPECT_TRUE(cmp_fbo(init_camera.fbo, construct_copy_self_camera.fbo));
+  EXPECT_EQ(init_camera.fbo_size, construct_copy_self_camera.fbo_size);
+  EXPECT_EQ(init_camera.track_window_size, construct_copy_self_camera.track_window_size);
+  EXPECT_EQ(init_camera.fbo_size_ready, construct_copy_self_camera.fbo_size_ready);
   EXPECT_EQ(init_camera.default_movemement_on, construct_copy_self_camera.default_movemement_on);
   EXPECT_EQ(init_camera.sensitivity, construct_copy_self_camera.sensitivity);
   EXPECT_EQ(init_camera.velocity, construct_copy_self_camera.velocity);
@@ -237,6 +270,10 @@ TEST(CameraMoveConstructor, HandlesInitialization){
   EXPECT_EQ(init_org_camera.orthogonal_mat_ready, construct_move_camera.orthogonal_mat_ready);
   EXPECT_EQ(init_org_camera.perspective_mat, construct_move_camera.perspective_mat);
   EXPECT_EQ(init_org_camera.orthogonal_mat, construct_move_camera.orthogonal_mat);
+  EXPECT_TRUE(cmp_fbo(init_org_camera.fbo, construct_move_camera.fbo));
+  EXPECT_EQ(init_org_camera.fbo_size, construct_move_camera.fbo_size);
+  EXPECT_EQ(init_org_camera.track_window_size, construct_move_camera.track_window_size);
+  EXPECT_EQ(init_org_camera.fbo_size_ready, construct_move_camera.fbo_size_ready);
   EXPECT_EQ(init_org_camera.default_movemement_on, construct_move_camera.default_movemement_on);
   EXPECT_EQ(init_org_camera.sensitivity, construct_move_camera.sensitivity);
   EXPECT_EQ(init_org_camera.velocity, construct_move_camera.velocity);
@@ -267,6 +304,10 @@ TEST(CameraMoveConstructor, HandlesInitialization){
   EXPECT_EQ(init_org_camera.orthogonal_mat_ready, construct_move_assign_camera.orthogonal_mat_ready);
   EXPECT_EQ(init_org_camera.perspective_mat, construct_move_assign_camera.perspective_mat);
   EXPECT_EQ(init_org_camera.orthogonal_mat, construct_move_assign_camera.orthogonal_mat);
+  EXPECT_TRUE(cmp_fbo(init_org_camera.fbo, construct_move_assign_camera.fbo));
+  EXPECT_EQ(init_org_camera.fbo_size, construct_move_assign_camera.fbo_size);
+  EXPECT_EQ(init_org_camera.track_window_size, construct_move_assign_camera.track_window_size);
+  EXPECT_EQ(init_org_camera.fbo_size_ready, construct_move_assign_camera.fbo_size_ready);
   EXPECT_EQ(init_org_camera.default_movemement_on, construct_move_assign_camera.default_movemement_on);
   EXPECT_EQ(init_org_camera.sensitivity, construct_move_assign_camera.sensitivity);
   EXPECT_EQ(init_org_camera.velocity, construct_move_assign_camera.velocity);
@@ -301,6 +342,10 @@ TEST(CameraMoveConstructor, HandlesInitialization){
   EXPECT_EQ(init_org_camera.orthogonal_mat_ready, construct_move_self_camera.orthogonal_mat_ready);
   EXPECT_EQ(init_org_camera.perspective_mat, construct_move_self_camera.perspective_mat);
   EXPECT_EQ(init_org_camera.orthogonal_mat, construct_move_self_camera.orthogonal_mat);
+  EXPECT_TRUE(cmp_fbo(init_org_camera.fbo, construct_move_self_camera.fbo));
+  EXPECT_EQ(init_org_camera.fbo_size, construct_move_self_camera.fbo_size);
+  EXPECT_EQ(init_org_camera.track_window_size, construct_move_self_camera.track_window_size);
+  EXPECT_EQ(init_org_camera.fbo_size_ready, construct_move_self_camera.fbo_size_ready);
   EXPECT_EQ(init_org_camera.default_movemement_on, construct_move_self_camera.default_movemement_on);
   EXPECT_EQ(init_org_camera.sensitivity, construct_move_self_camera.sensitivity);
   EXPECT_EQ(init_org_camera.velocity, construct_move_self_camera.velocity);
@@ -1034,6 +1079,50 @@ TEST(CameraProjectionSettersGetters, HandlesModeSpecificPlanes) {
   EXPECT_FLOAT_EQ(camera.getNearPerspectivePlane(), 0.5f);
 };
 
+TEST(CameraRenderSettersGetters, HandlesModeSpecificPlanes) {
+  Mock::Renderer renderer;
+  Engine::Core::Camera camera(&renderer, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -1.0f));
+
+  bool track_window_size = false;
+  camera.setTrackWindowSize(track_window_size);
+  EXPECT_EQ(track_window_size, camera.getTrackWindowSize());
+
+  glm::ivec2 fbo_size = glm::ivec2(200, 400);
+  camera.setFboSize(fbo_size);
+  EXPECT_EQ(fbo_size, camera.getFboSize());
+
+  fbo_size = glm::ivec2(-200, -400);
+  camera.setFboSize(fbo_size);
+  EXPECT_EQ(glm::ivec2(0), camera.getFboSize());
+
+  fbo_size = glm::ivec2(200, -400);
+  camera.setFboSize(fbo_size);
+  EXPECT_EQ(glm::ivec2(200, 0), camera.getFboSize());
+
+  fbo_size = glm::ivec2(-200, 400);
+  camera.setFboSize(fbo_size);
+  EXPECT_EQ(glm::ivec2(0, 400), camera.getFboSize());
+
+  camera.setFboSize({300, 400});
+  camera.clearFbo();
+  CW::Renderer::Framebuffer& fbo = camera.getFbo();
+  EXPECT_NE(fbo.fboID, 0);
+  EXPECT_NE(fbo.colorTextureID, 0);
+  EXPECT_NE(fbo.depthTextureID, 0);
+  EXPECT_EQ(fbo.width, 300);
+  EXPECT_EQ(fbo.height, 400);
+
+  camera.setFboSize({600, 100});
+  std::vector<Engine::Core::GameObject> objects = {};
+  camera.render(objects);
+  fbo = camera.getFbo();
+  EXPECT_NE(fbo.fboID, 0);
+  EXPECT_NE(fbo.colorTextureID, 0);
+  EXPECT_NE(fbo.depthTextureID, 0);
+  EXPECT_EQ(fbo.width, 600);
+  EXPECT_EQ(fbo.height, 100);
+};
+
 TEST(CameraMovementSettersGetters, HandlesMovementAndInputFlags) {
   Mock::Renderer renderer;
   Engine::Core::Camera camera(&renderer, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -1.0f));
@@ -1058,6 +1147,13 @@ TEST(CameraMovementSettersGetters, HandlesMovementAndInputFlags) {
   camera.setSensitivity(0.0f);
   EXPECT_FLOAT_EQ(camera.getSensitivity(), 0.0f);
 };
+
+
+
+//// ================ ////
+//// ==== Render ==== ////
+//// ================ ////
+// Skiped requires MOCKS
 
 
 

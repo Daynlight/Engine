@@ -621,6 +621,12 @@ void Engine::Core::Camera::clearFbo(){
     return; 
   };
 
+  if(track_window_size) autoSizeToWindow();
+  if(!fbo_size_ready) {
+    fbo.rescale(fbo_size.x, fbo_size.y);
+    fbo_size_ready = true;
+  };
+
   fbo.bind();
   renderer->beginFrame();
   fbo.unbind();
