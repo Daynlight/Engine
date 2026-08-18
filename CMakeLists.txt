@@ -14,6 +14,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 option(PRODUCTION "Enable production build flags" OFF)
 option(SANDBOX_SCRIPTS "Enable script sandboxing build flags" OFF)
+option(CWD "Current Resources Dir" "")
 
 
 execute_process(
@@ -42,6 +43,10 @@ if(NOT PRODUCTION)
        DESTINATION "${ENGINE_SRC_DEST}"
        PATTERN "Examples" EXCLUDE)
 
+  file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/Tests"
+       DESTINATION "${ENGINE_SRC_DEST}"
+       PATTERN "Examples" EXCLUDE)
+
   file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/vendor"
        DESTINATION "${ENGINE_SRC_DEST}"
        PATTERN "Examples" EXCLUDE)
@@ -49,12 +54,22 @@ if(NOT PRODUCTION)
   file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt"
        DESTINATION "${ENGINE_SRC_DEST}")
 endif()
-  
 
-file(GLOB_RECURSE GameDataSet CONFIGURE_DEPENDS "GameData/**")
-cmrc_add_resource_library(GameData ${GameDataSet})
+message(STATUS "CWD = ${CWD}")
+file(GLOB_RECURSE GameDataSet CONFIGURE_DEPENDS "${CWD}GameData/**")
+cmrc_add_resource_library(GameData WHENCE "${CWD}" ${GameDataSet})
+message(STATUS "============ GameData Resources Found: =============")
+foreach(res ${GameDataSet})
+  message(STATUS "* " ${res})
+endforeach()
+message(STATUS "================ GameData Resources ================")
 
-file(GLOB_RECURSE PROD_SCRIPTS CONFIGURE_DEPENDS "Scripts/*.cpp")
+file(GLOB_RECURSE PROD_SCRIPTS CONFIGURE_DEPENDS "${CWD}Scripts/*.cpp")
+message(STATUS "================== Scripts Found: ==================")
+foreach(res ${PROD_SCRIPTS})
+  message(STATUS "* " ${res})
+endforeach()
+message(STATUS "====================== Scripts =====================")
 
 add_subdirectory(Engine)
 

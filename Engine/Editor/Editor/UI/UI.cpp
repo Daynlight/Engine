@@ -311,6 +311,7 @@ void Engine::Editor::UI::buildProject(){
   // compilation stage
   std::filesystem::path engine_src_dir = std::filesystem::path(ENGINE_SRC_DEST);
   std::string generator = GENERATOR;
+  std::string res_folder = "-DCWD=" + (std::filesystem::current_path() / dest_folder).string();
   const char* config[] = {
     "cmake",
     "-S",
@@ -320,6 +321,7 @@ void Engine::Editor::UI::buildProject(){
     "-G", 
     generator.c_str(),
     "-DPRODUCTION=ON",
+    res_folder.c_str(),
     nullptr
   };
 

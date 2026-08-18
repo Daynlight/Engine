@@ -35,7 +35,6 @@ public:
     };
 
     void registerScript(const std::string& name, ScriptFactory factory) {
-      printf("Reg: %s\n", name.c_str());
       factories[name] = factory;
     };
 

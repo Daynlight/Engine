@@ -25,8 +25,7 @@ void main(){
   vec3 worldPos = aPos + localCamPos;
 
   vec4 pos = projection * view * vec4(worldPos, 1.0f);
-    
-  pos.xy *= repeate.xy;
+  pos.xy = pos.xy * repeate.xy;
 
   atlasSizes = atlas_size;
   v_cameraPos = cameraPosition; 
@@ -36,5 +35,6 @@ void main(){
 
   gl_Position = pos;
 }
+
 
 
