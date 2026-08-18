@@ -17,7 +17,10 @@
 Engine::Core::Camera::Camera() noexcept {
   if (!renderer || !renderer->getWindowData()) {
     Engine::Utils::Logger::get().warn("Engine::Core::Camera::Camera()", "renderer is nullptr");
+    return;
   };
+
+  fbo = CW::Renderer::Framebuffer(fbo_size.x, fbo_size.y);
 };
 
 

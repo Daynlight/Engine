@@ -70,7 +70,7 @@ private:
 //// ==== Render ==== ////
 //// ================ ////
 private:
-  CW::Renderer::Framebuffer fbo = CW::Renderer::Framebuffer(0, 0);
+  CW::Renderer::Framebuffer fbo = CW::Renderer::Framebuffer();
   glm::ivec2 fbo_size = glm::ivec2(0);
   bool track_window_size = true;
   bool fbo_size_ready = true;
