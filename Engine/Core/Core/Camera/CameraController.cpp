@@ -122,6 +122,17 @@ Engine::ScriptShared::ICamera &Engine::Core::CameraController::getActiveCamera()
 
 
 
+Engine::Core::Camera &Engine::Core::CameraController::getCoreActiveCamera(){
+  if(!cameraExists(active_camera)){
+    Engine::Utils::Logger::get().erro("Engine::Core::CameraController::getActiveCamera()", "Camera: " + active_camera + " didn't exists (throwing runtime_error)");
+    throw std::runtime_error("Engine::Core::CameraController::getActiveCamera() -> Camera: " + active_camera + " didn't exists");
+  };
+
+  return cameras[active_camera];
+};
+
+
+
 void Engine::Core::CameraController::spawnCamera(const std::string &name, glm::vec3 position, glm::vec3 direction) noexcept {
   if(cameraExists(name)){
     Engine::Utils::Logger::get().erro("Engine::Core::CameraController::spawnCamera(const std::string &name, glm::vec3 position, glm::vec3 direction)", "Camera: " + name + " exists (skipping)");

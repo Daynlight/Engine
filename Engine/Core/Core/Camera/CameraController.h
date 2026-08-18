@@ -56,6 +56,7 @@ public:
   void setActiveCamera(const std::string& name) noexcept;
   std::string getActiveCameraName() const noexcept;
   Engine::ScriptShared::ICamera& getActiveCamera();
+  Engine::Core::Camera& getCoreActiveCamera();
   
   void spawnCamera(const std::string& name, glm::vec3 position = {0.0f, 0.0f, 0.0f}, glm::vec3 direction = {0.0f, 0.0f, 1.0f}) noexcept;
   void deleteCamera(const std::string& name) noexcept;

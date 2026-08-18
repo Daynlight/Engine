@@ -7,6 +7,7 @@
 
 #pragma once
 #include "Renderer.h"
+#include "Renderer/OpenGL/Framebuffer.h"
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include "../vendor/glm/glm/gtx/euler_angles.hpp"
@@ -16,6 +17,12 @@
 
 #include "Utils/config.h"
 #include "Utils/Logger.h"
+
+
+
+namespace Engine::Core{
+  class GameObject;
+};
 
 
 
@@ -58,7 +65,16 @@ private:
   float orthogonal_far_plane = Engine::Config::CAMERA_ORTHO_FAR_PLANE;
   bool orthogonal_mat_ready = false;
   glm::mat4 orthogonal_mat = glm::mat4(1.0f);
-  
+
+//// ================ ////
+//// ==== Render ==== ////
+//// ================ ////
+private:
+  CW::Renderer::Framebuffer fbo = CW::Renderer::Framebuffer(0, 0);
+  glm::ivec2 fbo_size = glm::ivec2(0);
+  bool track_window_size = true;
+  bool fbo_size_ready = true;
+
 //// ================== ////
 //// ==== Movement ==== ////
 //// ================== ////
@@ -135,6 +151,12 @@ public:
   
   Engine::ScriptShared::CameraMode getCameraMode() const noexcept;
   void setCameraMode(Engine::ScriptShared::CameraMode mode) noexcept;
+
+  glm::ivec2 getFboSize() const noexcept;
+  void setFboSize(glm::ivec2 size) noexcept;
+  CW::Renderer::Framebuffer& getFbo() noexcept;
+  void setTrackWindowSize(bool track) noexcept;
+  bool getTrackWindowSize() const noexcept;
   
   bool getDefaultMovement() const noexcept;
   void setDefaultMovement(bool state) noexcept;
@@ -145,6 +167,14 @@ public:
   void setSensitivity(float sensitivity) noexcept;
   bool getMouseActive() const noexcept;
   void setMouseActive(bool active) noexcept;
+
+//// ================ ////
+//// ==== Render ==== ////
+//// ================ ////
+public:
+  void render(std::vector<Engine::Core::GameObject>& objects);
+  void autoSizeToWindow();
+  void clearFbo();
 
 //// ================== ////
 //// ==== Movement ==== ////
@@ -160,7 +190,6 @@ private:
   void rotationButtons(float delta_time, float& target_bank) noexcept;
 
   // [TODO]
-  // render
   // culling
 };
 };

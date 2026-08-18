@@ -338,9 +338,10 @@ Production is designed to create one executable with no additional files require
 - [x] Production BTN.
 - [x] Camera full quaternions.
 - [x] Minimized Script Shared.
-- [ ] Move Rendering to Camera with FBO.
+- [x] Move Rendering to Camera with FBO.
 - [ ] Camera Culling check.
-- [ ] Camera Tests.
+- [ ] Camera Tests {Rendering, Culling, Movement}.
+- [ ] Issue with rotation Camera.
 - [ ] CameraController Refactor.
 - [ ] CameraController Tests.
 - [ ] One Unified Scene Class.

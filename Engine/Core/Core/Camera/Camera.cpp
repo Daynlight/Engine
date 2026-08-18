@@ -6,6 +6,7 @@
 
 
 #include "Camera.h"
+#include "Objects/GameObject.h"
 
 
 
@@ -60,6 +61,10 @@ Engine::Core::Camera::Camera(const Camera &second) noexcept
    orthogonal_mat_ready(second.orthogonal_mat_ready),
    perspective_mat(second.perspective_mat),
    orthogonal_mat(second.orthogonal_mat),
+   fbo(second.fbo),
+   fbo_size(second.fbo_size),
+   track_window_size(second.track_window_size),
+   fbo_size_ready(second.fbo_size_ready),
    default_movemement_on(second.default_movemement_on),
    sensitivity(second.sensitivity),
    velocity(second.velocity),
@@ -99,6 +104,10 @@ Engine::Core::Camera &Engine::Core::Camera::operator=(const Camera &second) noex
   orthogonal_near_plane = second.orthogonal_near_plane;
   perspective_far_plane = second.perspective_far_plane;
   orthogonal_far_plane = second.orthogonal_far_plane;
+  fbo = second.fbo;
+  fbo_size = second.fbo_size;
+  track_window_size = second.track_window_size;
+  fbo_size_ready = second.fbo_size_ready;  
   perspective_mat_ready = second.perspective_mat_ready;
   orthogonal_mat_ready = second.orthogonal_mat_ready;
   perspective_mat = second.perspective_mat;
@@ -140,6 +149,10 @@ Engine::Core::Camera::Camera(Camera &&second) noexcept
    orthogonal_mat_ready(std::move(second.orthogonal_mat_ready)),
    perspective_mat(std::move(second.perspective_mat)),
    orthogonal_mat(std::move(second.orthogonal_mat)),
+   fbo(std::move(second.fbo)),
+   fbo_size(std::move(second.fbo_size)),
+   track_window_size(std::move(second.track_window_size)),
+   fbo_size_ready(std::move(second.fbo_size_ready)),
    default_movemement_on(std::move(second.default_movemement_on)),
    sensitivity(std::move(second.sensitivity)),
    velocity(std::move(second.velocity)),
@@ -183,6 +196,10 @@ Engine::Core::Camera& Engine::Core::Camera::operator=(Camera &&second) noexcept 
   orthogonal_mat_ready = std::move(second.orthogonal_mat_ready);
   perspective_mat = std::move(second.perspective_mat);
   orthogonal_mat = std::move(second.orthogonal_mat);
+  fbo = std::move(second.fbo);
+  fbo_size = std::move(second.fbo_size);
+  track_window_size = std::move(second.track_window_size);
+  fbo_size_ready = std::move(second.fbo_size_ready);
   default_movemement_on = std::move(second.default_movemement_on);
   sensitivity = std::move(second.sensitivity);
   velocity = std::move(second.velocity);
@@ -476,6 +493,39 @@ void Engine::Core::Camera::setCameraMode(Engine::ScriptShared::CameraMode mode) 
 
 
 
+glm::ivec2 Engine::Core::Camera::getFboSize() const noexcept {
+  return fbo_size;
+};
+
+
+
+void Engine::Core::Camera::setFboSize(glm::ivec2 size) noexcept {
+  fbo_size = size;
+  if(fbo_size.x < 0) fbo_size.x = 0;
+  if(fbo_size.y < 0) fbo_size.y = 0;
+  fbo_size_ready = false;
+};
+
+
+
+CW::Renderer::Framebuffer &Engine::Core::Camera::getFbo() noexcept {
+  return fbo;
+};
+
+
+
+void Engine::Core::Camera::setTrackWindowSize(bool track) noexcept {
+  track_window_size = track;
+};
+
+
+
+bool Engine::Core::Camera::getTrackWindowSize() const noexcept {
+  return track_window_size;
+};
+
+
+
 bool Engine::Core::Camera::getDefaultMovement() const noexcept {
   return default_movemement_on;
 };
@@ -522,6 +572,55 @@ bool Engine::Core::Camera::getMouseActive() const noexcept{
 
 void Engine::Core::Camera::setMouseActive(bool active) noexcept{
   mouse_is_active = active;
+};
+
+
+
+//// ================ ////
+//// ==== Render ==== ////
+//// ================ ////
+void Engine::Core::Camera::render(std::vector<Engine::Core::GameObject> &objects){
+  if (!renderer || !renderer->getWindowData()) {
+    Engine::Utils::Logger::get().warn("Engine::Core::Camera::render(std::vector<Engine::Core::GameObject> &objects)", "renderer is nullptr {skipping}");
+    return; 
+  };
+
+  if(track_window_size) autoSizeToWindow();
+  if(!fbo_size_ready) {
+    fbo.rescale(fbo_size.x, fbo_size.y);
+    fbo_size_ready = true;
+  };
+  
+  
+  fbo.bind();
+  CW::Renderer::Uniform uniform;
+  for(Engine::Core::GameObject& object : objects) object.render(renderer, static_cast<Engine::ScriptShared::ICamera&>(*this), static_cast<Engine::ScriptShared::ICamera&>(*this), uniform);
+  fbo.unbind();
+};
+
+
+
+void Engine::Core::Camera::autoSizeToWindow(){
+  if (!renderer || !renderer->getWindowData()) {
+    Engine::Utils::Logger::get().warn("Engine::Core::Camera::autoSizeToWindow()", "renderer is nullptr {skipping}");
+    return; 
+  };
+
+  if(renderer->getWindowData()->width == fbo_size.x && renderer->getWindowData()->height == fbo_size.y) return;
+  setFboSize({renderer->getWindowData()->width, renderer->getWindowData()->height});
+};
+
+
+
+void Engine::Core::Camera::clearFbo(){
+  if (!renderer || !renderer->getWindowData()) {
+    Engine::Utils::Logger::get().warn("Engine::Core::Camera::clearFbo()", "renderer is nullptr {skipping}");
+    return; 
+  };
+
+  fbo.bind();
+  renderer->beginFrame();
+  fbo.unbind();
 };
 
 
