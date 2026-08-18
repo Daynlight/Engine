@@ -1147,17 +1147,3 @@ TEST(CameraMovementSettersGetters, HandlesMovementAndInputFlags) {
   camera.setSensitivity(0.0f);
   EXPECT_FLOAT_EQ(camera.getSensitivity(), 0.0f);
 };
-
-
-
-//// ================ ////
-//// ==== Render ==== ////
-//// ================ ////
-// Skiped requires MOCKS
-
-
-
-//// ================== ////
-//// ==== Movement ==== ////
-//// ================== ////
-// Skiped requires MOCKS
