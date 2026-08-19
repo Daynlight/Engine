@@ -340,9 +340,10 @@ Production is designed to create one executable with no additional files require
 - [x] Minimized Script Shared.
 - [x] Move Rendering to Camera with FBO.
 - [x] Camera Tests.
+- [x] CameraController Refactor.
+- [x] CameraController ActiveCameraCache Avoid Hashing.
+- [x] CameraController Tests.
 - [ ] Issue with rotation Camera.
-- [ ] CameraController Refactor.
-- [ ] CameraController Tests.
 - [ ] One Unified Scene Class.
 - [ ] Scene Save.
 - [ ] SceneController.

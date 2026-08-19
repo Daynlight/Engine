@@ -9,6 +9,7 @@ cmake_minimum_required(VERSION 3.15)
 
 set(tests_src 
   Unit/Core/Camera/Camera.cpp
+  Unit/Core/Camera/CameraController.cpp
 )
 
 add_executable(unit_tests ${tests_src})

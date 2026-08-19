@@ -33,7 +33,8 @@ Engine::Core::CameraController::CameraController(const CameraController &second)
   :renderer(second.renderer),
    cameras(second.cameras),
    active_camera(second.active_camera),
-   active_camera_ref(second.active_camera_ref)
+   active_camera_ref(second.active_camera_ref),
+   active_camera_setted(second.active_camera_setted)
 {
   if(renderer == nullptr){
     Engine::Utils::Logger::get().warn("Engine::Core::CameraController::CameraController(const CameraController &second)", "renderer is nullptr");
@@ -53,6 +54,7 @@ Engine::Core::CameraController &Engine::Core::CameraController::operator=(const 
   cameras = second.cameras;
   active_camera = second.active_camera;
   active_camera_ref = second.active_camera_ref;
+  active_camera_setted = second.active_camera_setted;
 
   return *this;
 };
@@ -64,7 +66,8 @@ Engine::Core::CameraController::CameraController(CameraController &&second) noex
   :renderer(std::move(second.renderer)),
    cameras(std::move(second.cameras)),
    active_camera(std::move(second.active_camera)),
-   active_camera_ref(std::move(second.active_camera_ref))
+   active_camera_ref(std::move(second.active_camera_ref)),
+   active_camera_setted(std::move(second.active_camera_setted))
 {
   if(renderer == nullptr){
     Engine::Utils::Logger::get().warn("Engine::Core::CameraController::CameraController(CameraController &&second)", "renderer is nullptr");
@@ -84,6 +87,7 @@ Engine::Core::CameraController &Engine::Core::CameraController::operator=(Camera
   cameras = std::move(second.cameras);
   active_camera = std::move(second.active_camera);
   active_camera_ref = std::move(second.active_camera_ref);
+  active_camera_setted = std::move(second.active_camera_setted);
 
   return *this;
 };
@@ -118,7 +122,7 @@ std::string Engine::Core::CameraController::getActiveCameraName() const noexcept
 
 
 Engine::ScriptShared::ICamera &Engine::Core::CameraController::getActiveCamera() {
-  if(active_camera_ref == nullptr){
+  if(!active_camera_setted){
     Engine::Utils::Logger::get().erro("Engine::Core::CameraController::getActiveCamera()", "Camera: " + active_camera + " didn't exists (returning nullptr)");
     throw std::runtime_error("Engine::Core::CameraController::getActiveCamera(const std::string &name) -> Camera: " + active_camera + " didn't exists");
   };
@@ -129,7 +133,7 @@ Engine::ScriptShared::ICamera &Engine::Core::CameraController::getActiveCamera()
 
 
 Engine::Core::Camera &Engine::Core::CameraController::getCoreActiveCamera() {
-  if(active_camera_ref == nullptr){
+  if(!active_camera_setted){
     Engine::Utils::Logger::get().erro("Engine::Core::CameraController::getActiveCamera()", "Camera: " + active_camera + " didn't exists (returning nullptr)");
     throw std::runtime_error("Engine::Core::CameraController::getCoreActiveCamera(const std::string &name) -> Camera: " + active_camera + " didn't exists");
   };
