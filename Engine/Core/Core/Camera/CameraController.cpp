@@ -32,7 +32,8 @@ Engine::Core::CameraController::~CameraController() noexcept {};
 Engine::Core::CameraController::CameraController(const CameraController &second) noexcept
   :renderer(second.renderer),
    cameras(second.cameras),
-   active_camera(second.active_camera) 
+   active_camera(second.active_camera),
+   active_camera_ref(second.active_camera_ref)
 {
   if(renderer == nullptr){
     Engine::Utils::Logger::get().warn("Engine::Core::CameraController::CameraController(const CameraController &second)", "renderer is nullptr");
@@ -51,7 +52,8 @@ Engine::Core::CameraController &Engine::Core::CameraController::operator=(const 
   renderer = second.renderer;
   cameras = second.cameras;
   active_camera = second.active_camera;
-  
+  active_camera_ref = second.active_camera_ref;
+
   return *this;
 };
 
@@ -61,7 +63,8 @@ Engine::Core::CameraController &Engine::Core::CameraController::operator=(const 
 Engine::Core::CameraController::CameraController(CameraController &&second) noexcept
   :renderer(std::move(second.renderer)),
    cameras(std::move(second.cameras)),
-   active_camera(std::move(second.active_camera)) 
+   active_camera(std::move(second.active_camera)),
+   active_camera_ref(std::move(second.active_camera_ref))
 {
   if(renderer == nullptr){
     Engine::Utils::Logger::get().warn("Engine::Core::CameraController::CameraController(CameraController &&second)", "renderer is nullptr");
@@ -80,6 +83,7 @@ Engine::Core::CameraController &Engine::Core::CameraController::operator=(Camera
   renderer = std::move(second.renderer);
   cameras = std::move(second.cameras);
   active_camera = std::move(second.active_camera);
+  active_camera_ref = std::move(second.active_camera_ref);
 
   return *this;
 };
@@ -96,11 +100,13 @@ void Engine::Core::CameraController::setActiveCamera(const std::string &name) no
   };
 
   active_camera = name;
+  active_camera_setted = cameraExists(active_camera);
+  active_camera_ref = &getCoreCamera(active_camera);
 };
 
 
 
-std::string Engine::Core::CameraController::getActiveCameraName() const noexcept{
+std::string Engine::Core::CameraController::getActiveCameraName() const noexcept {
   if(!cameraExists(active_camera)){
     Engine::Utils::Logger::get().warn("Engine::Core::CameraController::getActiveCameraName()", "Camera: " + active_camera + " didn't exists (returning '')");
     return "";
@@ -112,23 +118,23 @@ std::string Engine::Core::CameraController::getActiveCameraName() const noexcept
 
 
 Engine::ScriptShared::ICamera &Engine::Core::CameraController::getActiveCamera() {
-  if(!cameraExists(active_camera)){
-    Engine::Utils::Logger::get().erro("Engine::Core::CameraController::getActiveCamera()", "Camera: " + active_camera + " didn't exists (throwing runtime_error)");
-    throw std::runtime_error("Engine::Core::CameraController::getActiveCamera() -> Camera: " + active_camera + " didn't exists");
+  if(active_camera_ref == nullptr){
+    Engine::Utils::Logger::get().erro("Engine::Core::CameraController::getActiveCamera()", "Camera: " + active_camera + " didn't exists (returning nullptr)");
+    throw std::runtime_error("Engine::Core::CameraController::getActiveCamera(const std::string &name) -> Camera: " + active_camera + " didn't exists");
   };
 
-  return cameras[active_camera];
+  return *active_camera_ref;
 };
 
 
 
-Engine::Core::Camera &Engine::Core::CameraController::getCoreActiveCamera(){
-  if(!cameraExists(active_camera)){
-    Engine::Utils::Logger::get().erro("Engine::Core::CameraController::getActiveCamera()", "Camera: " + active_camera + " didn't exists (throwing runtime_error)");
-    throw std::runtime_error("Engine::Core::CameraController::getActiveCamera() -> Camera: " + active_camera + " didn't exists");
+Engine::Core::Camera &Engine::Core::CameraController::getCoreActiveCamera() {
+  if(active_camera_ref == nullptr){
+    Engine::Utils::Logger::get().erro("Engine::Core::CameraController::getActiveCamera()", "Camera: " + active_camera + " didn't exists (returning nullptr)");
+    throw std::runtime_error("Engine::Core::CameraController::getCoreActiveCamera(const std::string &name) -> Camera: " + active_camera + " didn't exists");
   };
 
-  return cameras[active_camera];
+  return *active_camera_ref;
 };
 
 
@@ -142,6 +148,9 @@ void Engine::Core::CameraController::spawnCamera(const std::string &name, glm::v
   cameras.try_emplace(name, renderer, position, direction);
   
   Engine::Utils::Logger::get().info("Engine::Core::CameraController::spawnCamera(const std::string &name, glm::vec3 position, glm::vec3 direction)", "Spawned Camera: " + name);
+
+  active_camera_setted = cameraExists(active_camera);
+  if(active_camera_setted) active_camera_ref = &getCoreCamera(active_camera);
 };
 
 
@@ -160,23 +169,26 @@ void Engine::Core::CameraController::deleteCamera(const std::string &name) noexc
     active_camera.clear();
     Engine::Utils::Logger::get().info("Engine::Core::CameraController::deleteCamera(const std::string &name)", "Active Camera Reset");
   };
+
+  active_camera_setted = cameraExists(active_camera);
+  if(active_camera_setted) active_camera_ref = &getCoreCamera(active_camera);
 };
 
 
 
-
-Engine::ScriptShared::ICamera &Engine::Core::CameraController::getCamera(const std::string &name) {
-  if(!cameraExists(name)){
-    Engine::Utils::Logger::get().erro("Engine::Core::CameraController::getCamera(const std::string &name)", "Camera: " + name + " didn't exists (throwing runtime_error)");
-    throw std::runtime_error("Engine::Core::CameraController::getCamera(const std::string &name) -> Camera: " + name + " didn't exists");
-  };
-
+Engine::ScriptShared::ICamera &Engine::Core::CameraController::getCamera(const std::string &name) noexcept {
   return cameras[name];
 };
 
 
 
-bool Engine::Core::CameraController::cameraExists(const std::string &name) const noexcept{
+Engine::Core::Camera &Engine::Core::CameraController::getCoreCamera(const std::string &name) noexcept {
+  return cameras[name];
+};
+
+
+
+bool Engine::Core::CameraController::cameraExists(const std::string &name) const noexcept {
   const auto& it = cameras.find(name);
   if(it != cameras.end()) return true;
   return false;

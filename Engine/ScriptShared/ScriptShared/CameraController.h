@@ -30,7 +30,7 @@ public:
   virtual void spawnCamera(const std::string& name, glm::vec3 position = {0.0f, 0.0f, 0.0f}, glm::vec3 direction = {0.0f, 0.0f, 1.0f}) noexcept = 0;
   virtual void deleteCamera(const std::string& name) noexcept = 0;
 
-  virtual Engine::ScriptShared::ICamera& getCamera(const std::string& name) = 0;
+  virtual Engine::ScriptShared::ICamera& getCamera(const std::string& name) noexcept = 0;
   virtual bool cameraExists(const std::string& name) const noexcept = 0;
 };
 };

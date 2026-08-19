@@ -29,13 +29,17 @@
 
 
 namespace Engine::ScriptShared{
-class GameObjectScriptInterface {
-public:
-  GameObjectData* game_object_data = nullptr;
+struct EngineData{
   GlobResource* glob_res = nullptr;
   ILogger* logger = nullptr;
   IObjectManager* object_manager = nullptr;
   ICameraController* camera_controller = nullptr;
+};
+
+class GameObjectScriptInterface {
+public:
+  GameObjectData* object_data = nullptr;
+  Engine::ScriptShared::EngineData engine;
 
   virtual ~GameObjectScriptInterface() = default;
   
