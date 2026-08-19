@@ -74,7 +74,7 @@ TEST(CameraControllerCopyConstructor, HandlesInitialization){
   EXPECT_TRUE(construct_copy_controller.cameraExists("MainCamera"));
   EXPECT_EQ(construct_copy_controller.active_camera, init_controller.active_camera);
   EXPECT_EQ(construct_copy_controller.active_camera_setted, init_controller.active_camera_setted);
-  EXPECT_EQ(construct_copy_controller.active_camera_ref, init_controller.active_camera_ref);
+  EXPECT_NE(construct_copy_controller.active_camera_ref, init_controller.active_camera_ref);
 
   // Copy Assignment
   Engine::Core::CameraController construct_copy_assign_controller;
@@ -85,7 +85,7 @@ TEST(CameraControllerCopyConstructor, HandlesInitialization){
   EXPECT_TRUE(construct_copy_assign_controller.cameraExists("MainCamera"));
   EXPECT_EQ(construct_copy_assign_controller.active_camera, init_controller.active_camera);
   EXPECT_EQ(construct_copy_assign_controller.active_camera_setted, init_controller.active_camera_setted);
-  EXPECT_EQ(construct_copy_assign_controller.active_camera_ref, init_controller.active_camera_ref);
+  EXPECT_NE(construct_copy_assign_controller.active_camera_ref, init_controller.active_camera_ref);
 
   // Self Assignment
   Engine::Core::CameraController construct_copy_self_controller(init_controller);
@@ -99,44 +99,57 @@ TEST(CameraControllerCopyConstructor, HandlesInitialization){
   EXPECT_TRUE(construct_copy_self_controller.cameraExists("MainCamera"));
   EXPECT_EQ(construct_copy_self_controller.active_camera, init_controller.active_camera);
   EXPECT_EQ(construct_copy_self_controller.active_camera_setted, init_controller.active_camera_setted);
-  EXPECT_EQ(construct_copy_self_controller.active_camera_ref, init_controller.active_camera_ref);
-  };
+  EXPECT_NE(construct_copy_self_controller.active_camera_ref, init_controller.active_camera_ref);
+};
 
-  TEST(CameraControllerMoveConstructor, HandlesInitialization){
+TEST(CameraControllerMoveConstructor, HandlesInitialization){
   Mock::Renderer renderer;
   Engine::Core::CameraController init_org_controller(&renderer);
   init_org_controller.spawnCamera("MainCamera", {0.0f, 1.0f, 5.0f}, {0.0f, 0.0f, -1.0f});
   init_org_controller.setActiveCamera("MainCamera");
 
-  Engine::Core::Camera* expected_ref = init_org_controller.active_camera_ref;
-
   // Move Constructor
   Engine::Core::CameraController init_constructor_move_controller(init_org_controller);
   Engine::Core::CameraController construct_move_controller(std::move(init_constructor_move_controller));
 
+  // Verify new object state
   EXPECT_EQ(construct_move_controller.renderer, &renderer);
   EXPECT_EQ(construct_move_controller.cameras.size(), 1);
   EXPECT_TRUE(construct_move_controller.cameraExists("MainCamera"));
   EXPECT_EQ(construct_move_controller.active_camera, "MainCamera");
   EXPECT_TRUE(construct_move_controller.active_camera_setted);
-  EXPECT_EQ(construct_move_controller.active_camera_ref, expected_ref);
+  EXPECT_EQ(construct_move_controller.active_camera_ref, &construct_move_controller.getCoreActiveCamera());
+
+  // Verify moved-from object state reset
+  EXPECT_EQ(init_constructor_move_controller.renderer, nullptr);
+  EXPECT_EQ(init_constructor_move_controller.active_camera_ref, nullptr);
+  EXPECT_FALSE(init_constructor_move_controller.active_camera_setted);
+  EXPECT_TRUE(init_constructor_move_controller.cameras.empty());
 
   // Move Assignment
   Engine::Core::CameraController init_construct_move_assign_controller(init_org_controller);
   Engine::Core::CameraController construct_move_assign_controller;
   construct_move_assign_controller = std::move(init_construct_move_assign_controller);
 
+  // Verify new object state
   EXPECT_EQ(construct_move_assign_controller.renderer, &renderer);
   EXPECT_EQ(construct_move_assign_controller.cameras.size(), 1);
   EXPECT_TRUE(construct_move_assign_controller.cameraExists("MainCamera"));
   EXPECT_EQ(construct_move_assign_controller.active_camera, "MainCamera");
   EXPECT_TRUE(construct_move_assign_controller.active_camera_setted);
-  EXPECT_EQ(construct_move_assign_controller.active_camera_ref, expected_ref);
+  EXPECT_EQ(construct_move_assign_controller.active_camera_ref, &construct_move_assign_controller.getCoreActiveCamera());
+
+  // Verify moved-from object state reset
+  EXPECT_EQ(init_construct_move_assign_controller.renderer, nullptr);
+  EXPECT_EQ(init_construct_move_assign_controller.active_camera_ref, nullptr);
+  EXPECT_FALSE(init_construct_move_assign_controller.active_camera_setted);
+  EXPECT_TRUE(init_construct_move_assign_controller.cameras.empty());
 
   // Self Move Assignment
   Engine::Core::CameraController init_construct_move_self_controller(init_org_controller);
   Engine::Core::CameraController construct_move_self_controller(std::move(init_construct_move_self_controller));
   Engine::Core::CameraController* org_controller_ptr = &construct_move_self_controller;
+  
   construct_move_self_controller = std::move(construct_move_self_controller);
   Engine::Core::CameraController* new_controller_ptr = &construct_move_self_controller;
 
@@ -146,7 +159,7 @@ TEST(CameraControllerCopyConstructor, HandlesInitialization){
   EXPECT_TRUE(construct_move_self_controller.cameraExists("MainCamera"));
   EXPECT_EQ(construct_move_self_controller.active_camera, "MainCamera");
   EXPECT_TRUE(construct_move_self_controller.active_camera_setted);
-  EXPECT_EQ(construct_move_self_controller.active_camera_ref, expected_ref);
+  EXPECT_EQ(construct_move_self_controller.active_camera_ref, &construct_move_self_controller.getCoreActiveCamera());
 };
 
 

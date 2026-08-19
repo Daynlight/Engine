@@ -32,13 +32,14 @@ Engine::Core::CameraController::~CameraController() noexcept {};
 Engine::Core::CameraController::CameraController(const CameraController &second) noexcept
   :renderer(second.renderer),
    cameras(second.cameras),
-   active_camera(second.active_camera),
-   active_camera_ref(second.active_camera_ref),
-   active_camera_setted(second.active_camera_setted)
+   active_camera(second.active_camera)
 {
   if(renderer == nullptr){
     Engine::Utils::Logger::get().warn("Engine::Core::CameraController::CameraController(const CameraController &second)", "renderer is nullptr");
   };
+
+  active_camera_setted = cameraExists(active_camera);
+  if(active_camera_setted) active_camera_ref = &getCoreCamera(active_camera);
 };
 
 
@@ -53,8 +54,8 @@ Engine::Core::CameraController &Engine::Core::CameraController::operator=(const 
   renderer = second.renderer;
   cameras = second.cameras;
   active_camera = second.active_camera;
-  active_camera_ref = second.active_camera_ref;
-  active_camera_setted = second.active_camera_setted;
+  active_camera_setted = cameraExists(active_camera);
+  if(active_camera_setted) active_camera_ref = &getCoreCamera(active_camera);
 
   return *this;
 };
@@ -65,13 +66,19 @@ Engine::Core::CameraController &Engine::Core::CameraController::operator=(const 
 Engine::Core::CameraController::CameraController(CameraController &&second) noexcept
   :renderer(std::move(second.renderer)),
    cameras(std::move(second.cameras)),
-   active_camera(std::move(second.active_camera)),
-   active_camera_ref(std::move(second.active_camera_ref)),
-   active_camera_setted(std::move(second.active_camera_setted))
+   active_camera(std::move(second.active_camera))
 {
   if(renderer == nullptr){
     Engine::Utils::Logger::get().warn("Engine::Core::CameraController::CameraController(CameraController &&second)", "renderer is nullptr");
   };
+
+  active_camera_setted = cameraExists(active_camera);
+  if(active_camera_setted) active_camera_ref = &getCoreCamera(active_camera);
+
+  second.renderer = nullptr;
+  second.active_camera_ref = nullptr;
+  second.active_camera_setted = false;
+
 };
 
 
@@ -86,8 +93,12 @@ Engine::Core::CameraController &Engine::Core::CameraController::operator=(Camera
   renderer = std::move(second.renderer);
   cameras = std::move(second.cameras);
   active_camera = std::move(second.active_camera);
-  active_camera_ref = std::move(second.active_camera_ref);
-  active_camera_setted = std::move(second.active_camera_setted);
+  active_camera_setted = cameraExists(active_camera);
+  if(active_camera_setted) active_camera_ref = &getCoreCamera(active_camera);
+
+  second.renderer = nullptr;
+  second.active_camera_ref = nullptr;
+  second.active_camera_setted = false;
 
   return *this;
 };
