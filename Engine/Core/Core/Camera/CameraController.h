@@ -8,15 +8,11 @@
 #pragma once
 #include "Renderer.h"
 
-#define GLM_ENABLE_EXPERIMENTAL
-#include "../vendor/glm/glm/gtx/euler_angles.hpp"
-#include "../vendor/glm/glm/gtx/quaternion.hpp"
-
 #include "ScriptShared/CameraController.h"
+#include "Camera.h"
 
 #include "Utils/config.h"
 #include "Utils/Logger.h"
-#include "Camera.h"
 
 
 
