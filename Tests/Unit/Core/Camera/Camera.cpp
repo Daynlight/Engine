@@ -31,31 +31,6 @@ namespace Mock{
 class Renderer : public CW::Renderer::Renderer {
 public:
   Renderer() {}
-
-  // MOCK_METHOD(const CW::Renderer::WindowData*, getWindowData, (), (override));
-  // MOCK_METHOD(const CW::Renderer::InputData*, getInputData, (), (override));
-  // MOCK_METHOD(void, setKeyboardBind, (const std::string& action, char key), (override));
-
-  // MOCK_METHOD(void, createWindow, (), (override));
-  // MOCK_METHOD(void, windowLessRenderer, (), (override));
-  // MOCK_METHOD(APIWindow*, getWindow, (), (override));
-  // void createRenderer() override {};
-
-  // MOCK_METHOD(void, beginFrame, (), (override));
-  // MOCK_METHOD(void, swapBuffer, (), (override));
-  // MOCK_METHOD(void, windowEvents, (), (override));
-
-  // MOCK_METHOD(void, setWindowMode, (CW::Renderer::WindowMode mode), (override));
-  // MOCK_METHOD(void, setWindowTitle, (const std::string& title), (override));
-  // MOCK_METHOD(void, setIcon, (const std::string& path), (override));
-  // MOCK_METHOD(void, setVsync, (bool vsync), (override));
-  // MOCK_METHOD(void, minimize, (bool minimize), (override));
-  // MOCK_METHOD(void, maximize, (bool maximize), (override));
-  // MOCK_METHOD(void, setPosition, (int x, int y), (override));
-  // MOCK_METHOD(void, setSize, (int width, int height), (override));
-  // MOCK_METHOD(void, setCursorVisibility, (bool visible), (override));
-  // MOCK_METHOD(void, setCursorOn, (bool on), (override));
-  // MOCK_METHOD(void, close, (), (override));
 };
 };
 
@@ -1079,7 +1054,35 @@ TEST(CameraProjectionSettersGetters, HandlesModeSpecificPlanes) {
   EXPECT_FLOAT_EQ(camera.getNearPerspectivePlane(), 0.5f);
 };
 
-TEST(CameraRenderSettersGetters, HandlesModeSpecificPlanes) {
+TEST(CameraMovementSettersGetters, HandlesMovementAndInputFlags) {
+  Mock::Renderer renderer;
+  Engine::Core::Camera camera(&renderer, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -1.0f));
+
+  camera.setDefaultMovement(true);
+  EXPECT_TRUE(camera.getDefaultMovement());
+  camera.setDefaultMovement(false);
+  EXPECT_FALSE(camera.getDefaultMovement());
+
+  camera.setMouseActive(true);
+  EXPECT_TRUE(camera.getMouseActive());
+  camera.setMouseActive(false);
+  EXPECT_FALSE(camera.getMouseActive());
+
+  camera.setVelocity(5.5f);
+  EXPECT_FLOAT_EQ(camera.getVelocity(), 5.5f);
+  camera.setVelocity(-2.0f);
+  EXPECT_FLOAT_EQ(camera.getVelocity(), 0.0f);
+
+  camera.setSensitivity(0.8f);
+  EXPECT_FLOAT_EQ(camera.getSensitivity(), 0.8f);
+  camera.setSensitivity(0.0f);
+  EXPECT_FLOAT_EQ(camera.getSensitivity(), 0.0f);
+};
+
+//// ================ ////
+//// ==== Render ==== ////
+//// ================ ////
+TEST(CameraRender, HandlesModeSpecificPlanes) {
   Mock::Renderer renderer;
   Engine::Core::Camera camera(&renderer, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -1.0f));
 
@@ -1121,29 +1124,40 @@ TEST(CameraRenderSettersGetters, HandlesModeSpecificPlanes) {
   EXPECT_NE(fbo.depthTextureID, 0);
   EXPECT_EQ(fbo.width, 600);
   EXPECT_EQ(fbo.height, 100);
-};
 
-TEST(CameraMovementSettersGetters, HandlesMovementAndInputFlags) {
-  Mock::Renderer renderer;
-  Engine::Core::Camera camera(&renderer, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -1.0f));
+  camera.setFboSize({10, 10});
+  objects = {};
+  camera.render(objects);
+  fbo = camera.getFbo();
+  EXPECT_NE(fbo.fboID, 0);
+  EXPECT_NE(fbo.colorTextureID, 0);
+  EXPECT_NE(fbo.depthTextureID, 0);
+  EXPECT_EQ(fbo.width, 10);
+  EXPECT_EQ(fbo.height, 10);
+  EXPECT_EQ(camera.getFboSize(), glm::ivec2(10, 10));
+  
+  camera.setFboSize({200, 400});
+  camera.autoSizeFboToWindow();
+  EXPECT_NE(camera.getFboSize(), glm::ivec2(200, 400));
 
-  camera.setDefaultMovement(true);
-  EXPECT_TRUE(camera.getDefaultMovement());
-  camera.setDefaultMovement(false);
-  EXPECT_FALSE(camera.getDefaultMovement());
-
-  camera.setMouseActive(true);
-  EXPECT_TRUE(camera.getMouseActive());
-  camera.setMouseActive(false);
-  EXPECT_FALSE(camera.getMouseActive());
-
-  camera.setVelocity(5.5f);
-  EXPECT_FLOAT_EQ(camera.getVelocity(), 5.5f);
-  camera.setVelocity(-2.0f);
-  EXPECT_FLOAT_EQ(camera.getVelocity(), 0.0f);
-
-  camera.setSensitivity(0.8f);
-  EXPECT_FLOAT_EQ(camera.getSensitivity(), 0.8f);
-  camera.setSensitivity(0.0f);
-  EXPECT_FLOAT_EQ(camera.getSensitivity(), 0.0f);
+  camera.setTrackWindowSize(true);
+  camera.setFboSize({500, 100});
+  camera.render(objects);
+  fbo = camera.getFbo();
+  EXPECT_NE(fbo.fboID, 0);
+  EXPECT_NE(fbo.colorTextureID, 0);
+  EXPECT_NE(fbo.depthTextureID, 0);
+  EXPECT_NE(fbo.width, 500);
+  EXPECT_NE(fbo.height, 100);
+  EXPECT_NE(camera.getFboSize(), glm::ivec2(500, 100));
+  
+  camera.setFboSize({64, 64});
+  camera.clearFbo();
+  fbo = camera.getFbo();
+  EXPECT_NE(fbo.fboID, 0);
+  EXPECT_NE(fbo.colorTextureID, 0);
+  EXPECT_NE(fbo.depthTextureID, 0);
+  EXPECT_NE(fbo.width, 64);
+  EXPECT_NE(fbo.height, 64);
+  EXPECT_NE(camera.getFboSize(), glm::ivec2(64, 64));
 };

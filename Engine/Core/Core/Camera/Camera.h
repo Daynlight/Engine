@@ -172,9 +172,9 @@ public:
 //// ==== Render ==== ////
 //// ================ ////
 public:
-  void render(std::vector<Engine::Core::GameObject>& objects);
-  void autoSizeToWindow();
-  void clearFbo();
+  void render(std::vector<Engine::Core::GameObject>& objects) noexcept;
+  void autoSizeFboToWindow() noexcept;
+  void clearFbo() noexcept;
 
 //// ================== ////
 //// ==== Movement ==== ////
@@ -188,8 +188,5 @@ private:
   void velocityButtons(float delta_time) noexcept;
   void movementButtons(float delta_time, float& target_bank) noexcept;
   void rotationButtons(float delta_time, float& target_bank) noexcept;
-
-  // [TODO]
-  // culling
 };
 };

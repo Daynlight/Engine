@@ -339,8 +339,7 @@ Production is designed to create one executable with no additional files require
 - [x] Camera full quaternions.
 - [x] Minimized Script Shared.
 - [x] Move Rendering to Camera with FBO.
-- [ ] Camera Culling check.
-- [ ] Camera Tests {Rendering, Culling, Movement}.
+- [x] Camera Tests.
 - [ ] Issue with rotation Camera.
 - [ ] CameraController Refactor.
 - [ ] CameraController Tests.

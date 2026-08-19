@@ -582,13 +582,13 @@ void Engine::Core::Camera::setMouseActive(bool active) noexcept{
 //// ================ ////
 //// ==== Render ==== ////
 //// ================ ////
-void Engine::Core::Camera::render(std::vector<Engine::Core::GameObject> &objects){
+void Engine::Core::Camera::render(std::vector<Engine::Core::GameObject> &objects) noexcept{
   if (!renderer || !renderer->getWindowData()) {
     Engine::Utils::Logger::get().warn("Engine::Core::Camera::render(std::vector<Engine::Core::GameObject> &objects)", "renderer is nullptr {skipping}");
     return; 
   };
 
-  if(track_window_size) autoSizeToWindow();
+  if(track_window_size) autoSizeFboToWindow();
   if(!fbo_size_ready) {
     fbo.rescale(fbo_size.x, fbo_size.y);
     fbo_size_ready = true;
@@ -603,7 +603,7 @@ void Engine::Core::Camera::render(std::vector<Engine::Core::GameObject> &objects
 
 
 
-void Engine::Core::Camera::autoSizeToWindow(){
+void Engine::Core::Camera::autoSizeFboToWindow() noexcept {
   if (!renderer || !renderer->getWindowData()) {
     Engine::Utils::Logger::get().warn("Engine::Core::Camera::autoSizeToWindow()", "renderer is nullptr {skipping}");
     return; 
@@ -615,13 +615,13 @@ void Engine::Core::Camera::autoSizeToWindow(){
 
 
 
-void Engine::Core::Camera::clearFbo(){
+void Engine::Core::Camera::clearFbo() noexcept {
   if (!renderer || !renderer->getWindowData()) {
     Engine::Utils::Logger::get().warn("Engine::Core::Camera::clearFbo()", "renderer is nullptr {skipping}");
     return; 
   };
 
-  if(track_window_size) autoSizeToWindow();
+  if(track_window_size) autoSizeFboToWindow();
   if(!fbo_size_ready) {
     fbo.rescale(fbo_size.x, fbo_size.y);
     fbo_size_ready = true;
