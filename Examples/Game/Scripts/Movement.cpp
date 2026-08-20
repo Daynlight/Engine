@@ -46,16 +46,47 @@ public:
 
 
 
+  float height_collision(const std::string& name){
+    Engine::ScriptShared::GameObjectData* collider = engine.object_manager->getGameObjectData(name);
+    if(collider == nullptr){
+      engine.logger->erro("height_collision", "nullptr");
+      return 0.0f;
+    };
+
+    float height_z = 0;
+    auto its1 = collider->parameters.find("height");
+    if (its1 != collider->parameters.end()) {
+      if (auto* new_amount = std::get_if<float>(&its1->second)) {
+        height_z = *new_amount;
+      };
+    };
+
+    glm::vec3 position = object_data->position - glm::vec3(0.0f, 1.0f, 0.0f);
+    glm::vec3 size = object_data->scale;
+
+    glm::vec3 collider_pos = collider->position;
+    glm::vec3 collider_size = collider->scale;
+
+    bool inside_x = std::abs(position.x - collider_pos.x) < (size.x + collider_size.x) * 0.5f;
+    bool inside_y = std::abs(position.y - collider_pos.y) < (size.y + collider_size.y) * 0.5f;
+
+    if (inside_x && inside_y) {
+      float stair_left_y = collider_pos.y - (collider_size.y * 0.5f);
+      float progress = (position.y - stair_left_y) / collider_size.y;
+      progress = glm::clamp(progress, 0.0f, 1.0f);
+
+      float stair_bottom_y = collider_pos.y - (collider_size.y * 0.5f);
+      return (height_z + (progress * collider_size.y)) * 5.0f;
+    };
+    
+    return 0.0f;
+  };
 
   float height(){
-    glm::vec3 position = object_data->position;
-    Engine::ScriptShared::GameObjectData* collider = engine.object_manager->getGameObjectData("Stairs");
-    
-    if(collider == nullptr) return 0.0f;
-    if(std::abs(position.x - collider->position.x) < 1.0f
-      && std::abs(position.y * 2.0f - collider->position.y) < 1.0f)
-      return 5.0f;
-    return 0.0f;
+    std::vector<std::string> colliders = {"Stairs", "Stairs2", "Stairs3"};
+    float height_val = 0.0f;
+    for(const std::string& name : colliders) height_val += height_collision(name);
+    return height_val;
   };
 
   void movement(float delta_time){
