@@ -168,6 +168,8 @@ Engine::Core::Camera::Camera(Camera &&second) noexcept
   if (!renderer || !renderer->getWindowData()) {
     Engine::Utils::Logger::get().warn("Engine::Core::Camera::Camera(Camera &&second)", "renderer is nullptr");
   };
+
+  second.renderer = nullptr;
 };
 
 
@@ -211,6 +213,8 @@ Engine::Core::Camera& Engine::Core::Camera::operator=(Camera &&second) noexcept 
   mouse_is_active = false;
   cursor_visible_lock = std::move(second.cursor_visible_lock);
   cursor_lock = std::move(second.cursor_lock); 
+
+  second.renderer = nullptr;
 
   return *this;
 };

@@ -224,7 +224,7 @@ TEST(CameraMoveConstructor, HandlesInitialization){
   Engine::Core::Camera init_constructor_move_camera(init_org_camera);
   Engine::Core::Camera construct_move_camera(std::move(init_constructor_move_camera));
   
-  EXPECT_NE(init_constructor_move_camera.renderer, nullptr);
+  EXPECT_EQ(init_constructor_move_camera.renderer, nullptr);
   EXPECT_NE(init_org_camera.renderer, nullptr);
   EXPECT_EQ(init_org_camera.position, construct_move_camera.position);
   EXPECT_EQ(init_org_camera.direction, construct_move_camera.direction);
@@ -258,7 +258,7 @@ TEST(CameraMoveConstructor, HandlesInitialization){
   Engine::Core::Camera init_construct_move_assign_camera(init_org_camera);
   Engine::Core::Camera construct_move_assign_camera = std::move(init_construct_move_assign_camera);
   
-  EXPECT_NE(init_construct_move_assign_camera.renderer, nullptr);
+  EXPECT_EQ(init_construct_move_assign_camera.renderer, nullptr);
   EXPECT_NE(construct_move_assign_camera.renderer, nullptr);
   EXPECT_EQ(init_org_camera.position, construct_move_assign_camera.position);
   EXPECT_EQ(init_org_camera.direction, construct_move_assign_camera.direction);
@@ -292,11 +292,11 @@ TEST(CameraMoveConstructor, HandlesInitialization){
   Engine::Core::Camera init_construct_move_self_camera(init_org_camera);
   Engine::Core::Camera construct_move_self_camera(std::move(init_construct_move_self_camera));
   Engine::Core::Camera* org_camera_ptr = &construct_move_self_camera;
-  construct_move_self_camera = std::move(init_construct_move_self_camera);
+  construct_move_self_camera = std::move(construct_move_self_camera);
   Engine::Core::Camera* new_camera_ptr = &construct_move_self_camera;
   
   EXPECT_EQ(org_camera_ptr, new_camera_ptr);
-  EXPECT_NE(init_construct_move_self_camera.renderer, nullptr);
+  EXPECT_EQ(init_construct_move_self_camera.renderer, nullptr);
   EXPECT_NE(construct_move_self_camera.renderer, nullptr);
   EXPECT_EQ(init_org_camera.position, construct_move_self_camera.position);
   EXPECT_EQ(init_org_camera.direction, construct_move_self_camera.direction);
