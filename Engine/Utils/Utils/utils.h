@@ -18,6 +18,7 @@
 
 namespace Engine::Utils {
 constexpr inline uint32_t hash(uint32_t x) noexcept {
+  x = x + 0x45d9f3b;
   x = ((x >> 16) ^ x) * 0x45d9f3b;
   x = ((x >> 16) ^ x) * 0x45d9f3b;
   x = (x >> 16) ^ x;
