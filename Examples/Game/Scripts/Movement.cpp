@@ -22,8 +22,8 @@ class SCRIPT_NAME : public Engine::ScriptShared::GameObjectScriptInterface {
 private:
 
   std::vector<std::string> colliders = {"Stairs", "Stairs2", "Stairs3"};
-  const float STAIRS_HEIGHT_COFF = 5.0f;
-  const float STAIRS_ENTER_EPS = 5.0f;
+  const float STAIRS_HEIGHT_COFF = 4.0f;
+  const float STAIRS_ENTER_EPS = 4.0f;
   float zoom = DEFAULT_ZOOM;
   float height = 0.0f;
 
@@ -107,21 +107,25 @@ public:
       return 0.0f;
     };
 
-    float height_z = 0.0f;
-    auto its1 = collider->parameters.find("height");
+    float min_height = 0.0f;
+    float max_height = 0.0f;
+    auto its1 = collider->parameters.find("min_height");
     if (its1 != collider->parameters.end()) {
-      if (auto* new_amount = std::get_if<float>(&its1->second)) height_z = *new_amount;
+      if (auto* new_amount = std::get_if<float>(&its1->second)) min_height = *new_amount;
+    };
+    auto its2 = collider->parameters.find("max_height");
+    if (its2 != collider->parameters.end()) {
+      if (auto* new_amount = std::get_if<float>(&its2->second)) max_height = *new_amount;
     };
 
     std::array<glm::vec3, 2> player_collider = getPlayerCollider();
     std::array<glm::vec3, 2> object_collider = getObjectCollider(name);
 
-    float stair_left_y = object_collider[0].y - (object_collider[1].y * 0.5f);
-    float progress = (player_collider[0].y - stair_left_y) / object_collider[1].y;
+    float stair_start_y = object_collider[0].y - (object_collider[1].y * 0.5f);
+    float progress = (player_collider[0].y - stair_start_y) / object_collider[1].y;
     progress = glm::clamp(progress, 0.0f, 1.0f);
 
-    float stair_bottom_y = object_collider[0].y - (object_collider[1].y * 0.5f);
-    return (height_z + (progress * object_collider[1].y)) * STAIRS_HEIGHT_COFF;
+    return (min_height + progress * (max_height - min_height)) * STAIRS_HEIGHT_COFF;
   };
 
   void physics(){

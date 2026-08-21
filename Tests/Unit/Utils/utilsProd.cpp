@@ -13,7 +13,6 @@
 #define private public
 #define protected public
 
-#include "Renderer.h"
 #include "Utils/utils.h"
 
 #undef private
@@ -23,26 +22,106 @@
 
 CMRC_DECLARE(test_mesh_resources);
 
-TEST(UtilsscanCmrcDirectory, RecursivelyFindsMatchingMeshFiles) {
+TEST(UtilsScanCmrcDirectoryProperFolders, RecursivelyFindsMatchingMeshFiles) {
   auto fs = cmrc::test_mesh_resources::get_filesystem();
-  std::vector<std::string> discovered_meshes;
+  std::vector<std::filesystem::path> discovered_meshes;
 
   std::string pattern = R"(\.(obj|fbx)$)";
   Engine::Utils::scanCmrcDirectory(fs, "test_assets", pattern, discovered_meshes);
 
   EXPECT_EQ(discovered_meshes.size(), 3);
   EXPECT_THAT(discovered_meshes, ::testing::UnorderedElementsAre(
-    "test_assets/test_data/box.obj",
-    "test_assets/test_data/character.fbx",
-    "test_assets/test_data/nested/house.obj"
+    std::filesystem::path("test_assets/test_data/box.obj"),
+    std::filesystem::path("test_assets/test_data/character.fbx"),
+    std::filesystem::path("test_assets/test_data/nested/house.obj")
   ));
 };
 
-TEST(ScanCmrcDirectoryTest, ReturnsEmptyWhenNoMatchesFound) {
+TEST(ScanCmrcDirectoryTestEmpty, ReturnsEmptyWhenNoMatchesFound) {
   auto fs = cmrc::test_mesh_resources::get_filesystem();
-  std::vector<std::string> discovered_meshes;
+  std::vector<std::filesystem::path> discovered_meshes;
 
   Engine::Utils::scanCmrcDirectory(fs, "test_assets", R"(\.gltf$)", discovered_meshes);
 
   EXPECT_TRUE(discovered_meshes.empty());
+};
+
+TEST(ScanCmrcDirectoryTestNoPattern, ReturnsEmptyWhenNoMatchesFound) {
+  auto fs = cmrc::test_mesh_resources::get_filesystem();
+  std::vector<std::filesystem::path> discovered_meshes;
+
+  std::string pattern = "";
+  Engine::Utils::scanCmrcDirectory(fs, "test_assets", pattern, discovered_meshes);
+
+  EXPECT_TRUE(discovered_meshes.empty());
+};
+
+TEST(ScanCmrcDirectoryTestFile, ReturnsEmptyWhenNoMatchesFound) {
+  auto fs = cmrc::test_mesh_resources::get_filesystem();
+  std::vector<std::filesystem::path> discovered_meshes;
+
+  std::string pattern = R"(\.(obj|fbx)$)";
+  Engine::Utils::scanCmrcDirectory(fs, "test_assets/test_data/box.obj", pattern, discovered_meshes);
+  
+  EXPECT_EQ(discovered_meshes.size(), 1);
+  EXPECT_THAT(discovered_meshes, ::testing::UnorderedElementsAre(
+    std::filesystem::path("test_assets/test_data/box.obj")
+  ));
+};
+
+TEST(ScanCmrcDirectoryTestFileInvalidRegex, ReturnsEmptyWhenNoMatchesFound) {
+  auto fs = cmrc::test_mesh_resources::get_filesystem();
+  std::vector<std::filesystem::path> discovered_meshes;
+
+  std::string pattern = R"(\.(obj|fbx)$)";
+  Engine::Utils::scanCmrcDirectory(fs, "test_assets/test_data/box.gls", pattern, discovered_meshes);
+  
+  EXPECT_EQ(discovered_meshes.size(), 0);
+};
+
+TEST(ScanCmrcDirectoryTestFileNotExists, ReturnsEmptyWhenNoMatchesFound) {
+  auto fs = cmrc::test_mesh_resources::get_filesystem();
+  std::vector<std::filesystem::path> discovered_meshes;
+
+  std::string pattern = R"(\.(obj|fbx)$)";
+  Engine::Utils::scanCmrcDirectory(fs, "test_assets/test_data/boxe.obj", pattern, discovered_meshes);
+  
+  EXPECT_EQ(discovered_meshes.size(), 0);
+};
+
+TEST(ScanCmrcDirectoryTestNoPath, ReturnsEmptyWhenNoMatchesFound) {
+  auto fs = cmrc::test_mesh_resources::get_filesystem();
+  std::vector<std::filesystem::path> discovered_meshes;
+
+  std::string pattern = R"(\.(obj|fbx)$)";
+  Engine::Utils::scanCmrcDirectory(fs, "", pattern, discovered_meshes);
+
+  EXPECT_TRUE(discovered_meshes.empty());
+};
+
+TEST(UtilsScanCmrcDirectoryNotEmpty, RecursivelyFindsMatchingMeshFiles) {
+  auto fs = cmrc::test_mesh_resources::get_filesystem();
+  std::vector<std::filesystem::path> discovered_meshes;
+  discovered_meshes.emplace_back(std::filesystem::path("Err"));
+
+  std::string pattern = R"(\.(obj|fbx)$)";
+  Engine::Utils::scanCmrcDirectory(fs, "test_assets", pattern, discovered_meshes);
+
+  EXPECT_EQ(discovered_meshes.size(), 3);
+  EXPECT_THAT(discovered_meshes, ::testing::UnorderedElementsAre(
+    std::filesystem::path("test_assets/test_data/box.obj"),
+    std::filesystem::path("test_assets/test_data/character.fbx"),
+    std::filesystem::path("test_assets/test_data/nested/house.obj")
+  ));
+};
+
+TEST(UtilsScanCmrcDirectoryNotEmptyEarlyExit, RecursivelyFindsMatchingMeshFiles) {
+  auto fs = cmrc::test_mesh_resources::get_filesystem();
+  std::vector<std::filesystem::path> discovered_meshes;
+  discovered_meshes.emplace_back(std::filesystem::path("Err"));
+
+  std::string pattern = "";
+  Engine::Utils::scanCmrcDirectory(fs, "test_assets", pattern, discovered_meshes);
+
+  EXPECT_EQ(discovered_meshes.size(), 0);
 };

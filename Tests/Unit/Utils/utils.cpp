@@ -12,7 +12,6 @@
 #define private public
 #define protected public
 
-#include "Renderer.h"
 #include "Utils/utils.h"
 
 #undef private
@@ -49,7 +48,6 @@ TEST(UtilsHash, HandlesInitialization){
 
 TEST(UtilsUploadTypedBuffer, HandlesInitialization){
   CW::Renderer::Renderer renderer;
-  CW::Renderer::Mesh mesh;
 
   const size_t random_tests = 25;
   const unsigned int seed = 2123123;
@@ -73,18 +71,51 @@ TEST(UtilsUploadTypedBuffer, HandlesInitialization){
   const auto* bytePtr = reinterpret_cast<const uint8_t*>(&data);
   std::vector<uint8_t> buffer(bytePtr, bytePtr + sizeof(glm::vec3) * data.size());
   
-  Engine::Utils::uploadTypedBuffer<float>(mesh, buffer, dimensions, layout, GL_FLOAT);
-  
-  auto& data_reg = mesh.dataRegister;
-  auto it = data_reg.find(layout);
-  EXPECT_NE(it, data_reg.end());
-  if(it == data_reg.end()) return;
+  {
+    CW::Renderer::Mesh mesh;
+    Engine::Utils::uploadTypedBuffer<float>(mesh, buffer, dimensions, layout, GL_FLOAT);
+    
+    auto& data_reg = mesh.dataRegister;
+    auto it = data_reg.find(layout);
+    EXPECT_NE(it, data_reg.end());
+    if(it != data_reg.end()) {
+      CW::Renderer::MeshData test_data = it->second;
+      EXPECT_EQ(test_data.dimension, dimensions);
+      EXPECT_EQ(test_data.type, type);
+      EXPECT_EQ(test_data.size_of_element, sizeof(float));
+      EXPECT_EQ(test_data.size, sizeof(float) * dimensions * data.size());
+    };
+  }
 
-  CW::Renderer::MeshData test_data = it->second;
-  EXPECT_EQ(test_data.dimension, dimensions);
-  EXPECT_EQ(test_data.type, type);
-  EXPECT_EQ(test_data.size_of_element, sizeof(float));
-  EXPECT_EQ(test_data.size, sizeof(float) * dimensions * data.size());
+  {
+    CW::Renderer::Mesh mesh;
+    Engine::Utils::uploadTypedBuffer<float>(mesh, buffer, 0, layout, GL_FLOAT);
+    
+    auto& data_reg = mesh.dataRegister;
+    auto it = data_reg.find(layout);
+    EXPECT_EQ(it, data_reg.end());
+  }
+
+  {
+    CW::Renderer::Mesh mesh;
+    std::vector<uint8_t> buffer_empty = {};
+    Engine::Utils::uploadTypedBuffer<float>(mesh, buffer_empty, dimensions, layout, GL_FLOAT);
+    
+    auto& data_reg = mesh.dataRegister;
+    auto it = data_reg.find(layout);
+    EXPECT_EQ(it, data_reg.end());
+  }
+
+  {
+    CW::Renderer::Mesh mesh;
+    std::vector<uint8_t> buffer_empty = buffer;
+    buffer_empty.emplace_back(1);
+    Engine::Utils::uploadTypedBuffer<float>(mesh, buffer_empty, dimensions, layout, GL_FLOAT);
+    
+    auto& data_reg = mesh.dataRegister;
+    auto it = data_reg.find(layout);
+    EXPECT_EQ(it, data_reg.end());
+  }
 };
 
 TEST(UtilsuploadBufferByType, HandlesInitialization){
@@ -105,27 +136,66 @@ TEST(UtilsuploadBufferByType, HandlesInitialization){
     data.emplace_back(glm::vec3(rand_val));
   };
 
-  const unsigned int dimensions = 3;
-  const unsigned int layout = 0;
-  std::vector<GLenum> types = {GL_FLOAT, GL_UNSIGNED_INT};
+  {
+    const unsigned int dimensions = 3;
+    const unsigned int layout = 0;
+    std::vector<GLenum> types = {GL_FLOAT, GL_UNSIGNED_INT};
 
-  for(GLenum type : types){
-    CW::Renderer::Mesh mesh;
+    for(GLenum type : types){
+      CW::Renderer::Mesh mesh;
 
-    const auto* bytePtr = reinterpret_cast<const uint8_t*>(&data);
-    std::vector<uint8_t> buffer(bytePtr, bytePtr + sizeof(glm::vec3) * data.size());
-    
-    Engine::Utils::uploadBufferByType(mesh, type, buffer, dimensions, layout);
-    
-    auto& data_reg = mesh.dataRegister;
-    auto it = data_reg.find(layout);
-    EXPECT_NE(it, data_reg.end());
-    if(it == data_reg.end()) return;
-    
-    CW::Renderer::MeshData test_data = it->second;
-    EXPECT_EQ(test_data.dimension, dimensions);
-    EXPECT_EQ(test_data.type, type);
-    EXPECT_EQ(test_data.size_of_element, sizeof(float));
-    EXPECT_EQ(test_data.size, sizeof(float) * dimensions * data.size());
-  };
+      const auto* bytePtr = reinterpret_cast<const uint8_t*>(&data);
+      std::vector<uint8_t> buffer(bytePtr, bytePtr + sizeof(glm::vec3) * data.size());
+      
+      Engine::Utils::uploadBufferByType(mesh, buffer, dimensions, layout, type);
+      
+      auto& data_reg = mesh.dataRegister;
+      auto it = data_reg.find(layout);
+      EXPECT_NE(it, data_reg.end());
+      if(it != data_reg.end()){
+        CW::Renderer::MeshData test_data = it->second;
+        EXPECT_EQ(test_data.dimension, dimensions);
+        EXPECT_EQ(test_data.type, type);
+        EXPECT_EQ(test_data.size_of_element, sizeof(float));
+        EXPECT_EQ(test_data.size, sizeof(float) * dimensions * data.size());
+      };
+    };
+  }
+
+  {
+    const unsigned int dimensions = 0;
+    const unsigned int layout = 0;
+    std::vector<GLenum> types = {GL_FLOAT, GL_UNSIGNED_INT};
+
+    for(GLenum type : types){
+      CW::Renderer::Mesh mesh;
+
+      const auto* bytePtr = reinterpret_cast<const uint8_t*>(&data);
+      std::vector<uint8_t> buffer(bytePtr, bytePtr + sizeof(glm::vec3) * data.size());
+      
+      Engine::Utils::uploadBufferByType(mesh, buffer, dimensions, layout, type);
+      
+      auto& data_reg = mesh.dataRegister;
+      auto it = data_reg.find(layout);
+      EXPECT_EQ(it, data_reg.end());
+    };
+  }
+
+  {
+    const unsigned int dimensions = 3;
+    const unsigned int layout = 0;
+    std::vector<GLenum> types = {GL_FLOAT, GL_UNSIGNED_INT};
+
+    for(GLenum type : types){
+      CW::Renderer::Mesh mesh;
+
+      std::vector<uint8_t> buffer_empty = {};
+      
+      Engine::Utils::uploadBufferByType(mesh, buffer_empty, dimensions, layout, type);
+      
+      auto& data_reg = mesh.dataRegister;
+      auto it = data_reg.find(layout);
+      EXPECT_EQ(it, data_reg.end());
+    };
+  }
 };
