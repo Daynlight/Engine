@@ -67,8 +67,8 @@ inline void Engine::Editor::UI_Info::guiInfo(){
     };
   };
 
-  if(ImGui::Checkbox("Post Processing", &scene.post_processing_on));
-  if(ImGui::Checkbox("Shadows", &scene.shadows_on));
+  // if(ImGui::Checkbox("Post Processing", &scene.post_processing_on));
+  // if(ImGui::Checkbox("Shadows", &scene.shadows_on));
 };
 
 

@@ -24,7 +24,7 @@ public:
   ~SCRIPT_NAME() = default;
   
   void OnLoad(){
-    logger->info(SCRIPT_FILE_NAME, "Loaded");
+    engine.logger->info(SCRIPT_FILE_NAME, "Loaded");
   };
   
   void OnUpdate(float delta_time){
@@ -37,7 +37,7 @@ public:
   };
   
   void OnDestroy(){
-    logger->info(SCRIPT_FILE_NAME, "Destroyed");
+    engine.logger->info(SCRIPT_FILE_NAME, "Destroyed");
   };
 };
 };

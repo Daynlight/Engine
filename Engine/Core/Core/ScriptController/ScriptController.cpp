@@ -137,7 +137,7 @@ Engine::Core::Script::GameObjectScriptRecord& Engine::Core::Script::GameObjectSc
 
 
 void Engine::Core::Script::GameObjectScriptRecord::syncPointer(Engine::ScriptShared::GameObjectData* data) {
-  if (script) script->game_object_data = data;
+  if (script) script->object_data = data;
 };
 
 
@@ -162,11 +162,11 @@ void Engine::Core::Script::GameObjectScriptRecord::observe(Engine::ScriptShared:
 
 void Engine::Core::Script::GameObjectScriptRecord::onLoad(Engine::ScriptShared::GameObjectData* data, Engine::Core::Scene& scene) {
   if(script){
-    script->game_object_data = data;
-    script->glob_res = &Engine::ScriptShared::GlobResource::get();
-    script->logger = static_cast<Engine::ScriptShared::ILogger*>(&Engine::Utils::Logger::get());
-    script->object_manager = static_cast<Engine::ScriptShared::IObjectManager*>(&Engine::ObjectManager::get());
-    script->camera_controller = static_cast<Engine::ScriptShared::ICameraController*>(&scene.camera_controller);
+    script->object_data = data;
+    script->engine.glob_res = &Engine::ScriptShared::GlobResource::get();
+    script->engine.logger = static_cast<Engine::ScriptShared::ILogger*>(&Engine::Utils::Logger::get());
+    script->engine.object_manager = static_cast<Engine::ScriptShared::IObjectManager*>(&Engine::ObjectManager::get());
+    script->engine.camera_controller = static_cast<Engine::ScriptShared::ICameraController*>(&scene.camera_controller);
 
 #ifndef PRODUCTION
 #ifdef SANDBOX_SCRIPTS

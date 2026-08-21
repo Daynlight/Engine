@@ -10,7 +10,7 @@
 
 
 Engine::Core::Scene::Scene(CW::Renderer::Renderer& window)
-  : window(window), camera_controller(&window), light_camera(&window), fbo(1920, 1080), post_fbo(1920, 1080), shadows_fbo(1920 * 5, 1080 * 5), screen_quad("screen_quad", &Engine::Core::Resources::get().meshes)
+  : window(window), camera_controller(&window)
 #ifndef PRODUCTION
   , debug_camera(&window)
 #endif
@@ -31,37 +31,10 @@ void Engine::Core::Scene::onLoad(){
   
   Engine::Utils::Logger::get().info("Scene", "Data Loaded from DataSerializer");
 
-
-  post_uniform["u_water_height"]->set<float>(Engine::Config::WATER_HEIGHT);
-  post_uniform["u_Near"]->set<float>(Engine::Config::CAMERA_NEAR_PLANE);
-  post_uniform["u_Far"]->set<float>(Engine::Config::CAMERA_ORTHO_FAR_PLANE);
-  post_uniform["u_FogDensity"]->set<float>(Engine::Config::FOG_DENSITY);
-  post_uniform["u_FogColor"]->set<glm::vec3>(Engine::Config::FOG_COLOR);
-  Engine::Utils::Logger::get().info("Scene", "PostProcessing Uniforms Initialized");
-  
-
-  light_camera.setCameraMode(Engine::ScriptShared::CameraMode::PERSPECTIVE);
-  light_camera.setFov(110.0f);
-  last_light_camera_fov = light_camera.getFov(); 
-  light_camera.setPosition(Engine::Core::Resources::get().lights[0].position);
-  last_light_camera_pos = light_camera.getPosition();
-  light_camera.setDirection(glm::normalize(-Engine::Core::Resources::get().lights[0].position));
-  last_light_camera_dir = light_camera.getDirection();
-  light_space_matrix = light_camera.transformation();
-  
-  shadows_uniform_off["u_ShadowEnabled"]->set<int>(0);
-  shadows_uniform_off["u_ShadowDepthTexture"]->set<int>(16);
-  shadows_uniform_off["u_LightSpaceMatrix"]->set<glm::mat4>(light_space_matrix);
-  shadows_uniform_on["u_ShadowEnabled"]->set<int>(1);
-  shadows_uniform_on["u_ShadowDepthTexture"]->set<int>(16);
-  shadows_uniform_on["u_LightSpaceMatrix"]->set<glm::mat4>(light_space_matrix);
-  Engine::Utils::Logger::get().info("Scene", "Shadows Camera and Uniform Initialized");
-  
-
   camera_controller.spawnCamera(
     "Main", 
-    {174.780f, 26.939f, -80.027f}, 
-    {-0.847f, -0.466f, -0.256f}
+    {0.0f, 0.0f, 40.0f}, 
+    {0.0f, 0.0f, -1.0f}
   );
   camera_controller.setActiveCamera("Main");
   
@@ -69,20 +42,30 @@ void Engine::Core::Scene::onLoad(){
 
 
 #ifndef PRODUCTION
-  debug_camera.setPosition({453.198f, 250.233f, -26.842f});
-  debug_camera.setDirection({-0.668f, -0.734f, -0.122f});
+  debug_camera.setPosition({0.0f, 0.0f, 0.0f});
+  debug_camera.setDirection({0.0f, 0.0f, -1.0f});
   debug_camera.setDefaultMovement(true);
   Engine::Utils::Logger::get().info("Scene", "Debug Camera Initialized");
 #endif
-    
+};
 
-  compileShadows();
-  Engine::Utils::Logger::get().info("Scene", "Shadows Compiled");
+
+
+CW::Renderer::Framebuffer &Engine::Core::Scene::getFbo(){
+#ifndef PRODUCTION
+  if(debug_camera_on) return debug_camera.getFbo();
+  else
+#endif
+  return camera_controller.getCoreActiveCamera().getFbo();
 };
 
 
 
 void Engine::Core::Scene::onUpdate(float delta_time){
+#ifndef PRODUCTION
+  if(debug_camera_on) debug_camera.event(delta_time);
+  else
+#endif
   camera_controller.getActiveCamera().event(delta_time);
 
   unsigned int size = Engine::ObjectManager::get().objects.size();
@@ -176,144 +159,25 @@ void Engine::Core::Scene::onDestroy() {
 
 
 
-void Engine::Core::Scene::compileShadows(){
-  shadows_fbo.bind();
-  
-  if(last_light_camera_pos != light_camera.getPosition()){
-    light_camera.setFov(110.0f);
-    last_light_camera_fov = light_camera.getFov();
-
-    light_camera.setPosition(Engine::Core::Resources::get().lights[0].position);
-    last_light_camera_pos = light_camera.getPosition();
-    
-    light_camera.setDirection(glm::normalize(-Engine::Core::Resources::get().lights[0].position));
-    last_light_camera_dir = light_camera.getDirection();
-    
-    light_space_matrix = light_camera.transformation();
-    shadows_uniform_off["u_LightSpaceMatrix"]->set<glm::mat4>(light_space_matrix);
-    shadows_uniform_on["u_LightSpaceMatrix"]->set<glm::mat4>(light_space_matrix);
-  };  
-
-  window.beginFrame();
-
-  for(Engine::Core::GameObject& object : Engine::ObjectManager::get().objects) object.render(&window, light_camera, light_camera, shadows_uniform_off);
-  for(Engine::Core::GameObject& object : Engine::ObjectManager::get().script_objects) object.render(&window, light_camera, light_camera, shadows_uniform_off);
-
-  shadows_fbo.unbind();
-};
-
-
-
 void Engine::Core::Scene::render(){
   Engine::Core::Resources::get().lights.bind(0);
   Engine::Core::Resources::get().materials.bind(1);
-
-
-#ifndef PRODUCTION
-  if(!shadows_on){
-    shadows_fbo.bind();
-    window.beginFrame();
-    shadows_fbo.unbind();
-  }
-  else
-#endif
-    compileShadows();
-
-
-  fbo.bind();
 
 #ifndef PRODUCTION
   if(debug_camera_on)
     renderFrame(debug_camera);
   else
 #endif
-    renderFrame(this->camera_controller.getActiveCamera());
-
-  fbo.unbind();
-
+    renderFrame(this->camera_controller.getCoreActiveCamera());
 
   Engine::Core::Resources::get().materials.unbind();
   Engine::Core::Resources::get().lights.unbind();
-
-
-  window.beginFrame();
-
-
-  // fbo.blitToScreen(window.getWindowData()->width, window.getWindowData()->height);
-  // else
-  // #endif
-  
-#ifndef PRODUCTION
-  if(post_processing_on)
-#endif
-    postProcessing();
 };
 
 
 
-void Engine::Core::Scene::renderFrame(Engine::ScriptShared::ICamera& camera){
-  window.beginFrame();
-
-  glActiveTexture(GL_TEXTURE16);
-  glBindTexture(GL_TEXTURE_2D, shadows_fbo.getDepthTexture());
-
-  for(Engine::Core::GameObject& object : Engine::ObjectManager::get().script_objects) object.render(&window, this->camera_controller.getActiveCamera(), camera, shadows_uniform_on);
-  for(Engine::Core::GameObject& object : Engine::ObjectManager::get().objects) object.render(&window, this->camera_controller.getActiveCamera(), camera, shadows_uniform_on);
-
-  
-  glActiveTexture(GL_TEXTURE16);
-  glBindTexture(GL_TEXTURE_2D, 0);
-};
-
-
-
-void Engine::Core::Scene::postProcessing(){
-  CW::Renderer::Mesh* screen_mesh =  screen_quad.get();
-  if(!screen_mesh) return;
-
-  post_fbo.bind();
-
-  window.beginFrame(); 
-
-  glDisable(GL_DEPTH_TEST); 
-
-  std::string shader_name = "PostProcessing";
-
-  glActiveTexture(GL_TEXTURE0);
-  glBindTexture(GL_TEXTURE_2D, fbo.getColorTexture());
-  post_uniform["u_SceneColorTexture"]->set<int>(0);
-
-  glActiveTexture(GL_TEXTURE1);
-  glBindTexture(GL_TEXTURE_2D, fbo.getDepthTexture());
-  post_uniform["u_SceneDepthTexture"]->set<int>(1);
-
-#ifndef PRODUCTION
-  if(debug_camera_on){
-    glm::mat4 invViewProj = glm::inverse(debug_camera.projection() * debug_camera.view());
-    post_uniform["u_InvViewProj"]->set<glm::mat4>(invViewProj);
-    post_uniform["u_CamPos"]->set<glm::vec3>(debug_camera.getPosition());
-  }
-  else{
-#endif
-    glm::mat4 invViewProj = glm::inverse(camera_controller.getActiveCamera().projection() * camera_controller.getActiveCamera().view());
-    post_uniform["u_InvViewProj"]->set<glm::mat4>(invViewProj);
-    post_uniform["u_CamPos"]->set<glm::vec3>(camera_controller.getActiveCamera().getPosition());
-#ifndef PRODUCTION
-  }
-#endif
-
-  Engine::Core::Resources::get().getShader(shader_name).getUniforms().emplace_back(&post_uniform);
-  Engine::Core::Resources::get().getShader(shader_name).bind();
-  
-  screen_mesh->render();
-  
-  Engine::Core::Resources::get().getShader(shader_name).unbind();
-  Engine::Core::Resources::get().getShader(shader_name).getUniforms().clear();
-
-  glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, 0);
-  glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, 0);
-
-  glEnable(GL_DEPTH_TEST); 
-
-  post_fbo.unbind();
+void Engine::Core::Scene::renderFrame(Engine::Core::Camera& camera){
+  camera.clearFbo();
+  camera.render(Engine::ObjectManager::get().script_objects);
+  camera.render(Engine::ObjectManager::get().objects);
 };

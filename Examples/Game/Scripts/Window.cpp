@@ -27,14 +27,14 @@ public:
   ~SCRIPT_NAME() = default;
   
   void OnLoad(){
-    glob_res->WINDOW_TITLE = base_name;
-    logger->info(SCRIPT_FILE_NAME, "Loaded");
+    engine.glob_res->WINDOW_TITLE = base_name;
+    engine.logger->info(SCRIPT_FILE_NAME, "Loaded");
   };
   
   void OnUpdate(float delta_time){
     if(samples > 200){
       float fps = samples / acc_time;
-      glob_res->WINDOW_TITLE = base_name + " | " + std::to_string(floor(fps)) + " fps";
+      engine.glob_res->WINDOW_TITLE = base_name + " | " + std::to_string(floor(fps)) + " fps";
       acc_time = 0.0f;
       samples = 0;
     }
@@ -52,8 +52,8 @@ public:
   };
   
   void OnDestroy(){
-    glob_res->WINDOW_TITLE = base_name;
-    logger->info(SCRIPT_FILE_NAME, "Destroyed");
+    engine.glob_res->WINDOW_TITLE = base_name;
+    engine.logger->info(SCRIPT_FILE_NAME, "Destroyed");
   };
 };
 };

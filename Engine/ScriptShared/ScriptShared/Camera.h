@@ -54,10 +54,12 @@ public:
   virtual float getFarOrthogonalPlane() const noexcept = 0;
   virtual void setFarOrthogonalPlane(float far) noexcept = 0;
   
-  
   virtual Engine::ScriptShared::CameraMode getCameraMode() const noexcept = 0;
   virtual void setCameraMode(Engine::ScriptShared::CameraMode mode) noexcept = 0;
-  
+
+  virtual void autoSizeFboToWindow() noexcept = 0;
+  virtual void clearFbo() noexcept = 0;
+
   virtual bool getDefaultMovement() const noexcept = 0;
   virtual void setDefaultMovement(bool state) noexcept = 0;
 
@@ -70,6 +72,5 @@ public:
 
   virtual void event(float delta_time) = 0;
   virtual void resetMouse() = 0;
-
 };
 };

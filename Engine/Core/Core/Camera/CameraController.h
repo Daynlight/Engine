@@ -8,15 +8,11 @@
 #pragma once
 #include "Renderer.h"
 
-#define GLM_ENABLE_EXPERIMENTAL
-#include "../vendor/glm/glm/gtx/euler_angles.hpp"
-#include "../vendor/glm/glm/gtx/quaternion.hpp"
-
 #include "ScriptShared/CameraController.h"
+#include "Camera.h"
 
 #include "Utils/config.h"
 #include "Utils/Logger.h"
-#include "Camera.h"
 
 
 
@@ -27,8 +23,10 @@ class CameraController : public Engine::ScriptShared::ICameraController {
 //////// ============================================ ////////
 private:
   CW::Renderer::Renderer* renderer = nullptr;
+  Engine::Core::Camera* active_camera_ref = nullptr;
   std::unordered_map<std::string, Engine::Core::Camera> cameras{};
   std::string active_camera = "";
+  bool active_camera_setted = false;
 
 
 
@@ -56,11 +54,13 @@ public:
   void setActiveCamera(const std::string& name) noexcept;
   std::string getActiveCameraName() const noexcept;
   Engine::ScriptShared::ICamera& getActiveCamera();
+  Engine::Core::Camera& getCoreActiveCamera();
   
   void spawnCamera(const std::string& name, glm::vec3 position = {0.0f, 0.0f, 0.0f}, glm::vec3 direction = {0.0f, 0.0f, 1.0f}) noexcept;
   void deleteCamera(const std::string& name) noexcept;
 
-  Engine::ScriptShared::ICamera& getCamera(const std::string& name);
+  Engine::ScriptShared::ICamera& getCamera(const std::string& name) noexcept;
+  Engine::Core::Camera& getCoreCamera(const std::string& name) noexcept;
   bool cameraExists(const std::string& name) const noexcept;
 
 };

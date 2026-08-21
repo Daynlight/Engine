@@ -90,7 +90,7 @@ void Engine::MeshSerialization::load(const std::string& path_to_mesh, Engine::Ut
         std::memcpy(vertices.data(), e.data.data(), e.data.size());
         engine_mesh.addVertices(vertices, e.dimension, e.key);
       } else {
-        Engine::Utils::uploadBufferByType(engine_mesh, e.type, e.data, e.dimension, e.key);
+        Engine::Utils::uploadBufferByType(engine_mesh, e.data, e.dimension, e.key, e.type);
       };
     };
 
@@ -126,13 +126,13 @@ void Engine::MeshSerialization::loadAll(Engine::Utils::ResourceController<CW::Re
   Engine::Utils::Logger::get().info("MeshSerialization", "Loading all meshes...");
   try {
     std::string meshes_root = Engine::Config::GAME_DATA_FOLDER + Engine::Config::ASSETS_FOLDER + Engine::Config::MESHES_FOLDER;
-    std::vector<std::string> mesh_files;
+    std::vector<std::filesystem::path> mesh_files;
 
 #ifndef PRODUCTION
     if (std::filesystem::exists(meshes_root) && std::filesystem::is_directory(meshes_root)) {
       for (const auto& entry : std::filesystem::recursive_directory_iterator(meshes_root)) {
         if (entry.is_regular_file() && entry.path().extension() == Engine::Config::MESH_EXTENSION) {
-          mesh_files.push_back(entry.path().string());
+          mesh_files.push_back(entry.path());
         }
       }
     } else {
@@ -148,7 +148,7 @@ void Engine::MeshSerialization::loadAll(Engine::Utils::ResourceController<CW::Re
     Engine::Utils::scanCmrcDirectory(fs, meshes_root, "\\.msh$", mesh_files);
 #endif
 
-    for (const auto& file_path : mesh_files) load(file_path, meshes);
+    for (const auto& file_path : mesh_files) load(file_path.string(), meshes);
 
     meshes.compileAll();
 
