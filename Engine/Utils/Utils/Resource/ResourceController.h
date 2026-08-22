@@ -18,37 +18,64 @@
 namespace Engine::Utils {
 template<typename T>
 class ResourceController {
+// ========================== //
+// ========== Data ========== //
+// ========================== //
+// ================= //
+// ====== Core ===== //
+// ================= //
 private:
   std::vector<T> data;
   std::unordered_map<std::string, unsigned int> name_to_id;
   std::vector<std::string> id_to_name;
   unsigned int version = 0;
 
+
+
+// ========================== //
+// ======== Functions ======= //
+// ========================== //
+// ================== //
+// == Constructors == //
+// ================== //
 public:
+// core
   ResourceController();
   ~ResourceController();
+// copy
+  ResourceController(const ResourceController& second) noexcept;
+  ResourceController& operator=(const ResourceController& second) noexcept;
+// move
+  ResourceController(ResourceController&& second) noexcept;
+  ResourceController& operator=(ResourceController&& second) noexcept;
 
-  T& operator[](unsigned int index);
-  
-  const T& operator[](unsigned int index) const;
-
-  static constexpr unsigned int INVALID_ID = -1; 
-  unsigned int getID(const std::string& name);
+// ================== //
+// == Data Control == //
+// ================== //
+public:
+  void emplace_back(const std::string& name, const T& record);
+  void emplace_back(const std::string& name, T&& record);
 
   void erase(const std::string& name);
-  unsigned int size() const;
   void clear();
 
-  void emplace_back(const std::string& name, T&& mesh);
-  bool exists(const std::string& name) const;
+  T& getResource(unsigned int id);
 
-  std::unordered_map<std::string, unsigned int>& getIDs();
+// ================== //
+// ==== Data Info === //
+// ================== //
+public:
+unsigned int getID(const std::string& name);
+std::string getName(unsigned int id);
+std::unordered_map<std::string, unsigned int> getNameToID();
+
+  bool exists(const std::string& name) const;
+  unsigned int size() const;
 
   bool validateVersion(unsigned int version);
   unsigned int getLatestsVersion();
 
   void compileAll();
-
 };
 };
 

@@ -70,7 +70,7 @@ T* Engine::Utils::Resource<T>::get(){
   valid = validate();
   if(!valid) return nullptr;
   
-  return &((*controller)[id]);
+  return nullptr;
 };
 
 

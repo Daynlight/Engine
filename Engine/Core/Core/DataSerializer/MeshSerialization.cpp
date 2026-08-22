@@ -110,11 +110,11 @@ void Engine::MeshSerialization::saveAll(Engine::Utils::ResourceController<CW::Re
   
   std::vector<std::pair<std::string, unsigned int>> meshes_to_save;
   
-  for (const auto& pair : meshes.getIDs())
+  for (const auto& pair : meshes.getNameToID())
     meshes_to_save.push_back(pair);
 
   for (const auto& [mesh_name, mesh_id] : meshes_to_save)
-    save(mesh_name, meshes[mesh_id]);
+    save(mesh_name, meshes.getResource(mesh_id));
   
   Engine::Utils::Logger::get().info("MeshSerialization", "All meshes have been saved");
 };
