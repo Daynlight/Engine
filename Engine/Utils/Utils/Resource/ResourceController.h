@@ -65,9 +65,10 @@ public:
 // ==== Data Info === //
 // ================== //
 public:
-unsigned int getID(const std::string& name);
-std::string getName(unsigned int id);
-std::unordered_map<std::string, unsigned int> getNameToID();
+  unsigned int getID(const std::string& name);
+  bool isIDValid(unsigned int id);
+  std::string getName(unsigned int id);
+  std::unordered_map<std::string, unsigned int> getNameToID();
 
   bool exists(const std::string& name) const;
   unsigned int size() const;

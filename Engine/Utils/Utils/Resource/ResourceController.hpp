@@ -146,6 +146,8 @@ void Engine::Utils::ResourceController<T>::clear(){
 
 template <typename T>
 inline T &Engine::Utils::ResourceController<T>::getResource(unsigned int id){
+  if(id >= data.size())
+    throw std::runtime_error("id is out of bound! [check it before]");
   return data[id];
 };
 
@@ -162,6 +164,14 @@ unsigned int Engine::Utils::ResourceController<T>::getID(const std::string& name
   };
 
   return it->second;
+};
+
+
+
+template <typename T>
+inline bool Engine::Utils::ResourceController<T>::isIDValid(unsigned int id){
+  if(id == -1) return false;
+  return data.size() > id;
 };
 
 
