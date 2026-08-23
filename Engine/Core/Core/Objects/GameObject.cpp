@@ -206,7 +206,7 @@ void Engine::Core::GameObject::render(CW::Renderer::Renderer *renderer, Engine::
     mesh_last = copy_game_object_data.mesh;
   };
 
-  CW::Renderer::Mesh* mesh = this->mesh.get();
+  CW::Renderer::Mesh* mesh = this->mesh.getResource();
   if(!mesh) return;
 
   uniform["projection"]->set<glm::mat4>(render_camera.projection());

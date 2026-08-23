@@ -19,27 +19,54 @@
 namespace Engine::Utils {
 template<typename T>
 class Resource {
+// ========================== //
+// ========== Data ========== //
+// ========================== //
 private:
   std::string name = "";
   ResourceController<T>* controller = nullptr;
   unsigned int version = -1;
   unsigned int id = -1;
-  bool valid = 1;
 
+
+
+// ========================== //
+// ======== Functions ======= //
+// ========================== //
+// ================== //
+// == Constructors == //
+// ================== //
 public:
-  Resource() = default;
-  Resource(const std::string& name, ResourceController<T>* controller);
-  ~Resource();
-  Resource(const Resource& other);
-  Resource& operator=(const Resource& other);
+// core
+  Resource() noexcept;
+  Resource(const std::string& name, ResourceController<T>* controller) noexcept;
+  ~Resource() noexcept;
+
+// copy
+  Resource(const Resource& other) noexcept;
+  Resource& operator=(const Resource& other) noexcept;
+// move
   Resource(Resource&& other) noexcept;
   Resource& operator=(Resource&& other) noexcept;
 
-  T* get();
-  void setName(const std::string& name);
+// ================== //
+// == Data Control == //
+// ================== //
+public:  
+  T* getResource() noexcept;
 
+  std::string getName() const noexcept;
+  void setName(const std::string& name) noexcept;
+  bool nameIsValid() const noexcept;
+
+  void setController(ResourceController<T>* controller) noexcept;
+  ResourceController<T>* getController() noexcept;
+
+// ================ //
+// == Validation == //
+// ================ //
 private:
-  bool validate();
+  bool validate() noexcept;
 };
 };
 

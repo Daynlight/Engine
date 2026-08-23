@@ -21,9 +21,6 @@ class ResourceController {
 // ========================== //
 // ========== Data ========== //
 // ========================== //
-// ================= //
-// ====== Core ===== //
-// ================= //
 private:
   std::vector<T> data;
   std::unordered_map<std::string, unsigned int> name_to_id;

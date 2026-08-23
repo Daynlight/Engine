@@ -13,7 +13,6 @@
 #define private public
 #define protected public
 
-#include "Utils/Resource/Resource.h"
 #include "Utils/Resource/ResourceController.h"
 
 #undef private
@@ -669,5 +668,3 @@ TEST(ResourceControllerValidateVersion, HandlesInitialization){
   EXPECT_NE(version, controller.getLatestsVersion());
   version = controller.validateVersion(version);
 };
-
-// integration with Resource
