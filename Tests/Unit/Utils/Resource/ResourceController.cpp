@@ -532,7 +532,142 @@ TEST(ResourceControllerEmplaceGetResourceIncorrectID, HandlesInitialization){
 // ================== //
 // ==== Data Info === //
 // ================== //
-// getID not existing name
+TEST(ResourceControllerGetID, HandlesInitialization){
+  TestingRes test_res = TestingRes();
+  test_res.str = "Hello";
+  std::string test_res_name = "Hello";
+  
+  Engine::Utils::ResourceController<TestingRes> controller;
+  controller.emplace_back(test_res_name, test_res);
 
+  EXPECT_EQ(controller.size(), 1);
+  EXPECT_TRUE(controller.exists(test_res_name));
+  
+  unsigned int test_id = controller.getID(test_res_name);
+  std::string test_name = controller.getName(test_id);
+  std::unordered_map<std::string, unsigned int> namt_to_id = controller.getNameToID();
+  EXPECT_LT(test_id, controller.size());
+  EXPECT_LT(test_id, controller.data.size());
+  EXPECT_TRUE(controller.isIDValid(test_id));
+  EXPECT_EQ(test_name, test_res_name);
+  bool found = false;
+  for(auto& el : namt_to_id){
+    if(el.first == test_res_name && el.second == test_id) {
+      found = true;
+      break;
+    };
+  };
+  EXPECT_TRUE(found);
+  
+  test_id = 1231;
+  test_name = controller.getName(test_id);
+  namt_to_id = controller.getNameToID();
+  EXPECT_GE(test_id, controller.size());
+  EXPECT_GE(test_id, controller.data.size());
+  EXPECT_FALSE(controller.isIDValid(test_id));
+  EXPECT_NE(test_name, test_res_name);
+  found = false;
+  for(auto& el : namt_to_id){
+    if(el.first == test_res_name && el.second == test_id) {
+      found = true;
+      break;
+    };
+  };
+  EXPECT_FALSE(found);
+};
+
+TEST(ResourceControllerGetNameToID, HandlesInitialization){
+  const unsigned int seed = 1231231;
+  const unsigned int random_tests_min = 25;
+  const unsigned int random_tests_max = 100;
+  const float random_element_f_min = -200.0f;
+  const float random_element_f_max = 200.0f;
+  const int random_element_i_min = -200;
+  const int random_element_i_max = 200;
+
+  std::mt19937 gen_f(seed);
+  std::uniform_real_distribution<float> dist_f(random_element_f_min, random_element_f_max);
+
+  std::mt19937 gen_i(seed);
+  std::uniform_int_distribution<int> dist_i(random_element_i_min, random_element_i_max);
+
+  std::mt19937 gen_tests(seed);
+  std::uniform_int_distribution<unsigned int> dist_tests(random_tests_min, random_tests_max);
+  
+  Engine::Utils::ResourceController<TestingRes> controller;
+  std::vector<TestingRes> tests = {};
+  
+  unsigned int random_tests = dist_tests(gen_tests);
+
+  for(unsigned int i = 0; i < random_tests; i++){
+    TestingRes test = TestingRes();
+    float rand_f = dist_f(gen_f);
+    int rand_i = dist_i(gen_i);
+    test.val_f = rand_f;
+    test.val_i = rand_i;
+    tests.emplace_back(test);
+    std::string name = std::to_string(i);
+    controller.emplace_back(name, test);
+  };
+
+  EXPECT_EQ(controller.size(), tests.size());
+
+  std::unordered_map<std::string, unsigned int> name_to_id = controller.getNameToID();
+  
+  for(unsigned int i = 0; i < random_tests; i++){
+    std::string name = std::to_string(i);
+    
+    bool found = false;
+    for(auto& el : name_to_id){
+      if(el.first == name) {
+        found = true;
+        break;
+      };
+    };
+    EXPECT_TRUE(found);
+  };
+};
+
+TEST(ResourceControllerValidateVersion, HandlesInitialization){
+  Engine::Utils::ResourceController<TestingRes> controller;
+  unsigned int version = controller.getLatestsVersion();
+  
+  TestingRes test = TestingRes();
+  std::string testing_name = "1";
+  controller.emplace_back(testing_name, test);
+  
+  EXPECT_FALSE(controller.validateVersion(version));
+  EXPECT_NE(version, controller.getLatestsVersion());
+  version = controller.validateVersion(version);
+
+  test = TestingRes();
+  testing_name = "1";
+  controller.emplace_back(testing_name, test);
+  
+  EXPECT_FALSE(controller.validateVersion(version));
+  EXPECT_NE(version, controller.getLatestsVersion());
+  version = controller.validateVersion(version);
+
+  test = TestingRes();
+  testing_name = "234";
+  controller.emplace_back(testing_name, test);
+  
+  EXPECT_FALSE(controller.validateVersion(version));
+  EXPECT_NE(version, controller.getLatestsVersion());
+  version = controller.validateVersion(version);
+
+  testing_name = "234";
+  controller.erase(testing_name);
+  
+  EXPECT_FALSE(controller.validateVersion(version));
+  EXPECT_NE(version, controller.getLatestsVersion());
+  version = controller.validateVersion(version);
+
+  controller.clear();
+  
+  EXPECT_FALSE(controller.validateVersion(version));
+  EXPECT_NE(version, controller.getLatestsVersion());
+  version = controller.validateVersion(version);
+};
 
 // integration with Resource
