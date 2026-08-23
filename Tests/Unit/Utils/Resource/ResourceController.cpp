@@ -73,18 +73,175 @@ public:
 // == Constructors == //
 // ================== //
 TEST(ResourceControllerDefaultConstructor, HandlesInitialization){
+  Engine::Utils::ResourceController<TestingRes> controller;
+
+  EXPECT_EQ(controller.data.size(), 0);
+  EXPECT_EQ(controller.name_to_id.size(), 0);
+  EXPECT_EQ(controller.id_to_name.size(), 0);
+  EXPECT_EQ(controller.version, 0);
+
+  TestingRes test_res = TestingRes();
+  test_res.str = "Hello";
+  std::string test_res_name = "Hello";
+  controller.emplace_back(test_res_name, test_res);
+
+  EXPECT_EQ(controller.data.size(), 1);
+  EXPECT_EQ(controller.name_to_id.size(), 1);
+  EXPECT_EQ(controller.id_to_name.size(), 1);
+  EXPECT_NE(controller.version, 0);
 };
 
 TEST(ResourceControllerCopyConstructor, HandlesInitialization){
+  Engine::Utils::ResourceController<TestingRes> controller;
+
+  EXPECT_EQ(controller.data.size(), 0);
+  EXPECT_EQ(controller.name_to_id.size(), 0);
+  EXPECT_EQ(controller.id_to_name.size(), 0);
+  EXPECT_EQ(controller.version, 0);
+
+  TestingRes test_res = TestingRes();
+  test_res.str = "Hello";
+  std::string test_res_name = "Hello";
+  controller.emplace_back(test_res_name, test_res);
+
+  EXPECT_EQ(controller.data.size(), 1);
+  EXPECT_EQ(controller.name_to_id.size(), 1);
+  EXPECT_EQ(controller.id_to_name.size(), 1);
+  EXPECT_NE(controller.version, 0);
+
+  Engine::Utils::ResourceController<TestingRes> controller2(controller);  
+
+  EXPECT_EQ(controller2.data.size(), 1);
+  EXPECT_EQ(controller2.name_to_id.size(), 1);
+  EXPECT_EQ(controller2.id_to_name.size(), 1);
+  EXPECT_EQ(controller2.version, controller.version);
+
+  TestingRes test_res2 = controller2.getResource(controller2.getID(test_res_name));
+  EXPECT_TRUE(test_res2 == test_res);
+
 };
 
 TEST(ResourceControllerCopyAssignConstructor, HandlesInitialization){
+  Engine::Utils::ResourceController<TestingRes> controller;
+
+  EXPECT_EQ(controller.data.size(), 0);
+  EXPECT_EQ(controller.name_to_id.size(), 0);
+  EXPECT_EQ(controller.id_to_name.size(), 0);
+  EXPECT_EQ(controller.version, 0);
+
+  TestingRes test_res = TestingRes();
+  test_res.str = "Hello";
+  std::string test_res_name = "Hello";
+  controller.emplace_back(test_res_name, test_res);
+
+  EXPECT_EQ(controller.data.size(), 1);
+  EXPECT_EQ(controller.name_to_id.size(), 1);
+  EXPECT_EQ(controller.id_to_name.size(), 1);
+  EXPECT_NE(controller.version, 0);
+
+  Engine::Utils::ResourceController<TestingRes> controller2 = controller;  
+
+  EXPECT_EQ(controller2.data.size(), 1);
+  EXPECT_EQ(controller2.name_to_id.size(), 1);
+  EXPECT_EQ(controller2.id_to_name.size(), 1);
+  EXPECT_EQ(controller2.version, controller.version);
+
+  TestingRes test_res2 = controller2.getResource(controller2.getID(test_res_name));
+  EXPECT_TRUE(test_res2 == test_res);
+
+  controller2 = controller2;  
+
+  EXPECT_EQ(controller2.data.size(), 1);
+  EXPECT_EQ(controller2.name_to_id.size(), 1);
+  EXPECT_EQ(controller2.id_to_name.size(), 1);
+  EXPECT_EQ(controller2.version, controller.version);
+
+  TestingRes test_res3 = controller2.getResource(controller2.getID(test_res_name));
+  EXPECT_TRUE(test_res3 == test_res);
 };
 
 TEST(ResourceControllerMoveConstructor, HandlesInitialization){
+  Engine::Utils::ResourceController<TestingRes> controller;
+
+  EXPECT_EQ(controller.data.size(), 0);
+  EXPECT_EQ(controller.name_to_id.size(), 0);
+  EXPECT_EQ(controller.id_to_name.size(), 0);
+  EXPECT_EQ(controller.version, 0);
+
+  TestingRes test_res = TestingRes();
+  test_res.str = "Hello";
+  std::string test_res_name = "Hello";
+  controller.emplace_back(test_res_name, test_res);
+
+  EXPECT_EQ(controller.data.size(), 1);
+  EXPECT_EQ(controller.name_to_id.size(), 1);
+  EXPECT_EQ(controller.id_to_name.size(), 1);
+  EXPECT_NE(controller.version, 0);
+
+  unsigned int version = controller.version;
+
+  Engine::Utils::ResourceController<TestingRes> controller2(std::move(controller));  
+
+  EXPECT_EQ(controller2.data.size(), 1);
+  EXPECT_EQ(controller2.name_to_id.size(), 1);
+  EXPECT_EQ(controller2.id_to_name.size(), 1);
+  EXPECT_EQ(controller2.version, version);
+
+  TestingRes test_res2 = controller2.getResource(controller2.getID(test_res_name));
+  EXPECT_TRUE(test_res2 == test_res);
+
+  EXPECT_EQ(controller.data.size(), 0);
+  EXPECT_EQ(controller.name_to_id.size(), 0);
+  EXPECT_EQ(controller.id_to_name.size(), 0);
 };
 
 TEST(ResourceControllerMoveAssignConstructor, HandlesInitialization){
+  Engine::Utils::ResourceController<TestingRes> controller;
+
+  EXPECT_EQ(controller.data.size(), 0);
+  EXPECT_EQ(controller.name_to_id.size(), 0);
+  EXPECT_EQ(controller.id_to_name.size(), 0);
+  EXPECT_EQ(controller.version, 0);
+
+  TestingRes test_res = TestingRes();
+  test_res.str = "Hello";
+  std::string test_res_name = "Hello";
+  controller.emplace_back(test_res_name, test_res);
+
+  EXPECT_EQ(controller.data.size(), 1);
+  EXPECT_EQ(controller.name_to_id.size(), 1);
+  EXPECT_EQ(controller.id_to_name.size(), 1);
+  EXPECT_NE(controller.version, 0);
+
+  unsigned int version = controller.version;
+
+  Engine::Utils::ResourceController<TestingRes> controller2 = std::move(controller);  
+
+  EXPECT_EQ(controller2.data.size(), 1);
+  EXPECT_EQ(controller2.name_to_id.size(), 1);
+  EXPECT_EQ(controller2.id_to_name.size(), 1);
+  EXPECT_EQ(controller2.version, version);
+
+  TestingRes test_res2 = controller2.getResource(controller2.getID(test_res_name));
+  EXPECT_TRUE(test_res2 == test_res);
+
+  EXPECT_EQ(controller.data.size(), 0);
+  EXPECT_EQ(controller.name_to_id.size(), 0);
+  EXPECT_EQ(controller.id_to_name.size(), 0);
+
+  controller2 = std::move(controller2);  
+
+  EXPECT_EQ(controller2.data.size(), 1);
+  EXPECT_EQ(controller2.name_to_id.size(), 1);
+  EXPECT_EQ(controller2.id_to_name.size(), 1);
+  EXPECT_EQ(controller2.version, version);
+
+  TestingRes test_res3 = controller2.getResource(controller2.getID(test_res_name));
+  EXPECT_TRUE(test_res3 == test_res);
+
+  EXPECT_EQ(controller.data.size(), 0);
+  EXPECT_EQ(controller.name_to_id.size(), 0);
+  EXPECT_EQ(controller.id_to_name.size(), 0);
 };
 
 
