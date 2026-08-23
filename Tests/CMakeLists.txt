@@ -8,10 +8,10 @@
 cmake_minimum_required(VERSION 3.15)
 
 set(tests_src 
-  # Unit/Core/Camera/Camera.cpp
-  # Unit/Core/Camera/CameraController.cpp
-  # Unit/Utils/utils.cpp
-  # Unit/Utils/utilsProd.cpp
+  Unit/Core/Camera/Camera.cpp
+  Unit/Core/Camera/CameraController.cpp
+  Unit/Utils/utils.cpp
+  Unit/Utils/utilsProd.cpp
   Unit/Utils/Resource/ResourceController.cpp
 )
 
