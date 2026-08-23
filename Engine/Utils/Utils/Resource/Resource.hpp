@@ -66,6 +66,7 @@ Engine::Utils::Resource<T>& Engine::Utils::Resource<T>::operator=(Resource &&oth
 template<typename T>
 T* Engine::Utils::Resource<T>::get(){
   // if(!valid) return nullptr;
+  return controller->getResource(controller->getID(name));
 
   valid = validate();
   if(!valid) return nullptr;

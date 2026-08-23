@@ -40,8 +40,8 @@ private:
 // ================== //
 public:
 // core
-  ResourceController();
-  ~ResourceController();
+  ResourceController() noexcept;
+  ~ResourceController() noexcept;
 // copy
   ResourceController(const ResourceController& second) noexcept;
   ResourceController& operator=(const ResourceController& second) noexcept;
@@ -53,30 +53,28 @@ public:
 // == Data Control == //
 // ================== //
 public:
-  void emplace_back(const std::string& name, const T& record);
-  void emplace_back(const std::string& name, T&& record);
+  void emplace_back(const std::string& name, const T& record) noexcept;
+  void emplace_back(const std::string& name, T&& record) noexcept;
 
-  void erase(const std::string& name);
-  void clear();
+  void erase(const std::string& name) noexcept;
+  void clear() noexcept;
 
-  T& getResource(unsigned int id);
+  T* getResource(unsigned int id) noexcept;
 
 // ================== //
 // ==== Data Info === //
 // ================== //
 public:
-  unsigned int getID(const std::string& name);
-  bool isIDValid(unsigned int id);
-  std::string getName(unsigned int id);
-  std::unordered_map<std::string, unsigned int> getNameToID();
+  unsigned int getID(const std::string& name) const noexcept;
+  bool isIDValid(unsigned int id) const noexcept;
+  std::string getName(unsigned int id) const noexcept;
+  std::unordered_map<std::string, unsigned int> getNameToID() const noexcept;
 
-  bool exists(const std::string& name) const;
-  unsigned int size() const;
+  bool exists(const std::string& name) const noexcept;
+  unsigned int size() const noexcept;
 
-  bool validateVersion(unsigned int version);
-  unsigned int getLatestsVersion();
-
-  void compileAll();
+  bool validateVersion(unsigned int version) const noexcept;
+  unsigned int getLatestsVersion() const noexcept;
 };
 };
 

@@ -114,7 +114,7 @@ void Engine::MeshSerialization::saveAll(Engine::Utils::ResourceController<CW::Re
     meshes_to_save.push_back(pair);
 
   for (const auto& [mesh_name, mesh_id] : meshes_to_save)
-    save(mesh_name, meshes.getResource(mesh_id));
+    save(mesh_name, *meshes.getResource(mesh_id));
   
   Engine::Utils::Logger::get().info("MeshSerialization", "All meshes have been saved");
 };
@@ -150,7 +150,10 @@ void Engine::MeshSerialization::loadAll(Engine::Utils::ResourceController<CW::Re
 
     for (const auto& file_path : mesh_files) load(file_path.string(), meshes);
 
-    meshes.compileAll();
+    for (auto el : meshes.getNameToID()){
+      CW::Renderer::Mesh* ela = meshes.getResource(el.second);
+      ela->compile(); 
+    };
 
     Engine::Utils::Logger::get().info("MeshSerialization", "All meshes have been loaded");
   } catch (const std::exception& e) {

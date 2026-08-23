@@ -116,7 +116,7 @@ TEST(ResourceControllerCopyConstructor, HandlesInitialization){
   EXPECT_EQ(controller2.id_to_name.size(), 1);
   EXPECT_EQ(controller2.version, controller.version);
 
-  TestingRes test_res2 = controller2.getResource(controller2.getID(test_res_name));
+  TestingRes test_res2 = *controller2.getResource(controller2.getID(test_res_name));
   EXPECT_TRUE(test_res2 == test_res);
 
 };
@@ -146,7 +146,7 @@ TEST(ResourceControllerCopyAssignConstructor, HandlesInitialization){
   EXPECT_EQ(controller2.id_to_name.size(), 1);
   EXPECT_EQ(controller2.version, controller.version);
 
-  TestingRes test_res2 = controller2.getResource(controller2.getID(test_res_name));
+  TestingRes test_res2 = *controller2.getResource(controller2.getID(test_res_name));
   EXPECT_TRUE(test_res2 == test_res);
 
   controller2 = controller2;  
@@ -156,7 +156,7 @@ TEST(ResourceControllerCopyAssignConstructor, HandlesInitialization){
   EXPECT_EQ(controller2.id_to_name.size(), 1);
   EXPECT_EQ(controller2.version, controller.version);
 
-  TestingRes test_res3 = controller2.getResource(controller2.getID(test_res_name));
+  TestingRes test_res3 = *controller2.getResource(controller2.getID(test_res_name));
   EXPECT_TRUE(test_res3 == test_res);
 };
 
@@ -187,7 +187,7 @@ TEST(ResourceControllerMoveConstructor, HandlesInitialization){
   EXPECT_EQ(controller2.id_to_name.size(), 1);
   EXPECT_EQ(controller2.version, version);
 
-  TestingRes test_res2 = controller2.getResource(controller2.getID(test_res_name));
+  TestingRes test_res2 = *controller2.getResource(controller2.getID(test_res_name));
   EXPECT_TRUE(test_res2 == test_res);
 
   EXPECT_EQ(controller.data.size(), 0);
@@ -222,7 +222,7 @@ TEST(ResourceControllerMoveAssignConstructor, HandlesInitialization){
   EXPECT_EQ(controller2.id_to_name.size(), 1);
   EXPECT_EQ(controller2.version, version);
 
-  TestingRes test_res2 = controller2.getResource(controller2.getID(test_res_name));
+  TestingRes test_res2 = *controller2.getResource(controller2.getID(test_res_name));
   EXPECT_TRUE(test_res2 == test_res);
 
   EXPECT_EQ(controller.data.size(), 0);
@@ -236,7 +236,7 @@ TEST(ResourceControllerMoveAssignConstructor, HandlesInitialization){
   EXPECT_EQ(controller2.id_to_name.size(), 1);
   EXPECT_EQ(controller2.version, version);
 
-  TestingRes test_res3 = controller2.getResource(controller2.getID(test_res_name));
+  TestingRes test_res3 = *controller2.getResource(controller2.getID(test_res_name));
   EXPECT_TRUE(test_res3 == test_res);
 
   EXPECT_EQ(controller.data.size(), 0);
@@ -344,13 +344,13 @@ TEST(ResourceControllerEmplaceGetResource, HandlesInitialization){
   EXPECT_TRUE(controller.exists(test_res_name2));
   EXPECT_TRUE(controller.exists(test_res_name3));
   
-  TestingRes test_res_return = controller.getResource(controller.getID(test_res_name));
+  TestingRes test_res_return = *controller.getResource(controller.getID(test_res_name));
   EXPECT_TRUE(test_res_return == test_res);
   
-  TestingRes test_res_return2 = controller.getResource(controller.getID(test_res_name2));
+  TestingRes test_res_return2 = *controller.getResource(controller.getID(test_res_name2));
   EXPECT_TRUE(test_res_return2 == test_res2);
 
-  TestingRes test_res_return3 = controller.getResource(controller.getID(test_res_name3));
+  TestingRes test_res_return3 = *controller.getResource(controller.getID(test_res_name3));
   EXPECT_TRUE(test_res_return3 == test_res3);
 };
 
@@ -371,19 +371,19 @@ TEST(ResourceControllerTwiceEmplace, HandlesInitialization){
   EXPECT_EQ(controller.size(), 1);
   EXPECT_TRUE(controller.exists(test_res_name));
   
-  TestingRes test_res_return = controller.getResource(controller.getID(test_res_name));
+  TestingRes test_res_return = *controller.getResource(controller.getID(test_res_name));
   EXPECT_TRUE(test_res_return == test_res);
   EXPECT_EQ(controller.size(), 1);
   EXPECT_TRUE(controller.exists(test_res_name));
   
   controller.emplace_back(test_res_name, test_res2);
-  TestingRes test_res_return2 = controller.getResource(controller.getID(test_res_name));
+  TestingRes test_res_return2 = *controller.getResource(controller.getID(test_res_name));
   EXPECT_TRUE(test_res_return2 == test_res2);
   EXPECT_EQ(controller.size(), 1);
   EXPECT_TRUE(controller.exists(test_res_name));
   
   controller.emplace_back(test_res_name, test_res3);
-  TestingRes test_res_return3 = controller.getResource(controller.getID(test_res_name));
+  TestingRes test_res_return3 = *controller.getResource(controller.getID(test_res_name));
   EXPECT_TRUE(test_res_return3 == test_res3);
   EXPECT_EQ(controller.size(), 1);
   EXPECT_TRUE(controller.exists(test_res_name));
@@ -486,7 +486,7 @@ TEST(ResourceControllerEraseMultipleItems, HandlesInitialization){
 
   for(unsigned int i = 0; i < random_tests; i++){
     std::string name = std::to_string(i);
-    TestingRes test = controller.getResource(controller.getID(name));
+    TestingRes test = *controller.getResource(controller.getID(name));
     EXPECT_TRUE(test == tests[i]);
   };
 
@@ -517,11 +517,11 @@ TEST(ResourceControllerEmplaceGetResourceIncorrectID, HandlesInitialization){
   EXPECT_EQ(controller.size(), 1);
   EXPECT_TRUE(controller.exists(test_res_name));
   
-  TestingRes test_res_return = controller.getResource(controller.getID(test_res_name));
+  TestingRes test_res_return = *controller.getResource(controller.getID(test_res_name));
   EXPECT_TRUE(test_res_return == test_res);
   
   unsigned int test_id = 1231;
-  EXPECT_THROW(controller.getResource(test_id), std::runtime_error);
+  EXPECT_TRUE(controller.getResource(test_id) == nullptr);
   EXPECT_FALSE(controller.isIDValid(test_id));
   EXPECT_FALSE(controller.isIDValid(-1));
   EXPECT_TRUE(controller.isIDValid(controller.getID(test_res_name)));
