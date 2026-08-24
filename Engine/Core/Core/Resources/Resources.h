@@ -40,7 +40,7 @@ public:
   };
 
   std::unordered_map<std::string, CW::Renderer::Texture> textures;
-  std::unordered_map<std::string, CW::Renderer::Shader> shaders;
+  Engine::Utils::ResourceController<CW::Renderer::Shader> shaders;
   Engine::Utils::ResourceController<CW::Renderer::Mesh> meshes;
   Engine::Core::Lights lights;
   Engine::Core::Materials materials;
@@ -57,7 +57,7 @@ public:
   void destroy();
   
   CW::Renderer::Texture& getTexture(const std::string& path_to_asset);
-  CW::Renderer::Shader& getShader(const std::string& path_to_asset);
+  // CW::Renderer::Shader& getShader(const std::string& path_to_asset);
 
 private:
   Resources();

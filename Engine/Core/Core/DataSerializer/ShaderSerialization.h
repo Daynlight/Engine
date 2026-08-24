@@ -18,6 +18,7 @@
 #include <cmrc/cmrc.hpp>
 #endif
 
+#include "Utils/Resource/ResourceController.h"
 #include "Utils/config.h"
 #include "Utils/Logger.h"
 
@@ -30,10 +31,10 @@ public:
   ~ShaderSerialization() = default;
   
 #ifndef PRODUCTION
-  void save(const std::string& shader_name, GLuint type, const std::string& source, std::unordered_map<std::string, CW::Renderer::Shader>& shaders);
+  void save(const std::string& shader_name, GLuint type, const std::string& source, Engine::Utils::ResourceController<CW::Renderer::Shader>& shaders);
 #endif
-  void load(const std::string& shader_name, std::unordered_map<std::string, CW::Renderer::Shader>& shaders);
+  void load(const std::string& shader_name, Engine::Utils::ResourceController<CW::Renderer::Shader>& shaders);
 
-  void loadAll(std::unordered_map<std::string, CW::Renderer::Shader>& shaders);
+  void loadAll(Engine::Utils::ResourceController<CW::Renderer::Shader>& shaders);
 };
 }; // namespace Engine

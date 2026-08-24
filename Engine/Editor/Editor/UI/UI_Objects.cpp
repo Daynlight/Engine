@@ -112,8 +112,7 @@ void Engine::Editor::UI_Objects::guiObjectEditor(){
   memcpy(shader_buffer, object.game_object_data.shader.data(), object.game_object_data.shader.size());
   shader_buffer[object.game_object_data.shader.size()] = '\0';
   if(ImGui::InputText("shader", shader_buffer, Engine::Config::OBJECT_NAME_BUFFER_SIZE)){
-    auto its = Engine::Core::Resources::get().shaders.find(shader_buffer);
-    if(its == Engine::Core::Resources::get().shaders.end()) return;
+    if(!Engine::Core::Resources::get().shaders.exists(shader_buffer)) return;
     object.stopScripts();
     object.game_object_data.shader = std::string(shader_buffer + '\0');
     object.startScripts(scene);
