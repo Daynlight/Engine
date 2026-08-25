@@ -146,8 +146,8 @@ template<typename T>
 bool Engine::Utils::Resource<T>::validate() noexcept {
   if(!controller) return 0;
 
-  if(!controller->exists(name)) return 0;
   if(!controller->validateVersion(version)){
+    if(!controller->exists(name)) return 0;
     id = controller->getID(name);
     version = controller->getLatestsVersion();
   };

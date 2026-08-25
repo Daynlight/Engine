@@ -76,16 +76,16 @@ inline Engine::Utils::ResourceController<T> &Engine::Utils::ResourceController<T
 // ================== //
 template<typename T>
 void Engine::Utils::ResourceController<T>::emplace_back(const std::string& name, const T& record) noexcept {
-  version += 1;
-
   auto it = name_to_id.find(name);
   if (it != name_to_id.end()) {
     data[it->second] = record;
   } else {  
+    if (data.size() >= data.capacity()) version += 1;
+  
     unsigned int new_id = static_cast<unsigned int>(data.size());
     
     data.emplace_back(record);
-    name_to_id[name] = new_id;
+    name_to_id.emplace_hint(it, name, new_id);
     id_to_name.push_back(name);
   };
 };
@@ -94,16 +94,16 @@ void Engine::Utils::ResourceController<T>::emplace_back(const std::string& name,
 
 template<typename T>
 void Engine::Utils::ResourceController<T>::emplace_back(const std::string& name, T&& record) noexcept {
-  version += 1;
-
   auto it = name_to_id.find(name);
   if (it != name_to_id.end()) {
     data[it->second] = std::move(record);
   } else {  
+    if (data.size() >= data.capacity()) version += 1;
+  
     unsigned int new_id = static_cast<unsigned int>(data.size());
     
     data.emplace_back(std::move(record));
-    name_to_id[name] = new_id;
+    name_to_id.emplace_hint(it, name, new_id);
     id_to_name.push_back(name);
   };
 };
