@@ -39,7 +39,7 @@ public:
     completed_compilation_paths.push_back(path);
   };
 
-  std::unordered_map<std::string, CW::Renderer::Texture> textures;
+  Engine::Utils::ResourceController<CW::Renderer::Texture> textures;
   Engine::Utils::ResourceController<CW::Renderer::Shader> shaders;
   Engine::Utils::ResourceController<CW::Renderer::Mesh> meshes;
   Engine::Core::Lights lights;
@@ -56,7 +56,7 @@ public:
 
   void destroy();
   
-  CW::Renderer::Texture& getTexture(const std::string& path_to_asset);
+  // CW::Renderer::Texture& getTexture(const std::string& path_to_asset);
   // CW::Renderer::Shader& getShader(const std::string& path_to_asset);
 
 private:

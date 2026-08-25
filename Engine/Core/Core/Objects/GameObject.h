@@ -44,6 +44,7 @@ public:
   std::string mesh_last = "";
   Engine::Utils::Resource<CW::Renderer::Mesh> mesh;
   Engine::Utils::Resource<CW::Renderer::Shader> shader;
+  std::vector<Engine::Utils::Resource<CW::Renderer::Texture>> textures;
 
   Engine::ScriptShared::GameObjectData game_object_data;
   Engine::ScriptShared::GameObjectData copy_game_object_data;

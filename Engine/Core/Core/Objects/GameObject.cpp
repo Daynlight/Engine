@@ -253,8 +253,26 @@ void Engine::Core::GameObject::render(CW::Renderer::Renderer *renderer, Engine::
 
     uniform["model"]->set<glm::mat4>(model);
 
+
     for(unsigned int i = 0; i < copy_game_object_data.textures.size(); i++){
-      Engine::Core::Resources::get().getTexture(this->copy_game_object_data.textures[i]).bind(i);
+      if(i >= textures.size()) 
+        textures.emplace_back(Engine::Utils::Resource<CW::Renderer::Texture>(copy_game_object_data.textures[i], &Engine::Core::Resources::get().textures));
+      else{
+        if(textures[i].getName() != copy_game_object_data.textures[i])
+          textures[i].setName(copy_game_object_data.textures[i]);
+        if(textures[i].getController() == nullptr)
+          textures[i].setController(&Engine::Core::Resources::get().textures);
+      };
+    };
+
+    for(unsigned int i = 0; i < textures.size(); i++){
+      CW::Renderer::Texture* txt = textures[i].getResource();
+      if(txt == nullptr){
+        Engine::Utils::Logger::get().erro("GameObject", "Failed to find texture: " + textures[i].getName());
+        continue;
+      };
+      txt->bind(i);
+
       uniform["texture" + std::to_string(i)]->set<int>(i);
 
           
@@ -300,8 +318,11 @@ void Engine::Core::GameObject::render(CW::Renderer::Renderer *renderer, Engine::
     
     render_shader->unbind();
 
-    for(unsigned int i = 0; i < copy_game_object_data.textures.size(); i++) {
-      Engine::Core::Resources::get().getTexture(this->copy_game_object_data.textures[i]).unbind();
+    for(unsigned int i = 0; i < textures.size(); i++){
+      CW::Renderer::Texture* txt = textures[i].getResource();
+      if(txt == nullptr) continue;
+      txt->unbind();
+      
       if(this->copy_game_object_data.gl_nearest){
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

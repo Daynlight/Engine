@@ -20,6 +20,7 @@
 
 #include "Utils/config.h"
 #include "Utils/Logger.h"
+#include "Utils/Resource/ResourceController.h"
 
 
 
@@ -32,8 +33,8 @@ public:
 #ifndef PRODUCTION
   void save(const std::string& texture_path, const CW::Renderer::Texture& source);
 #endif
-  void load(const std::string& texture_path, std::unordered_map<std::string, CW::Renderer::Texture>& textures);
+  void load(const std::string& texture_path, Engine::Utils::ResourceController<CW::Renderer::Texture>& textures);
 
-  void loadAll(std::unordered_map<std::string, CW::Renderer::Texture>& textures);
+  void loadAll(Engine::Utils::ResourceController<CW::Renderer::Texture>& textures);
 };
 }; // namespace Engine
