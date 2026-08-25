@@ -9,72 +9,109 @@
 
 
 
+// ================== //
+// == Constructors == //
+// ================== //
+// core
 template<typename T>
-Engine::Utils::ResourceController<T>::ResourceController() {
+Engine::Utils::ResourceController<T>::ResourceController() noexcept {};
+
+
+
+template<typename T>
+Engine::Utils::ResourceController<T>::~ResourceController() noexcept {};
+
+
+
+// copy
+template <typename T>
+inline Engine::Utils::ResourceController<T>::ResourceController(const ResourceController &second) noexcept
+  : data(second.data),
+    name_to_id(second.name_to_id),
+    id_to_name(second.id_to_name),
+    version(second.version) {};
+
+
+
+template <typename T>
+inline Engine::Utils::ResourceController<T> &Engine::Utils::ResourceController<T>::operator=(const ResourceController &second) noexcept {
+  if(this == &second) return *this;
+
+  data = second.data;
+  name_to_id = second.name_to_id;
+  id_to_name = second.id_to_name;
+  version = second.version;
+
+  return *this;
 };
 
 
 
-template<typename T>
-Engine::Utils::ResourceController<T>::~ResourceController() {
+// move
+template <typename T>
+inline Engine::Utils::ResourceController<T>::ResourceController(ResourceController &&second) noexcept 
+  : data(std::move(second.data)),
+    name_to_id(std::move(second.name_to_id)),
+    id_to_name(std::move(second.id_to_name)),
+    version(std::move(second.version)) {};
+
+
+
+template <typename T>
+inline Engine::Utils::ResourceController<T> &Engine::Utils::ResourceController<T>::operator=(ResourceController &&second) noexcept {
+  if(this == &second) return *this;
+
+  data = std::move(second.data);
+  name_to_id = std::move(second.name_to_id);
+  id_to_name = std::move(second.id_to_name);
+  version = std::move(second.version);
+
+  return *this;
 };
 
 
 
+// ================== //
+// == Data Control == //
+// ================== //
 template<typename T>
-T& Engine::Utils::ResourceController<T>::operator[](unsigned int index) {
-  return data[index];
-};
-
-
-
-template<typename T>
-const T& Engine::Utils::ResourceController<T>::operator[](unsigned int index) const {
-  return data[index];
-};
-
-
-
-template<typename T>
-unsigned int Engine::Utils::ResourceController<T>::getID(const std::string& name) {
-  auto it = name_to_id.find(name);
-  if (it == name_to_id.end()) {
-    return INVALID_ID;
-  };
-  return it->second;
-};
-
-
-
-
-template<typename T>
-bool Engine::Utils::ResourceController<T>::exists(const std::string& name) const {
-  return name_to_id.find(name) != name_to_id.end();
-};
-
-
-
-template<typename T>
-void Engine::Utils::ResourceController<T>::emplace_back(const std::string& name, T&& mesh) {
-  version += 1;
-
+void Engine::Utils::ResourceController<T>::emplace_back(const std::string& name, const T& record) noexcept {
   auto it = name_to_id.find(name);
   if (it != name_to_id.end()) {
-    data[it->second] = std::move(mesh);
+    data[it->second] = record;
   } else {  
+    if (data.size() >= data.capacity()) version += 1;
+  
     unsigned int new_id = static_cast<unsigned int>(data.size());
     
-    data.emplace_back(std::move(mesh));
-    name_to_id[name] = new_id;
+    data.emplace_back(record);
+    name_to_id.emplace_hint(it, name, new_id);
     id_to_name.push_back(name);
   };
 };
 
 
 
+template<typename T>
+void Engine::Utils::ResourceController<T>::emplace_back(const std::string& name, T&& record) noexcept {
+  auto it = name_to_id.find(name);
+  if (it != name_to_id.end()) {
+    data[it->second] = std::move(record);
+  } else {  
+    if (data.size() >= data.capacity()) version += 1;
+  
+    unsigned int new_id = static_cast<unsigned int>(data.size());
+    
+    data.emplace_back(std::move(record));
+    name_to_id.emplace_hint(it, name, new_id);
+    id_to_name.push_back(name);
+  };
+};
+
+
 
 template<typename T>
-void Engine::Utils::ResourceController<T>::erase(const std::string& name) {
+void Engine::Utils::ResourceController<T>::erase(const std::string& name) noexcept {
   if (!exists(name)) return;
   version += 1;
 
@@ -97,17 +134,8 @@ void Engine::Utils::ResourceController<T>::erase(const std::string& name) {
 
 
 
-
 template<typename T>
-unsigned int Engine::Utils::ResourceController<T>::size() const{
-  return data.size();
-};
-
-
-
-
-template<typename T>
-void Engine::Utils::ResourceController<T>::clear(){
+void Engine::Utils::ResourceController<T>::clear() noexcept {
   version += 1;
   data.clear();
   name_to_id.clear();
@@ -116,28 +144,74 @@ void Engine::Utils::ResourceController<T>::clear(){
 
 
 
+template <typename T>
+inline T* Engine::Utils::ResourceController<T>::getResource(unsigned int id) noexcept {
+  if(id >= data.size()) return nullptr;
+  return &data[id];
+};
+
+
+
+// ================== //
+// ==== Data Info === //
+// ================== //
 template<typename T>
-std::unordered_map<std::string, unsigned int>& Engine::Utils::ResourceController<T>::getIDs(){
-  return name_to_id;
+unsigned int Engine::Utils::ResourceController<T>::getID(const std::string& name) const noexcept {
+  auto it = name_to_id.find(name);
+  if (it == name_to_id.end()) {
+    return -1;
+  };
+
+  return it->second;
+};
+
+
+
+template <typename T>
+inline bool Engine::Utils::ResourceController<T>::isIDValid(unsigned int id) const noexcept {
+  if(id == -1) return false;
+  return data.size() > id;
+};
+
+
+
+template <typename T>
+inline std::string Engine::Utils::ResourceController<T>::getName(unsigned int id) const noexcept {
+  if(id >= id_to_name.size()) return "";
+  return id_to_name[id];
+};
+
+
+
+template <typename T>
+inline std::unordered_map<std::string, unsigned int> Engine::Utils::ResourceController<T>::getNameToID() const noexcept {
+  return name_to_id; 
 };
 
 
 
 template<typename T>
-bool Engine::Utils::ResourceController<T>::validateVersion(unsigned int version){
+bool Engine::Utils::ResourceController<T>::exists(const std::string& name) const noexcept {
+  return name_to_id.find(name) != name_to_id.end();
+};
+
+
+
+template<typename T>
+unsigned int Engine::Utils::ResourceController<T>::size() const noexcept {
+  return data.size();
+};
+
+
+
+template<typename T>
+bool Engine::Utils::ResourceController<T>::validateVersion(unsigned int version) const noexcept {
   return version == this->version;
 };
 
 
 
 template<typename T>
-unsigned int Engine::Utils::ResourceController<T>::getLatestsVersion(){
+unsigned int Engine::Utils::ResourceController<T>::getLatestsVersion() const noexcept {
   return version;
-};
-
-
-
-template<typename T>
-void Engine::Utils::ResourceController<T>::compileAll(){
-  for(T& rec : data) rec.compile();
 };

@@ -15,7 +15,7 @@ CMRC_DECLARE(GameData);
 
 
 #ifndef PRODUCTION
-void Engine::ShaderSerialization::save(const std::string &shader_name, GLuint type, const std::string& source, std::unordered_map<std::string, CW::Renderer::Shader>& shaders){
+void Engine::ShaderSerialization::save(const std::string &shader_name, GLuint type, const std::string& source, Engine::Utils::ResourceController<CW::Renderer::Shader>& shaders){
   Engine::Utils::Logger::get().info("ShaderSerialization", "Saving shader: " + shader_name + " type=" + std::to_string(type));
   std::string local_path = Engine::Config::GAME_DATA_FOLDER + Engine::Config::ASSETS_FOLDER + Engine::Config::SHADERS_FOLDER + shader_name + "/" + Engine::Config::SHADER_TYPE_TO_NAME[type];
   
@@ -43,7 +43,7 @@ void Engine::ShaderSerialization::save(const std::string &shader_name, GLuint ty
 
 
 
-void Engine::ShaderSerialization::load(const std::string& shader_name, std::unordered_map<std::string, CW::Renderer::Shader>& shaders){
+void Engine::ShaderSerialization::load(const std::string& shader_name, Engine::Utils::ResourceController<CW::Renderer::Shader>& shaders){
   Engine::Utils::Logger::get().info("ShaderSerialization", "Loading shader: " + shader_name);
   std::string local_path = Engine::Config::GAME_DATA_FOLDER + Engine::Config::ASSETS_FOLDER + Engine::Config::SHADERS_FOLDER + shader_name;
   CW::Renderer::Shader shader;
@@ -74,8 +74,14 @@ void Engine::ShaderSerialization::load(const std::string& shader_name, std::unor
   };
 
   if(shader.getRegisterShader().size() != 0){
-    shaders[shader_name] = std::move(shader);
-    shaders[shader_name].compile();
+    shaders.emplace_back(shader_name, std::move(shader));
+    CW::Renderer::Shader* shader_rec = shaders.getResource(shaders.getID(shader_name));
+    if(!shader_rec){
+      Engine::Utils::Logger::get().erro("ShaderSerialization", "Shader failed to add: " + shader_name);
+      return;
+    };
+
+    shader_rec->compile();
     Engine::Utils::Logger::get().info("ShaderSerialization", "Shader loaded: " + shader_name);
   } else {
     Engine::Utils::Logger::get().info("ShaderSerialization", "No shader source found for: " + shader_name);
@@ -84,7 +90,7 @@ void Engine::ShaderSerialization::load(const std::string& shader_name, std::unor
 
 
 
-void Engine::ShaderSerialization::loadAll(std::unordered_map<std::string, CW::Renderer::Shader>& shaders) {
+void Engine::ShaderSerialization::loadAll(Engine::Utils::ResourceController<CW::Renderer::Shader>& shaders) {
   Engine::Utils::Logger::get().info("ShaderSerialization", "Scanning and loading all shaders...");
   
   std::string root_path = Engine::Config::GAME_DATA_FOLDER + Engine::Config::ASSETS_FOLDER + Engine::Config::SHADERS_FOLDER;

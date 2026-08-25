@@ -68,9 +68,12 @@ void Engine::Editor::UI_Shaders::guiShaderList(){
     Engine::Core::Resources::get().shaders.clear();
   };
 
-  for (const auto& [ key, values ] : Engine::Core::Resources::get().shaders) {
+  for (const auto& [ key, values ] : Engine::Core::Resources::get().shaders.getNameToID()) {
     if(ImGui::CollapsingHeader(key.c_str())){
-      for (const auto& [key_s, values_s] : values.getRegisterShader()){
+      CW::Renderer::Shader* shader = Engine::Core::Resources::get().shaders.getResource(values);
+      if(!shader) continue;
+
+      for (const auto& [key_s, values_s] : shader->getRegisterShader()){
         std::string button_label = Engine::Config::SHADER_TYPE_TO_NAME[key_s] +  "##-" + key;
         if (ImGui::Button(button_label.c_str())){
           bool exists = std::any_of(

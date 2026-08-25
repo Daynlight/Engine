@@ -20,7 +20,7 @@ void PatchScriptPointers(std::vector<Engine::Core::Script::GameObjectScriptRecor
 
 
 Engine::Core::GameObject::GameObject(const std::string& name, const std::string& mesh, const std::string& shader, const std::vector<std::string>& materials, const std::vector<std::string>& textures, const std::vector<Engine::Core::Script::GameObjectScriptRecord>& scripts, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
-  : scripts(scripts), mesh(mesh, &Engine::Core::Resources::get().meshes) {
+  : scripts(scripts), mesh(mesh, &Engine::Core::Resources::get().meshes), shader(shader, &Engine::Core::Resources::get().shaders) {
   Engine::Utils::Logger::get().info("GameObject", "GameObject Constructor Called!");
   game_object_data.name = name;
   game_object_data.mesh = mesh;
@@ -206,7 +206,7 @@ void Engine::Core::GameObject::render(CW::Renderer::Renderer *renderer, Engine::
     mesh_last = copy_game_object_data.mesh;
   };
 
-  CW::Renderer::Mesh* mesh = this->mesh.get();
+  CW::Renderer::Mesh* mesh = this->mesh.getResource();
   if(!mesh) return;
 
   uniform["projection"]->set<glm::mat4>(render_camera.projection());
@@ -253,8 +253,26 @@ void Engine::Core::GameObject::render(CW::Renderer::Renderer *renderer, Engine::
 
     uniform["model"]->set<glm::mat4>(model);
 
+
     for(unsigned int i = 0; i < copy_game_object_data.textures.size(); i++){
-      Engine::Core::Resources::get().getTexture(this->copy_game_object_data.textures[i]).bind(i);
+      if(i >= textures.size()) 
+        textures.emplace_back(Engine::Utils::Resource<CW::Renderer::Texture>(copy_game_object_data.textures[i], &Engine::Core::Resources::get().textures));
+      else{
+        if(textures[i].getName() != copy_game_object_data.textures[i])
+          textures[i].setName(copy_game_object_data.textures[i]);
+        if(textures[i].getController() == nullptr)
+          textures[i].setController(&Engine::Core::Resources::get().textures);
+      };
+    };
+
+    for(unsigned int i = 0; i < textures.size(); i++){
+      CW::Renderer::Texture* txt = textures[i].getResource();
+      if(txt == nullptr){
+        Engine::Utils::Logger::get().erro("GameObject", "Failed to find texture: " + textures[i].getName());
+        continue;
+      };
+      txt->bind(i);
+
       uniform["texture" + std::to_string(i)]->set<int>(i);
 
           
@@ -268,17 +286,28 @@ void Engine::Core::GameObject::render(CW::Renderer::Renderer *renderer, Engine::
       };
     };
     
-    Engine::Core::Resources::get().getShader(this->copy_game_object_data.shader).getUniforms().emplace_back(&shadows_uniform);
-    Engine::Core::Resources::get().getShader(this->copy_game_object_data.shader).getUniforms().emplace_back(&uniform);
+    if(this->copy_game_object_data.shader != shader.getName()){
+      shader.setName(this->copy_game_object_data.shader);
+    };
+
+    if(!shader.getController()) shader.setController(&Engine::Core::Resources::get().shaders);
+    CW::Renderer::Shader* render_shader = shader.getResource();
+    if(!render_shader) {
+      Engine::Utils::Logger::get().erro("GameObject", "Failed to find shader");
+      return;
+    };
+
+    render_shader->getUniforms().emplace_back(&shadows_uniform);
+    render_shader->getUniforms().emplace_back(&uniform);
     
-    Engine::Core::Resources::get().getShader(this->copy_game_object_data.shader).bind();
+    render_shader->bind();
     
     std::vector<int> translation;
     for(std::string el : copy_game_object_data.materials){
       translation.emplace_back(Engine::Core::Resources::get().materials.translate_material(el));
     };
 
-    GLint loc = glGetUniformLocation(Engine::Core::Resources::get().getShader(copy_game_object_data.shader).getShaderProgram(), "mat_translate");
+    GLint loc = glGetUniformLocation(render_shader->getShaderProgram(), "mat_translate");
     glUniform1iv(loc, translation.size(), translation.data());
 
 
@@ -287,17 +316,20 @@ void Engine::Core::GameObject::render(CW::Renderer::Renderer *renderer, Engine::
     else
       mesh->render();
     
-    Engine::Core::Resources::get().getShader(this->copy_game_object_data.shader).unbind();
+    render_shader->unbind();
 
-    for(unsigned int i = 0; i < copy_game_object_data.textures.size(); i++) {
-      Engine::Core::Resources::get().getTexture(this->copy_game_object_data.textures[i]).unbind();
+    for(unsigned int i = 0; i < textures.size(); i++){
+      CW::Renderer::Texture* txt = textures[i].getResource();
+      if(txt == nullptr) continue;
+      txt->unbind();
+      
       if(this->copy_game_object_data.gl_nearest){
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
       };
     };
 
-    Engine::Core::Resources::get().getShader(this->copy_game_object_data.shader).getUniforms().clear();
+    render_shader->getUniforms().clear();
     
     if(copy_game_object_data.gl_depth_lequal)
       glDepthFunc(GL_LESS);

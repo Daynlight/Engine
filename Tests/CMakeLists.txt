@@ -12,6 +12,8 @@ set(tests_src
   Unit/Core/Camera/CameraController.cpp
   Unit/Utils/utils.cpp
   Unit/Utils/utilsProd.cpp
+  Unit/Utils/Resource/ResourceController.cpp
+  Unit/Utils/Resource/Resource.cpp
 )
 
 add_executable(unit_tests ${tests_src})

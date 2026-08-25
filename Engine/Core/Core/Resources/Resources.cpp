@@ -46,37 +46,37 @@ void Engine::Core::Resources::destroy(){
 
 
 
-CW::Renderer::Texture &Engine::Core::Resources::getTexture(const std::string &path_to_asset){
-  auto it = textures.find(path_to_asset);
-  if (it != textures.end()) return it->second;
+// CW::Renderer::Texture &Engine::Core::Resources::getTexture(const std::string &path_to_asset){
+//   auto it = textures.find(path_to_asset);
+//   if (it != textures.end()) return it->second;
 
-  DataSerializer::get().loadTexture(path_to_asset);
+//   DataSerializer::get().loadTexture(path_to_asset);
 
-  auto ita = textures.find(path_to_asset);
-  if (ita != textures.end()) return ita->second;
+//   auto ita = textures.find(path_to_asset);
+//   if (ita != textures.end()) return ita->second;
 
-  return textures[Engine::Config::DEFAULT_TEXTURE]; 
-};
+//   return textures[Engine::Config::DEFAULT_TEXTURE]; 
+// };
 
 
 
-CW::Renderer::Shader &Engine::Core::Resources::getShader(const std::string &path_to_asset){
-  auto it = shaders.find(path_to_asset);
+// CW::Renderer::Shader &Engine::Core::Resources::getShader(const std::string &path_to_asset){
+  // auto it = shaders.find(path_to_asset);
   
-  if (it != shaders.end()) {
-    return it->second;
-  }
+  // if (it != shaders.end()) {
+  //   return it->second;
+  // }
 
-  DataSerializer::get().loadShader(path_to_asset);
+  // DataSerializer::get().loadShader(path_to_asset);
   
-  auto ita = shaders.find(path_to_asset);
+  // auto ita = shaders.find(path_to_asset);
   
-  if (ita != shaders.end()) {
-    return ita->second;
-  };
+  // if (ita != shaders.end()) {
+  //   return ita->second;
+  // };
   
-  return shaders[Engine::Config::DEFAULT_SHADER];
-};
+  // return shaders[Engine::Config::DEFAULT_SHADER];
+// };
 
 
 

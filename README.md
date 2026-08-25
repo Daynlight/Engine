@@ -343,6 +343,12 @@ Production is designed to create one executable with no additional files require
 - [x] CameraController Refactor.
 - [x] CameraController ActiveCameraCache Avoid Hashing.
 - [x] CameraController Tests.
+- [x] Resource and ResourceController for avoiding hashes.
+- [x] Resource and ResourceController benchmark.
+- [x] Textures uses Resource and ResourceController.
+- [x] Shaders uses Resource and ResourceController.
+- [x] Meshes uses Resource and ResourceController.
+- [x] Tests for Resource and ResourceController. 
 - [ ] Issue with rotation Camera.
 - [ ] One Unified Scene Class.
 - [ ] Scene Save.

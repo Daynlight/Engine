@@ -23,6 +23,7 @@ execute_process(
 
 add_subdirectory(vendor/CWindow)
 add_subdirectory(vendor/cmrc)
+add_subdirectory(vendor/fmt)
 add_subdirectory(vendor/googletest vendor/googletest EXCLUDE_FROM_ALL)
 
 
@@ -44,6 +45,10 @@ if(NOT PRODUCTION)
        PATTERN "Examples" EXCLUDE)
 
   file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/Tests"
+       DESTINATION "${ENGINE_SRC_DEST}"
+       PATTERN "Examples" EXCLUDE)
+
+  file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/Benchmark"
        DESTINATION "${ENGINE_SRC_DEST}"
        PATTERN "Examples" EXCLUDE)
 
@@ -75,6 +80,8 @@ add_subdirectory(Engine)
 
 enable_testing()
 add_subdirectory(Tests)
+
+add_subdirectory(Benchmark)
 
 
 install(TARGETS Engine

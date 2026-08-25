@@ -113,7 +113,9 @@ void Engine::DataSerializer::loadAllMeshes(Engine::Utils::ResourceController<CW:
 
 #ifndef PRODUCTION
 void Engine::DataSerializer::saveShaders(const std::string &shader_name, GLuint type){
-  std::string source = Engine::Core::Resources::get().getShader(shader_name).getRegisterShader().at(type).getSource();
+  CW::Renderer::Shader* shader = Engine::Core::Resources::get().shaders.getResource(Engine::Core::Resources::get().shaders.getID(shader_name));
+  if(!shader) return; 
+  std::string source = shader->getRegisterShader().at(type).getSource();
   shader_serializer.save(shader_name, type, source, Engine::Core::Resources::get().shaders);
 };
 #endif
