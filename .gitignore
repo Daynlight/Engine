@@ -82,3 +82,5 @@ Scripts_DLL/
 /GameData/
 /Scripts/
 Engine_Bin/
+
+vendor/
