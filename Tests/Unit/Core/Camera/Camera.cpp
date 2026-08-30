@@ -9,8 +9,8 @@
 #include <gmock/gmock.h>
 
 #define GLM_ENABLE_EXPERIMENTAL
-#include "../vendor/glm/glm/gtx/euler_angles.hpp"
-#include "../vendor/glm/glm/gtx/quaternion.hpp"
+#include "glm/gtx/euler_angles.hpp"
+#include "glm/gtx/quaternion.hpp"
 
 #define private public
 #define protected public

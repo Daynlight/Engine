@@ -1,10 +1,14 @@
 {
   "name": "engine",
   "version": "1.0.0",
+  "builtin-baseline": "118bba14b94bc040c098c0c15e63c142148c05ca",
   "dependencies": [
     "gtest",
-    "cmrc",
-    "fmt",
+    "cmakerc",
+    {
+      "name": "fmt",
+      "version>=": "12.2.0"
+    },
     "cwindow"
   ]
 }

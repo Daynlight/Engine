@@ -13,7 +13,7 @@
 #include <filesystem>
 #include <vector>
 
-#include "Renderer.h"
+#include "CWindow/Renderer/OpenGL/Renderer.h"
 #include "Utils/Logger.h"
 #include "ScriptShared/GlobResource.h"
 

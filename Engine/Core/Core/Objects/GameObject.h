@@ -6,10 +6,10 @@
 
 
 #pragma once
-#include "Renderer.h"
+#include "CWindow/Renderer/OpenGL/Renderer.h"
 
 #define GLM_ENABLE_EXPERIMENTAL
-#include "../vendor/glm/glm/gtx/euler_angles.hpp"
+#include "glm/gtx/euler_angles.hpp"
 
 #include <string>
 

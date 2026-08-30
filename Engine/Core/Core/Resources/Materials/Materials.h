@@ -6,7 +6,7 @@
 
 
 #pragma once
-#include "Renderer.h"
+#include "CWindow/Renderer/OpenGL/Renderer.h"
 
 #include <vector>
 #include <string>

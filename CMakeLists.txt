@@ -17,14 +17,31 @@ option(SANDBOX_SCRIPTS "Enable script sandboxing build flags" OFF)
 option(CWD "Current Resources Dir" "")
 
 
-execute_process(
-  COMMAND git submodule update --init --recursive
-)
 
-add_subdirectory(vendor/CWindow)
-add_subdirectory(vendor/cmrc)
-add_subdirectory(vendor/fmt)
-add_subdirectory(vendor/googletest vendor/googletest EXCLUDE_FROM_ALL)
+if(NOT DEFINED VCPKG_INSTALLED_DIR)
+  set(VCPKG_INSTALLED_DIR "${CMAKE_SOURCE_DIR}/vendor/x64-linux")
+endif()
+set(ENGINE_VENDOR_DIR "${CMAKE_SOURCE_DIR}/vendor/x64-linux")
+
+list(APPEND CMAKE_PREFIX_PATH "${VCPKG_INSTALLED_DIR}")
+
+find_library(
+  CWINDOW_LIBRARY
+  NAMES CWindow
+  PATHS
+    "${VCPKG_TRIPLET_DIR}/lib"
+    "${VCPKG_TRIPLET_DIR}/debug/lib"
+  NO_DEFAULT_PATH
+  REQUIRED
+)
+find_package(glad CONFIG REQUIRED)
+find_package(glfw3 CONFIG REQUIRED)
+find_package(imgui CONFIG REQUIRED)
+find_package(assimp CONFIG REQUIRED)
+find_package(CMakeRC CONFIG REQUIRED)
+find_package(fmt CONFIG REQUIRED)
+find_package(Threads REQUIRED)
+find_package(GTest CONFIG REQUIRED)
 
 
 set(ENGINE_SRC "${CMAKE_BINARY_DIR}/Engine")

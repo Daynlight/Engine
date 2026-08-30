@@ -8,7 +8,7 @@
 #pragma once
 #ifndef PRODUCTION
 
-#include "Gui.h"
+#include "CWindow/Gui/OpenGL/Gui.h"
 #include "imgui.h"
 #include "Utils/Logger.h"
 

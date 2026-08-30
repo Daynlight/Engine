@@ -71,11 +71,11 @@ All in **Editor** mode. **Production** have turn off ui.
      - [**Ninja**](https://ninja-build.org/)
   2. Clone repository
       ```bash
-      git clone https://github.com/Daynlight/help-me-i-am-under-the-water
+      git clone https://github.com/Daynlight/Engine
       ```
-  3. Update Submodules
+  3. Vcpkg install dependencies
       ```bash
-      git submodule update --init --recursive
+      vcpkg install --x-install-root=./vendor
       ```
   4. Compile with **CMake**
       ```bash

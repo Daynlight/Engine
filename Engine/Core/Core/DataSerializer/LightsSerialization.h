@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "Renderer.h"
+#include "CWindow/Renderer/OpenGL/Renderer.h"
 
 #include <string>
 #include <fstream>

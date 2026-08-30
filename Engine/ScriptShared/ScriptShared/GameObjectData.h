@@ -12,8 +12,8 @@
 #include "glm/glm/glm.hpp"
 #include "glm/glm/gtc/quaternion.hpp"
 #else
-#include "Renderer.h"
-#include "../vendor/glm/glm/gtc/quaternion.hpp"
+#include "CWindow/Renderer/OpenGL/Renderer.h"
+#include "glm/gtc/quaternion.hpp"
 #endif
 
 

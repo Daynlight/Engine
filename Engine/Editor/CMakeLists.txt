@@ -28,7 +28,7 @@ set(src
 
 
 add_library(Editor STATIC ${src})
-target_link_libraries(Editor CWindow UtilsDev)
-target_include_directories(Editor PUBLIC "Editor/" "../Core/Core" "../ScriptShared")
+target_link_libraries(Editor "${CWINDOW_LIBRARY}" glfw glad::glad imgui::imgui assimp::assimp UtilsDev)
+target_include_directories(Editor PUBLIC "Editor/" "../Core/Core" "../ScriptShared" "${ENGINE_VENDOR_DIR}/include")
 target_compile_definitions(Editor PRIVATE ENGINE_SRC_DEST="${ENGINE_SRC_DEST}")
 target_compile_definitions(Editor PRIVATE GENERATOR="${CMAKE_GENERATOR}")

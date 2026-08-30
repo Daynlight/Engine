@@ -16,10 +16,10 @@ add_executable(Benchmark ${src})
 
 target_link_libraries(Benchmark PRIVATE 
   Utils
-  fmt
+  fmt::fmt
 )
 
-target_include_directories(unit_tests PRIVATE 
+target_include_directories(Benchmark PRIVATE 
   ${CMAKE_SOURCE_DIR}/Engine/Core
   ${CMAKE_SOURCE_DIR}/Engine/Utils
 )

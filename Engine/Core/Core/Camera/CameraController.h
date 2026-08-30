@@ -6,7 +6,7 @@
 
 
 #pragma once
-#include "Renderer.h"
+#include "CWindow/Renderer/OpenGL/Renderer.h"
 
 #include "ScriptShared/CameraController.h"
 #include "Camera.h"

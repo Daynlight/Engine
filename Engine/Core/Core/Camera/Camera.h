@@ -6,12 +6,12 @@
 
 
 #pragma once
-#include "Renderer.h"
-#include "Renderer/OpenGL/Framebuffer.h"
+#include "CWindow/Renderer/OpenGL/Renderer.h"
+#include "CWindow/Renderer/OpenGL/Framebuffer/Framebuffer.h"
 
 #define GLM_ENABLE_EXPERIMENTAL
-#include "../vendor/glm/glm/gtx/euler_angles.hpp"
-#include "../vendor/glm/glm/gtx/quaternion.hpp"
+#include "glm/gtx/euler_angles.hpp"
+#include "glm/gtx/quaternion.hpp"
 
 #include "ScriptShared/Camera.h"
 

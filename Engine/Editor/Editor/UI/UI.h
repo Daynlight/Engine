@@ -12,7 +12,7 @@
 #include <vector>
 #include <algorithm>
 
-#include "Gui.h"
+#include "CWindow/Gui/OpenGL/Gui.h"
 #include "imgui.h"
 #include "imgui_internal.h"
 

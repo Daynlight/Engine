@@ -7,6 +7,8 @@
 
 cmake_minimum_required(VERSION 3.15)
 
+find_package(GTest CONFIG REQUIRED)
+
 set(tests_src 
   Unit/Core/Camera/Camera.cpp
   Unit/Core/Camera/CameraController.cpp
@@ -30,8 +32,9 @@ target_link_libraries(unit_tests PRIVATE
   Core
   Utils
   test_mesh_resources
-  gtest_main
-  gmock_main
+  GTest::gtest
+  GTest::gtest_main
+  GTest::gmock_main
 )
 
 target_include_directories(unit_tests PRIVATE 

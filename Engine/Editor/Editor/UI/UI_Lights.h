@@ -8,8 +8,8 @@
 #pragma once
 
 #ifndef PRODUCTION
-#include "Renderer.h"
-#include "Gui.h"
+#include "CWindow/Renderer/OpenGL/Renderer.h"
+#include "CWindow/Gui/OpenGL/Gui.h"
 
 #include <functional>
 

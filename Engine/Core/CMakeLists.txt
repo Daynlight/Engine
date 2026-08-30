@@ -35,17 +35,17 @@ set(src
 
 
 add_library(Core STATIC ${src} ${PROD_SCRIPTS})
-target_link_libraries(Core CWindow Utils)
+target_link_libraries(Core "${CWINDOW_LIBRARY}" glfw glad::glad Utils)
 target_link_libraries(Core GameData)
-target_include_directories(Core PUBLIC "Core/" "../ScriptShared")
+target_include_directories(Core PUBLIC "Core/" "../ScriptShared" "${ENGINE_VENDOR_DIR}/include")
 target_include_directories(Core PUBLIC "${CMAKE_SOURCE_DIR}")
 target_compile_definitions(Core PRIVATE ENGINE_SRC_DEST="${ENGINE_SRC_DEST}")
 target_compile_definitions(Core PRIVATE PRODUCTION)
 
 add_library(CoreDev STATIC ${src})
-target_link_libraries(CoreDev CWindow UtilsDev)
+target_link_libraries(CoreDev "${CWINDOW_LIBRARY}" glfw glad::glad UtilsDev)
 target_link_libraries(CoreDev GameData)
-target_include_directories(CoreDev PUBLIC "Core/" "../ScriptShared")
+target_include_directories(CoreDev PUBLIC "Core/" "../ScriptShared" "${ENGINE_VENDOR_DIR}/include")
 target_compile_definitions(CoreDev PRIVATE ENGINE_SRC_DEST="${ENGINE_SRC_DEST}")
 target_compile_definitions(CoreDev PRIVATE COMPILER_PATH="${CMAKE_CXX_COMPILER}")
 message(STATUS "ScriptController uses CMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}")

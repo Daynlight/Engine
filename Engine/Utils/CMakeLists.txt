@@ -17,10 +17,10 @@ set(src
 
 
 add_library(Utils STATIC ${src})
-target_link_libraries(Utils CWindow)
-target_include_directories(Utils PUBLIC "." "../ScriptShared")
+target_link_libraries(Utils "${CWINDOW_LIBRARY}" glfw glad::glad)
+target_include_directories(Utils PUBLIC "." "../ScriptShared" "${ENGINE_VENDOR_DIR}/include/")
 target_compile_definitions(Utils PRIVATE PRODUCTION)
 
 add_library(UtilsDev STATIC ${src})
-target_link_libraries(UtilsDev CWindow)
-target_include_directories(UtilsDev PUBLIC "." "../ScriptShared")
+target_link_libraries(UtilsDev "${CWINDOW_LIBRARY}" glfw glad::glad)
+target_include_directories(UtilsDev PUBLIC "." "../ScriptShared" "${ENGINE_VENDOR_DIR}/include/")
